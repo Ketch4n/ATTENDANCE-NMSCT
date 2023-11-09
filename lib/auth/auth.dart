@@ -1,5 +1,5 @@
 import 'package:attendance_nmsct/auth/login.dart';
-import 'package:attendance_nmsct/view/admin/home.dart';
+import 'package:attendance_nmsct/auth/session.dart';
 import 'package:attendance_nmsct/view/establishment/home.dart';
 import 'package:attendance_nmsct/view/student/home.dart';
 import 'package:flutter/material.dart';
@@ -38,13 +38,10 @@ class _AuthState extends State<Auth> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: showLoginScreen
-          ? const Login()
-          : role == 'Student'
-              ? const StudentHome()
-              : role == 'Admin'
-                  ? const AdminHome()
-                  : const EstabHome(),
-    );
+        body: showLoginScreen
+            ? const Login()
+            : role == 'Student'
+                ? const StudentHome()
+                : const EstabHome());
   }
 }

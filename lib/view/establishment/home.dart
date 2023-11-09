@@ -10,6 +10,10 @@ class EstabHome extends StatefulWidget {
 class _EstabHomeState extends State<EstabHome> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Scaffold(
+      body: Center(
+        child: Text("Student Home"),
+      ),
+    );
   }
 }

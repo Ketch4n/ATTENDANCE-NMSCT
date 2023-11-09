@@ -1,4 +1,6 @@
 import 'package:attendance_nmsct/auth/auth.dart';
+import 'package:attendance_nmsct/auth/login.dart';
+import 'package:attendance_nmsct/view/admin/index.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,14 +13,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    bool isWin = Theme.of(context).platform == TargetPlatform.windows;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Attendance NMSCT',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        // useMaterial3: true,
+        useMaterial3: true,
       ),
-      home: const Auth(),
+      home: isWin ? const AdminIndex() : const Login(),
+      // home: const Login(),
     );
   }
 }
