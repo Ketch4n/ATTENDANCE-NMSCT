@@ -64,6 +64,8 @@ dependencies:
   month_year_picker: ^0.3.0+1
   slide_to_act: ^2.0.1
 
+  device_info: ^2.0.3
+
 
 dev_dependencies:
   flutter_test:

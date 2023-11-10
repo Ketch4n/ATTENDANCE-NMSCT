@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Camera extends StatefulWidget {
   const Camera({Key? key, required this.name}) : super(key: key);
   final String name;
+
   @override
   State<Camera> createState() => _CameraState();
 }
@@ -17,6 +18,7 @@ class _CameraState extends State<Camera> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   int userId = 0;
+  bool _processingImage = false;
 
   @override
   void initState() {
@@ -81,6 +83,16 @@ class _CameraState extends State<Camera> {
   }
 
   Future<void> _captureImage() async {
+    if (_processingImage) {
+      // Avoid capturing an image while processing another one
+      return;
+    }
+
+    // Set the flag to true to indicate that an image is being processed
+    setState(() {
+      _processingImage = true;
+    });
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -142,11 +154,15 @@ class _CameraState extends State<Camera> {
             ],
           ),
         );
-        // Navigator.of(context).pop();
       }
     } catch (e) {
       print('Error capturing image: $e');
     } finally {
+      // Reset the flag when the image processing is complete
+      setState(() {
+        _processingImage = false;
+      });
+
       Navigator.of(context).pop(); // Close the processing dialog
     }
   }
@@ -160,7 +176,8 @@ class _CameraState extends State<Camera> {
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              !_processingImage) {
             return Padding(
               padding: const EdgeInsets.all(20.0),
               child: CameraPreview(_controller),
@@ -170,13 +187,11 @@ class _CameraState extends State<Camera> {
           }
         },
       ),
-      floatingActionButton: Align(
-        alignment: Alignment.bottomCenter,
-        child: FloatingActionButton(
-          onPressed: _captureImage,
-          child: const Icon(Icons.camera),
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _captureImage,
+        child: const Icon(Icons.camera),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

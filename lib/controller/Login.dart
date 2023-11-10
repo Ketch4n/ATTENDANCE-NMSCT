@@ -3,7 +3,7 @@
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/view/establishment/home.dart';
+import 'package:attendance_nmsct/view/administrator/home.dart';
 import 'package:attendance_nmsct/view/student/home.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +66,7 @@ Future login(
               : Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const EstabHome(),
+                    builder: (context) => const AdministratorHome(),
                   ),
                 );
         } else {

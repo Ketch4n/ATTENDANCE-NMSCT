@@ -3,6 +3,7 @@ import 'package:attendance_nmsct/view/student/dashboard/section/section_tab.dart
 import 'package:attendance_nmsct/view/student/dashboard/section/student_class.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_dtr.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Section extends StatefulWidget {
   const Section({super.key, required this.ids, required this.name});
@@ -14,7 +15,13 @@ class Section extends StatefulWidget {
 }
 
 class _SectionState extends State<Section> {
-  int current = 0;
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,25 +31,22 @@ class _SectionState extends State<Section> {
         centerTitle: true,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.grey[200],
-        items: const [
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today), label: 'Daily Report'),
+              icon: FaIcon(FontAwesomeIcons.calendarDay), label: 'DTR'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month), label: 'DTR'),
+              icon: Icon(Icons.calendar_month), label: 'Attendance'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.class_), label: 'Section Tab'),
+              icon: FaIcon(FontAwesomeIcons.book), label: 'Class'),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'People'),
         ],
-        currentIndex: current,
-        onTap: (int index) {
-          setState(() {
-            current = index;
-          });
-        },
       ),
       body: IndexedStack(
-        index: current,
+        index: _selectedIndex,
         children: [
           DailyReport(name: widget.name),
           const StudentDTR(),

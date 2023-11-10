@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/report.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:http/http.dart' as http;
@@ -194,7 +197,7 @@ class _FaceAuthState extends State<FaceAuth> {
                 DateFormat('hh:mm:ss a').format(DateTime.now()),
                 style: TextStyle(
                   fontFamily: "NexaRegular",
-                  fontSize: screenWidth / 20,
+                  fontSize: screenWidth / 15,
                   color: Colors.black54,
                 ),
               ),
@@ -203,9 +206,9 @@ class _FaceAuthState extends State<FaceAuth> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Container(
-            margin: const EdgeInsets.only(top: 12, bottom: 10),
-            height: 150,
+          child: SizedBox(
+            // margin: const EdgeInsets.only(top: 12, bottom: 10),
+            height: screenHeight / 3,
             // decoration: const BoxDecoration(
             //   color: Colors.white,
             //   boxShadow: [
@@ -319,93 +322,111 @@ class _FaceAuthState extends State<FaceAuth> {
             ),
           ),
         ),
-        const SizedBox(
-          height: 20,
-        ),
+
         checkInAM == defaultValue ||
                 checkOutAM == defaultValue ||
                 checkInPM == defaultValue ||
                 checkOutPM == defaultValue
-            ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+            ? GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Camera(
+                            name: Session.email,
+                          )));
+                },
                 child: Container(
-                  // margin: const EdgeInsets.only(
-                  //   top: 20,
-                  //   bottom: 12,
-                  // ),
-                  child: Builder(
-                    builder: (context) {
-                      final GlobalKey<SlideActionState> key = GlobalKey();
-                      return SlideAction(
-                          text: checkInAM == defaultValue
-                              ? "Slide to Time In"
-                              : checkOutAM == defaultValue
-                                  ? "Slide to Time Out"
-                                  : checkInPM == defaultValue
-                                      ? "Slide to Time In"
-                                      : "Slide to Time Out",
-                          textStyle: TextStyle(
-                            color: Colors.black54,
-                            fontSize: screenWidth / 20,
-                            fontFamily: "NexaRegular",
-                          ),
-                          outerColor: Colors.white,
-                          innerColor: checkInAM == defaultValue
-                              ? Colors.green
-                              : checkOutAM == defaultValue
-                                  ? Colors.orange
-                                  : checkInPM == defaultValue
-                                      ? Colors.green
-                                      : Colors.orange,
-                          key: key,
-                          onSubmit: () async {
-                            final prefs = await SharedPreferences.getInstance();
-
-                            checkInAM == "00:00:00"
-                                ? setState(() async {
-                                    checkInAM = DateFormat('hh:mm a')
-                                        .format(DateTime.now());
-                                    inAM =
-                                        DateFormat('a').format(DateTime.now());
-                                    await insertToday(widget.id);
-                                    key.currentState!.reset();
-                                    // prefs.setString('timeINAM', checkInAM);
-                                  })
-                                : checkOutAM == "00:00:00"
-                                    ? setState(() async {
-                                        checkOutAM = DateFormat('hh:mm a')
-                                            .format(DateTime.now());
-                                        outAM = DateFormat('a')
-                                            .format(DateTime.now());
-                                        await insertToday(widget.id);
-                                        key.currentState!.reset();
-                                        //  prefs.setString('timeOUTAM', checkOutAM);
-                                      })
-                                    : checkInPM == "00:00:00"
-                                        ? setState(() async {
-                                            checkInPM = DateFormat('hh:mm a')
-                                                .format(DateTime.now());
-                                            inPM = DateFormat('a')
-                                                .format(DateTime.now());
-                                            await insertToday(widget.id);
-                                            key.currentState!.reset();
-                                            //  prefs.setString('timeINPM', checkInPM);
-                                          })
-                                        : setState(() async {
-                                            checkOutPM = DateFormat('hh:mm a')
-                                                .format(DateTime.now());
-                                            outPM = DateFormat('a')
-                                                .format(DateTime.now());
-                                            await insertToday(widget.id);
-                                            key.currentState!.reset();
-                                            //  prefs.setString('timeOUTPM', checkOutPM);
-                                          });
-                          });
-                    },
+                  decoration: Style.boxdecor,
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: Lottie.asset('assets/scan.json'),
+                    ),
                   ),
                 ),
               )
-            : Container(
+            :
+            // ? Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 20),
+            //     child: Container(
+            //       // margin: const EdgeInsets.only(
+            //       //   top: 20,
+            //       //   bottom: 12,
+            //       // ),
+            //       child: Builder(
+            //         builder: (context) {
+            //           final GlobalKey<SlideActionState> key = GlobalKey();
+            //           return SlideAction(
+            //               text: checkInAM == defaultValue
+            //                   ? "Slide to Time In"
+            //                   : checkOutAM == defaultValue
+            //                       ? "Slide to Time Out"
+            //                       : checkInPM == defaultValue
+            //                           ? "Slide to Time In"
+            //                           : "Slide to Time Out",
+            //               textStyle: TextStyle(
+            //                 color: Colors.black54,
+            //                 fontSize: screenWidth / 20,
+            //                 fontFamily: "NexaRegular",
+            //               ),
+            //               outerColor: Colors.white,
+            //               innerColor: checkInAM == defaultValue
+            //                   ? Colors.green
+            //                   : checkOutAM == defaultValue
+            //                       ? Colors.orange
+            //                       : checkInPM == defaultValue
+            //                           ? Colors.green
+            //                           : Colors.orange,
+            //               key: key,
+            //               onSubmit: () async {
+            //                 final prefs = await SharedPreferences.getInstance();
+
+            //                 checkInAM == "00:00:00"
+            //                     ? setState(() async {
+            //                         checkInAM = DateFormat('hh:mm a')
+            //                             .format(DateTime.now());
+            //                         inAM =
+            //                             DateFormat('a').format(DateTime.now());
+            //                         await insertToday(widget.id);
+            //                         key.currentState!.reset();
+            //                         // prefs.setString('timeINAM', checkInAM);
+            //                       })
+            //                     : checkOutAM == "00:00:00"
+            //                         ? setState(() async {
+            //                             checkOutAM = DateFormat('hh:mm a')
+            //                                 .format(DateTime.now());
+            //                             outAM = DateFormat('a')
+            //                                 .format(DateTime.now());
+            //                             await insertToday(widget.id);
+            //                             key.currentState!.reset();
+            //                             //  prefs.setString('timeOUTAM', checkOutAM);
+            //                           })
+            //                         : checkInPM == "00:00:00"
+            //                             ? setState(() async {
+            //                                 checkInPM = DateFormat('hh:mm a')
+            //                                     .format(DateTime.now());
+            //                                 inPM = DateFormat('a')
+            //                                     .format(DateTime.now());
+            //                                 await insertToday(widget.id);
+            //                                 key.currentState!.reset();
+            //                                 //  prefs.setString('timeINPM', checkInPM);
+            //                               })
+            //                             : setState(() async {
+            //                                 checkOutPM = DateFormat('hh:mm a')
+            //                                     .format(DateTime.now());
+            //                                 outPM = DateFormat('a')
+            //                                     .format(DateTime.now());
+            //                                 await insertToday(widget.id);
+            //                                 key.currentState!.reset();
+            //                                 //  prefs.setString('timeOUTPM', checkOutPM);
+            //                               });
+            //               });
+            //         },
+            //       ),
+            //     ),
+            //   )
+            Container(
                 margin: const EdgeInsets.only(top: 20, bottom: 32),
                 child: Text(
                   "You have completed this day!",
@@ -416,10 +437,10 @@ class _FaceAuthState extends State<FaceAuth> {
                   ),
                 ),
               ),
-        TextButton(
-          child: const Text("Details"),
-          onPressed: () => showReport(context),
-        )
+        // TextButton(
+        //   child: const Text("Details"),
+        //   onPressed: () => showReport(context),
+        // )
         // Container(
         //   margin: const EdgeInsets.symmetric(horizontal: 20),
         //   child: ListTile(

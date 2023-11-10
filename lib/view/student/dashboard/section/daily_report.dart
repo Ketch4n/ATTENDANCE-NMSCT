@@ -1,6 +1,7 @@
 import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/camera.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/metadata.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/metadata/accomplishment.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadata.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +17,7 @@ class _DailyReportState extends State<DailyReport> {
   List<Reference> _imageReferences = [];
   bool isLoading = true; // Track if data is loading
   int userId = 0;
-
+  final TextEditingController _commentController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -115,11 +116,12 @@ class _DailyReportState extends State<DailyReport> {
           padding: const EdgeInsets.all(10),
           child: GestureDetector(
             onTap: () async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                    builder: ((context) => Camera(name: widget.name))),
-              );
-              _getImageReferences();
+              await accomplishmentReport(context, _commentController);
+              // await Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //       builder: ((context) => Camera(name: widget.name))),
+              // );
+              // _getImageReferences();
             },
             child: Container(
               height: 70,
@@ -144,7 +146,7 @@ class _DailyReportState extends State<DailyReport> {
                         width: 10,
                       ),
                       Text(
-                        "Upload DailyReport (meta data)",
+                        "Daily Report (meta data)",
                         style: TextStyle(fontSize: 15, color: Colors.grey[600]),
                       ),
                     ],

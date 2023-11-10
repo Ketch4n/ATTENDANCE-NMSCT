@@ -1,22 +1,34 @@
 // ignore_for_file: sort_child_properties_last
+
 import 'dart:async';
 import 'package:attendance_nmsct/controller/User.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/navbar.dart';
-import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:attendance_nmsct/include/profile.dart';
-import 'package:attendance_nmsct/view/student/dashboard/index.dart';
+import 'package:attendance_nmsct/model/UserModel.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/admin/index.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/index.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/index.dart';
 import 'package:attendance_nmsct/widgets/offline_snackbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
-class StudentHome extends StatefulWidget {
-  const StudentHome({super.key});
+class AdministratorHome extends StatefulWidget {
+  const AdministratorHome({super.key});
 
   @override
-  _StudentHome createState() => _StudentHome();
+  _AdministratorHome createState() => _AdministratorHome();
 }
 
-class _StudentHome extends State {
+class _AdministratorHome extends State {
+  final StreamController<UserModel> _userStreamController =
+      StreamController<UserModel>();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+  Future<void> _refreshData() async {
+    await fetchUser(_userStreamController);
+  }
+
   StreamSubscription? internetconnection;
   bool isoffline = false;
   int _currentIndex = 0; // Initial index
@@ -49,6 +61,7 @@ class _StudentHome extends State {
   @override
   void initState() {
     super.initState();
+    fetchUser(_userStreamController);
     internetconnection = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
@@ -72,6 +85,11 @@ class _StudentHome extends State {
   dispose() {
     super.dispose();
     internetconnection!.cancel();
+    _userStreamController.close();
+  }
+
+  void refresh() {
+    _refreshIndicatorKey.currentState?.show(); // Show the refresh indicator
   }
 
   @override
@@ -79,34 +97,37 @@ class _StudentHome extends State {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        drawer: Navbar(onMenuItemTap: _onMenuItemTap),
-        appBar: AppBar(
-          title: Text(_currentIndex == 0 ? "Dashboard" : "Profile"),
-          centerTitle: true,
-        ),
-        bottomNavigationBar: isoffline
-            ? SizedBox(
-                height: 50,
-                child: BottomAppBar(
-                  elevation: 0,
-                  child: Center(
-                    child: Container(
-                      child: offlineSnackbar(
-                          "You are currently Offline", isoffline),
+          drawer: Navbar(onMenuItemTap: _onMenuItemTap),
+          appBar: AppBar(
+            title: Text(_currentIndex == 0 ? "Dashboard" : "Profile"),
+            centerTitle: true,
+          ),
+          bottomNavigationBar: isoffline
+              ? SizedBox(
+                  height: 50,
+                  child: BottomAppBar(
+                    elevation: 0,
+                    child: Center(
+                      child: Container(
+                        child: offlineSnackbar(
+                            "You are currently Offline", isoffline),
+                      ),
                     ),
                   ),
-                ),
-              )
-            : const SizedBox(),
-        body: IndexedStack(
-          index: _currentIndex,
-          children: const [
-            StudentDashboard(),
-            GlobalProfile(),
-          ],
-        ),
-        // use SizedBox to contrain the AppMenu to a fixed width
-      ),
+                )
+              : const SizedBox(),
+          body: IndexedStack(
+            index: _currentIndex,
+            children: [
+              Session.role == 'Admin'
+                  ? const AdminDashboard()
+                  : const EstabDashboard(),
+              const GlobalProfile(),
+            ],
+          )
+
+          // use SizedBox to contrain the AppMenu to a fixed width
+          ),
     );
   }
 }

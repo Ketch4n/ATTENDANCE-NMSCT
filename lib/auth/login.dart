@@ -132,22 +132,22 @@ class _LoginState extends State<Login> {
                   ),
 
                   const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(thickness: 2, color: Colors.grey[400]),
-                      ),
-                      Text(
-                        "Or Face Recognition Auth",
-                        style: Style.subtitle,
-                      ),
-                      Expanded(
-                        child: Divider(thickness: 2, color: Colors.grey[400]),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: Divider(thickness: 2, color: Colors.grey[400]),
+                  //     ),
+                  //     Text(
+                  //       "Or Face Recognition Auth",
+                  //       style: Style.subtitle,
+                  //     ),
+                  //     Expanded(
+                  //       child: Divider(thickness: 2, color: Colors.grey[400]),
+                  //     ),
+                  //   ],
+                  // ),
 
-                  // const Row(
+                  // Row(
                   //   mainAxisAlignment: MainAxisAlignment.center,
                   //   children: [
                   //     Logo(imagePath: 'assets/images/google.png'),
@@ -157,30 +157,10 @@ class _LoginState extends State<Login> {
                   //     Logo(imagePath: 'assets/images/fb.png'),
                   //   ],
                   // ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        //     builder: (context) => const Camera()));
-                      },
-                      child: Container(
-                        decoration: Style.boxdecor,
-                        child: Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: SizedBox(
-                            height: 100,
-                            width: 100,
-                            child: Lottie.asset('assets/scan.json'),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       TextButton(
                         onPressed: null,

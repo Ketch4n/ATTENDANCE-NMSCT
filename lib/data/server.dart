@@ -1,3 +1,3 @@
 class Server {
-  static String host = "http://10.0.0.33/ATTENDANCE-NMSCT-API/";
+  static String host = "http://192.168.1.5/ATTENDANCE-NMSCT-API/";
 }

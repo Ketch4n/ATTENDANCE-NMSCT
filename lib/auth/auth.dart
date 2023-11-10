@@ -1,6 +1,6 @@
 import 'package:attendance_nmsct/auth/login.dart';
 import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/view/establishment/home.dart';
+import 'package:attendance_nmsct/view/administrator/home.dart';
 import 'package:attendance_nmsct/view/student/home.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,6 +48,6 @@ class _AuthState extends State<Auth> {
             ? const Login()
             : role == 'Student'
                 ? const StudentHome()
-                : const EstabHome());
+                : const AdministratorHome());
   }
 }

@@ -1,19 +1,34 @@
 import 'dart:async';
 import 'package:adaptive_action_sheet/adaptive_action_sheet.dart';
-import 'package:attendance_nmsct/data/session.dart';
+import 'package:attendance_nmsct/controller/User.dart';
 import 'package:attendance_nmsct/include/style.dart';
+import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:attendance_nmsct/widgets/dropdown_settings.dart';
-import 'package:attendance_nmsct/widgets/edit_profile.dart';
 import 'package:flutter/material.dart';
 
-class StudentProfile extends StatefulWidget {
-  const StudentProfile({super.key});
+class GlobalProfile extends StatefulWidget {
+  const GlobalProfile({super.key});
 
   @override
-  State<StudentProfile> createState() => _StudentProfileState();
+  State<GlobalProfile> createState() => _GlobalProfileState();
 }
 
-class _StudentProfileState extends State<StudentProfile> {
+class _GlobalProfileState extends State<GlobalProfile> {
+  final StreamController<UserModel> _userStreamController =
+      StreamController<UserModel>();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUser(_userStreamController);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _userStreamController.close();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -32,7 +47,7 @@ class _StudentProfileState extends State<StudentProfile> {
                         borderRadius: Style.borderRadius,
                         child: InkWell(
                           onTap: () {
-                            showProfileEdit(context);
+                            showGlobalProfileEdit(context);
                           },
                           child: Image.asset(
                             'assets/images/admin.png',
@@ -42,14 +57,28 @@ class _StudentProfileState extends State<StudentProfile> {
                           ),
                         )),
                   ),
-                  Text(
-                    Session.name,
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  Text(
-                    Session.email,
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                  ),
+                  StreamBuilder<UserModel>(
+                      stream: _userStreamController.stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          UserModel user = snapshot.data!;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.name,
+                                style: Style.profileText.copyWith(fontSize: 18),
+                              ),
+                              Text(
+                                user.email,
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.grey[600]),
+                              ),
+                            ],
+                          );
+                        }
+                        return const SizedBox();
+                      }),
                 ],
               ),
             ),
@@ -58,7 +87,7 @@ class _StudentProfileState extends State<StudentProfile> {
         const SizedBox(
           height: 20,
         ),
-        const DropdownSettings(),
+        DropdownSettings(),
         // Padding(
         //   padding: Style.padding,
         //   child: Container(
@@ -108,4 +137,41 @@ class _StudentProfileState extends State<StudentProfile> {
       ],
     );
   }
+}
+
+Future showGlobalProfileEdit(BuildContext context) async {
+  showAdaptiveActionSheet(
+    context: context,
+    title: const Text('Edit GlobalProfile Photo'),
+    androidBorderRadius: 20,
+    actions: <BottomSheetAction>[
+      BottomSheetAction(
+          title: const Text(
+            'Edit Details',
+            style: TextStyle(
+                fontSize: 18,
+                color: Colors.black,
+                fontFamily: "MontserratBold"),
+          ),
+          onPressed: (context) {
+            Navigator.of(context).pop(false);
+          }),
+      BottomSheetAction(
+          title: const Text(
+            'Change GlobalProfile',
+            style: TextStyle(
+                fontSize: 18,
+                color: Colors.black,
+                fontFamily: "MontserratBold"),
+          ),
+          onPressed: (context) {
+            Navigator.of(context).pop(false);
+          }),
+    ],
+    // cancelAction: CancelAction(
+    //     title: const Text(
+    //   'CANCEL',
+    //   style: TextStyle(fontSize: 18, fontFamily: "MontserratBold"),
+    // )), // onPressed parameter is optional by default will dismiss the ActionSheet
+  );
 }

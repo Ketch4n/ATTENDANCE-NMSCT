@@ -24,7 +24,7 @@ Future fetchUser(userStreamController) async {
     }
   } else {
     final response = await http.post(
-      Uri.parse('${Server.host}auth/admin/user.php'),
+      Uri.parse('${Server.host}users/establishment/user.php'),
       body: {'id': userId},
     );
 
@@ -42,7 +42,7 @@ Future fetchUser(userStreamController) async {
 
 Future<void> fetchClassRoom() async {
   final response =
-      await http.get(Uri.parse('${Server.host}pages/student/class_room.php'));
+      await http.get(Uri.parse('${Server.host}users/student/class_room.php'));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> data = json.decode(response.body);
