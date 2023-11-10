@@ -35,7 +35,8 @@ Future logout(BuildContext context, purpose) async {
               final prefs = await SharedPreferences.getInstance();
               prefs.remove('userId');
               prefs.remove('userRole');
-              print("ID REMOVED");
+              prefs.remove('userName');
+              prefs.remove('userEmail');
               if (purpose == 'Exit') {
                 Navigator.of(context).pop(true);
               }

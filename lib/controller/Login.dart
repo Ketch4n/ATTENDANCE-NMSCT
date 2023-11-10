@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
-import 'package:attendance_nmsct/auth/server.dart';
-import 'package:attendance_nmsct/auth/session.dart';
+import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/view/establishment/home.dart';
 import 'package:attendance_nmsct/view/student/home.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
@@ -36,6 +36,8 @@ Future login(
       final message = data['message'];
       final userId = data['id'];
       final userRole = data['role'];
+      final userName = data['name'];
+      final userEmail = data['email'];
       // final status = "${response.statusCode}";
 
       if (response.statusCode == 200) {
@@ -43,9 +45,12 @@ Future login(
           final prefs = await SharedPreferences.getInstance();
           prefs.setString('userId', userId);
           prefs.setString('userRole', userRole);
-
+          prefs.setString('userName', userName);
+          prefs.setString('userEmail', userEmail);
           Session.id = userId;
           Session.role = userRole;
+          Session.name = userName;
+          Session.email = userEmail;
 
           const title = "Login success";
           String content = "Welcome $message";

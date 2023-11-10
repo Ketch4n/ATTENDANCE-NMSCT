@@ -1,5 +1,5 @@
 import 'package:attendance_nmsct/auth/login.dart';
-import 'package:attendance_nmsct/auth/session.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/view/establishment/home.dart';
 import 'package:attendance_nmsct/view/student/home.dart';
 import 'package:flutter/material.dart';
@@ -27,11 +27,17 @@ class _AuthState extends State<Auth> {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     final userRole = prefs.getString('userRole');
+    final userName = prefs.getString('userName');
+    final userEmail = prefs.getString('userEmail');
 
     // If user session exists, navigate to Home; otherwise, show Login
     setState(() {
       showLoginScreen = userId == null;
       role = userRole!;
+      Session.id = userId!;
+      Session.role = userRole;
+      Session.name = userName!;
+      Session.email = userEmail!;
     });
   }
 

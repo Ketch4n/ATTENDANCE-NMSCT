@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: isWin ? const AdminIndex() : const Login(),
+      home: isWin ? const AdminIndex() : const Auth(),
       // home: const Login(),
     );
   }

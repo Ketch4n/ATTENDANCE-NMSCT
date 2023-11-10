@@ -2,8 +2,8 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'package:attendance_nmsct/auth/server.dart';
 import 'package:attendance_nmsct/controller/Signup.dart';
+import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/functions/generate.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';

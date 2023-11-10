@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:attendance_nmsct/auth/session.dart';
-import 'package:attendance_nmsct/controller/Logout.dart';
+import 'package:attendance_nmsct/auth/logout.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:flutter/material.dart';
 

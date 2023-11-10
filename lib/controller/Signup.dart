@@ -2,10 +2,10 @@
 
 import 'dart:convert';
 import 'package:attendance_nmsct/auth/login.dart';
+import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../auth/server.dart';
 
 Future signup(BuildContext context, String email, String password, String id,
     String name, String roleController) async {
