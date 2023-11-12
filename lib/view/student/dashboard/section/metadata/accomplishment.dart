@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+bool isKeyboard = false;
 Future accomplishmentReport(
     BuildContext context, TextEditingController commentController) async {
   return showModalBottomSheet(
@@ -11,9 +12,12 @@ Future accomplishmentReport(
       isScrollControlled: true,
       builder: (context) => DraggableScrollableSheet(
             expand: false,
-            initialChildSize: 0.5,
-            // maxChildSize: 0.5,
-            minChildSize: 0.32,
+            initialChildSize:
+                isKeyboard ? 0.8 : 0.5, // Half of the screen height
+            minChildSize:
+                isKeyboard ? 1 / 2 : 1 / 3, // 1/3 of the screen height
+            maxChildSize:
+                isKeyboard ? 0.9 : 0.5, // Almost cover the screen height
             builder: (context, scrollController) => SingleChildScrollView(
               controller: scrollController,
               child: SizedBox(
@@ -37,24 +41,32 @@ Future accomplishmentReport(
                             "Accomplishment :",
                           ),
                           trailing: Text(
-                              DateFormat('mm/dd/yy').format(DateTime.now())),
+                              DateFormat('MM/dd/yy').format(DateTime.now())),
                         ),
-                        Container(
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: TextFormField(
-                            controller: commentController,
-                            maxLines:
-                                null, // Set maxLines to null for multiline input
-                            decoration: InputDecoration(
-                              hintText: 'Write your comment...',
-                              border: InputBorder.none,
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: TextFormField(
+                              controller: commentController,
+                              onTap: () {
+                                isKeyboard = true;
+                              },
+                              maxLines:
+                                  null, // Set maxLines to null for multiline input
+                              decoration: InputDecoration(
+                                hintText: 'Write your comment...',
+                                border: InputBorder.none,
+                              ),
                             ),
                           ),
                         ),
+
+                        // SizedBox(
+                        //     height: MediaQuery.of(context).viewInsets.bottom),
                       ],
                     ),
                   ),

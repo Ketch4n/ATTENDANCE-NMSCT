@@ -80,8 +80,9 @@ Future login(
             context, title, 'HTTP Status Code: ${response.statusCode}');
       }
     } catch (error) {
-      const title = "Failed to log in";
+      const title = "Network Error";
       await showAlertDialog(context, title, 'Error: $error');
+      // await showAlertDialog(context, title, 'failed connection to server');
     }
   }
 }

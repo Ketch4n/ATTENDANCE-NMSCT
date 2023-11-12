@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 
 import 'admin_section_tab.dart';
 
-class AdminSection extends StatefulWidget {
-  const AdminSection(
+class AdminHome extends StatefulWidget {
+  const AdminHome(
       {super.key, required this.ids, required this.uid, required this.name});
   final String ids;
   final String uid;
   final String name;
 
   @override
-  State<AdminSection> createState() => _AdminSectionState();
+  State<AdminHome> createState() => _AdminHomeState();
 }
 
-class _AdminSectionState extends State<AdminSection> {
+class _AdminHomeState extends State<AdminHome> {
   int current = 0;
 
   @override

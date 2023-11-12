@@ -13,8 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:http/http.dart' as http;
 
-class FaceAuth extends StatefulWidget {
-  const FaceAuth({
+class StudentFaceAuth extends StatefulWidget {
+  const StudentFaceAuth({
     super.key,
     required this.id,
     required this.name,
@@ -23,10 +23,10 @@ class FaceAuth extends StatefulWidget {
   final String name;
 
   @override
-  State<FaceAuth> createState() => _FaceAuthState();
+  State<StudentFaceAuth> createState() => _StudentFaceAuthState();
 }
 
-class _FaceAuthState extends State<FaceAuth> {
+class _StudentFaceAuthState extends State<StudentFaceAuth> {
   final StreamController<TodayModel> _todayStream =
       StreamController<TodayModel>();
 

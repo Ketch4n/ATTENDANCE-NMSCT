@@ -1,55 +1,56 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/model/ClassModel.dart';
+import 'package:attendance_nmsct/model/RoomModel.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-class StudentClass extends StatefulWidget {
-  const StudentClass({super.key, required this.ids, required this.name});
+class StudentEstabRoom extends StatefulWidget {
+  const StudentEstabRoom({super.key, required this.ids, required this.name});
   final String ids;
   final String name;
   @override
-  State<StudentClass> createState() => _StudentClassState();
+  State<StudentEstabRoom> createState() => _StudentEstabRoomState();
 }
 
-class _StudentClassState extends State<StudentClass> {
-  final StreamController<List<ClassModel>> _classmateStreamController =
-      StreamController<List<ClassModel>>();
+class _StudentEstabRoomState extends State<StudentEstabRoom> {
+  final StreamController<List<RoomModel>> _roomateStreamController =
+      StreamController<List<RoomModel>>();
+
   // Future<void> _refreshData() async {
   //   await fetchUser(_userStreamController);
   // }
   String yourID = "";
-  String admin_ID = "";
-  String admin_name = "";
-  String admin_email = "";
-
-  Future<void> fetchClassmates(classmateStreamController) async {
+  String creator_ID = "";
+  String creator_name = "";
+  String creator_email = "";
+  Future<void> fetchroomates(roomateStreamController) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     setState(() {
       yourID = userId!;
     });
     final response = await http.post(
-      Uri.parse('${Server.host}users/student/class.php'),
-      body: {'section_id': widget.ids},
+      Uri.parse('${Server.host}users/student/room.php'),
+      body: {'establishment_id': widget.ids},
     );
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      final List<ClassModel> classmates = data
-          .map((classmateData) => ClassModel.fromJson(classmateData))
-          .toList();
+      final List<RoomModel> roomates =
+          data.map((roomateData) => RoomModel.fromJson(roomateData)).toList();
       setState(() {
-        admin_ID = classmates[0].admin_id;
-        admin_name = classmates[0].admin_name;
-        admin_email = classmates[0].admin_email;
+        creator_ID = roomates[0].creator_id;
+        creator_name = roomates[0].creator_name;
+        creator_email = roomates[0].creator_email;
       });
 
-      // Add the list of classmates to the stream
-      classmateStreamController.add(classmates);
+      // Add the list of roomates to the stream
+      roomateStreamController.add(roomates);
     } else {
       throw Exception('Failed to load data');
     }
@@ -58,13 +59,13 @@ class _StudentClassState extends State<StudentClass> {
   @override
   void initState() {
     super.initState();
-    fetchClassmates(_classmateStreamController);
+    fetchroomates(_roomateStreamController);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _classmateStreamController.close();
+    _roomateStreamController.close();
   }
 
   @override
@@ -103,19 +104,23 @@ class _StudentClassState extends State<StudentClass> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(admin_name, style: const TextStyle(fontSize: 18)),
                     Text(
-                      admin_email,
+                        creator_name == Session.name
+                            ? creator_name + ' (You)'
+                            : creator_name,
+                        style: const TextStyle(fontSize: 18)),
+                    Text(
+                      creator_email,
                       style: const TextStyle(fontSize: 12),
                     )
                   ],
-                ),
+                )
               ],
             ),
           ),
           const ListTile(
             title: Text(
-              "Classmates",
+              "Interns",
               style: TextStyle(
                   color: Colors.blue,
                   fontSize: 20,
@@ -126,16 +131,16 @@ class _StudentClassState extends State<StudentClass> {
               thickness: 2,
             ),
           ),
-          StreamBuilder<List<ClassModel>>(
-              stream: _classmateStreamController.stream,
+          StreamBuilder<List<RoomModel>>(
+              stream: _roomateStreamController.stream,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  final List<ClassModel> classmates = snapshot.data!;
+                  final List<RoomModel> roomates = snapshot.data!;
                   return Expanded(
                     child: ListView.builder(
-                        itemCount: classmates.length,
+                        itemCount: roomates.length,
                         itemBuilder: (context, index) {
-                          final ClassModel classmate = classmates[index];
+                          final RoomModel roomate = roomates[index];
                           return Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ListTile(
@@ -157,12 +162,12 @@ class _StudentClassState extends State<StudentClass> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                          classmate.student_id == yourID
-                                              ? "${classmate.name} (You)"
-                                              : classmate.name,
+                                          roomate.student_id == yourID
+                                              ? "${roomate.name} (You)"
+                                              : roomate.name,
                                           style: const TextStyle(fontSize: 18)),
                                       Text(
-                                        classmate.email,
+                                        roomate.email,
                                         style: const TextStyle(fontSize: 12),
                                       )
                                     ],
@@ -175,7 +180,7 @@ class _StudentClassState extends State<StudentClass> {
                   );
                 } else if (!snapshot.hasData) {
                   return const Center(
-                    child: Text("No classmates found"),
+                    child: Text("No Interns"),
                   );
                 } else {
                   return const Center(child: CircularProgressIndicator());

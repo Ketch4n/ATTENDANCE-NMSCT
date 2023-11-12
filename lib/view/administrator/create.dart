@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class CreateClassRoom extends StatefulWidget {
   const CreateClassRoom({
@@ -33,6 +34,8 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
   final code = TextEditingController();
   final location = TextEditingController();
 
+  final fulladdress = TextEditingController();
+
   void getCurrentPosition() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
@@ -41,14 +44,39 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
       LocationPermission asked = await Geolocator.requestPermission();
     } else {
       Position currentPosition = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.best);
+          desiredAccuracy: LocationAccuracy.high,
+          forceAndroidLocationManager: true);
       print("Latitude : ${currentPosition.latitude}");
       print("Longitude : ${currentPosition.longitude}");
       String lat = currentPosition.latitude.toString();
       String long = currentPosition.longitude.toString();
+      getAddress(currentPosition.latitude, currentPosition.longitude);
       setState(() {
         location.text = lat + long;
       });
+    }
+  }
+
+  void getAddress(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      print(placemarks);
+      if (placemarks != null && placemarks.isNotEmpty) {
+        Placemark placemark = placemarks[0];
+        String address = "";
+
+        address += "${placemark.locality}, ${placemark.country}";
+        print("Full Address: $address");
+
+        setState(() {
+          fulladdress.text = address;
+        });
+      } else {
+        print("No address found");
+      }
+    } catch (e) {
+      print("Error: $e");
     }
   }
 
@@ -82,43 +110,82 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15.0),
                     child: Text(
-                      'Type ${widget.purpose} first, code will be generated after',
+                      widget.role == 'Admin'
+                          ? 'Type ${widget.purpose} first, code will be generated after'
+                          : 'Dont Forget to click the icon\nto register location',
                       style: TextStyle(color: Colors.grey[600], fontSize: 15),
                     ),
                   ),
                   Column(
                     children: [
+                      Container(
+                        height: 50,
+                        width: 50,
+                        decoration: Style.boxdecor
+                            .copyWith(borderRadius: BorderRadius.circular(50)),
+                        child: IconButton(
+                          color: Colors.redAccent,
+                          iconSize: 30,
+                          icon: const Icon(Icons.location_pin),
+                          onPressed: () {
+                            getCurrentPosition();
+                            // _idController.text = id;
+                          },
+                        ),
+                      ),
+                      widget.role == 'Establishment'
+                          ? Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10.0),
+                                  child: Text(location.text),
+                                ),
+                                location.text == ''
+                                    ? SizedBox()
+                                    : Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10.0),
+                                        child: TextField(
+                                          readOnly: true,
+                                          controller: fulladdress,
+                                          enableSuggestions: false,
+                                          autocorrect: false,
+                                          decoration: Style.textdesign
+                                              .copyWith(labelText: 'Address'),
+                                        ),
+                                      ),
+                              ],
+                            )
+                          //  TextFormField(
+                          //     readOnly: true,
+                          //     controller: location,
+                          //     decoration: Style.textdesign.copyWith(
+                          //         labelText: 'Location',
+                          //         suffixIcon: IconButton(
+                          //           icon: const Icon(Icons.location_pin),
+                          //           onPressed: () {
+                          //             getCurrentPosition();
+                          //             // _idController.text = id;
+                          //           },
+                          //         )),
+                          //   )
+                          : SizedBox(),
                       TextField(
                         controller: code,
                         enableSuggestions: false,
                         autocorrect: false,
                         decoration: Style.textdesign.copyWith(
-                            hintText: widget.role == 'Admin'
+                            labelText: widget.role == 'Admin'
                                 ? 'Section Name'
                                 : 'Establishment Name'),
                       ),
-                      SizedBox(height: 10),
-                      widget.role == 'Establishment'
-                          ? TextFormField(
-                              readOnly: true,
-                              controller: location,
-                              decoration: Style.textdesign.copyWith(
-                                  labelText: 'Location',
-                                  suffixIcon: IconButton(
-                                    icon: const Icon(Icons.location_pin),
-                                    onPressed: () {
-                                      getCurrentPosition();
-                                      // _idController.text = id;
-                                    },
-                                  )),
-                            )
-                          : SizedBox(),
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () async {
                             final String pin = code.text;
-                            final String loc = location.text;
+                            final String loc = fulladdress.text;
 
                             if (pin.isEmpty) {
                               String title = "Name Empty !";
@@ -126,8 +193,8 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                               await showAlertDialog(context, title, message);
                             } else if (widget.role == "Establishment" &&
                                 loc.isEmpty) {
-                              String title = "Invalid Location !";
-                              String message = "register gps";
+                              String title = "Register GPS";
+                              String message = "click icon";
                               await showAlertDialog(context, title, message);
                             } else {
                               String title = "Success";

@@ -72,32 +72,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
   void refresh() {
     _refreshIndicatorKey.currentState?.show(); // Show the refresh indicator
   }
-  //  Future<void> fetchData() async {
-  //   // Replace with the URL of your PHP script
-  //   final response = await http.get( Uri.parse('${Server.host}pages/student/class_room.php'));
 
-  //   if (response.statusCode == 200) {
-  //     final data = json.decode(response.body);
-
-  //     setState(() {
-  //       classData = data['class_data'];
-  //       roomData = data['room_data'];
-  //     });
-
-  //     // Get the total number of arrays
-  //     int totalClassData = classData.length;
-  //     int totalRoomData = roomData.length;
-
-  //     int totalArrays = totalClassData + totalRoomData;
-
-  //     print('Total class data arrays: $totalClassData');
-  //     print('Total room data arrays: $totalRoomData');
-  //   } else {
-  //     print('Failed to fetch data');
-  //   }
-  // }
-  // List classData = [];
-  // List roomData = [];
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -111,31 +86,32 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
             if (user.section_id == "null" && user.establishment_id == "null") {
               return Scaffold(
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () async {
-                      bottomsheetJoin(context, user.role, user.section_name,
-                          user.establishment_name,
-                          refreshCallback: _refreshData);
-                    },
-                    child: const Icon(Icons.add),
-                  ),
-                  body: ListView(
-                    children: [
-                      SizedBox(
-                        child: Column(
-                          children: [
-                            Duck(),
-                            Text("No Section or Establishment !",
-                                style: Style.duck),
-                            TextButton(
-                              onPressed: () {},
-                              child: const Text("Switch Account"),
-                            )
-                          ],
-                        ),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () async {
+                    bottomsheetJoin(context, user.role, user.section_name,
+                        user.establishment_name,
+                        refreshCallback: _refreshData);
+                  },
+                  child: const Icon(Icons.add),
+                ),
+                body: ListView(
+                  children: [
+                    SizedBox(
+                      child: Column(
+                        children: [
+                          Duck(),
+                          Text("No Section or Establishment !",
+                              style: Style.duck),
+                          TextButton(
+                            onPressed: () {},
+                            child: const Text("Switch Account"),
+                          )
+                        ],
                       ),
-                    ],
-                  ));
+                    ),
+                  ],
+                ),
+              );
             } else {
               return Scaffold(
                 floatingActionButton: FloatingActionButton(
@@ -170,9 +146,22 @@ class _StudentDashboardState extends State<StudentDashboard> {
               );
             }
           } else {
-            // return Text("Main");
-            return CardSkeleton(
-                isCircularImage: true, isBottomLinesActive: true);
+            return Scaffold(
+              body: ListView(
+                children: [
+                  Visibility(
+                    visible: classData == null && roomData == null,
+                    child: RefreshIndicator(
+                      onRefresh: fetchUserAndData,
+                      child: CardSkeleton(
+                        isCircularImage: true,
+                        isBottomLinesActive: true,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
         },
       ),

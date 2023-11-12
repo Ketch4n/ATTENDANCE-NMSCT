@@ -4,26 +4,25 @@ import 'dart:convert';
 import 'package:attendance_nmsct/controller/User.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/model/ClassModel.dart';
+import 'package:attendance_nmsct/model/RoomModel.dart';
 import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 
-class AdminClass extends StatefulWidget {
-  const AdminClass(
-      {super.key, required this.ids, required this.uid, required this.name});
+class EstabRoom extends StatefulWidget {
+  const EstabRoom({super.key, required this.ids, required this.name});
   final String ids;
-  final String uid;
+
   final String name;
   @override
-  State<AdminClass> createState() => _AdminClassState();
+  State<EstabRoom> createState() => _EstabRoomState();
 }
 
-class _AdminClassState extends State<AdminClass> {
-  final StreamController<List<ClassModel>> _classmateStreamController =
-      StreamController<List<ClassModel>>();
+class _EstabRoomState extends State<EstabRoom> {
+  final StreamController<List<RoomModel>> _internsStreamController =
+      StreamController<List<RoomModel>>();
   // Future<void> _refreshData() async {
   //   await fetchUser(_userStreamController);
   final StreamController<UserModel> _userStreamController =
@@ -33,14 +32,14 @@ class _AdminClassState extends State<AdminClass> {
   void initState() {
     super.initState();
     fetchUser(_userStreamController);
-    fetchClassmates(_classmateStreamController);
+    fetchinterns(_internsStreamController);
   }
 
   @override
   void dispose() {
     super.dispose();
     _userStreamController.close();
-    _classmateStreamController.close();
+    _internsStreamController.close();
   }
 
   // }
@@ -49,25 +48,25 @@ class _AdminClassState extends State<AdminClass> {
   // String admin_name = "";
   // String admin_email = "";
 
-  Future<void> fetchClassmates(classmateStreamController) async {
+  Future<void> fetchinterns(internstreamController) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     setState(() {
       yourID = userId!;
     });
     final response = await http.post(
-      Uri.parse('${Server.host}users/student/class.php'),
-      body: {'section_id': widget.ids},
+      Uri.parse('${Server.host}users/student/room.php'),
+      body: {'establishment_id': widget.ids},
     );
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      final List<ClassModel> classmates = data
-          .map((classmateData) => ClassModel.fromJson(classmateData))
+      final List<RoomModel> interns = data
+          .map((classmateData) => RoomModel.fromJson(classmateData))
           .toList();
 
-      // Add the list of classmates to the stream
-      classmateStreamController.add(classmates);
+      // Add the list of interns to the stream
+      internstreamController.add(interns);
     } else {
       throw Exception('Failed to load data');
     }
@@ -131,7 +130,7 @@ class _AdminClassState extends State<AdminClass> {
           ),
           const ListTile(
             title: Text(
-              "Students",
+              "Interns",
               style: TextStyle(
                   color: Colors.blue,
                   fontSize: 20,
@@ -142,16 +141,16 @@ class _AdminClassState extends State<AdminClass> {
               thickness: 2,
             ),
           ),
-          StreamBuilder<List<ClassModel>>(
-              stream: _classmateStreamController.stream,
+          StreamBuilder<List<RoomModel>>(
+              stream: _internsStreamController.stream,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  final List<ClassModel> classmates = snapshot.data!;
+                  final List<RoomModel> interns = snapshot.data!;
                   return Expanded(
                     child: ListView.builder(
-                        itemCount: classmates.length,
+                        itemCount: interns.length,
                         itemBuilder: (context, index) {
-                          final ClassModel classmate = classmates[index];
+                          final RoomModel classmate = interns[index];
                           return Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ListTile(

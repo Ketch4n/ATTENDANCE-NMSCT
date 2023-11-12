@@ -1,7 +1,7 @@
 import 'package:attendance_nmsct/controller/Remove.dart';
 import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/admin/admin_section.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/estab/admin_estab.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/admin/home.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -35,13 +35,13 @@ class _GlobalDashCardState extends State<GlobalDashCard> {
         onTap: () {
           widget.path == "class"
               ? Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AdminSection(
+                  builder: (context) => AdminHome(
                         ids: widget.id,
                         uid: widget.uid,
                         name: widget.name,
                       )))
               : Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AdminEstab(
+                  builder: (context) => EstabHome(
                         id: widget.id,
                         name: widget.name,
                       )));

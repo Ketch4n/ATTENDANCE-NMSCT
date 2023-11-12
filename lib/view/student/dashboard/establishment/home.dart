@@ -1,7 +1,7 @@
-import 'package:attendance_nmsct/view/student/dashboard/establishment/estab_dtr.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/estab_onsite.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/estab_room.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/face_auth.dart';
+import 'package:attendance_nmsct/view/student/dashboard/establishment/student_estab_dtr.dart';
+import 'package:attendance_nmsct/view/student/dashboard/establishment/student_estab_onsite.dart';
+import 'package:attendance_nmsct/view/student/dashboard/establishment/student_estab_room.dart';
+import 'package:attendance_nmsct/view/student/dashboard/establishment/student_face_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -75,10 +75,10 @@ class _EstablishmentState extends State<Establishment> {
       body: IndexedStack(
         index: _selectedIndex,
         children: [
-          FaceAuth(id: widget.id, name: widget.name),
-          EstabDTR(),
-          const EstabOnsite(),
-          EstabRoom(ids: widget.id, name: widget.name),
+          StudentFaceAuth(id: widget.id, name: widget.name),
+          const StudentEstabDTR(),
+          const StudentEstabOnsite(),
+          StudentEstabRoom(ids: widget.id, name: widget.name),
         ],
       ),
     );

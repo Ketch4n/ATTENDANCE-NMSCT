@@ -1,7 +1,7 @@
-import 'package:attendance_nmsct/view/student/dashboard/section/daily_report.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/section_tab.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/student_class.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/student_dtr.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/student_daily_report.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/student_section_tab.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/student_section_class.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/student_section_dtr.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -48,10 +48,10 @@ class _SectionState extends State<Section> {
       body: IndexedStack(
         index: _selectedIndex,
         children: [
-          DailyReport(name: widget.name),
-          const StudentDTR(),
-          const SectionTab(),
-          StudentClass(ids: widget.ids, name: widget.name),
+          StudentDailyReport(name: widget.name),
+          const StudentSectionDTR(),
+          const StudentSectionTab(),
+          StudentSectionClass(ids: widget.ids, name: widget.name),
         ],
       ),
     );

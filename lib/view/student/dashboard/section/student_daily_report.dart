@@ -6,16 +6,17 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DailyReport extends StatefulWidget {
-  const DailyReport({super.key, required this.name});
+class StudentDailyReport extends StatefulWidget {
+  const StudentDailyReport({super.key, required this.name});
   final String name;
   @override
-  State<DailyReport> createState() => _DailyReportState();
+  State<StudentDailyReport> createState() => _StudentDailyReportState();
 }
 
-class _DailyReportState extends State<DailyReport> {
+class _StudentDailyReportState extends State<StudentDailyReport> {
   List<Reference> _imageReferences = [];
   bool isLoading = true; // Track if data is loading
+
   int userId = 0;
   final TextEditingController _commentController = TextEditingController();
   @override
