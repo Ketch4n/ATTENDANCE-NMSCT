@@ -113,7 +113,7 @@ class _EstabRoomState extends State<EstabRoom> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(user.name + " (You)",
+                            Text("${user.name} (You)",
                                 style: const TextStyle(fontSize: 18)),
                             Text(
                               user.email,

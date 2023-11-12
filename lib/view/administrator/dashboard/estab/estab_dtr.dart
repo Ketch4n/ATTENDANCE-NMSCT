@@ -38,7 +38,7 @@ class _EstabDTRState extends State<EstabDTR> {
         Uri.parse('${Server.host}users/student/monthly_report.php'),
         body: {'id': userId, 'month': _yearMonth},
       );
-      print("TEST : " + _yearMonth);
+      print("TEST : $_yearMonth");
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         final List<TodayModel> dtr =
@@ -95,7 +95,7 @@ class _EstabDTRState extends State<EstabDTR> {
                 title: Row(
                   children: [
                     Text(_month),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
 
                     TextButton(
                       onPressed: () async {
@@ -114,7 +114,7 @@ class _EstabDTRState extends State<EstabDTR> {
                           monthly_report(_monthStream);
                         }
                       },
-                      child: FaIcon(
+                      child: const FaIcon(
                         FontAwesomeIcons.refresh,
                         size: 18,
                         color: Colors.blue,
@@ -136,7 +136,7 @@ class _EstabDTRState extends State<EstabDTR> {
                     if (snapshot.hasData) {
                       final List<dynamic> snap = snapshot.data!;
                       if (snap.isEmpty) {
-                        return Center(child: Text("NO DATA THIS MONTH"));
+                        return const Center(child: Text("NO DATA THIS MONTH"));
                       } else {
                         return Padding(
                           padding: const EdgeInsets.all(10.0),
@@ -333,7 +333,7 @@ class _EstabDTRState extends State<EstabDTR> {
                       return Center(
                         child: Text(
                           error.isNotEmpty ? error : 'Failed to load data',
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors
                                   .red), // You can adjust the error message style
                         ),

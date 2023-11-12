@@ -2,12 +2,9 @@ import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_dtr.da
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_face_auth.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_onsite.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/student_estab_dtr.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/student_face_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../student/dashboard/establishment/student_estab_room.dart';
 
 class EstabHome extends StatefulWidget {
   const EstabHome({
@@ -80,7 +77,7 @@ class _EstabHomeState extends State<EstabHome> {
         index: _selectedIndex,
         children: [
           EstabFaceAuth(id: widget.id, name: widget.name),
-          EstabDTR(),
+          const EstabDTR(),
           const EstabOnsite(),
           EstabRoom(ids: widget.id, name: widget.name),
         ],

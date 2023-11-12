@@ -10,8 +10,8 @@ Future<void> removeClassRoom(
   String path,
 ) async {
   final ref = path == 'room' ? 'establishment' : 'section';
-  final stat = 'In-Active';
-  print("ID : ${id}");
+  const stat = 'In-Active';
+  print("ID : $id");
   String apiUrl = '${Server.host}users/admin/remove.php';
   Map<String, String> headers = {'Content-Type': 'application/json'};
   String jsonData = '{"id": "$id","ref":"$ref","status":"$stat"}';

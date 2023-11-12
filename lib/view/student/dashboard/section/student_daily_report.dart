@@ -2,8 +2,10 @@ import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/accomplishment.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadata.dart';
+import 'package:attendance_nmsct/view/student/dashboard/upload.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentDailyReport extends StatefulWidget {
@@ -29,14 +31,20 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
     final storage = FirebaseStorage.instance;
     final prefs = await SharedPreferences.getInstance();
     final section = widget.name;
-    final storedUserId = prefs.getString('userId');
+    final email = prefs.getString('userEmail');
+    final date = DateFormat('MM-dd-yyyy').format(DateTime.now());
     final folderName =
-        'face_data/$section/$storedUserId'; // Specify your folder name
+        'face_data/$section/$email/$date'; // Specify your folder name
 
     try {
-      final listResult = await storage.ref(folderName).listAll();
+      final listResult = await storage.ref(folderName).list();
+      final items = listResult.items;
+
+      // Filter items based on the name containing "datetoday"
+      // final datetodayItems = items.where((item) => item.name.contains(
+      //     date)); // You may need to adjust the condition based on your file naming convention
       setState(() {
-        _imageReferences = listResult.items;
+        _imageReferences = items.toList();
         isLoading = false; // Data has loaded
       });
     } catch (e) {
@@ -117,12 +125,14 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
           padding: const EdgeInsets.all(10),
           child: GestureDetector(
             onTap: () async {
-              await accomplishmentReport(context, _commentController);
+              // await accomplishmentReport(context, _commentController);
               // await Navigator.of(context).push(
               //   MaterialPageRoute(
               //       builder: ((context) => Camera(name: widget.name))),
               // );
               // _getImageReferences();
+              await bottomsheetUpload(context, widget.name, '');
+              setState(() {});
             },
             child: Container(
               height: 70,
@@ -213,24 +223,24 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
                         },
                       ),
                       trailing: IconButton(
-                        icon: Icon(Icons.delete),
+                        icon: const Icon(Icons.delete),
                         onPressed: () {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Delete Image'),
-                                content: Text(
+                                title: const Text('Delete Image'),
+                                content: const Text(
                                     'Are you sure you want to delete this image?'),
                                 actions: <Widget>[
                                   TextButton(
-                                    child: Text('Cancel'),
+                                    child: const Text('Cancel'),
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
                                   ),
                                   TextButton(
-                                    child: Text('Delete'),
+                                    child: const Text('Delete'),
                                     onPressed: () {
                                       deleteImage(imageRef);
                                       Navigator.of(context).pop();

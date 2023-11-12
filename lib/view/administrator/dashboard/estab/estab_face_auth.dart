@@ -4,13 +4,11 @@ import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/report.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:slide_to_act/slide_to_act.dart';
 import 'package:http/http.dart' as http;
 
 class EstabFaceAuth extends StatefulWidget {
@@ -100,12 +98,12 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
   Future<void> insertToday(String id) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
-    final estab_id = widget.id;
+    final estabId = widget.id;
     String defaultDATE = DateFormat('yyyy-MM-dd').format(DateTime.now());
     String apiUrl = '${Server.host}users/student/insert_estab.php';
     Map<String, String> headers = {'Content-Type': 'application/json'};
     String jsonData =
-        '{"student_id": "$userId", "estab_id": "$estab_id","time_in_am":"$checkInAM","in_am":"$inAM", "time_out_am":"$checkOutAM","out_am":"$outAM","time_in_pm":"$checkInPM","in_pm":"$inPM","time_out_pm":"$checkOutPM","out_pm":"$outPM","date":"$defaultDATE"}';
+        '{"student_id": "$userId", "estab_id": "$estabId","time_in_am":"$checkInAM","in_am":"$inAM", "time_out_am":"$checkOutAM","out_am":"$outAM","time_in_pm":"$checkInPM","in_pm":"$inPM","time_out_pm":"$checkOutPM","out_pm":"$outPM","date":"$defaultDATE"}';
     final response =
         await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
     print(defaultDATE);

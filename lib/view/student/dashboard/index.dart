@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:adaptive_action_sheet/adaptive_action_sheet.dart';
 import 'package:attendance_nmsct/controller/User.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/card.dart';
-import 'package:attendance_nmsct/view/student/dashboard/join.dart';
-import 'package:attendance_nmsct/view/student/widgets/bottomsheet.dart';
+import 'package:attendance_nmsct/widgets/bottomsheet.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
@@ -99,7 +97,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     SizedBox(
                       child: Column(
                         children: [
-                          Duck(),
+                          const Duck(),
                           Text("No Section or Establishment !",
                               style: Style.duck),
                           TextButton(

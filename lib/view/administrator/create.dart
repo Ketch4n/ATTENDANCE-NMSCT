@@ -1,7 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 import 'package:attendance_nmsct/controller/Create.dart';
 import 'package:attendance_nmsct/functions/generate.dart';
-import 'package:attendance_nmsct/include/profile.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:attendance_nmsct/widgets/user_profile.dart';
@@ -62,7 +61,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
       List<Placemark> placemarks =
           await placemarkFromCoordinates(latitude, longitude);
       print(placemarks);
-      if (placemarks != null && placemarks.isNotEmpty) {
+      if (placemarks.isNotEmpty) {
         Placemark placemark = placemarks[0];
         String address = "";
 
@@ -86,7 +85,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
       appBar: AppBar(
         title: Row(
           children: [
-            Text('Create '),
+            const Text('Create '),
             Text(widget.purpose),
           ],
         ),
@@ -142,7 +141,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                                   child: Text(location.text),
                                 ),
                                 location.text == ''
-                                    ? SizedBox()
+                                    ? const SizedBox()
                                     : Padding(
                                         padding:
                                             const EdgeInsets.only(bottom: 10.0),
@@ -170,7 +169,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                           //           },
                           //         )),
                           //   )
-                          : SizedBox(),
+                          : const SizedBox(),
                       TextField(
                         controller: code,
                         enableSuggestions: false,

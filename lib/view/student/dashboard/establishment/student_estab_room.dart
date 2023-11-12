@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/RoomModel.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +105,7 @@ class _StudentEstabRoomState extends State<StudentEstabRoom> {
                   children: [
                     Text(
                         creator_name == Session.name
-                            ? creator_name + ' (You)'
+                            ? '$creator_name (You)'
                             : creator_name,
                         style: const TextStyle(fontSize: 18)),
                     Text(

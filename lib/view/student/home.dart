@@ -1,8 +1,6 @@
 // ignore_for_file: sort_child_properties_last
 import 'dart:async';
-import 'package:attendance_nmsct/controller/User.dart';
 import 'package:attendance_nmsct/include/navbar.dart';
-import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:attendance_nmsct/include/profile.dart';
 import 'package:attendance_nmsct/view/student/dashboard/index.dart';
 import 'package:attendance_nmsct/widgets/offline_snackbar.dart';

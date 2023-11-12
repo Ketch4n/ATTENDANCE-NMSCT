@@ -2,7 +2,6 @@ import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/controller/Login.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});

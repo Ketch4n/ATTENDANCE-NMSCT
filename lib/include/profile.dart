@@ -87,7 +87,7 @@ class _GlobalProfileState extends State<GlobalProfile> {
         const SizedBox(
           height: 20,
         ),
-        DropdownSettings(),
+        const DropdownSettings(),
         // Padding(
         //   padding: Style.padding,
         //   child: Container(

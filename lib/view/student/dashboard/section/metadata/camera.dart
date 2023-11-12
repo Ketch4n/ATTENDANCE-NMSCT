@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:attendance_nmsct/data/session.dart';
+import 'package:attendance_nmsct/functions/generate.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -49,21 +51,21 @@ class _CameraState extends State<Camera> {
 
   Future<void> uploadImageToFirebaseStorage(File imageFile) async {
     final prefs = await SharedPreferences.getInstance();
-    final storedUserId = prefs.getString('userId');
+    final email = prefs.getString('userEmail');
     final storage = FirebaseStorage.instance;
     final section = widget.name;
-    final folderName =
-        'face_data/$section/$storedUserId'; // Specify your folder name
+    final folderName = 'face_data/$section/$email'; // Specify your folder name
+    final randomFilename = getRandomString(10);
     DateTime now = DateTime.now();
-    final time = DateFormat('yyyy-MM-dd hh:mm a').format(now.toLocal());
-    final Reference storageRef = storage
-        .ref()
-        .child('$folderName/$time.jpg'); // Use folder name in the path
+    final date = DateFormat('MM-dd-yyyy').format(now.toLocal());
+    final Reference storageRef = storage.ref().child(
+        '$folderName/$date/$randomFilename.jpg'); // Use folder name in the path
 
     final metadata = SettableMetadata(
       customMetadata: {
-        'Date taken': time,
-        'Section': section,
+        'Time taken': DateFormat('hh:mm a').format(now.toLocal()),
+        'Date taken': DateFormat('MM-dd-yyyy').format(now.toLocal()),
+        'Name': Session.name,
         'Location': 'offline',
       },
     );

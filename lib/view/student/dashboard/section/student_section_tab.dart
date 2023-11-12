@@ -10,7 +10,7 @@ class StudentSectionTab extends StatefulWidget {
 class _StudentSectionTabState extends State<StudentSectionTab> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(child: Text("Section Tab")),
     );
   }

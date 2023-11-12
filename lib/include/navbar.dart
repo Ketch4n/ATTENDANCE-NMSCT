@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:attendance_nmsct/auth/logout.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
@@ -157,7 +156,7 @@ class _NavbarState extends State<Navbar> {
               ),
             ),
             ListTile(
-              leading: Text(Session.role, style: TextStyle(fontSize: 15)),
+              leading: Text(Session.role, style: const TextStyle(fontSize: 15)),
             ),
             ListTile(
               leading: const Icon(Icons.home_sharp),

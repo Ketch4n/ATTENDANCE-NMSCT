@@ -1,7 +1,6 @@
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/widgets/dropdown_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Admindtr extends StatefulWidget {
   const Admindtr({super.key, required this.name});
@@ -73,8 +72,8 @@ class _AdmindtrState extends State<Admindtr> {
             )
           ],
         ),
-        SizedBox(height: 20),
-        DropdownSettings(),
+        const SizedBox(height: 20),
+        const DropdownSettings(),
         //  Expanded(
         //   child: CardListSkeleton(
         //     isCircularImage: true,

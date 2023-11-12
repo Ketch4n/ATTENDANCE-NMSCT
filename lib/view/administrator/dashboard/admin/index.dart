@@ -105,7 +105,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     SizedBox(
                       child: Column(
                         children: [
-                          Duck(),
+                          const Duck(),
                           Text(
                               uRole == 'Admin'
                                   ? "No Section Found !"
@@ -157,17 +157,17 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Future bottomsheet(
     BuildContext context,
     String role,
-    String admin_id,
+    String adminId,
   ) async {
     showAdaptiveActionSheet(
         context: context,
-        title: Text('Create'),
+        title: const Text('Create'),
         androidBorderRadius: 20,
         actions: <BottomSheetAction>[
           BottomSheetAction(
               title: Text(
                 role == "Admin" ? 'Section' : 'Establishment',
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 18,
                     color: Colors.black,
                     fontFamily: "MontserratBold"),
@@ -178,7 +178,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => CreateClassRoom(
                         role: role,
-                        admin_id: admin_id,
+                        admin_id: adminId,
                         purpose: purpose,
                         refreshCallback: _refreshData)));
               }),

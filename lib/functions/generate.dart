@@ -16,3 +16,9 @@ String generateAlphanumericId() {
     (_) => chars.codeUnitAt(random.nextInt(chars.length)),
   ));
 }
+
+String getRandomString(int length) {
+  const charset = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  return List.generate(length, (_) => charset[Random().nextInt(charset.length)])
+      .join();
+}

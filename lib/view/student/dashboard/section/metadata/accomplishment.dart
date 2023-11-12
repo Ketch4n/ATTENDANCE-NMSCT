@@ -45,7 +45,7 @@ Future accomplishmentReport(
                         ),
                         Expanded(
                           child: Container(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
                               border: Border.all(),
                               borderRadius: BorderRadius.circular(8.0),
@@ -57,7 +57,7 @@ Future accomplishmentReport(
                               },
                               maxLines:
                                   null, // Set maxLines to null for multiline input
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 hintText: 'Write your comment...',
                                 border: InputBorder.none,
                               ),
