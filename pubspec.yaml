@@ -54,8 +54,9 @@ dependencies:
 
   tflite_flutter: ^0.10.1
   google_ml_kit: ^0.16.2
-  firebase_core: ^2.15.1
-  firebase_storage: ^11.2.6
+  firebase_core: ^2.22.0
+  firebase_storage: ^11.5.0
+  cloud_firestore: ^4.13.0
 
   flutter_camera: ^1.0.0
   image_picker: ^1.0.4

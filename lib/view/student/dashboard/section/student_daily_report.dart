@@ -9,8 +9,9 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentDailyReport extends StatefulWidget {
-  const StudentDailyReport({super.key, required this.name});
+  const StudentDailyReport({super.key, required this.name, required this.ids});
   final String name;
+  final String ids;
   @override
   State<StudentDailyReport> createState() => _StudentDailyReportState();
 }
@@ -125,14 +126,18 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
           padding: const EdgeInsets.all(10),
           child: GestureDetector(
             onTap: () async {
-              // await accomplishmentReport(context, _commentController);
               // await Navigator.of(context).push(
               //   MaterialPageRoute(
               //       builder: ((context) => Camera(name: widget.name))),
               // );
               // _getImageReferences();
-              await bottomsheetUpload(context, widget.name, '');
-              setState(() {});
+              await bottomsheetUpload(
+                context,
+                widget.ids,
+                widget.name,
+                comment: _commentController,
+                refreshCallback: _getImageReferences,
+              );
             },
             child: Container(
               height: 70,

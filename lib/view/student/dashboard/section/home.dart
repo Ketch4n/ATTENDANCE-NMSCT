@@ -48,7 +48,7 @@ class _SectionState extends State<Section> {
       body: IndexedStack(
         index: _selectedIndex,
         children: [
-          StudentDailyReport(name: widget.name),
+          StudentDailyReport(name: widget.name, ids: widget.ids),
           const StudentSectionDTR(),
           const StudentSectionTab(),
           StudentSectionClass(ids: widget.ids, name: widget.name),
