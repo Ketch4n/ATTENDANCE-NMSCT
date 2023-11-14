@@ -26,10 +26,10 @@ class _SectionState extends State<Section> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Section"),
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      //   title: const Text("Section"),
+      //   centerTitle: true,
+      // ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
@@ -49,7 +49,7 @@ class _SectionState extends State<Section> {
         index: _selectedIndex,
         children: [
           StudentDailyReport(name: widget.name, ids: widget.ids),
-          const StudentSectionDTR(),
+          StudentSectionDTR(name: widget.name, ids: widget.ids),
           const StudentSectionTab(),
           StudentSectionClass(ids: widget.ids, name: widget.name),
         ],

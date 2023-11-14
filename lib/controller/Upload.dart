@@ -10,16 +10,16 @@ import 'package:intl/intl.dart';
 
 DateTime now = DateTime.now();
 final date = DateFormat('yyyy-MM-dd').format(now.toLocal());
+
 Future uploadAccomplishment(BuildContext context, ids, comment) async {
   Map<String, String> headers = {'Content-Type': 'application/json'};
   String apiUrl = '${Server.host}users/student/upload.php';
+
+  // Encode the comment using jsonEncode
+  String encodedComment = jsonEncode(comment);
+
   String jsonData =
-      '{"email": "${Session.email}", "section": "$ids", "comment": "$comment", "date": "$date"}';
-  final response =
-      await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
-  final jsonResponse = json.decode(response.body);
-  final message = jsonResponse['message'];
-  final status = jsonResponse['status'];
+      '{"email": "${Session.email}", "section": "$ids", "comment": $encodedComment, "date": "$date"}';
 
   try {
     final response =
@@ -35,10 +35,13 @@ Future uploadAccomplishment(BuildContext context, ids, comment) async {
       // Handle success message as needed
     } else {
       // Handle other status codes (e.g., 400, 500) as needed
-      showAlertDialog(context, 'Error', 'Failed to upload data');
+      final errorMessage =
+          'Failed to upload data. Status Code: ${response.statusCode}';
+      showAlertDialog(context, 'Error', errorMessage);
     }
   } catch (e) {
     // Handle network or other errors
-    showAlertDialog(context, 'Error', 'Failed to upload data');
+    final errorMessage = 'Failed to upload data. Error: $e';
+    showAlertDialog(context, 'Error', errorMessage);
   }
 }

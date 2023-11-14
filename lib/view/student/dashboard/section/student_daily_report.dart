@@ -2,6 +2,7 @@ import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/accomplishment.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadata.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/widgets/header.dart';
 import 'package:attendance_nmsct/view/student/dashboard/upload.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,8 @@ class StudentDailyReport extends StatefulWidget {
 class _StudentDailyReportState extends State<StudentDailyReport> {
   List<Reference> _imageReferences = [];
   bool isLoading = true; // Track if data is loading
-
+  double screenHeight = 0;
+  double screenWidth = 0;
   int userId = 0;
   final TextEditingController _commentController = TextEditingController();
   @override
@@ -33,7 +35,7 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
     final prefs = await SharedPreferences.getInstance();
     final section = widget.name;
     final email = prefs.getString('userEmail');
-    final date = DateFormat('MM-dd-yyyy').format(DateTime.now());
+    final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
     final folderName =
         'face_data/$section/$email/$date'; // Specify your folder name
 
@@ -67,61 +69,7 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Stack(
-          children: <Widget>[
-            SizedBox(
-              height: 80,
-              width: double.maxFinite,
-              child: Image.asset(
-                "assets/images/blue.jpg",
-                fit: BoxFit.cover,
-              ),
-            ),
-            Positioned(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      ClipRRect(
-                        borderRadius: Style.borderRadius,
-                        child: Container(
-                          color: Colors.white,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Image.asset(
-                              'assets/nmsct.jpg',
-                              height: 80,
-                              width: 80,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 15.0),
-                        child: Text(
-                          widget.name,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
+        SectionHeader(name: widget.name),
         Padding(
           padding: const EdgeInsets.all(10),
           child: GestureDetector(

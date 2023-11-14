@@ -57,14 +57,14 @@ class _CameraState extends State<Camera> {
     final folderName = 'face_data/$section/$email'; // Specify your folder name
     final randomFilename = getRandomString(10);
     DateTime now = DateTime.now();
-    final date = DateFormat('MM-dd-yyyy').format(now.toLocal());
+    final date = DateFormat('yyyy-MM-dd').format(now.toLocal());
     final Reference storageRef = storage.ref().child(
         '$folderName/$date/$randomFilename.jpg'); // Use folder name in the path
 
     final metadata = SettableMetadata(
       customMetadata: {
         'Time taken': DateFormat('hh:mm a').format(now.toLocal()),
-        'Date taken': DateFormat('MM-dd-yyyy').format(now.toLocal()),
+        'Date taken': DateFormat('yyyy-MM-dd').format(now.toLocal()),
         'Name': Session.name,
         'Location': 'offline',
       },
