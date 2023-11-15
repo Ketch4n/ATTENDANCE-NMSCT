@@ -104,9 +104,11 @@ Future accomplishmentReport(
                                         ),
                                         onPressed: () async {
                                           String userComment = comment.text;
+
                                           await uploadAccomplishment(
                                               context, ids, userComment);
                                           Navigator.of(context).pop(false);
+                                          comment.clear();
                                         },
                                         child: Text("Save")),
                                   ],

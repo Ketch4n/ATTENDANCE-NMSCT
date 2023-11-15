@@ -50,7 +50,7 @@ class _SectionState extends State<Section> {
         children: [
           StudentDailyReport(name: widget.name, ids: widget.ids),
           StudentSectionDTR(name: widget.name, ids: widget.ids),
-          const StudentSectionTab(),
+          StudentSectionTab(name: widget.name),
           StudentSectionClass(ids: widget.ids, name: widget.name),
         ],
       ),

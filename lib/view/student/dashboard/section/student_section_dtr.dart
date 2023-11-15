@@ -1,4 +1,5 @@
 import 'package:attendance_nmsct/include/style.dart';
+import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/record_null.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/record.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/widgets/header.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -63,6 +64,12 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
   @override
   void initState() {
     super.initState();
+    _getImageReferences();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
     _getImageReferences();
   }
 
@@ -150,7 +157,18 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
                     final imageName = imageRef.name; // Get the image name
                     return GestureDetector(
                       onTap: () {
-                        accomplishmentRecord(context);
+                        String folder = imageRef.name; // Get the image name
+                        print("Clicked on file: $imageName");
+                        // accomplishmentRecord(context, folder, widget.name);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Record(
+                              name: widget.name,
+                              date: folder,
+                            ),
+                          ),
+                        );
                       },
                       child: Card(
                         child: Padding(

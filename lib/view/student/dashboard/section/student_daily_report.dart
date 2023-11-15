@@ -1,4 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
+import 'package:attendance_nmsct/model/AccomplishmentModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/accomplishment.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadata.dart';
@@ -7,6 +13,8 @@ import 'package:attendance_nmsct/view/student/dashboard/upload.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentDailyReport extends StatefulWidget {
@@ -19,6 +27,9 @@ class StudentDailyReport extends StatefulWidget {
 
 class _StudentDailyReportState extends State<StudentDailyReport> {
   List<Reference> _imageReferences = [];
+  final StreamController<AccomplishmentModel> _userStreamController =
+      StreamController<AccomplishmentModel>();
+
   bool isLoading = true; // Track if data is loading
   double screenHeight = 0;
   double screenWidth = 0;
@@ -28,6 +39,13 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
   void initState() {
     super.initState();
     _getImageReferences();
+    _getTextReferences();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    _getTextReferences();
   }
 
   Future<void> _getImageReferences() async {
@@ -65,8 +83,39 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
     }
   }
 
+  Future<void> _getTextReferences() async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final userEmail = prefs.getString('userEmail');
+    final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    try {
+      final response = await http.post(
+        Uri.parse('${Server.host}users/student/accomplishment.php'),
+        body: {'email': Session.email, 'date': date},
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        final user = AccomplishmentModel.fromJson(data);
+
+        // Add the user data to the stream
+        _userStreamController.add(user);
+      } else {
+        // Handle HTTP error
+        print('Failed to load data. HTTP status code: ${response.statusCode}');
+        // You might want to display an error message to the user
+      }
+    } catch (e) {
+      // Handle other exceptions
+      print('Error: $e');
+      // You might want to display an error message to the user
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
         SectionHeader(name: widget.name),
@@ -145,78 +194,121 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
           )
         else
           Expanded(
-            child: ListView.builder(
-              itemCount: _imageReferences.length,
-              itemBuilder: (context, index) {
-                final imageRef = _imageReferences[index];
-                final imageName = imageRef.name; // Get the image name
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  child: Container(
-                    height: 70,
-                    width: double.maxFinite,
-                    decoration: Style.boxdecor
-                        .copyWith(borderRadius: Style.defaultradius),
-                    child: ListTile(
-                      title: Text(imageName),
-                      subtitle: FutureBuilder(
-                        future: imageRef.getMetadata(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            if (snapshot.hasData) {
-                              final metadata = snapshot.data as FullMetadata;
-                              final location =
-                                  metadata.customMetadata!['Location'] ?? 'N/A';
-                              return Text('Location: $location');
-                            }
-                          }
-                          return const Text('Fetching metadata...');
-                        },
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Delete Image'),
-                                content: const Text(
-                                    'Are you sure you want to delete this image?'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: const Text('Cancel'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
+            child: Row(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _imageReferences.length,
+                    itemBuilder: (context, index) {
+                      final imageRef = _imageReferences[index];
+                      final imageName = imageRef.name; // Get the image name
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              height: 55,
+                              width: double.maxFinite,
+                              decoration: Style.boxdecor
+                                  .copyWith(borderRadius: Style.defaultradius),
+                              child: ListTile(
+                                title: Text(
+                                  imageName,
+                                  style: TextStyle(fontSize: screenWidth / 25),
+                                ),
+                                // subtitle: FutureBuilder(
+                                //   future: imageRef.getMetadata(),
+                                //   builder: (context, snapshot) {
+                                //     if (snapshot.connectionState ==
+                                //         ConnectionState.done) {
+                                //       if (snapshot.hasData) {
+                                //         final metadata =
+                                //             snapshot.data as FullMetadata;
+                                //         final location =
+                                //             metadata.customMetadata!['Location'] ??
+                                //                 'N/A';
+                                //         return Text('Location: $location');
+                                //       }
+                                //     }
+                                //     return const Text('Fetching metadata...');
+                                //   },
+                                // ),
+
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          Meta_Data(image: imageRef),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Delete Image'),
+                                        content: const Text(
+                                            'Are you sure you want to delete this image?'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: const Text('Cancel'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: const Text('Delete'),
+                                            onPressed: () {
+                                              deleteImage(imageRef);
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
                                     },
-                                  ),
-                                  TextButton(
-                                    child: const Text('Delete'),
-                                    onPressed: () {
-                                      deleteImage(imageRef);
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Meta_Data(image: imageRef),
-                          ),
-                        );
-                      },
-                    ),
+                                  );
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+                StreamBuilder<AccomplishmentModel>(
+                    stream: _userStreamController.stream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        AccomplishmentModel user = snapshot.data!;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              user.date,
+                              style: Style.profileText.copyWith(fontSize: 18),
+                            ),
+                            Text(
+                              user.email,
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.grey[600]),
+                            ),
+                          ],
+                        );
+                      }
+                      return const SizedBox();
+                    }),
+              ],
             ),
           ),
       ],
