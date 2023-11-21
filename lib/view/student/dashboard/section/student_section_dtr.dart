@@ -19,7 +19,8 @@ class StudentSectionDTR extends StatefulWidget {
 
 class _StudentSectionDTRState extends State<StudentSectionDTR> {
   List<Reference> _imageReferences = [];
-
+  final GlobalKey<RefreshIndicatorState> _refreshIndicator =
+      GlobalKey<RefreshIndicatorState>();
   bool isLoading = true; // Track if data is loading
   String _month = DateFormat('MMMM').format(DateTime.now());
   String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
@@ -27,7 +28,7 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
   final TextEditingController _commentController = TextEditingController();
   double screenHeight = 0;
   double screenWidth = 0;
-  Future<void> _getImageReferences() async {
+  Future _getImageReferences() async {
     final storage = FirebaseStorage.instance;
     final prefs = await SharedPreferences.getInstance();
     final section = widget.name;
@@ -77,89 +78,71 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
-    return Column(
-      children: [
-        SectionHeader(name: widget.name),
-        ListTile(
-          titleTextStyle: TextStyle(
-            color: Colors.black,
-            fontFamily: "NexaBold",
-            fontSize: screenWidth / 15,
-          ),
-          title: Row(
-            // crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(_month),
+    return RefreshIndicator(
+      key: _refreshIndicator,
+      onRefresh: _getImageReferences,
+      child: Scaffold(
+        body: ListView(
+          children: [
+            ListTile(
+              titleTextStyle: TextStyle(
+                color: Colors.black,
+                fontFamily: "NexaBold",
+                fontSize: screenWidth / 15,
+              ),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(_month),
+                  TextButton(
+                    onPressed: () async {
+                      final month = await showMonthYearPicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2023),
+                        lastDate: DateTime(2099),
+                      );
 
-              TextButton(
-                onPressed: () async {
-                  final month = await showMonthYearPicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2023),
-                    lastDate: DateTime(2099),
-                  );
-
-                  if (month != null) {
-                    setState(() {
-                      _month = DateFormat('MMMM').format(month);
-                      _yearMonth = DateFormat('yyyy-MM').format(month);
-                    });
-                  }
-                  _getImageReferences();
-                },
-                child: const FaIcon(
-                  FontAwesomeIcons.refresh,
-                  size: 18,
-                  color: Colors.blue,
+                      if (month != null) {
+                        setState(() {
+                          _month = DateFormat('MMMM').format(month);
+                          _yearMonth = DateFormat('yyyy-MM').format(month);
+                        });
+                      }
+                      _getImageReferences();
+                    },
+                    child: const FaIcon(
+                      FontAwesomeIcons.refresh,
+                      size: 18,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isLoading)
+              Center(
+                child: CircularProgressIndicator(),
+              )
+            else if (_imageReferences.isEmpty)
+              Center(
+                child: Text(
+                  'No data available.',
+                  style: TextStyle(fontSize: 18),
                 ),
-              ),
-              // FaIcon(
-              //   FontAwesomeIcons.refresh,
-              //   size: 18,
-              //   color: Colors.blue,
-              // ),
-            ],
-          ),
-        ),
-        if (isLoading)
-          const Expanded(
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
-          )
-        //  Expanded(
-        //   child: CardListSkeleton(
-        //     isCircularImage: true,
-        //     isBottomLinesActive: true,
-        //     length: 1,
-        //   ),
-        // )
-        else if (_imageReferences.isEmpty)
-          const Expanded(
-            child: Center(
-              child: Text(
-                'No data available.',
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-          )
-        else
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Expanded(
-              child: SingleChildScrollView(
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.all(10.0),
                 child: Wrap(
-                  spacing: 8.0, // Adjust the spacing between cards as needed
-                  runSpacing: 8.0, // Adjust the run spacing as needed
+                  spacing: 8.0,
+                  runSpacing: 8.0,
                   children: _imageReferences.map((imageRef) {
-                    final imageName = imageRef.name; // Get the image name
+                    final imageName = imageRef.name;
                     return GestureDetector(
                       onTap: () {
-                        String folder = imageRef.name; // Get the image name
+                        String folder = imageRef.name;
                         print("Clicked on file: $imageName");
-                        // accomplishmentRecord(context, folder, widget.name);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -177,7 +160,6 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
                             children: [
                               CircleAvatar(
                                 backgroundColor: Colors.blue,
-                                // child: const Text('AH'),
                               ),
                               const SizedBox(height: 8.0),
                               Text(
@@ -192,9 +174,9 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
                   }).toList(),
                 ),
               ),
-            ),
-          ),
-      ],
+          ],
+        ),
+      ),
     );
   }
 }

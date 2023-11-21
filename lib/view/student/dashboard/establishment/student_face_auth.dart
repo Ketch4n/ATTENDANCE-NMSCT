@@ -4,6 +4,7 @@ import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
+import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/camera_auth.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -95,7 +96,29 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   }
 
   // String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-  Future<void> insertToday(String id) async {
+  Future insertToday() async {
+    try {
+      checkInAM == "00:00:00"
+          ? setState(() async {
+              checkInAM = DateFormat('hh:mm a').format(DateTime.now());
+              inAM = DateFormat('a').format(DateTime.now());
+            })
+          : checkOutAM == "00:00:00"
+              ? setState(() async {
+                  checkOutAM = DateFormat('hh:mm a').format(DateTime.now());
+                  outAM = DateFormat('a').format(DateTime.now());
+                })
+              : checkInPM == "00:00:00"
+                  ? setState(() async {
+                      checkInPM = DateFormat('hh:mm a').format(DateTime.now());
+                      inPM = DateFormat('a').format(DateTime.now());
+                    })
+                  : setState(() async {
+                      checkOutPM = DateFormat('hh:mm a').format(DateTime.now());
+                      outPM = DateFormat('a').format(DateTime.now());
+                    });
+    } catch (e) {}
+
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     final estabId = widget.id;
@@ -130,73 +153,23 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
 
     return Column(
       children: [
-        Stack(
-          children: <Widget>[
-            SizedBox(
-              height: 80,
-              width: double.maxFinite,
-              child: Image.asset(
-                "assets/images/green2.png",
-                fit: BoxFit.cover,
-              ),
-            ),
-            Positioned(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      ClipRRect(
-                        borderRadius: Style.borderRadius,
-                        child: Container(
-                          color: Colors.white,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Image.asset(
-                              'assets/images/estab.png',
-                              height: 80,
-                              width: 80,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 15.0),
-                        child: Text(
-                          widget.name,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-
         StreamBuilder(
           stream: Stream.periodic(const Duration(seconds: 1)),
           builder: (context, snapshot) {
-            return Container(
-              alignment: Alignment.center,
-              child: Text(
-                DateFormat('hh:mm:ss a').format(DateTime.now()),
-                style: TextStyle(
-                  fontFamily: "NexaRegular",
-                  fontSize: screenWidth / 15,
-                  color: Colors.black54,
+            return Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                height: 50,
+                width: screenWidth / 2,
+                decoration: Style.boxdecor.copyWith(),
+                alignment: Alignment.center,
+                child: Text(
+                  DateFormat('hh:mm:ss a').format(DateTime.now()),
+                  style: TextStyle(
+                    fontFamily: "NexaRegular",
+                    fontSize: screenWidth / 15,
+                    color: Colors.black54,
+                  ),
                 ),
               ),
             );
@@ -325,106 +298,58 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                 checkOutAM == defaultValue ||
                 checkInPM == defaultValue ||
                 checkOutPM == defaultValue
-            ? GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Camera(
-                            name: Session.email,
-                          )));
-                },
-                child: Container(
-                  decoration: Style.boxdecor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(3.0),
-                    child: SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: Lottie.asset('assets/scan.json'),
-                    ),
-                  ),
-                ),
-              )
-            :
-            // ? Padding(
-            //     padding: const EdgeInsets.symmetric(horizontal: 20),
+            // ? GestureDetector(
+            //     onTap: () {
+            //       Navigator.of(context).push(MaterialPageRoute(
+            //           builder: (context) => CameraAuth(
+            //               name: Session.email, refreshCallback: insertToday)));
+            //     },
             //     child: Container(
-            //       // margin: const EdgeInsets.only(
-            //       //   top: 20,
-            //       //   bottom: 12,
-            //       // ),
-            //       child: Builder(
-            //         builder: (context) {
-            //           final GlobalKey<SlideActionState> key = GlobalKey();
-            //           return SlideAction(
-            //               text: checkInAM == defaultValue
-            //                   ? "Slide to Time In"
-            //                   : checkOutAM == defaultValue
-            //                       ? "Slide to Time Out"
-            //                       : checkInPM == defaultValue
-            //                           ? "Slide to Time In"
-            //                           : "Slide to Time Out",
-            //               textStyle: TextStyle(
-            //                 color: Colors.black54,
-            //                 fontSize: screenWidth / 20,
-            //                 fontFamily: "NexaRegular",
-            //               ),
-            //               outerColor: Colors.white,
-            //               innerColor: checkInAM == defaultValue
-            //                   ? Colors.green
-            //                   : checkOutAM == defaultValue
-            //                       ? Colors.orange
-            //                       : checkInPM == defaultValue
-            //                           ? Colors.green
-            //                           : Colors.orange,
-            //               key: key,
-            //               onSubmit: () async {
-            //                 final prefs = await SharedPreferences.getInstance();
-
-            //                 checkInAM == "00:00:00"
-            //                     ? setState(() async {
-            //                         checkInAM = DateFormat('hh:mm a')
-            //                             .format(DateTime.now());
-            //                         inAM =
-            //                             DateFormat('a').format(DateTime.now());
-            //                         await insertToday(widget.id);
-            //                         key.currentState!.reset();
-            //                         // prefs.setString('timeINAM', checkInAM);
-            //                       })
-            //                     : checkOutAM == "00:00:00"
-            //                         ? setState(() async {
-            //                             checkOutAM = DateFormat('hh:mm a')
-            //                                 .format(DateTime.now());
-            //                             outAM = DateFormat('a')
-            //                                 .format(DateTime.now());
-            //                             await insertToday(widget.id);
-            //                             key.currentState!.reset();
-            //                             //  prefs.setString('timeOUTAM', checkOutAM);
-            //                           })
-            //                         : checkInPM == "00:00:00"
-            //                             ? setState(() async {
-            //                                 checkInPM = DateFormat('hh:mm a')
-            //                                     .format(DateTime.now());
-            //                                 inPM = DateFormat('a')
-            //                                     .format(DateTime.now());
-            //                                 await insertToday(widget.id);
-            //                                 key.currentState!.reset();
-            //                                 //  prefs.setString('timeINPM', checkInPM);
-            //                               })
-            //                             : setState(() async {
-            //                                 checkOutPM = DateFormat('hh:mm a')
-            //                                     .format(DateTime.now());
-            //                                 outPM = DateFormat('a')
-            //                                     .format(DateTime.now());
-            //                                 await insertToday(widget.id);
-            //                                 key.currentState!.reset();
-            //                                 //  prefs.setString('timeOUTPM', checkOutPM);
-            //                               });
-            //               });
-            //         },
+            //       decoration: Style.boxdecor,
+            //       child: Padding(
+            //         padding: const EdgeInsets.all(3.0),
+            //         child: SizedBox(
+            //           height: 100,
+            //           width: 100,
+            //           child: Lottie.asset('assets/scan.json'),
+            //         ),
             //       ),
             //     ),
             //   )
-            Container(
+            // :
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  // margin: const EdgeInsets.only(
+                  //   top: 20,
+                  //   bottom: 12,
+                  // ),
+                  child: Builder(
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () async {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => CameraAuth(
+                                  name: Session.email,
+                                  refreshCallback: insertToday)));
+                        },
+                        child: Container(
+                          decoration: Style.boxdecor,
+                          child: Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: SizedBox(
+                              height: 100,
+                              width: 100,
+                              child: Lottie.asset('assets/scan.json'),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              )
+            : Container(
                 margin: const EdgeInsets.only(top: 20, bottom: 32),
                 child: Text(
                   "You have completed this day!",

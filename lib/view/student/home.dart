@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:attendance_nmsct/include/navbar.dart';
 import 'package:attendance_nmsct/include/profile.dart';
+import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/view/student/dashboard/index.dart';
 import 'package:attendance_nmsct/widgets/offline_snackbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -83,16 +84,11 @@ class _StudentHome extends State {
           centerTitle: true,
         ),
         bottomNavigationBar: isoffline
-            ? SizedBox(
-                height: 50,
-                child: BottomAppBar(
-                  elevation: 0,
-                  child: Center(
-                    child: Container(
-                      child: offlineSnackbar(
-                          "You are currently Offline", isoffline),
-                    ),
-                  ),
+            ? BottomAppBar(
+                elevation: 0,
+                child: Center(
+                  child:
+                      offlineSnackbar("You are currently Offline", isoffline),
                 ),
               )
             : const SizedBox(),

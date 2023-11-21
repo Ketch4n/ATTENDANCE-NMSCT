@@ -70,7 +70,7 @@ class _StudentEstabRoomState extends State<StudentEstabRoom> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
           const ListTile(
@@ -104,13 +104,12 @@ class _StudentEstabRoomState extends State<StudentEstabRoom> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                        creator_name == Session.name
-                            ? '$creator_name (You)'
-                            : creator_name,
-                        style: const TextStyle(fontSize: 18)),
+                      creator_name == Session.name
+                          ? '$creator_name (You)'
+                          : creator_name,
+                    ),
                     Text(
                       creator_email,
-                      style: const TextStyle(fontSize: 12),
                     )
                   ],
                 )

@@ -1,9 +1,9 @@
+import 'package:attendance_nmsct/include/style.dart';
 import 'package:flutter/material.dart';
 
 Widget offlineSnackbar(String text, bool show) {
   if (show == true) {
     return Container(
-      height: 50,
       padding: const EdgeInsets.all(10.00),
       color: Colors.black87,
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [

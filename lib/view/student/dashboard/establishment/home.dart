@@ -36,27 +36,33 @@ class _EstablishmentState extends State<Establishment> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Establishment"),
-        centerTitle: true,
+        // backgroundColor:
+        //     Colors.transparent,
+        // elevation: 0.0,
+        flexibleSpace: Stack(
+          children: <Widget>[
+            Image.asset(
+              "assets/images/green.jpg", // Replace with your image path
+              fit: BoxFit.cover, // Adjust the fit property as needed
+              width: double.infinity,
+              height: double.infinity,
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: AppBar(
+                foregroundColor: Colors.white,
+                backgroundColor:
+                    Colors.transparent, // Make the inner AppBar transparent
+                elevation: 0.0,
+                title: Text(widget.name),
+                centerTitle: true,
+              ),
+            ),
+          ],
+        ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   backgroundColor: Colors.grey[200],
-      //   items: const [
-      //       // Hero(tag: icon, child: FaIcon(icon.iconData))
-      //     BottomNavigationBarItem(
-      //         icon: FaIcon(FontAwesomeIcons.locationDot), label: 'Location'),
-      //           BottomNavigationBarItem(
-      //         icon: FaIcon(FontAwesomeIcons.calendar), label: 'DTR'),
-      //     BottomNavigationBarItem(icon: FaIcon(FontAwesomeIcons.building), label: 'On-site'),
-      //     BottomNavigationBarItem(icon: Icon(Icons.people), label: 'People'),
-      //   ],
-      //   currentIndex: current,
-      //   onTap: (int index) {
-      //     setState(() {
-      //       current = index;
-      //     });
-      //   },
-      // ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,

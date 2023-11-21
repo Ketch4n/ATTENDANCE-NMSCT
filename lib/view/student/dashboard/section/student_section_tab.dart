@@ -11,13 +11,6 @@ class StudentSectionTab extends StatefulWidget {
 class _StudentSectionTabState extends State<StudentSectionTab> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          SectionHeader(name: widget.name),
-          Center(child: Text("Section Tab")),
-        ],
-      ),
-    );
+    return Center(child: Text("Section Tab"));
   }
 }

@@ -4,3 +4,9 @@ class Session {
   static String name = "";
   static String email = "";
 }
+
+class Admin {
+  static String id = "";
+  static String name = "";
+  static String email = "";
+}

@@ -2,6 +2,7 @@ import 'package:attendance_nmsct/view/student/dashboard/section/student_daily_re
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_tab.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_class.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_dtr.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/widgets/header.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -26,10 +27,34 @@ class _SectionState extends State<Section> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text("Section"),
-      //   centerTitle: true,
-      // ),
+      appBar: AppBar(
+        // backgroundColor:
+        //     Colors.transparent,
+        // elevation: 0.0,
+        flexibleSpace: Stack(
+          children: <Widget>[
+            Image.asset(
+              "assets/images/blue.jpg", // Replace with your image path
+              fit: BoxFit.cover, // Adjust the fit property as needed
+              width: double.infinity,
+              height: double.infinity,
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: AppBar(
+                foregroundColor: Colors.white,
+                backgroundColor:
+                    Colors.transparent, // Make the inner AppBar transparent
+                elevation: 0.0,
+                title: Text(widget.name),
+                centerTitle: true,
+              ),
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,

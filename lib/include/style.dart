@@ -32,7 +32,8 @@ class Style {
     fillColor: Colors.grey[200],
     filled: true,
   );
-
+  static TextStyle classFont = const TextStyle(
+      color: Colors.blue, fontSize: 20, fontFamily: "MontserratBold");
   static BoxDecoration boxdecor = BoxDecoration(
     borderRadius: Style.borderRadius20,
     color: Colors.white,
@@ -44,7 +45,10 @@ class Style {
       ),
     ],
   );
-
+  static Divider classdivider = Divider(
+    color: Colors.blue,
+    thickness: 2,
+  );
   static TextStyle MontserratBold =
       const TextStyle(fontFamily: "MontserratBold");
   static TextStyle MontserratRegular =
