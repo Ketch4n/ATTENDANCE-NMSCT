@@ -135,10 +135,6 @@ class _EstabDashboardState extends State<EstabDashboard> {
                                   ? "No Section Found !"
                                   : "No registered Establishment !",
                               style: Style.duck),
-                          TextButton(
-                            onPressed: () {},
-                            child: const Text("Switch Account"),
-                          )
                         ],
                       ),
                     ),

@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 
-Future<void> removeClassRoom(
+Future removeClassRoom(
   context,
   String id,
   String path,

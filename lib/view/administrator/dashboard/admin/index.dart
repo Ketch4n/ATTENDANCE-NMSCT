@@ -111,10 +111,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                   ? "No Section Found !"
                                   : "No registered Establishment !",
                               style: Style.duck),
-                          TextButton(
-                            onPressed: () {},
-                            child: const Text("Switch Account"),
-                          )
                         ],
                       ),
                     ),

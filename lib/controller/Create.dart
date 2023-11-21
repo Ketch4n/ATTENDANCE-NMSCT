@@ -12,49 +12,52 @@ Future CreateSectEstab(BuildContext context, String code, String pin,
   final prefs = await SharedPreferences.getInstance();
   final userId = prefs.getString('userId');
   final userRole = prefs.getString('userRole');
-  if (userRole == 'Admin') {
-    String apiUrl = '${Server.host}users/admin/create.php';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
-    String jsonData =
-        '{"code": "$code", "section_name": "$pin",  "admin_id": "$adminId"}';
-    final response =
-        await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
-    final jsonResponse = json.decode(response.body);
-    final message = jsonResponse['message'];
-    final status = jsonResponse['status'];
+  Map<String, String> headers = {'Content-Type': 'application/json'};
 
-    if (response.statusCode == 200) {
-      await showAlertDialog(context, status, message);
+  try {
+    if (userRole == 'Admin') {
+      String apiUrl = '${Server.host}users/admin/create.php';
+      String jsonData =
+          '{"code": "$code", "section_name": "$pin",  "admin_id": "$adminId"}';
+      final response =
+          await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
+      final jsonResponse = json.decode(response.body);
+      final message = jsonResponse['message'];
+      final status = jsonResponse['status'];
 
-      // Handle success message as needed
-    } else if (response.statusCode == 400) {
-      // code already taken
-      await showAlertDialog(context, status, message);
-      // Handle code taken message as needed
+      if (response.statusCode == 200) {
+        // await showAlertDialog(context, status, message);
+
+        // Handle success message as needed
+      } else if (response.statusCode == 400) {
+        // code already taken
+        // await showAlertDialog(context, status, message);
+        // Handle code taken message as needed
+      } else {
+        // Handle other status codes (e.g., 500, 405) as needed
+      }
     } else {
-      // Handle other status codes (e.g., 500, 405) as needed
-    }
-  } else {
-    String apiUrl = '${Server.host}users/establishment/create.php';
-    Map<String, String> headers = {'Content-Type': 'application/json'};
-    String jsonData =
-        '{"code": "$code", "establishment_name": "$pin",  "location":"$loc","creator_id": "$adminId"}';
-    final response =
-        await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
-    final jsonResponse = json.decode(response.body);
-    final message = jsonResponse['message'];
-    final status = jsonResponse['status'];
+      String apiUrl = '${Server.host}users/establishment/create.php';
 
-    if (response.statusCode == 200) {
-      await showAlertDialog(context, status, message);
+      String jsonData =
+          '{"code": "$code", "establishment_name": "$pin",  "location":"$loc","creator_id": "$adminId"}';
+      final response =
+          await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
+      final jsonResponse = json.decode(response.body);
+      final message = jsonResponse['message'];
+      final status = jsonResponse['status'];
 
-      // Handle success message as needed
-    } else if (response.statusCode == 400) {
-      // code already taken
-      await showAlertDialog(context, status, message);
-      // Handle code taken message as needed
-    } else {
-      // Handle other status codes (e.g., 500, 405) as needed
+      if (response.statusCode == 200) {
+        await showAlertDialog(context, status, message);
+
+        // Handle success message as needed
+      } else if (response.statusCode == 400) {
+        // code already taken
+        await showAlertDialog(context, status, message);
+        // Handle code taken message as needed
+      } else {
+        // Handle other status codes (e.g., 500, 405) as needed
+      }
     }
-  }
+  } catch (e) {}
 }

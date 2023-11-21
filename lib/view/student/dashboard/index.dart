@@ -100,10 +100,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
                           const Duck(),
                           Text("No Section or Establishment !",
                               style: Style.duck),
-                          TextButton(
-                            onPressed: () {},
-                            child: const Text("Switch Account"),
-                          )
                         ],
                       ),
                     ),

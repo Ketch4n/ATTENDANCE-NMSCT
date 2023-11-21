@@ -117,21 +117,23 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                   ),
                   Column(
                     children: [
-                      Container(
-                        height: 50,
-                        width: 50,
-                        decoration: Style.boxdecor
-                            .copyWith(borderRadius: BorderRadius.circular(50)),
-                        child: IconButton(
-                          color: Colors.redAccent,
-                          iconSize: 30,
-                          icon: const Icon(Icons.location_pin),
-                          onPressed: () {
-                            getCurrentPosition();
-                            // _idController.text = id;
-                          },
-                        ),
-                      ),
+                      widget.role == 'Establishment'
+                          ? Container(
+                              height: 50,
+                              width: 50,
+                              decoration: Style.boxdecor.copyWith(
+                                  borderRadius: BorderRadius.circular(50)),
+                              child: IconButton(
+                                color: Colors.redAccent,
+                                iconSize: 30,
+                                icon: const Icon(Icons.location_pin),
+                                onPressed: () {
+                                  getCurrentPosition();
+                                  // _idController.text = id;
+                                },
+                              ),
+                            )
+                          : SizedBox(),
                       widget.role == 'Establishment'
                           ? Column(
                               children: [
@@ -197,7 +199,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                               await showAlertDialog(context, title, message);
                             } else {
                               String title = "Success";
-                              String message = "click to copy";
+                              String message = "Section created";
                               String code = generateAlphanumericId();
                               await CreateSectEstab(
                                 context,
@@ -209,7 +211,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                               // await pasteCode(context, title, message, code);
                               // String purpose = 'CreateClassRoom';
                               // await CreateSectEstab(context, pin);
-                              // await showAlertDialog(context, mess, path);
+                              await showAlertDialog(context, title, message);
                               Navigator.of(context).pop(false);
                               widget.refreshCallback();
                             }
