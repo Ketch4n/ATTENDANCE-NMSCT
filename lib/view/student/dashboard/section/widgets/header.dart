@@ -37,7 +37,7 @@ class _SectionHeaderState extends State<SectionHeader> {
                       width: 20,
                     ),
                     ClipRRect(
-                      borderRadius: Style.borderRadius,
+                      borderRadius: Style.radius50,
                       child: Container(
                         color: Colors.white,
                         child: Padding(

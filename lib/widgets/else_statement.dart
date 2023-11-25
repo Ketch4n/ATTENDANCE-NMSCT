@@ -5,3 +5,7 @@ Widget nodata() {
     child: Text("No data available."),
   );
 }
+
+Widget circularLoading() {
+  return const Center(child: CircularProgressIndicator());
+}

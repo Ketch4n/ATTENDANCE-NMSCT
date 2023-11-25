@@ -44,7 +44,7 @@ class _GlobalProfileState extends State<GlobalProfile> {
                   Padding(
                     padding: const EdgeInsets.only(top: 50.0, bottom: 10),
                     child: ClipRRect(
-                        borderRadius: Style.borderRadius,
+                        borderRadius: Style.radius50,
                         child: InkWell(
                           onTap: () {
                             showGlobalProfileEdit(context);

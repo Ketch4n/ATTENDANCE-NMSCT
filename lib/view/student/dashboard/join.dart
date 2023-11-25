@@ -46,7 +46,7 @@ class _JoinState extends State<Join> {
                 const Text(
                   "You're currently signed as",
                 ),
-                const UserProfile(),
+                UserProfile(),
                 Divider(
                   color: Colors.grey[600],
                 ),

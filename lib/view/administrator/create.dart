@@ -62,10 +62,11 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
           await placemarkFromCoordinates(latitude, longitude);
       print(placemarks);
       if (placemarks.isNotEmpty) {
-        Placemark placemark = placemarks[0];
+        Placemark placemark = placemarks[2];
         String address = "";
 
-        address += "${placemark.locality}, ${placemark.country}";
+        address +=
+            "${placemark.street}, ${placemark.locality}, ${placemark.subAdministrativeArea}";
         print("Full Address: $address");
 
         setState(() {
@@ -102,7 +103,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                   const Text(
                     "You're currently signed as",
                   ),
-                  const UserProfile(),
+                  UserProfile(),
                   Divider(
                     color: Colors.grey[600],
                   ),

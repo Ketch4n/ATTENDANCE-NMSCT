@@ -95,7 +95,7 @@ class _EstabRoomState extends State<EstabRoom> {
             title: Row(
               children: [
                 ClipRRect(
-                    borderRadius: Style.borderRadius,
+                    borderRadius: Style.radius50,
                     child: Image.asset(
                       "assets/images/estab.png",
                       height: 50,
@@ -157,7 +157,7 @@ class _EstabRoomState extends State<EstabRoom> {
                               title: Row(
                                 children: [
                                   ClipRRect(
-                                      borderRadius: Style.borderRadius,
+                                      borderRadius: Style.radius50,
                                       child: Image.asset(
                                         "assets/images/admin.png",
                                         height: 50,

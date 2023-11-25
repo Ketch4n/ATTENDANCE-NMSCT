@@ -13,8 +13,7 @@ class DropdownSettings extends StatelessWidget {
           child: Container(
               height: 60,
               width: double.maxFinite,
-              decoration:
-                  Style.boxdecor.copyWith(borderRadius: Style.defaultradius),
+              decoration: Style.boxdecor.copyWith(borderRadius: Style.radius12),
               child: const ListTile(
                 // textColor: Style.themecolor,
                 // iconColor: Style.themecolor,
@@ -38,8 +37,7 @@ class DropdownSettings extends StatelessWidget {
           child: Container(
               height: 60,
               width: double.maxFinite,
-              decoration:
-                  Style.boxdecor.copyWith(borderRadius: Style.defaultradius),
+              decoration: Style.boxdecor.copyWith(borderRadius: Style.radius12),
               child: const ListTile(
                 // textColor: Style.themecolor,
                 // iconColor: Style.themecolor,

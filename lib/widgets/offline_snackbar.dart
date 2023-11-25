@@ -3,16 +3,20 @@ import 'package:flutter/material.dart';
 
 Widget offlineSnackbar(String text, bool show) {
   if (show == true) {
-    return Container(
-      padding: const EdgeInsets.all(10.00),
-      color: Colors.black87,
-      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+    return Stack(
+      children: [
         Container(
-          margin: const EdgeInsets.only(right: 10.00),
-          child: const Icon(Icons.wifi_off, color: Colors.white),
+          padding: const EdgeInsets.all(10.00),
+          color: Colors.black87,
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Container(
+              margin: const EdgeInsets.only(right: 10.00),
+              child: const Icon(Icons.wifi_off, color: Colors.white),
+            ),
+            Text(text, style: const TextStyle(color: Colors.white)),
+          ]),
         ),
-        Text(text, style: const TextStyle(color: Colors.white)),
-      ]),
+      ],
     );
   } else {
     return const SizedBox();

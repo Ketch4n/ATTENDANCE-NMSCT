@@ -68,7 +68,11 @@ class _Meta_DataState extends State<Meta_Data> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Date and Time : ${_imageMetadata?.customMetadata?['Date taken']}',
+                      'Date : ${_imageMetadata?.customMetadata?['Date taken']}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      'Time : ${_imageMetadata?.customMetadata?['Time taken']}',
                       style: const TextStyle(fontSize: 18),
                     ),
                     Text(

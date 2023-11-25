@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/controller/Delete.dart';
+import 'package:attendance_nmsct/controller/Upload.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/insert.dart';
 import 'package:http/http.dart' as http;
@@ -69,7 +70,7 @@ class _AccomplishmentDetailsState extends State<AccomplishmentDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(date),
+        // title: Text(date),
         centerTitle: true,
       ),
       body: SizedBox(
@@ -140,8 +141,8 @@ class _AccomplishmentDetailsState extends State<AccomplishmentDetails> {
                                 child: Expanded(
                                   child: Container(
                                     width: double.maxFinite,
-                                    decoration: Style.boxdecor.copyWith(
-                                        borderRadius: Style.defaultradius),
+                                    decoration: Style.boxdecor
+                                        .copyWith(borderRadius: Style.radius12),
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(record.comment

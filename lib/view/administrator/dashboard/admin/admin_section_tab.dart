@@ -100,8 +100,8 @@ class _AdminSectionTabState extends State<AdminSectionTab> {
                   child: Container(
                     height: 70,
                     width: double.maxFinite,
-                    decoration: Style.boxdecor
-                        .copyWith(borderRadius: Style.defaultradius),
+                    decoration:
+                        Style.boxdecor.copyWith(borderRadius: Style.radius12),
                     child: ListTile(
                       title: Text(imageName),
                       subtitle: FutureBuilder(

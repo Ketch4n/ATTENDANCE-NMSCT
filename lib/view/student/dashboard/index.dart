@@ -116,26 +116,23 @@ class _StudentDashboardState extends State<StudentDashboard> {
                   },
                   child: const Icon(Icons.add),
                 ),
-                body: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: ListView(
-                    children: [
-                      user.establishment_id != "null"
-                          ? DashCard(
-                              id: user.establishment_id,
-                              name: user.establishment_name,
-                              path: "room",
-                              refreshCallback: _refreshData)
-                          : const SizedBox(),
-                      user.section_id != "null"
-                          ? DashCard(
-                              id: user.section_id,
-                              name: user.section_name,
-                              path: "class",
-                              refreshCallback: _refreshData)
-                          : const SizedBox(),
-                    ],
-                  ),
+                body: ListView(
+                  children: [
+                    user.establishment_id != "null"
+                        ? DashCard(
+                            id: user.establishment_id,
+                            name: user.establishment_name,
+                            path: "room",
+                            refreshCallback: _refreshData)
+                        : const SizedBox(),
+                    user.section_id != "null"
+                        ? DashCard(
+                            id: user.section_id,
+                            name: user.section_name,
+                            path: "class",
+                            refreshCallback: _refreshData)
+                        : const SizedBox(),
+                  ],
                 ),
               );
             }

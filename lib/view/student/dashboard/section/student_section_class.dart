@@ -4,7 +4,7 @@ import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/ClassModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/widgets/header.dart';
-import 'package:attendance_nmsct/widgets/no_data.dart';
+import 'package:attendance_nmsct/widgets/else_statement.dart';
 import 'package:flutter/material.dart';
 
 class StudentSectionClass extends StatefulWidget {
@@ -34,7 +34,7 @@ class _StudentSectionClassState extends State<StudentSectionClass> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(5.0),
       child: Flex(
         direction: Axis.vertical,
         children: [
@@ -43,7 +43,7 @@ class _StudentSectionClassState extends State<StudentSectionClass> {
               subtitle: Style.classdivider),
           ListTile(
             leading: ClipRRect(
-                borderRadius: Style.borderRadius,
+                borderRadius: Style.radius50,
                 child: Image.asset(
                   "assets/images/estab.png",
                   height: 50,
@@ -76,7 +76,7 @@ class _StudentSectionClassState extends State<StudentSectionClass> {
                           final ClassModel classmate = classmates[index];
                           return ListTile(
                             leading: ClipRRect(
-                                borderRadius: Style.borderRadius,
+                                borderRadius: Style.radius50,
                                 child: Image.asset(
                                   "assets/images/admin.png",
                                   height: 50,

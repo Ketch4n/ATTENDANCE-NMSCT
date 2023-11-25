@@ -9,7 +9,7 @@ String generateAlphanumericId() {
   const chars =
       'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   final random = Random();
-  const idLength = 8; // You can adjust the length as needed
+  const idLength = 6; // You can adjust the length as needed
 
   return String.fromCharCodes(Iterable.generate(
     idLength,

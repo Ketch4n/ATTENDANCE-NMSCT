@@ -10,3 +10,8 @@ class Admin {
   static String name = "";
   static String email = "";
 }
+
+class User {
+  static double long = 0;
+  static double lat = 0;
+}

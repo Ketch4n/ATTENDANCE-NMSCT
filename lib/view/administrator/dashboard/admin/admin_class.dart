@@ -6,6 +6,7 @@ import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/ClassModel.dart';
 import 'package:attendance_nmsct/model/UserModel.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/admin/widgets/header.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -75,78 +76,74 @@ class _AdminClassState extends State<AdminClass> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        children: [
-          const ListTile(
-            title: Text(
-              "Administrator",
-              style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 20,
-                  fontFamily: "MontserratBold"),
-            ),
-            subtitle: Divider(
-              color: Colors.blue,
-              thickness: 2,
-            ),
+    return Column(
+      children: [
+        adminHeader(widget.name),
+        const ListTile(
+          title: Text(
+            "Administrator",
+            style: TextStyle(
+                color: Colors.blue, fontSize: 20, fontFamily: "MontserratBold"),
           ),
-          ListTile(
-            title: Row(
-              children: [
-                ClipRRect(
-                    borderRadius: Style.borderRadius,
-                    child: Image.asset(
-                      "assets/images/estab.png",
-                      height: 50,
-                      width: 50,
-                      fit: BoxFit.cover,
-                    )),
-                const SizedBox(
-                  width: 10,
-                ),
-                StreamBuilder<UserModel>(
-                    stream: _userStreamController.stream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        UserModel user = snapshot.data!;
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("${user.name} (You)",
-                                style: const TextStyle(fontSize: 18)),
-                            Text(
-                              user.email,
-                              style: const TextStyle(fontSize: 12),
-                            )
-                          ],
-                        );
-                      } else {
-                        return const SizedBox();
-                      }
-                    }),
-              ],
-            ),
+          subtitle: Divider(
+            color: Colors.blue,
+            thickness: 2,
           ),
-          const ListTile(
-            title: Text(
-              "Students",
-              style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 20,
-                  fontFamily: "MontserratBold"),
-            ),
-            subtitle: Divider(
-              color: Colors.blue,
-              thickness: 2,
-            ),
+        ),
+        ListTile(
+          title: Row(
+            children: [
+              ClipRRect(
+                  borderRadius: Style.radius50,
+                  child: Image.asset(
+                    "assets/images/estab.png",
+                    height: 50,
+                    width: 50,
+                    fit: BoxFit.cover,
+                  )),
+              const SizedBox(
+                width: 10,
+              ),
+              StreamBuilder<UserModel>(
+                  stream: _userStreamController.stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      UserModel user = snapshot.data!;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("${user.name} (You)",
+                              style: const TextStyle(fontSize: 18)),
+                          Text(
+                            user.email,
+                            style: const TextStyle(fontSize: 12),
+                          )
+                        ],
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  }),
+            ],
           ),
-          StreamBuilder<List<ClassModel>>(
-              stream: _classmateStreamController.stream,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final List<ClassModel> classmates = snapshot.data!;
+        ),
+        const ListTile(
+          title: Text(
+            "Students",
+            style: TextStyle(
+                color: Colors.blue, fontSize: 20, fontFamily: "MontserratBold"),
+          ),
+          subtitle: Divider(
+            color: Colors.blue,
+            thickness: 2,
+          ),
+        ),
+        StreamBuilder<List<ClassModel>>(
+            stream: _classmateStreamController.stream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final List<ClassModel> classmates = snapshot.data!;
+                if (classmates.isNotEmpty) {
                   return Expanded(
                     child: ListView.builder(
                         itemCount: classmates.length,
@@ -158,7 +155,7 @@ class _AdminClassState extends State<AdminClass> {
                               title: Row(
                                 children: [
                                   ClipRRect(
-                                      borderRadius: Style.borderRadius,
+                                      borderRadius: Style.radius50,
                                       child: Image.asset(
                                         "assets/images/admin.png",
                                         height: 50,
@@ -187,11 +184,14 @@ class _AdminClassState extends State<AdminClass> {
                         }),
                   );
                 } else {
-                  return const Center(child: Text("NO STUDENTS"));
+                  return Expanded(
+                      child: const Center(child: Text("NO STUDENTS")));
                 }
-              }),
-        ],
-      ),
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            }),
+      ],
     );
   }
 }

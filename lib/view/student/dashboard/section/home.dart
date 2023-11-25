@@ -28,9 +28,6 @@ class _SectionState extends State<Section> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor:
-        //     Colors.transparent,
-        // elevation: 0.0,
         flexibleSpace: Stack(
           children: <Widget>[
             Image.asset(

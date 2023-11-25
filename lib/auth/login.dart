@@ -46,7 +46,7 @@ class _LoginState extends State<Login> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ClipRRect(
-                          borderRadius: Style.borderRadius,
+                          borderRadius: Style.radius50,
                           child: Container(
                             color: Colors.white,
                             child: Padding(
@@ -118,7 +118,7 @@ class _LoginState extends State<Login> {
                               fixedSize: const Size.fromHeight(50),
                               backgroundColor: Style.themecolor,
                               shape: RoundedRectangleBorder(
-                                  borderRadius: Style.defaultradius)),
+                                  borderRadius: Style.radius12)),
                           child: Center(
                             child: Text(
                               'LOG IN',

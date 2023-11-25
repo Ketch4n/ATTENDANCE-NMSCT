@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 // Make sure you import your server configuration
 
-Future login(
+Future<void> login(
   BuildContext context,
   String email,
   String password,

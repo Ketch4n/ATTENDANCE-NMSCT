@@ -59,7 +59,7 @@ class _NavbarState extends State<Navbar> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 15.0),
                             child: ClipRRect(
-                              borderRadius: Style.borderRadius,
+                              borderRadius: Style.radius50,
                               child: InkWell(
                                 onTap: () {
                                   // Navigator.push(
