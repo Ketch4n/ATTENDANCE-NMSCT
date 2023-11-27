@@ -3,7 +3,6 @@ import 'package:attendance_nmsct/controller/Read.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/ClassModel.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/widgets/header.dart';
 import 'package:attendance_nmsct/widgets/else_statement.dart';
 import 'package:flutter/material.dart';
 

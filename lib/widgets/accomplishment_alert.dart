@@ -4,8 +4,9 @@ import 'package:attendance_nmsct/include/style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Future<void> showAlertDialog(
+Future<void> accAlertDialog(
     BuildContext context, String title, String message) async {
+  // Navigator.of(context).popUntil((route) => route.isFirst);
   await showDialog<bool>(
     context: context,
     builder: (context) {

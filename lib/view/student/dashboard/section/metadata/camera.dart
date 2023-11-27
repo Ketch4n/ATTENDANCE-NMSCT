@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/metadata/view.dart';
 
 class Camera extends StatefulWidget {
   const Camera({Key? key, required this.name}) : super(key: key);

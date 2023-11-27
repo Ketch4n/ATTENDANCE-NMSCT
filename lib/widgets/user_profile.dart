@@ -2,7 +2,7 @@ import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:flutter/material.dart';
 
-Widget UserProfile() {
+Widget userProfile() {
   return Padding(
     padding: const EdgeInsets.only(top: 25.0, bottom: 15),
     child: Row(

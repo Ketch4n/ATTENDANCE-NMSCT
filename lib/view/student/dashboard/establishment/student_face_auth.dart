@@ -5,7 +5,6 @@ import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/camera_auth.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';

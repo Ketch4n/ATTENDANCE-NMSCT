@@ -103,7 +103,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                   const Text(
                     "You're currently signed as",
                   ),
-                  UserProfile(),
+                  userProfile(),
                   Divider(
                     color: Colors.grey[600],
                   ),
@@ -134,7 +134,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                                 },
                               ),
                             )
-                          : SizedBox(),
+                          : const SizedBox(),
                       widget.role == 'Establishment'
                           ? Column(
                               children: [

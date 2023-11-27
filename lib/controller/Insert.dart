@@ -6,21 +6,16 @@ import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-DateTime now = DateTime.now();
-final date = DateFormat('yyyy-MM-dd').format(now.toLocal());
-final time = DateFormat('hh:mm:ss').format(now.toLocal());
-
-Future uploadAccomplishment(BuildContext context, ids, comment) async {
+Future insertAbsent(BuildContext context, id, reason, date, time) async {
   Map<String, String> headers = {'Content-Type': 'application/json'};
-  String apiUrl = '${Server.host}users/student/upload.php';
+  String apiUrl = '${Server.host}users/student/write_absent.php';
 
   // Encode the comment using jsonEncode
-  String encodedComment = jsonEncode(comment);
+  String encodedComment = jsonEncode(reason);
 
   String jsonData =
-      '{"email": "${Session.email}", "section": "$ids", "comment": $encodedComment, "date": "$date", "time":"$time"}';
+      '{"student_id": "${Session.id}", "section_id": "$id", "reason": $encodedComment, "date": "$date", "time":"$time"}';
 
   try {
     final response =

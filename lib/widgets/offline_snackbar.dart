@@ -1,4 +1,3 @@
-import 'package:attendance_nmsct/include/style.dart';
 import 'package:flutter/material.dart';
 
 Widget offlineSnackbar(String text, bool show) {

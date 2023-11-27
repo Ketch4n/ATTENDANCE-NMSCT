@@ -2,7 +2,6 @@ import 'package:attendance_nmsct/view/student/dashboard/section/student_daily_re
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_tab.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_class.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_dtr.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/widgets/header.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -72,7 +71,7 @@ class _SectionState extends State<Section> {
         children: [
           StudentDailyReport(name: widget.name, ids: widget.ids),
           StudentSectionDTR(name: widget.name, ids: widget.ids),
-          StudentSectionTab(name: widget.name),
+          StudentSectionTab(name: widget.name, ids: widget.ids),
           StudentSectionClass(ids: widget.ids, name: widget.name),
         ],
       ),

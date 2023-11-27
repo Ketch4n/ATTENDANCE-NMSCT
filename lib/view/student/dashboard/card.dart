@@ -27,9 +27,9 @@ class _DashCardState extends State<DashCard> {
       child: ClipRRect(
         borderRadius: const BorderRadius.all(Radius.circular(10)),
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
                 color: Colors.black26,
                 blurRadius: 10,

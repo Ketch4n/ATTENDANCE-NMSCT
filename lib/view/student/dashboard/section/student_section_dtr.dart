@@ -1,7 +1,4 @@
-import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/record_null.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/record.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/widgets/header.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -25,7 +22,7 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
   String _month = DateFormat('MMMM').format(DateTime.now());
   String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
   int userId = 0;
-  final TextEditingController _commentController = TextEditingController();
+  // final TextEditingController _commentController = TextEditingController();
   double screenHeight = 0;
   double screenWidth = 0;
   Future _getImageReferences() async {
@@ -121,14 +118,18 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
               ),
             ),
             if (isLoading)
-              Center(
-                child: CircularProgressIndicator(),
+              const Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               )
             else if (_imageReferences.isEmpty)
-              Center(
-                child: Text(
-                  'No data available.',
-                  style: TextStyle(fontSize: 18),
+              const Expanded(
+                child: Center(
+                  child: Text(
+                    'No data available.',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
               )
             else
@@ -147,6 +148,7 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => Record(
+                              ids: widget.ids,
                               name: widget.name,
                               date: folder,
                             ),
@@ -158,13 +160,13 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.blue,
-                              ),
+                              const CircleAvatar(
+                                  // backgroundColor: Colors.blue,
+                                  ),
                               const SizedBox(height: 8.0),
                               Text(
                                 imageName,
-                                style: TextStyle(fontSize: 16.0),
+                                style: const TextStyle(fontSize: 16.0),
                               ),
                             ],
                           ),

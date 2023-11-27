@@ -184,8 +184,8 @@ class _AdminClassState extends State<AdminClass> {
                         }),
                   );
                 } else {
-                  return Expanded(
-                      child: const Center(child: Text("NO STUDENTS")));
+                  return const Expanded(
+                      child: Center(child: Text("NO STUDENTS")));
                 }
               } else {
                 return const Center(child: CircularProgressIndicator());

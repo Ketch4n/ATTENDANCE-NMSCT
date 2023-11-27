@@ -1,11 +1,10 @@
 import 'package:attendance_nmsct/controller/Upload.dart';
-import 'package:attendance_nmsct/data/session.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 DateTime now = DateTime.now();
 final date = DateFormat('MM-dd-yyyy').format(now.toLocal());
+
 Future accomplishmentReport(
     BuildContext context, ids, TextEditingController comment) async {
   return showModalBottomSheet(
@@ -16,7 +15,7 @@ Future accomplishmentReport(
     isScrollControlled: true,
     builder: (context) => DraggableScrollableSheet(
       expand: false,
-      initialChildSize: 1 / 2, // Half of the screen height
+      initialChildSize: 0.7, // Half of the screen height
 
       maxChildSize: 0.8, // Almost cover the screen height
       builder: (context, scrollController) => SingleChildScrollView(
@@ -52,13 +51,13 @@ Future accomplishmentReport(
                         decoration: InputDecoration(
                           hintText: 'Write your comment...',
                           border: OutlineInputBorder(
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                                 color: Colors.black), // Set the color you want
                             borderRadius: BorderRadius.circular(
                                 20.0), // Set the border radius
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                                 color: Colors.blue), // Set the color you want
                             borderRadius: BorderRadius.circular(
                                 8.0), // Set the border radius
@@ -73,7 +72,7 @@ Future accomplishmentReport(
                                 onPressed: () {
                                   Navigator.of(context).pop(false);
                                 },
-                                child: Text("Close")),
+                                child: const Text("Close")),
                             ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.white,
@@ -86,13 +85,13 @@ Future accomplishmentReport(
                                 ),
                                 onPressed: () async {
                                   String userComment = comment.text;
-
+                                  Navigator.of(context).pop(true);
                                   await uploadAccomplishment(
                                       context, ids, userComment);
-                                  Navigator.of(context).pop(false);
+
                                   comment.clear();
                                 },
-                                child: Text("Save")),
+                                child: const Text("Save")),
                           ],
                         ),
                       )

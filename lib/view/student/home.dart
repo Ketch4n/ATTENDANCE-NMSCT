@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'package:attendance_nmsct/include/navbar.dart';
 import 'package:attendance_nmsct/include/profile.dart';
-import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/view/student/dashboard/index.dart';
 import 'package:attendance_nmsct/widgets/offline_snackbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';

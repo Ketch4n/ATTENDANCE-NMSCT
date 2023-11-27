@@ -3,7 +3,6 @@ import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/i
 import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/view.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/view.dart';
-import 'package:attendance_nmsct/view/student/dashboard/upload.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -40,14 +39,14 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
         ),
         body: Column(
           children: [
-            TabBar(
+            const TabBar(
               tabs: [Tab(text: 'MetaData'), Tab(text: 'Accomplishment')],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Text(
-                DateFormat('MMM dd, yyyy').format(DateTime.now()) + " - TODAY"),
+                "${DateFormat('MMM dd, yyyy').format(DateTime.now())} - TODAY"),
             Expanded(
               child: TabBarView(
                 children: [
@@ -70,7 +69,7 @@ Future bottomsheetUpload(BuildContext context, String ids, String section,
     ) async {
   showAdaptiveActionSheet(
       context: context,
-      title: Text('Upload'),
+      title: const Text('Upload'),
       androidBorderRadius: 20,
       actions: <BottomSheetAction>[
         BottomSheetAction(

@@ -57,30 +57,30 @@ class _Meta_DataState extends State<Meta_Data> {
             if (!_loading)
               Image.network(
                 _imageUrl!,
-                height: 400,
-                width: 300,
+                height: 450,
+                width: 400,
               ),
 
             if (!_loading)
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
+              Column(
+                children: [
+                  ListTile(
+                    leadingAndTrailingTextStyle:
+                        const TextStyle(fontSize: 12, color: Colors.black54),
+                    leading: Text(
                       'Date : ${_imageMetadata?.customMetadata?['Date taken']}',
                       style: const TextStyle(fontSize: 18),
                     ),
-                    Text(
+                    trailing: Text(
                       'Time : ${_imageMetadata?.customMetadata?['Time taken']}',
                       style: const TextStyle(fontSize: 18),
                     ),
-                    Text(
-                      'Location : ${_imageMetadata?.customMetadata?['Location']}',
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ],
-                ),
+                  ),
+                  Text(
+                    'Location : ${_imageMetadata?.customMetadata?['Location']}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
               ),
           ],
         ),

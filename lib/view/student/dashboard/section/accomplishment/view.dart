@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:attendance_nmsct/controller/Delete.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
@@ -7,7 +9,6 @@ import 'package:attendance_nmsct/model/AccomplishmentModel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class AccomplishmentView extends StatefulWidget {
@@ -21,7 +22,8 @@ class AccomplishmentView extends StatefulWidget {
 class _AccomplishmentViewState extends State<AccomplishmentView> {
   final StreamController<List<AccomplishmentModel>> _textStreamController =
       StreamController<List<AccomplishmentModel>>();
-
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
   Future<void> _getTextReferences() async {
     final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
@@ -74,6 +76,76 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
     }
   }
 
+  void _showUpdateDeleteModal(AccomplishmentModel record) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          // Your modal content here, e.g., buttons for update and delete
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('Update'),
+                onTap: () {
+                  // Implement update logic
+                  Navigator.pop(context); // Close the modal
+                },
+              ),
+              ListTile(
+                title: const Text('Delete'),
+                onTap: () {
+                  // const purpose = 'Delete';
+                  Navigator.of(context).pop(false);
+                  deleteImage(record);
+                  // confirm(context, purpose, record.id, _getTextReferences);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> deleteImage(AccomplishmentModel record) async {
+    // Show a confirmation dialog
+    bool deleteConfirmed = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete this image?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // User canceled deletion
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // User confirmed deletion
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (deleteConfirmed == true) {
+      // User confirmed deletion
+      try {
+        await deleteAccomplishment(context, record.id);
+
+        _getTextReferences();
+      } catch (e) {
+        print('Error deleting file: $e');
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -90,73 +162,88 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Row(children: [
-        Expanded(
-          child: StreamBuilder<List<AccomplishmentModel>>(
-            stream: streamAccomplishemnt(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text("Error: ${snapshot.error}"),
+    return RefreshIndicator(
+      key: _refreshIndicatorKey,
+      onRefresh: _getTextReferences,
+      child: Expanded(
+        child: StreamBuilder<List<AccomplishmentModel>>(
+          stream: _textStreamController.stream,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text("Error: ${snapshot.error}"),
+              );
+            } else if (snapshot.hasData) {
+              final List<AccomplishmentModel> text = snapshot.data!;
+
+              if (text.isEmpty) {
+                return const Center(
+                  child: Text(
+                    "No data available",
+                    style: TextStyle(fontSize: 18),
+                  ),
                 );
-              } else if (snapshot.hasData) {
-                final List<AccomplishmentModel> text = snapshot.data!;
+              }
 
-                if (text.isEmpty) {
-                  return const Center(
-                    child: Text("No data available."),
-                  );
-                }
-
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ListView.builder(
-                    itemCount: text.length,
-                    itemBuilder: (context, index) {
-                      final AccomplishmentModel record = text[index];
-                      return Container(
-                        padding: EdgeInsets.only(
-                            bottom:
-                                index == snapshot.data!.length - 1 ? 70.0 : 0),
-                        child: TimelineTile(
-                          isFirst: index == 0,
-                          isLast: index == snapshot.data!.length - 1,
-                          alignment: TimelineAlign.start,
-                          indicatorStyle: const IndicatorStyle(
-                            width: 20,
-                            color: Colors.green, // Adjust color as needed
+              return Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ListView.builder(
+                  itemCount: text.length,
+                  itemBuilder: (context, index) {
+                    final AccomplishmentModel record = text[index];
+                    final time = record.time;
+                    return Container(
+                      padding: EdgeInsets.only(
+                          bottom:
+                              index == snapshot.data!.length - 1 ? 70.0 : 0),
+                      child: TimelineTile(
+                        isFirst: index == 0,
+                        isLast: index == snapshot.data!.length - 1,
+                        alignment: TimelineAlign.start,
+                        indicatorStyle: const IndicatorStyle(
+                          width: 20,
+                          color: Colors.green, // Adjust color as needed
+                        ),
+                        endChild: Container(
+                          // padding: EdgeInsets.only(
+                          //     bottom: index == snapshot.data!.length - 1
+                          //         ? 80.0
+                          //         : 0),
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.7,
                           ),
-                          endChild: Container(
-                            // padding: EdgeInsets.only(
-                            //     bottom: index == snapshot.data!.length - 1
-                            //         ? 80.0
-                            //         : 0),
-                            constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.7,
-                            ),
+                          child: GestureDetector(
+                            onLongPress: () => _showUpdateDeleteModal(record),
                             child: Card(
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                    record.comment.replaceAll('<br />', '')),
-                              ),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Stack(
+                                    children: [
+                                      Text(record.comment
+                                          .replaceAll('<br />', '')),
+                                      Positioned(
+                                          right: 0,
+                                          child: Text(DateFormat('hh:mm ')
+                                              .format(DateFormat('HH:mm:ss')
+                                                  .parse(time))))
+                                    ],
+                                  )),
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
-                );
-              } else {
-                return Expanded(
-                  child: CardPageSkeleton(),
-                );
-              }
-            },
-          ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            } else {
+              return Expanded(
+                child: CardPageSkeleton(),
+              );
+            }
+          },
         ),
-      ]),
+      ),
     );
   }
 }

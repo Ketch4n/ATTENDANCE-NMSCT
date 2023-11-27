@@ -46,7 +46,7 @@ class _JoinState extends State<Join> {
                 const Text(
                   "You're currently signed as",
                 ),
-                UserProfile(),
+                userProfile(),
                 Divider(
                   color: Colors.grey[600],
                 ),
@@ -83,7 +83,7 @@ class _JoinState extends State<Join> {
                               ? 'room'
                               : 'class';
                           final String pin = code.text;
-                          const String mess = "You are now in a ";
+                          // const String mess = "You are now in a ";
                           if (pin.isEmpty) {
                             String title = "Code Empty !";
                             String message = "Input code";

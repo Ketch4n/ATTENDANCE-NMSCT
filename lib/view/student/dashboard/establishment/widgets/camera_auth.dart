@@ -146,7 +146,7 @@ class _CameraState extends State<CameraAuth> {
                     ),
                   ),
                 ),
-                ListTile(
+                const ListTile(
                     leading: Text("Current Location :"),
                     trailing: Text("Offline"))
               ],
