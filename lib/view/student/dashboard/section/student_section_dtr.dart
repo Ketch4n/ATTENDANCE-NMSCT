@@ -69,7 +69,7 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
   @override
   dispose() {
     super.dispose();
-    _getImageReferences();
+    _getImageReferences;
   }
 
   @override

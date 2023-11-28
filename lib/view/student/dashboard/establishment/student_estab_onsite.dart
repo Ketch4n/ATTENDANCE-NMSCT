@@ -99,11 +99,17 @@ class _StudentEstabOnsiteState extends State<StudentEstabOnsite> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: Center(
-        child: ListTile(
-            title: fulladdress.text == ""
-                ? Text("Unknown Location", style: TextStyle(color: Colors.red))
-                : Text(fulladdress.text, style: TextStyle(color: Colors.blue)),
-            subtitle: Text("Your Current Location")),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              fulladdress.text == ""
+                  ? Text("Unknown Location",
+                      style: TextStyle(color: Colors.red))
+                  : Text(fulladdress.text,
+                      style: TextStyle(color: Colors.blue)),
+              Text("Your Current Location")
+            ]),
       ),
     );
   }

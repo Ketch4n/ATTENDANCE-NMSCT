@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:attendance_nmsct/controller/User.dart';
 import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/ClassModel.dart';
 import 'package:attendance_nmsct/model/UserModel.dart';
@@ -91,40 +92,19 @@ class _AdminClassState extends State<AdminClass> {
           ),
         ),
         ListTile(
-          title: Row(
-            children: [
-              ClipRRect(
-                  borderRadius: Style.radius50,
-                  child: Image.asset(
-                    "assets/images/estab.png",
-                    height: 50,
-                    width: 50,
-                    fit: BoxFit.cover,
-                  )),
-              const SizedBox(
-                width: 10,
-              ),
-              StreamBuilder<UserModel>(
-                  stream: _userStreamController.stream,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      UserModel user = snapshot.data!;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("${user.name} (You)",
-                              style: const TextStyle(fontSize: 18)),
-                          Text(
-                            user.email,
-                            style: const TextStyle(fontSize: 12),
-                          )
-                        ],
-                      );
-                    } else {
-                      return const SizedBox();
-                    }
-                  }),
-            ],
+          leading: ClipRRect(
+              borderRadius: Style.radius50,
+              child: Image.asset(
+                "assets/images/estab.png",
+                height: 50,
+                width: 50,
+                fit: BoxFit.cover,
+              )),
+          title: Text("${Session.name} (You)",
+              style: const TextStyle(fontSize: 18)),
+          subtitle: Text(
+            Session.email,
+            style: const TextStyle(fontSize: 12),
           ),
         ),
         const ListTile(
@@ -152,32 +132,19 @@ class _AdminClassState extends State<AdminClass> {
                           return Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ListTile(
-                              title: Row(
-                                children: [
-                                  ClipRRect(
-                                      borderRadius: Style.radius50,
-                                      child: Image.asset(
-                                        "assets/images/admin.png",
-                                        height: 50,
-                                        width: 50,
-                                        fit: BoxFit.cover,
-                                      )),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(classmate.name,
-                                          style: const TextStyle(fontSize: 18)),
-                                      Text(
-                                        classmate.email,
-                                        style: const TextStyle(fontSize: 12),
-                                      )
-                                    ],
-                                  )
-                                ],
+                              leading: ClipRRect(
+                                  borderRadius: Style.radius50,
+                                  child: Image.asset(
+                                    "assets/images/admin.png",
+                                    height: 50,
+                                    width: 50,
+                                    fit: BoxFit.cover,
+                                  )),
+                              title: Text(classmate.name,
+                                  style: const TextStyle(fontSize: 18)),
+                              subtitle: Text(
+                                classmate.email,
+                                style: const TextStyle(fontSize: 12),
                               ),
                             ),
                           );

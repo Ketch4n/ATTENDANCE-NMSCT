@@ -44,8 +44,9 @@ class _AdminHomeState extends State<AdminHome> {
       body: IndexedStack(
         index: current,
         children: [
-          Admindtr(name: widget.name),
+          Admindtr(ids: widget.ids, name: widget.name),
           AdminSectionTab(
+            ids: widget.ids,
             name: widget.name,
           ),
           AdminClass(ids: widget.ids, uid: widget.uid, name: widget.name),

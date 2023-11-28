@@ -19,6 +19,12 @@ class _Meta_DataState extends State<Meta_Data> {
     _getImageUrlAndMetadata();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _getImageUrlAndMetadata;
+  }
+
   Future<void> _getImageUrlAndMetadata() async {
     try {
       // Fetch image URL
