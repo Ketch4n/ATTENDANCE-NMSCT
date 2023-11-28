@@ -5,7 +5,7 @@ Widget adminHeader(name) {
   return Stack(
     children: <Widget>[
       SizedBox(
-        height: 50,
+        height: 80,
         width: double.maxFinite,
         child: Image.asset(
           "assets/images/blue.jpg",
@@ -15,7 +15,7 @@ Widget adminHeader(name) {
       Positioned(
         child: Column(
           children: [
-            const SizedBox(height: 8),
+            const SizedBox(height: 38),
             Row(
               children: [
                 const SizedBox(

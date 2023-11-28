@@ -1,10 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:attendance_nmsct/widgets/camera_alert_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:lottie/lottie.dart';
 
@@ -22,6 +26,8 @@ class CameraAuth extends StatefulWidget {
 class _CameraState extends State<CameraAuth> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  // late Stream<Position> _positionStream;
+  StreamSubscription<Position>? _positionSubscription;
 
   bool _processingImage = false;
   int userId = 0;
@@ -30,6 +36,67 @@ class _CameraState extends State<CameraAuth> {
   void initState() {
     super.initState();
     _initializeControllerFuture = _initializeCamera();
+    Geolocator.checkPermission();
+
+    // Listen to location changes
+    _positionSubscription = Geolocator.getPositionStream().listen(
+      (Position position) {
+        getCurrentPosition();
+      },
+      onError: (e) {
+        print("Error getting location: $e");
+      },
+    );
+  }
+
+  final code = TextEditingController();
+  final location = TextEditingController();
+
+  final fulladdress = TextEditingController();
+
+  Future<void> getCurrentPosition() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      print("Permission Not given");
+      LocationPermission asked = await Geolocator.requestPermission();
+    } else {
+      Position currentPosition = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+          forceAndroidLocationManager: true);
+      print("Latitude : ${currentPosition.latitude}");
+      print("Longitude : ${currentPosition.longitude}");
+      String lat = currentPosition.latitude.toString();
+      String long = currentPosition.longitude.toString();
+      await getAddress(currentPosition.latitude, currentPosition.longitude);
+      setState(() {
+        location.text = lat + long;
+      });
+    }
+  }
+
+  Future<void> getAddress(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      // print(placemarks);
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks[2];
+        String address = "";
+
+        address +=
+            "${placemark.street}, ${placemark.locality}, ${placemark.subAdministrativeArea}";
+        print("Full Address: $address");
+
+        setState(() {
+          fulladdress.text = address;
+        });
+      } else {
+        print("No address found");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 
   Future<void> _initializeCamera() async {
@@ -47,14 +114,6 @@ class _CameraState extends State<CameraAuth> {
     await _controller.initialize();
   }
 
-  Future<void> faceAuth() async {
-    try {
-      Navigator.of(context).pop(false);
-    } catch (e) {
-      // print('Error uploading image to database: $e');
-    }
-  }
-
   Future<void> _captureImage() async {
     if (_processingImage) {
       // Avoid capturing an image while processing another one
@@ -65,12 +124,6 @@ class _CameraState extends State<CameraAuth> {
     setState(() {
       _processingImage = true;
     });
-
-    // showDialog(
-    //     context: context,
-    //     barrierDismissible: false,
-    //     builder: (context) => SizedBox(
-    //         height: 50, width: 50, child: Image.asset('assets/loading.gif')));
 
     try {
       await _initializeControllerFuture;
@@ -85,11 +138,12 @@ class _CameraState extends State<CameraAuth> {
       // Check if at least one face is detected
       if (faces.isNotEmpty) {
         const title = "Success";
-        final message = "Face ID : ${Session.name}";
+        final message = Session.name;
+        Navigator.of(context).pop(false);
+        await cameraAlertDialog(context, title, message);
+
         widget.refreshCallback();
         // Upload the image to Firebase Storage with metadata
-        await cameraAlertDialog(context, title, message);
-        await faceAuth();
       } else {
         // No face detected
         const title = "Error";
@@ -111,6 +165,8 @@ class _CameraState extends State<CameraAuth> {
   @override
   void dispose() {
     _controller.dispose();
+    fulladdress.dispose();
+    _positionSubscription?.cancel(); // Cancel the location subscription
     super.dispose();
   }
 
@@ -121,36 +177,77 @@ class _CameraState extends State<CameraAuth> {
         title: const Text('Face Auth'),
         centerTitle: true,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _captureImage,
-        child: const Icon(Icons.camera),
-      ),
+      floatingActionButton:
+          fulladdress.text.isEmpty || fulladdress.text != Session.location
+              ? FloatingActionButton(
+                  onPressed: () {
+                    print("current this: ${Session.location}");
+                    getCurrentPosition();
+                  },
+                  child: const Icon(
+                    Icons.location_pin,
+                    color: Colors.red,
+                  ),
+                )
+              : FloatingActionButton(
+                  onPressed: _captureImage,
+                  child: const Icon(
+                    Icons.camera,
+                  ),
+                ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done &&
               !_processingImage) {
-            return Column(
-              children: [
-                Center(
-                  child: Expanded(
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        CameraPreview(_controller),
-                        Lottie.asset(
-                          'assets/scanning.json',
-                        ),
-                      ],
+            if (fulladdress != "") {
+              return Column(
+                children: [
+                  Center(
+                    child: Expanded(
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          CameraPreview(_controller),
+                          Lottie.asset(
+                            'assets/scanning.json',
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const ListTile(
-                    leading: Text("Current Location :"),
-                    trailing: Text("Offline"))
-              ],
-            );
+                  ListTile(
+                      title: Text("Current Location:"),
+                      subtitle: fulladdress.text != ""
+                          ? Text(
+                              fulladdress.text,
+                              style: TextStyle(color: Colors.blue),
+                            )
+                          : Text(
+                              "Offline",
+                              style: TextStyle(color: Colors.red),
+                            )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Status : "),
+                      fulladdress.text != Session.location
+                          ? Text(
+                              "unmatched location",
+                              style: TextStyle(color: Colors.red),
+                            )
+                          : Text(
+                              "Location matched",
+                              style: TextStyle(color: Colors.green),
+                            ),
+                    ],
+                  ),
+                ],
+              );
+            } else {
+              return Center(child: Text("Turn on Location"));
+            }
           } else {
             return const Center(child: CircularProgressIndicator());
           }

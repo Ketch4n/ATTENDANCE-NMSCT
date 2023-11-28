@@ -156,40 +156,75 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
           stream: Stream.periodic(const Duration(seconds: 1)),
           builder: (context, snapshot) {
             return Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.only(top: 10.0),
               child: Container(
-                height: 50,
-                width: screenWidth / 2,
-                decoration: Style.boxdecor.copyWith(),
-                alignment: Alignment.center,
-                child: Text(
-                  DateFormat('hh:mm:ss a').format(DateTime.now()),
-                  style: TextStyle(
-                    fontFamily: "NexaRegular",
-                    fontSize: screenWidth / 15,
-                    color: Colors.black54,
+                width: double.maxFinite,
+                color: Colors.blue,
+                child: Center(
+                  child: Text(
+                    DateFormat('hh:mm:ss a').format(DateTime.now()),
+                    style: TextStyle(
+                      fontFamily: "NexaRegular",
+                      fontSize: screenWidth / 15,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
             );
           },
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SizedBox(
-            // margin: const EdgeInsets.only(top: 12, bottom: 10),
-            height: screenHeight / 3,
-            // decoration: const BoxDecoration(
-            //   color: Colors.white,
-            //   boxShadow: [
-            //     BoxShadow(
-            //       color: Colors.black26,
-            //       blurRadius: 10,
-            //       offset: Offset(2, 2),
-            //     ),
-            //   ],
-            //   borderRadius: BorderRadius.all(Radius.circular(20)),
-            // ),
+        SizedBox(height: 20),
+        checkInAM == defaultValue ||
+                checkOutAM == defaultValue ||
+                checkInPM == defaultValue ||
+                checkOutPM == defaultValue
+            ? Flexible(
+                flex: 1,
+                child: Container(
+                  // constraints: BoxConstraints(maxHeight: 50, maxWidth: 50),
+                  child: Builder(
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () async {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => CameraAuth(
+                                  name: Session.email,
+                                  refreshCallback: insertToday)));
+                        },
+                        child: Container(
+                          decoration: Style.boxdecor,
+                          child: Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: SizedBox(
+                              height: 100,
+                              width: 100,
+                              child: Lottie.asset('assets/scan.json'),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              )
+            : Flexible(
+                flex: 1,
+                child: Container(
+                  margin: const EdgeInsets.only(top: 20, bottom: 32),
+                  child: Text(
+                    "You have completed this day!",
+                    style: TextStyle(
+                      fontFamily: "NexaRegular",
+                      fontSize: screenWidth / 20,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
+              ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -292,91 +327,6 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
             ),
           ),
         ),
-
-        checkInAM == defaultValue ||
-                checkOutAM == defaultValue ||
-                checkInPM == defaultValue ||
-                checkOutPM == defaultValue
-            // ? GestureDetector(
-            //     onTap: () {
-            //       Navigator.of(context).push(MaterialPageRoute(
-            //           builder: (context) => CameraAuth(
-            //               name: Session.email, refreshCallback: insertToday)));
-            //     },
-            //     child: Container(
-            //       decoration: Style.boxdecor,
-            //       child: Padding(
-            //         padding: const EdgeInsets.all(3.0),
-            //         child: SizedBox(
-            //           height: 100,
-            //           width: 100,
-            //           child: Lottie.asset('assets/scan.json'),
-            //         ),
-            //       ),
-            //     ),
-            //   )
-            // :
-            ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  // margin: const EdgeInsets.only(
-                  //   top: 20,
-                  //   bottom: 12,
-                  // ),
-                  child: Builder(
-                    builder: (context) {
-                      return GestureDetector(
-                        onTap: () async {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => CameraAuth(
-                                  name: Session.email,
-                                  refreshCallback: insertToday)));
-                        },
-                        child: Container(
-                          decoration: Style.boxdecor,
-                          child: Padding(
-                            padding: const EdgeInsets.all(3.0),
-                            child: SizedBox(
-                              height: 100,
-                              width: 100,
-                              child: Lottie.asset('assets/scan.json'),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              )
-            : Container(
-                margin: const EdgeInsets.only(top: 20, bottom: 32),
-                child: Text(
-                  "You have completed this day!",
-                  style: TextStyle(
-                    fontFamily: "NexaRegular",
-                    fontSize: screenWidth / 20,
-                    color: Colors.black54,
-                  ),
-                ),
-              ),
-        // TextButton(
-        //   child: const Text("Details"),
-        //   onPressed: () => showReport(context),
-        // )
-        // Container(
-        //   margin: const EdgeInsets.symmetric(horizontal: 20),
-        //   child: ListTile(
-        //     title: Text(checkInAM),
-        //     trailing: Text(checkOutAM),
-        //   ),
-        // ),
-        // Container(
-        //   margin: const EdgeInsets.symmetric(horizontal: 20),
-        //   child: ListTile(
-        //     title: Text(checkInPM),
-        //     trailing: Text(checkOutPM),
-        //   ),
-        // )
       ],
     );
   }

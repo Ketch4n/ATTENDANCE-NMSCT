@@ -37,6 +37,7 @@ Future logout(BuildContext context, purpose) async {
               prefs.remove('userRole');
               prefs.remove('userName');
               prefs.remove('userEmail');
+              prefs.remove('userEstabLocation');
               if (purpose == 'Exit') {
                 Navigator.of(context).pop(true);
               }

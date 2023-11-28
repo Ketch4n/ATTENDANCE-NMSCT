@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/report.dart';
+import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:loader_skeleton/loader_skeleton.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -83,49 +85,30 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
       child: Scaffold(
         body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 10.0, right: 10, top: 20, bottom: 5),
-              child: ListTile(
-                titleTextStyle: TextStyle(
-                  color: Colors.black,
+            MaterialButton(
+              color: Colors.blue,
+              onPressed: () async {
+                final month = await showMonthYearPicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2023),
+                  lastDate: DateTime(2099),
+                );
+
+                if (month != null) {
+                  setState(() {
+                    _month = DateFormat('MMMM').format(month);
+                    _yearMonth = DateFormat('yyyy-MM').format(month);
+                  });
+                }
+                monthly_report(_monthStream);
+              },
+              child: Text(
+                _month,
+                style: TextStyle(
+                  color: Colors.white,
                   fontFamily: "NexaBold",
                   fontSize: screenWidth / 15,
-                ),
-                title: Row(
-                  children: [
-                    Text(_month),
-                    const SizedBox(width: 10),
-
-                    TextButton(
-                      onPressed: () async {
-                        final month = await showMonthYearPicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2023),
-                          lastDate: DateTime(2099),
-                        );
-
-                        if (month != null) {
-                          setState(() {
-                            _month = DateFormat('MMMM').format(month);
-                            _yearMonth = DateFormat('yyyy-MM').format(month);
-                          });
-                          monthly_report(_monthStream);
-                        }
-                      },
-                      child: const FaIcon(
-                        FontAwesomeIcons.refresh,
-                        size: 18,
-                        color: Colors.blue,
-                      ),
-                    ),
-                    // FaIcon(
-                    //   FontAwesomeIcons.refresh,
-                    //   size: 18,
-                    //   color: Colors.blue,
-                    // ),
-                  ],
                 ),
               ),
             ),
@@ -136,7 +119,18 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                     if (snapshot.hasData) {
                       final List<dynamic> snap = snapshot.data!;
                       if (snap.isEmpty) {
-                        return const Center(child: Text("NO DATA THIS MONTH"));
+                        return ListView(
+                          scrollDirection: Axis.vertical,
+                          children: const [
+                            Duck(),
+                            Center(
+                              child: Text(
+                                'No attendance this month !',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ],
+                        );
                       } else {
                         return Padding(
                           padding: const EdgeInsets.all(10.0),
@@ -145,76 +139,52 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                             itemBuilder: (context, index) {
                               final TodayModel dtr = snap[index];
 
-                              return
-                                  // DateFormat('MMMM').format(
-                                  //             DateFormat('yyyy-mm-dd').parse(dtr.date)) ==
-                                  //         _month
-                                  //     ?
-                                  GestureDetector(
+                              return GestureDetector(
                                 onTap: () {
                                   showReport(context);
                                 },
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                      top: index > 0 ? 12 : 0,
-                                      bottom: 6,
-                                      left: 6,
-                                      right: 6),
-                                  height: 100,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black26,
-                                        blurRadius: 20,
-                                        offset: Offset(2, 2),
-                                      ),
-                                    ],
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20)),
-                                  ),
+                                child: Card(
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
                                     children: [
                                       Expanded(
-                                          child: Container(
-                                        margin: const EdgeInsets.all(5),
-                                        decoration: const BoxDecoration(
-                                          color: Colors.blue,
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            topRight: Radius.circular(10),
-                                            bottomLeft: Radius.circular(20),
-                                            bottomRight: Radius.circular(80),
+                                        child: CircleAvatar(
+                                          radius: 35,
+                                          backgroundColor: Colors.blueAccent,
+                                          // decoration: const BoxDecoration(
+                                          //   color: Colors.blue,
+                                          //   borderRadius: BorderRadius.only(
+                                          //     topLeft: Radius.circular(20),
+                                          //     topRight: Radius.circular(10),
+                                          //     bottomLeft: Radius.circular(20),
+                                          //     bottomRight: Radius.circular(80),
+                                          //   ),
+                                          // ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                DateFormat('EE').format(
+                                                    DateFormat('yyyy-mm-dd')
+                                                        .parse(dtr.date)),
+                                                style: const TextStyle(
+                                                    fontFamily: "NexaBold",
+                                                    fontSize: 20,
+                                                    color: Colors.white),
+                                              ),
+                                              Text(
+                                                DateFormat('dd').format(
+                                                    DateFormat('yyyy-mm-dd')
+                                                        .parse(dtr.date)),
+                                                style: const TextStyle(
+                                                    fontFamily: "NexaBold",
+                                                    fontSize: 20,
+                                                    color: Colors.white),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              DateFormat('EE').format(
-                                                  DateFormat('yyyy-mm-dd')
-                                                      .parse(dtr.date)),
-                                              style: const TextStyle(
-                                                  fontFamily: "NexaBold",
-                                                  fontSize: 20,
-                                                  color: Colors.white),
-                                            ),
-                                            Text(
-                                              DateFormat('dd ').format(
-                                                  DateFormat('yyyy-mm-dd')
-                                                      .parse(dtr.date)),
-                                              style: const TextStyle(
-                                                  fontFamily: "NexaBold",
-                                                  fontSize: 20,
-                                                  color: Colors.white),
-                                            ),
-                                          ],
-                                        ),
-                                      )),
+                                      ),
                                       Expanded(
                                         child: Column(
                                           mainAxisAlignment:
@@ -339,7 +309,10 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                         ),
                       );
                     } else {
-                      return const Center(child: CircularProgressIndicator());
+                      return CardSkeleton(
+                        isCircularImage: true,
+                        isBottomLinesActive: true,
+                      );
                     }
                   }),
             )

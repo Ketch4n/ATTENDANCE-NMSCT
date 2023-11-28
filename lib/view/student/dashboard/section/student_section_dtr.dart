@@ -1,4 +1,5 @@
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/record.dart';
+import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -79,103 +80,101 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
       key: _refreshIndicator,
       onRefresh: _getImageReferences,
       child: Scaffold(
-        body: ListView(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ListTile(
-              titleTextStyle: TextStyle(
-                color: Colors.black,
-                fontFamily: "NexaBold",
-                fontSize: screenWidth / 15,
-              ),
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(_month),
-                  TextButton(
-                    onPressed: () async {
-                      final month = await showMonthYearPicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2023),
-                        lastDate: DateTime(2099),
-                      );
+            MaterialButton(
+              color: Colors.blue,
+              onPressed: () async {
+                final month = await showMonthYearPicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2023),
+                  lastDate: DateTime(2099),
+                );
 
-                      if (month != null) {
-                        setState(() {
-                          _month = DateFormat('MMMM').format(month);
-                          _yearMonth = DateFormat('yyyy-MM').format(month);
-                        });
-                      }
-                      _getImageReferences();
-                    },
-                    child: const FaIcon(
-                      FontAwesomeIcons.refresh,
-                      size: 18,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ],
+                if (month != null) {
+                  setState(() {
+                    _month = DateFormat('MMMM').format(month);
+                    _yearMonth = DateFormat('yyyy-MM').format(month);
+                  });
+                }
+                _getImageReferences();
+              },
+              child: Text(
+                _month,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: "NexaBold",
+                  fontSize: screenWidth / 15,
+                ),
               ),
             ),
-            if (isLoading)
-              const Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            else if (_imageReferences.isEmpty)
-              const Expanded(
-                child: Center(
-                  child: Text(
-                    'No data available.',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              )
-            else
-              Padding(
+            Expanded(
+              child: Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Wrap(
-                  spacing: 8.0,
-                  runSpacing: 8.0,
-                  children: _imageReferences.map((imageRef) {
-                    final imageName = imageRef.name;
-                    return GestureDetector(
-                      onTap: () {
-                        String folder = imageRef.name;
-                        print("Clicked on file: $imageName");
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Record(
-                              ids: widget.ids,
-                              name: widget.name,
-                              date: folder,
+                child: _imageReferences.isEmpty
+                    ? ListView(
+                        scrollDirection: Axis.vertical,
+                        children: const [
+                          Duck(),
+                          Center(
+                            child: Text(
+                              'No attendance this month !',
+                              style: TextStyle(fontSize: 18),
                             ),
                           ),
-                        );
-                      },
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              const CircleAvatar(
-                                  // backgroundColor: Colors.blue,
+                        ],
+                      )
+                    : isLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : ListView(scrollDirection: Axis.vertical, children: [
+                            Wrap(
+                              spacing: 8.0,
+                              runSpacing: 8.0,
+                              children: _imageReferences.map((imageRef) {
+                                final imageName = imageRef.name;
+                                return GestureDetector(
+                                  onTap: () {
+                                    String folder = imageRef.name;
+                                    print("Clicked on file: $imageName");
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Record(
+                                          ids: widget.ids,
+                                          name: widget.name,
+                                          date: folder,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          const CircleAvatar(
+                                              // backgroundColor: Colors.blue,
+                                              ),
+                                          const SizedBox(height: 8.0),
+                                          Text(
+                                            imageName,
+                                            style:
+                                                const TextStyle(fontSize: 16.0),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                              const SizedBox(height: 8.0),
-                              Text(
-                                imageName,
-                                style: const TextStyle(fontSize: 16.0),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
+                                );
+                              }).toList(),
+                            ),
+                          ]),
               ),
+            ),
           ],
         ),
       ),

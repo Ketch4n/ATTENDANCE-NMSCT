@@ -1,4 +1,6 @@
+import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadata.dart';
+import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -106,91 +108,111 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
     return RefreshIndicator(
       key: _refreshIndicatorKey,
       onRefresh: _getImageReferences,
-      child: Column(
-        children: [
-          if (isLoading)
-            Expanded(
-              child: CardPageSkeleton(),
-            )
-          else if (_imageReferences.isEmpty)
-            const Expanded(
-              child: Center(
-                child: Text(
-                  'No data available',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-            )
-          else
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: ListView.builder(
-                  itemCount: _imageReferences.length,
-                  itemBuilder: (context, index) {
-                    final imageRef = _imageReferences[index];
+      child: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: ((context) =>
+                      Camera(name: widget.name, refresh: _getImageReferences))),
+            );
+          },
+          child: const Icon(Icons.add),
+        ),
+        body: Column(
+          children: [
+            if (isLoading)
+              Expanded(
+                child: CardPageSkeleton(),
+              )
+            else if (_imageReferences.isEmpty)
+              Expanded(
+                  child: ListView(
+                scrollDirection: Axis.vertical,
+                children: [
+                  Duck(),
+                  Center(
+                    child: Text(
+                      'No data uploaded today !',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ],
+              ))
+            else
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: ListView.builder(
+                    itemCount: _imageReferences.length,
+                    itemBuilder: (context, index) {
+                      final imageRef = _imageReferences[index];
 
-                    final imageName = imageRef.name;
+                      final imageName = imageRef.name;
 
-                    return Container(
-                      padding: EdgeInsets.only(
-                          bottom:
-                              index == _imageReferences.length - 1 ? 70.0 : 0),
-                      child: TimelineTile(
-                        isFirst: index == 0,
-                        isLast: index == _imageReferences.length - 1,
-                        alignment: TimelineAlign.start,
-                        indicatorStyle: const IndicatorStyle(
-                          width: 20,
-                          color: Colors.blue, // Adjust color as needed
-                        ),
-                        endChild: Container(
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.7,
+                      return Container(
+                        padding: EdgeInsets.only(
+                            bottom: index == _imageReferences.length - 1
+                                ? 70.0
+                                : 0),
+                        child: TimelineTile(
+                          isFirst: index == 0,
+                          isLast: index == _imageReferences.length - 1,
+                          alignment: TimelineAlign.start,
+                          indicatorStyle: const IndicatorStyle(
+                            width: 20,
+                            color: Colors.blue, // Adjust color as needed
                           ),
-                          child: GestureDetector(
-                            onLongPress: () => deleteImage(imageRef),
-                            child: Card(
-                              child: ListTile(
-                                leading: FutureBuilder(
-                                  future: _imageUrls[index],
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done) {
-                                      return Image.network(
-                                        snapshot.data.toString(),
-                                        width: 50, // Adjust width as needed
-                                        height: 50, // Adjust height as needed
-                                      );
-                                    } else {
-                                      return const SizedBox.shrink();
-                                    }
+                          endChild: Container(
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width * 0.7,
+                            ),
+                            child: GestureDetector(
+                              onLongPress: () => deleteImage(imageRef),
+                              child: Card(
+                                child: ListTile(
+                                  leading: FutureBuilder(
+                                    future: _imageUrls[index],
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        return Image.network(
+                                          snapshot.data.toString(),
+                                          width: 50, // Adjust width as needed
+                                          height: 50, // Adjust height as needed
+                                        );
+                                      } else {
+                                        return const SizedBox.shrink();
+                                      }
+                                    },
+                                  ),
+                                  title: Text(
+                                    imageName,
+                                    style:
+                                        TextStyle(fontSize: screenWidth / 25),
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Meta_Data(image: imageRef),
+                                      ),
+                                    );
                                   },
                                 ),
-                                title: Text(
-                                  imageName,
-                                  style: TextStyle(fontSize: screenWidth / 25),
-                                ),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          Meta_Data(image: imageRef),
-                                    ),
-                                  );
-                                },
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

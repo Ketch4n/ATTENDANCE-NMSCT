@@ -1,6 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/functions/generate.dart';
+import 'package:attendance_nmsct/widgets/camera_alert_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +12,10 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Camera extends StatefulWidget {
-  const Camera({Key? key, required this.name}) : super(key: key);
+  const Camera({Key? key, required this.name, required this.refresh})
+      : super(key: key);
   final String name;
+  final VoidCallback refresh;
 
   @override
   State<Camera> createState() => _CameraState();
@@ -50,14 +55,14 @@ class _CameraState extends State<Camera> {
   }
 
   Future<void> uploadImageToFirebaseStorage(File imageFile) async {
-    final prefs = await SharedPreferences.getInstance();
-    final email = prefs.getString('userEmail');
-    final storage = FirebaseStorage.instance;
-    final section = widget.name;
-    final folderName = 'face_data/$section/$email'; // Specify your folder name
-    final randomFilename = getRandomString(10);
     DateTime now = DateTime.now();
     final date = DateFormat('yyyy-MM-dd').format(now.toLocal());
+    final storage = FirebaseStorage.instance;
+    final section = widget.name;
+    final folderName =
+        'face_data/$section/${Session.email}'; // Specify your folder name
+    final randomFilename = getRandomString(10);
+
     final Reference storageRef = storage.ref().child(
         '$folderName/$date/$randomFilename.jpg'); // Use folder name in the path
 
@@ -78,7 +83,12 @@ class _CameraState extends State<Camera> {
 
       await uploadTask;
       await storageRef.updateMetadata(metadata);
-      Navigator.of(context).pop(false);
+      const title = "Success";
+      final message = "Face ID : ${Session.name}";
+
+      await cameraAlertDialog(context, title, message);
+      widget.refresh();
+      // Navigator.of(context).pop(false);
     } catch (e) {
       print('Error uploading image to Firebase: $e');
     }
@@ -95,21 +105,6 @@ class _CameraState extends State<Camera> {
       _processingImage = true;
     });
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 8.0),
-            Text('Processing image...'),
-          ],
-        ),
-      ),
-    );
-
     try {
       await _initializeControllerFuture;
       final image = await _controller.takePicture();
@@ -122,40 +117,12 @@ class _CameraState extends State<Camera> {
 
       // Check if at least one face is detected
       if (faces.isNotEmpty) {
-        // Upload the image to Firebase Storage with metadata
         await uploadImageToFirebaseStorage(File(image.path));
-        await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Success'),
-            content: const Text('Continue'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
       } else {
         // No face detected
-        await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('No Face Detected'),
-            content: const Text('Please capture an image with a valid face.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
+        const title = "Error";
+        const message = "No Face Detected";
+        await cameraAlertDialog(context, title, message);
       }
     } catch (e) {
       print('Error capturing image: $e');

@@ -327,10 +327,10 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                 checkOutPM == defaultValue
             ? GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Camera(
-                            name: Session.email,
-                          )));
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //     builder: (context) => Camera(
+                  //           name: Session.email,
+                  //         )));
                 },
                 child: Container(
                   decoration: Style.boxdecor,

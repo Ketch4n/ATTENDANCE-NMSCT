@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +17,10 @@ Future fetchUser(userStreamController) async {
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final user = UserModel.fromJson(data);
+      final userEstabLocation = user.location;
+      prefs.setString('userEstabLocation', userEstabLocation);
 
+      Session.location = userEstabLocation;
       // Add the user data to the stream
       userStreamController.add(user);
     } else {

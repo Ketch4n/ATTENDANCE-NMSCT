@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 DateTime now = DateTime.now();
 final date = DateFormat('MM-dd-yyyy').format(now.toLocal());
 
-Future accomplishmentReport(
-    BuildContext context, ids, TextEditingController comment) async {
+Future accomplishmentReport(BuildContext context, ids,
+    TextEditingController comment, VoidCallback refresh) async {
   return showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
@@ -90,6 +90,7 @@ Future accomplishmentReport(
                                       context, ids, userComment);
 
                                   comment.clear();
+                                  refresh();
                                 },
                                 child: const Text("Save")),
                           ],

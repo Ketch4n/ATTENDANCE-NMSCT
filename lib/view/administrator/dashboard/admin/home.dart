@@ -21,10 +21,10 @@ class _AdminHomeState extends State<AdminHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Administrator"),
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      //   title: const Text("Administrator"),
+      //   centerTitle: true,
+      // ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.grey[200],
         items: const [

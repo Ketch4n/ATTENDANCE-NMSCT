@@ -8,8 +8,8 @@ class Duck extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 60, bottom: 30),
       child: SizedBox(
-        height: 100,
-        width: 100,
+        height: 80,
+        width: 80,
         child: Image.asset(
           "assets/duck.gif",
         ),

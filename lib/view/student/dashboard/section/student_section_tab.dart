@@ -82,7 +82,8 @@ class _StudentSectionTabState extends State<StudentSectionTab> {
           content: TextField(
             controller: _reason,
             // You can customize the text field as needed
-            decoration: const InputDecoration(labelText: 'brief as possible...'),
+            decoration:
+                const InputDecoration(labelText: 'brief as possible...'),
           ),
           actions: <Widget>[
             TextButton(
@@ -119,24 +120,7 @@ class _StudentSectionTabState extends State<StudentSectionTab> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            showAdaptiveActionSheet(
-                context: context,
-                title: const Text("Submit"),
-                androidBorderRadius: 20,
-                actions: <BottomSheetAction>[
-                  BottomSheetAction(
-                      title: const Text(
-                        'Absent',
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontFamily: "MontserratBold"),
-                      ),
-                      onPressed: (context) {
-                        Navigator.of(context).pop();
-                        _showDatePicker();
-                      }),
-                ]);
+            _showDatePicker();
           },
           child: const Icon(Icons.add),
         ),
@@ -203,7 +187,8 @@ class _StudentSectionTabState extends State<StudentSectionTab> {
                                       subtitle: Padding(
                                         padding:
                                             const EdgeInsets.only(bottom: 8.0),
-                                        child: Text("Reason of absent: ${absent.reason}"),
+                                        child: Text(
+                                            "Reason of absent: ${absent.reason}"),
                                       ),
                                     )),
                               ),
