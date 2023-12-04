@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:attendance_nmsct/controller/Insert.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:http/http.dart' as http;
-import 'package:adaptive_action_sheet/adaptive_action_sheet.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/model/AbsentModel.dart';
 import 'package:flutter/material.dart';
@@ -96,8 +95,9 @@ class _StudentSectionTabState extends State<StudentSectionTab> {
               onPressed: () {
                 // Handle the text field value as needed
                 // You can access it using a controller or directly from the TextField widget
-                Navigator.of(context).pop();
+
                 insertAbsent(context, widget.ids, _reason.text, _date, _time);
+                Navigator.of(context).pop();
               },
               child: const Text('Save'),
             ),
@@ -119,7 +119,7 @@ class _StudentSectionTabState extends State<StudentSectionTab> {
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton(
-          onPressed: () async {
+          onPressed: () {
             _showDatePicker();
           },
           child: const Icon(Icons.add),

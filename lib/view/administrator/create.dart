@@ -173,15 +173,17 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                           //         )),
                           //   )
                           : const SizedBox(),
-                      TextField(
-                        controller: code,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        decoration: Style.textdesign.copyWith(
-                            labelText: widget.role == 'Admin'
-                                ? 'Section Name'
-                                : 'Establishment Name'),
-                      ),
+                      widget.role == 'Establishment' && location.text.isEmpty
+                          ? const SizedBox()
+                          : TextField(
+                              controller: code,
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              decoration: Style.textdesign.copyWith(
+                                  labelText: widget.role == 'Admin'
+                                      ? 'Section Name'
+                                      : 'Establishment Name'),
+                            ),
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(

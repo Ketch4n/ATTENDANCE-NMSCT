@@ -37,16 +37,16 @@ class _CameraState extends State<CameraAuth> {
     super.initState();
     _initializeControllerFuture = _initializeCamera();
     Geolocator.checkPermission();
-
+    getCurrentPosition();
     // Listen to location changes
-    _positionSubscription = Geolocator.getPositionStream().listen(
-      (Position position) {
-        getCurrentPosition();
-      },
-      onError: (e) {
-        print("Error getting location: $e");
-      },
-    );
+    // _positionSubscription = Geolocator.getPositionStream().listen(
+    //   (Position position) {
+    //     getCurrentPosition();
+    //   },
+    //   onError: (e) {
+    //     print("Error getting location: $e");
+    //   },
+    // );
   }
 
   final code = TextEditingController();
@@ -54,7 +54,7 @@ class _CameraState extends State<CameraAuth> {
 
   final fulladdress = TextEditingController();
 
-  Future<void> getCurrentPosition() async {
+  void getCurrentPosition() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
@@ -68,14 +68,14 @@ class _CameraState extends State<CameraAuth> {
       print("Longitude : ${currentPosition.longitude}");
       String lat = currentPosition.latitude.toString();
       String long = currentPosition.longitude.toString();
-      await getAddress(currentPosition.latitude, currentPosition.longitude);
+      getAddress(currentPosition.latitude, currentPosition.longitude);
       setState(() {
         location.text = lat + long;
       });
     }
   }
 
-  Future<void> getAddress(double latitude, double longitude) async {
+  void getAddress(double latitude, double longitude) async {
     try {
       List<Placemark> placemarks =
           await placemarkFromCoordinates(latitude, longitude);
@@ -166,7 +166,8 @@ class _CameraState extends State<CameraAuth> {
   void dispose() {
     _controller.dispose();
     fulladdress.dispose();
-    _positionSubscription?.cancel(); // Cancel the location subscription
+    getCurrentPosition;
+    // _positionSubscription?.cancel(); // Cancel the location subscription
     super.dispose();
   }
 
@@ -204,19 +205,6 @@ class _CameraState extends State<CameraAuth> {
             if (fulladdress != "") {
               return Column(
                 children: [
-                  Center(
-                    child: Expanded(
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: <Widget>[
-                          CameraPreview(_controller),
-                          Lottie.asset(
-                            'assets/scanning.json',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                   ListTile(
                       title: Text("Current Location:"),
                       subtitle: fulladdress.text != ""
@@ -242,6 +230,17 @@ class _CameraState extends State<CameraAuth> {
                               style: TextStyle(color: Colors.green),
                             ),
                     ],
+                  ),
+                  Center(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        CameraPreview(_controller),
+                        Lottie.asset(
+                          'assets/scanning.json',
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               );
