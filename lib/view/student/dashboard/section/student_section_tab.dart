@@ -124,84 +124,88 @@ class _StudentSectionTabState extends State<StudentSectionTab> {
           },
           child: const Icon(Icons.add),
         ),
-        body: StreamBuilder<List<AbsentModel>>(
-            stream: streamAccomplishemnt(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text("Error: ${snapshot.error}"),
-                );
-              } else if (snapshot.hasData) {
-                final List<AbsentModel> data = snapshot.data!;
-                if (data.isEmpty) {
-                  return const Center(
-                    child: Text("NO RECORD OF ABSENCES"),
+        body: Expanded(
+          child: StreamBuilder<List<AbsentModel>>(
+              stream: streamAccomplishemnt(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text("Error: ${snapshot.error}"),
                   );
-                }
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ListView.builder(
-                      itemCount: data.length,
-                      itemBuilder: (context, index) {
-                        final AbsentModel absent = data[index];
-                        return Container(
-                          padding: EdgeInsets.only(
-                              bottom: index == snapshot.data!.length - 1
-                                  ? 70.0
-                                  : 0),
-                          child: TimelineTile(
-                            isFirst: index == 0,
-                            isLast: index == snapshot.data!.length - 1,
-                            alignment: TimelineAlign.start,
-                            indicatorStyle: IndicatorStyle(
-                              width: 20,
-                              color: absent.status == 'Pending'
-                                  ? Colors.blue
-                                  : absent.status == 'Approved'
-                                      ? Colors.green
-                                      : Colors.red,
-                            ),
-                            endChild: GestureDetector(
-                              // onLongPress: () => _showUpdateDeleteModal(record),
-                              child: Card(
-                                child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ListTile(
-                                      // leading: Text(
-                                      //     "Absent Date: " + absent.date),
-                                      title: Row(
-                                        children: [
-                                          Text("Absent: ${absent.date}"),
-                                          Text(
-                                            "  (${absent.status})",
-                                            style: TextStyle(
-                                              color: absent.status == 'Pending'
-                                                  ? Colors.blue
-                                                  : absent.status == 'Approved'
-                                                      ? Colors.green
-                                                      : Colors.red,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      subtitle: Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 8.0),
-                                        child: Text(
-                                            "Reason of absent: ${absent.reason}"),
-                                      ),
-                                    )),
+                } else if (snapshot.hasData) {
+                  final List<AbsentModel> data = snapshot.data!;
+                  if (data.isEmpty) {
+                    return const Center(
+                      child: Text("NO RECORD OF ABSENCES"),
+                    );
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ListView.builder(
+                        itemCount: data.length,
+                        itemBuilder: (context, index) {
+                          final AbsentModel absent = data[index];
+                          return Container(
+                            padding: EdgeInsets.only(
+                                bottom: index == snapshot.data!.length - 1
+                                    ? 70.0
+                                    : 0),
+                            child: TimelineTile(
+                              isFirst: index == 0,
+                              isLast: index == snapshot.data!.length - 1,
+                              alignment: TimelineAlign.start,
+                              indicatorStyle: IndicatorStyle(
+                                width: 20,
+                                color: absent.status == 'Pending'
+                                    ? Colors.blue
+                                    : absent.status == 'Approved'
+                                        ? Colors.green
+                                        : Colors.red,
+                              ),
+                              endChild: GestureDetector(
+                                // onLongPress: () => _showUpdateDeleteModal(record),
+                                child: Card(
+                                  child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ListTile(
+                                        // leading: Text(
+                                        //     "Absent Date: " + absent.date),
+                                        title: Row(
+                                          children: [
+                                            Text("Absent: ${absent.date}"),
+                                            Text(
+                                              "  (${absent.status})",
+                                              style: TextStyle(
+                                                color:
+                                                    absent.status == 'Pending'
+                                                        ? Colors.blue
+                                                        : absent.status ==
+                                                                'Approved'
+                                                            ? Colors.green
+                                                            : Colors.red,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        subtitle: Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 8.0),
+                                          child: Text(
+                                              "Reason of absent: ${absent.reason}"),
+                                        ),
+                                      )),
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      }),
-                );
-              } else {
-                return Expanded(
-                  child: CardPageSkeleton(),
-                );
-              }
-            }));
+                          );
+                        }),
+                  );
+                } else {
+                  return Expanded(
+                    child: CardPageSkeleton(),
+                  );
+                }
+              }),
+        ));
   }
 }

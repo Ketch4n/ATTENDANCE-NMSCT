@@ -201,8 +201,8 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                               String message = "click icon";
                               await showAlertDialog(context, title, message);
                             } else {
-                              String title = "Success";
-                              String message = "Section created";
+                              // String title = "Success";
+                              // String message = "Section created";
                               String code = generateAlphanumericId();
                               await CreateSectEstab(
                                 context,
@@ -214,7 +214,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                               // await pasteCode(context, title, message, code);
                               // String purpose = 'CreateClassRoom';
                               // await CreateSectEstab(context, pin);
-                              await showAlertDialog(context, title, message);
+                              // await showAlertDialog(context, title, message);
                               Navigator.of(context).pop(false);
                               widget.refreshCallback();
                             }

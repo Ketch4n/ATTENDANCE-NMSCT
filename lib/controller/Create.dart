@@ -26,12 +26,12 @@ Future CreateSectEstab(BuildContext context, String code, String pin,
       final status = jsonResponse['status'];
 
       if (response.statusCode == 200) {
-        // await showAlertDialog(context, status, message);
+        await showAlertDialog(context, status, message);
 
         // Handle success message as needed
       } else if (response.statusCode == 400) {
         // code already taken
-        // await showAlertDialog(context, status, message);
+        await showAlertDialog(context, status, message);
         // Handle code taken message as needed
       } else {
         // Handle other status codes (e.g., 500, 405) as needed

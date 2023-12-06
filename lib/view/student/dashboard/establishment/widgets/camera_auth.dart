@@ -140,9 +140,9 @@ class _CameraState extends State<CameraAuth> {
         const title = "Success";
         final message = Session.name;
         Navigator.of(context).pop(false);
-        await cameraAlertDialog(context, title, message);
-
+        cameraAlertDialog(context, title, message);
         widget.refreshCallback();
+
         // Upload the image to Firebase Storage with metadata
       } else {
         // No face detected

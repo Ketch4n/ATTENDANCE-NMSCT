@@ -44,7 +44,7 @@ dependencies:
 
   connectivity_plus: ^4.0.2
   email_validator: ^2.1.17
-  flutter_platform_alert: ^0.3.0
+  # flutter_platform_alert: ^0.3.0
   adaptive_action_sheet: ^2.0.2
 
   loader_skeleton: ^0.0.4
