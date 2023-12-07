@@ -114,7 +114,7 @@ class _CameraState extends State<CameraAuth> {
     await _controller.initialize();
   }
 
-  Future<void> _captureImage() async {
+  Future _captureImage() async {
     if (_processingImage) {
       // Avoid capturing an image while processing another one
       return;

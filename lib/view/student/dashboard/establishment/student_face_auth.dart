@@ -62,7 +62,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   //    });
 
   // }
-  void today(todayStream) async {
+  Future today(todayStream) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     final response = await http.post(
@@ -95,7 +95,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   }
 
   // String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-  void insertToday() async {
+  Future insertToday() async {
     try {
       checkInAM == "00:00:00"
           ? setState(() async {
@@ -129,7 +129,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     final response =
         await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
     print(defaultDATE);
-    setState(() {});
+    today(_todayStream);
   }
 
   @override
