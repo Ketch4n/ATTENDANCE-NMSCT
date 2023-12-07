@@ -63,16 +63,13 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
 
   // }
   Future today(todayStream) async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
     final response = await http.post(
       Uri.parse('${Server.host}users/student/today.php'),
       body: {
-        'id': userId,
+        'id': Session.id,
         'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
       },
     );
-    print(DateFormat('yyyy-MM-dd').format(DateTime.now()));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
@@ -97,27 +94,28 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   // String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
   Future insertToday() async {
     try {
-      checkInAM == "00:00:00"
-          ? setState(() async {
-              checkInAM = DateFormat('hh:mm a').format(DateTime.now());
-              inAM = DateFormat('a').format(DateTime.now());
-            })
-          : checkOutAM == "00:00:00"
-              ? setState(() async {
-                  checkOutAM = DateFormat('hh:mm a').format(DateTime.now());
-                  outAM = DateFormat('a').format(DateTime.now());
-                })
-              : checkInPM == "00:00:00"
-                  ? setState(() async {
-                      checkInPM = DateFormat('hh:mm a').format(DateTime.now());
-                      inPM = DateFormat('a').format(DateTime.now());
-                    })
-                  : setState(() async {
-                      checkOutPM = DateFormat('hh:mm a').format(DateTime.now());
-                      outPM = DateFormat('a').format(DateTime.now());
-                    });
+      if (checkInAM == "00:00:00") {
+        setState(() {
+          checkInAM = DateFormat('hh:mm').format(DateTime.now());
+          inAM = DateFormat('a').format(DateTime.now());
+        });
+      } else if (checkOutAM == "00:00:00") {
+        setState(() {
+          checkOutAM = DateFormat('hh:mm').format(DateTime.now());
+          outAM = DateFormat('a').format(DateTime.now());
+        });
+      } else if (checkInPM == "00:00:00") {
+        setState(() {
+          checkInPM = DateFormat('hh:mm').format(DateTime.now());
+          inPM = DateFormat('a').format(DateTime.now());
+        });
+      } else {
+        setState(() {
+          checkOutPM = DateFormat('hh:mm').format(DateTime.now());
+          outPM = DateFormat('a').format(DateTime.now());
+        });
+      }
     } catch (e) {}
-
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     final estabId = widget.id;
@@ -128,8 +126,8 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
         '{"student_id": "$userId", "estab_id": "$estabId","time_in_am":"$checkInAM","in_am":"$inAM", "time_out_am":"$checkOutAM","out_am":"$outAM","time_in_pm":"$checkInPM","in_pm":"$inPM","time_out_pm":"$checkOutPM","out_pm":"$outPM","date":"$defaultDATE"}';
     final response =
         await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
-    print(defaultDATE);
-    today(_todayStream);
+    await today(_todayStream);
+    _todayStream.close();
   }
 
   @override
@@ -246,7 +244,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         checkInAM == defaultValue
                             ? defaultT
                             : DateFormat('hh:mm ').format(
-                                    DateFormat('HH:mm:ss').parse(checkInAM)) +
+                                    DateFormat('hh:mm').parse(checkInAM)) +
                                 inAM,
                         style: TextStyle(
                           fontFamily: "NexaBold",
@@ -266,7 +264,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         checkInPM == defaultValue
                             ? defaultT
                             : DateFormat('hh:mm ').format(
-                                    DateFormat('HH:mm:ss').parse(checkInPM)) +
+                                    DateFormat('hh:mm').parse(checkInPM)) +
                                 inPM,
                         style: TextStyle(
                           fontFamily: "NexaBold",
@@ -293,7 +291,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         checkOutAM == defaultValue
                             ? defaultT
                             : DateFormat('hh:mm ').format(
-                                    DateFormat('HH:mm:ss').parse(checkOutAM)) +
+                                    DateFormat('hh:mm').parse(checkOutAM)) +
                                 outAM,
                         style: TextStyle(
                           fontFamily: "NexaBold",
@@ -313,7 +311,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         checkOutPM == defaultValue
                             ? defaultT
                             : DateFormat('hh:mm ').format(
-                                    DateFormat('HH:mm:ss').parse(checkOutPM)) +
+                                    DateFormat('hh:mm').parse(checkOutPM)) +
                                 outPM,
                         style: TextStyle(
                           fontFamily: "NexaBold",

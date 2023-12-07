@@ -1,7 +1,7 @@
 class AbsentModel {
   final String id;
   final String date;
-  final String time;
+
   final String student_id;
   final String section_id;
   final String reason;
@@ -10,7 +10,6 @@ class AbsentModel {
   AbsentModel({
     required this.id,
     required this.date,
-    required this.time,
     required this.student_id,
     required this.section_id,
     required this.reason,
@@ -21,7 +20,7 @@ class AbsentModel {
         // 'id': id,
         'id': id,
         'date': date,
-        'time': time,
+
         'student_id': student_id,
         'section_id': section_id,
         'reason': reason,
@@ -32,7 +31,6 @@ class AbsentModel {
       // id: json['id'],
       id: json['id'],
       date: json['date'],
-      time: json['time'],
       student_id: json['student_id'],
       section_id: json['section_id'],
       reason: json['reason'],

@@ -99,7 +99,7 @@ class _CameraState extends State<CameraAuth> {
     }
   }
 
-  Future<void> _initializeCamera() async {
+  Future _initializeCamera() async {
     final cameras = await availableCameras();
     final frontCamera = cameras.firstWhere(
       (camera) => camera.lensDirection == CameraLensDirection.front,
@@ -167,6 +167,7 @@ class _CameraState extends State<CameraAuth> {
     _controller.dispose();
     fulladdress.dispose();
     getCurrentPosition;
+    getAddress;
     // _positionSubscription?.cancel(); // Cancel the location subscription
     super.dispose();
   }

@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
 
-Future insertAbsent(BuildContext context, id, reason, date, time) async {
+Future insertAbsent(BuildContext context, id, reason, DateTime date) async {
   Map<String, String> headers = {'Content-Type': 'application/json'};
   String apiUrl = '${Server.host}users/student/write_absent.php';
 
@@ -15,7 +15,7 @@ Future insertAbsent(BuildContext context, id, reason, date, time) async {
   String encodedComment = jsonEncode(reason);
 
   String jsonData =
-      '{"student_id": "${Session.id}", "section_id": "$id", "reason": $encodedComment, "date": "$date", "time":"$time"}';
+      '{"student_id": "${Session.id}", "section_id": "$id", "reason": $encodedComment, "date": "$date"}';
 
   try {
     final response =

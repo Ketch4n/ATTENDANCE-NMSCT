@@ -15,28 +15,29 @@ class _StudentEstabOnsiteState extends State<StudentEstabOnsite> {
   final code = TextEditingController();
   final location = TextEditingController();
   final fulladdress = TextEditingController();
-  StreamSubscription<Position>? _positionSubscription;
+  // StreamSubscription<Position>? _positionSubscription;
   @override
   void initState() {
     super.initState();
 
     Geolocator.checkPermission();
-
+    getCurrentPosition();
     // Listen to location changes
-    _positionSubscription = Geolocator.getPositionStream().listen(
-      (Position position) {
-        getCurrentPosition();
-      },
-      onError: (e) {
-        print("Error getting location: $e");
-      },
-    );
+    // _positionSubscription = Geolocator.getPositionStream().listen(
+    //   (Position position) {
+    //     getCurrentPosition();
+    //   },
+    //   onError: (e) {
+    //     print("Error getting location: $e");
+    //   },
+    // );
   }
 
   @override
   void dispose() {
     fulladdress.dispose();
-    _positionSubscription?.cancel(); // Cancel the location subscription
+    getCurrentPosition;
+    // _positionSubscription?.cancel(); // Cancel the location subscription
     super.dispose();
   }
 
@@ -55,6 +56,7 @@ class _StudentEstabOnsiteState extends State<StudentEstabOnsite> {
       String lat = currentPosition.latitude.toString();
       String long = currentPosition.longitude.toString();
       await getAddress(currentPosition.latitude, currentPosition.longitude);
+
       setState(() {
         location.text = lat + long;
       });

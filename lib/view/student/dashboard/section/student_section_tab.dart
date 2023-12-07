@@ -45,9 +45,10 @@ class _StudentSectionTabState extends State<StudentSectionTab> {
   }
 
   DateTime _date = DateTime.now();
+
   TimeOfDay _time = TimeOfDay.now();
 
-  void _showDatePicker() {
+  Future _showDatePicker() async {
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -66,16 +67,16 @@ class _StudentSectionTabState extends State<StudentSectionTab> {
     });
   }
 
-  void _showTimePicker() {
-    showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    ).then((value) {
-      setState(() {
-        _time = value!;
-      });
-    });
-  }
+  // void _showTimePicker() {
+  //   showTimePicker(
+  //     context: context,
+  //     initialTime: TimeOfDay.now(),
+  //   ).then((value) {
+  //     setState(() {
+  //       _time = value!;
+  //     });
+  //   });
+  // }
 
   final _reason = TextEditingController();
 
@@ -103,8 +104,7 @@ class _StudentSectionTabState extends State<StudentSectionTab> {
                 // Handle the text field value as needed
                 // You can access it using a controller or directly from the TextField widget
                 Navigator.of(context).pop();
-                await insertAbsent(
-                    context, widget.ids, _reason.text, _date, _time);
+                await insertAbsent(context, widget.ids, _reason.text, _date);
                 streamAccomplishemnt(_absentController);
               },
               child: const Text('Save'),
