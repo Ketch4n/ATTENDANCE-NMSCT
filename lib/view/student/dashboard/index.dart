@@ -92,6 +92,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
                   },
                   child: const Icon(Icons.add),
                 ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
                 body: ListView(
                   children: [
                     SizedBox(
@@ -116,6 +118,8 @@ class _StudentDashboardState extends State<StudentDashboard> {
                   },
                   child: const Icon(Icons.add),
                 ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
                 body: ListView(
                   children: [
                     user.establishment_id != "null"

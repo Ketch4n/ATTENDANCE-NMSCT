@@ -123,7 +123,7 @@ class _AdminSectionTabState extends State<AdminSectionTab> {
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: "NexaBold",
-                  fontSize: screenWidth / 15,
+                  // fontSize: 15,
                 ),
               ),
             ),

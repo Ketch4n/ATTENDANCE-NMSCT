@@ -103,13 +103,15 @@ class _AdministratorHome extends State {
           ),
           bottomNavigationBar: isoffline
               ? SizedBox(
-                  height: 50,
-                  child: BottomAppBar(
-                    elevation: 0,
-                    child: Center(
-                      child: Container(
-                        child: offlineSnackbar(
-                            "You are currently Offline", isoffline),
+                  height: 80,
+                  child: Expanded(
+                    child: BottomAppBar(
+                      elevation: 0,
+                      child: Center(
+                        child: Container(
+                          child: offlineSnackbar(
+                              "You are currently Offline", isoffline),
+                        ),
                       ),
                     ),
                   ),

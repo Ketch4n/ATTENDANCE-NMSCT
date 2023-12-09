@@ -124,9 +124,11 @@ class _EstabDashboardState extends State<EstabDashboard> {
                   },
                   child: const Icon(Icons.add),
                 ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
                 body: ListView(
                   children: [
-                    SizedBox(
+                    Expanded(
                       child: Column(
                         children: [
                           const Duck(),
@@ -151,18 +153,22 @@ class _EstabDashboardState extends State<EstabDashboard> {
                   },
                   child: const Icon(Icons.add),
                 ),
-                body: ListView.builder(
-                    itemCount: sect2.length,
-                    itemBuilder: (context, index) {
-                      final EstabModel sec = sect2[index];
-                      return GlobalDashCard(
-                          id: sec.id,
-                          uid: sec.creator_id,
-                          name: sec.establishment_name,
-                          code: sec.code,
-                          path: uRole == 'Admin' ? "class" : "room",
-                          refreshCallback: _refreshData);
-                    }),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
+                body: Wrap(
+                  spacing: 0.0, // Adjust spacing as needed
+                  runSpacing: 10.0, // Adjust run spacing as needed
+                  children: sect2.map((EstabModel sec) {
+                    return GlobalDashCard(
+                      id: sec.id,
+                      uid: sec.creator_id,
+                      name: sec.establishment_name,
+                      code: sec.code,
+                      path: uRole == 'Admin' ? "class" : "room",
+                      refreshCallback: _refreshData,
+                    );
+                  }).toList(),
+                ),
               );
             }
           } else {

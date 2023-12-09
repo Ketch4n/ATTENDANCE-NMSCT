@@ -5,6 +5,7 @@ import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:attendance_nmsct/widgets/user_profile.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -32,6 +33,8 @@ class CreateClassRoom extends StatefulWidget {
 class _CreateClassRoomState extends State<CreateClassRoom> {
   final code = TextEditingController();
   final location = TextEditingController();
+  final longi = TextEditingController();
+  final lati = TextEditingController();
 
   final fulladdress = TextEditingController();
 
@@ -50,7 +53,10 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
       String lat = currentPosition.latitude.toString();
       String long = currentPosition.longitude.toString();
       getAddress(currentPosition.latitude, currentPosition.longitude);
+
       setState(() {
+        longi.text = long;
+        lati.text = lat;
         location.text = lat + long;
       });
     }
@@ -84,12 +90,8 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            const Text('Create '),
-            Text(widget.purpose),
-          ],
-        ),
+        title: Text('Create ' + widget.purpose),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Column(children: [
@@ -141,20 +143,26 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10.0),
-                                  child: Text(location.text),
+                                  child:
+                                      kIsWeb ? Text("") : Text(location.text),
                                 ),
                                 location.text == ''
                                     ? const SizedBox()
-                                    : Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 10.0),
-                                        child: TextField(
-                                          readOnly: true,
-                                          controller: fulladdress,
-                                          enableSuggestions: false,
-                                          autocorrect: false,
-                                          decoration: Style.textdesign
-                                              .copyWith(labelText: 'Address'),
+                                    : Container(
+                                        constraints:
+                                            BoxConstraints(maxWidth: 500),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 10.0),
+                                          child: TextField(
+                                            readOnly: true,
+                                            controller:
+                                                kIsWeb ? location : fulladdress,
+                                            enableSuggestions: false,
+                                            autocorrect: false,
+                                            decoration: Style.textdesign
+                                                .copyWith(labelText: 'Address'),
+                                          ),
                                         ),
                                       ),
                               ],
@@ -175,30 +183,36 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                           : const SizedBox(),
                       widget.role == 'Establishment' && location.text.isEmpty
                           ? const SizedBox()
-                          : TextField(
-                              controller: code,
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              decoration: Style.textdesign.copyWith(
-                                  labelText: widget.role == 'Admin'
-                                      ? 'Section Name'
-                                      : 'Establishment Name'),
+                          : Container(
+                              constraints: BoxConstraints(maxWidth: 500),
+                              child: TextField(
+                                controller: code,
+                                enableSuggestions: false,
+                                autocorrect: false,
+                                decoration: Style.textdesign.copyWith(
+                                    labelText: widget.role == 'Admin'
+                                        ? 'Section Name'
+                                        : 'Establishment Name'),
+                              ),
                             ),
                       Align(
-                        alignment: Alignment.centerRight,
+                        alignment: Alignment.center,
                         child: TextButton(
                           onPressed: () async {
                             final String pin = code.text;
                             final String loc = fulladdress.text;
+                            final String long_lat = location.text;
+                            final String longitude = longi.text;
+                            final String latitude = lati.text;
 
                             if (pin.isEmpty) {
                               String title = "Name Empty !";
                               String message = "Input name";
                               await showAlertDialog(context, title, message);
                             } else if (widget.role == "Establishment" &&
-                                loc.isEmpty) {
-                              String title = "Register GPS";
-                              String message = "click icon";
+                                long_lat.isEmpty) {
+                              String title = "Click location icon";
+                              String message = "to register gps";
                               await showAlertDialog(context, title, message);
                             } else {
                               // String title = "Success";
@@ -209,6 +223,8 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                                 code,
                                 pin,
                                 loc,
+                                longitude,
+                                latitude,
                                 widget.admin_id,
                               );
                               // await pasteCode(context, title, message, code);
@@ -220,7 +236,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                             }
                           },
                           child: Text(
-                            "Enter",
+                            "Save",
                             style: Style.link,
                           ),
                         ),

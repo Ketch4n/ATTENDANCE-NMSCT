@@ -38,6 +38,7 @@ class _CameraState extends State<CameraAuth> {
     _initializeControllerFuture = _initializeCamera();
     Geolocator.checkPermission();
     getCurrentPosition();
+    estabLocation();
     // Listen to location changes
     // _positionSubscription = Geolocator.getPositionStream().listen(
     //   (Position position) {
@@ -53,6 +54,7 @@ class _CameraState extends State<CameraAuth> {
   final location = TextEditingController();
 
   final fulladdress = TextEditingController();
+  final estabAddressLocation = TextEditingController();
 
   void getCurrentPosition() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -90,6 +92,30 @@ class _CameraState extends State<CameraAuth> {
 
         setState(() {
           fulladdress.text = address;
+        });
+      } else {
+        print("No address found");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  void estabLocation() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          Session.latitude as double, Session.longitude as double);
+      // print(placemarks);
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks[2];
+        String estabAddress = "";
+
+        estabAddress +=
+            "${placemark.street}, ${placemark.locality}, ${placemark.subAdministrativeArea}";
+        print("Full Address: $estabAddress");
+
+        setState(() {
+          estabAddressLocation.text = estabAddress;
         });
       } else {
         print("No address found");
@@ -168,6 +194,7 @@ class _CameraState extends State<CameraAuth> {
     fulladdress.dispose();
     getCurrentPosition;
     getAddress;
+    estabLocation;
     // _positionSubscription?.cancel(); // Cancel the location subscription
     super.dispose();
   }
@@ -179,24 +206,23 @@ class _CameraState extends State<CameraAuth> {
         title: const Text('Face Auth'),
         centerTitle: true,
       ),
-      floatingActionButton:
-          fulladdress.text.isEmpty || fulladdress.text != Session.location
-              ? FloatingActionButton(
-                  onPressed: () {
-                    print("current this: ${Session.location}");
-                    getCurrentPosition();
-                  },
-                  child: const Icon(
-                    Icons.location_pin,
-                    color: Colors.red,
-                  ),
-                )
-              : FloatingActionButton(
-                  onPressed: _captureImage,
-                  child: const Icon(
-                    Icons.camera,
-                  ),
-                ),
+      floatingActionButton: fulladdress.text.isEmpty
+          ? FloatingActionButton(
+              onPressed: () {
+                // print("current this: ${Session.location}");
+                getCurrentPosition();
+              },
+              child: const Icon(
+                Icons.location_pin,
+                color: Colors.red,
+              ),
+            )
+          : FloatingActionButton(
+              onPressed: _captureImage,
+              child: const Icon(
+                Icons.camera,
+              ),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
@@ -221,7 +247,7 @@ class _CameraState extends State<CameraAuth> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("Status : "),
-                      fulladdress.text != Session.location
+                      fulladdress.text == estabAddressLocation.text
                           ? Text(
                               "unmatched location",
                               style: TextStyle(color: Colors.red),

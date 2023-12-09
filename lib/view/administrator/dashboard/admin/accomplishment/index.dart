@@ -108,36 +108,48 @@ class _AdminAccomplishmentIndexState extends State<AdminAccomplishmentIndex> {
 
                   return Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ListView.builder(
-                        itemCount: text.length,
-                        itemBuilder: (context, index) {
-                          final AccomplishmentTodayModel record = text[index];
-
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Wrap(
+                          spacing:
+                              8.0, // You can adjust the spacing between items
+                          runSpacing:
+                              8.0, // You can adjust the spacing between lines
+                          children: text.map((record) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          AdminViewAccomplishment(
-                                              email: record.email,
-                                              section_id: widget.id,
-                                              date: record.date)));
-                            },
-                            child: Card(
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: Colors.green,
+                                    builder: (context) =>
+                                        AdminViewAccomplishment(
+                                      email: record.email,
+                                      section_id: widget.id,
+                                      date: record.date,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundColor: Colors.green,
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Text("Date: ${record.date}"),
+                                      SizedBox(height: 4.0),
+                                      Text(record.email),
+                                    ],
+                                  ),
                                 ),
-                                title: Text("Date: ${record.date}"),
-                                subtitle: Text(record.email),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                            );
+                          }).toList(),
+                        )),
                   );
                 } else {
                   return Expanded(

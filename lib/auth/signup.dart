@@ -43,154 +43,162 @@ class _SignupState extends State<Signup> {
         title: const Text('Create Account'),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Stepper(
-              type: stepperType,
-              // physics: const ScrollPhysics(),
-              currentStep: _currentStep,
-              onStepTapped: tapped,
-              onStepContinue: continued,
-              onStepCancel: cancel,
-              steps: <Step>[
-                Step(
-                  title: const Text('Account'),
-                  content: Column(
-                    children: <Widget>[
-                      TextFormField(
-                          controller: _emailController,
-                          key: _email,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (email) =>
-                              email != null && !EmailValidator.validate(email)
+      body: Center(
+        child: Container(
+          constraints: BoxConstraints(maxWidth: 500),
+          child: Column(
+            children: [
+              Expanded(
+                child: Stepper(
+                  type: stepperType,
+                  // physics: const ScrollPhysics(),
+                  currentStep: _currentStep,
+                  onStepTapped: tapped,
+                  onStepContinue: continued,
+                  onStepCancel: cancel,
+                  steps: <Step>[
+                    Step(
+                      title: const Text('Account'),
+                      content: Column(
+                        children: <Widget>[
+                          TextFormField(
+                              controller: _emailController,
+                              key: _email,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (email) => email != null &&
+                                      !EmailValidator.validate(email)
                                   ? 'Enter a valid email'
                                   : emailStatus == ""
                                       ? null
                                       : emailStatus,
-                          onChanged: (email) {
-                            checkEmailAvailability(email);
-                          },
-                          decoration: Style.textdesign
-                              .copyWith(labelText: 'Email Address')),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        controller: _passController,
-                        key: _pass,
-                        obscureText: _isObscure,
-                        enableSuggestions: false,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) => value != null && value.length < 6
-                            ? 'Minimum of 6 characters'
-                            : null,
-                        decoration: Style.textdesign.copyWith(
-                          labelText: 'Password',
-                          suffixIcon: IconButton(
-                            icon: Icon(_isObscure
-                                ? Icons.visibility_off
-                                : Icons.visibility),
-                            onPressed: () {
-                              setState(() {
-                                _isObscure = !_isObscure;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  isActive: _currentStep >= 0,
-                  state: _currentStep >= 0
-                      ? StepState.complete
-                      : StepState.disabled,
-                ),
-                Step(
-                  title: const Text('Details'),
-                  content: Column(
-                    children: <Widget>[
-                      Stack(
-                        children: [
+                              onChanged: (email) {
+                                checkEmailAvailability(email);
+                              },
+                              decoration: Style.textdesign
+                                  .copyWith(labelText: 'Email Address')),
+                          const SizedBox(height: 10),
                           TextFormField(
-                            readOnly: true,
-                            enableInteractiveSelection: false,
-                            // enabled: false,
-                            controller: _roleController,
-                            decoration:
-                                Style.textdesign.copyWith(labelText: 'Role'),
-                          ),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: PopupMenuButton<String>(
-                              icon: const Icon(
-                                Icons.arrow_drop_down,
-                                color: Color.fromARGB(255, 114, 123, 130),
+                            controller: _passController,
+                            key: _pass,
+                            obscureText: _isObscure,
+                            enableSuggestions: false,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) =>
+                                value != null && value.length < 6
+                                    ? 'Minimum of 6 characters'
+                                    : null,
+                            decoration: Style.textdesign.copyWith(
+                              labelText: 'Password',
+                              suffixIcon: IconButton(
+                                icon: Icon(_isObscure
+                                    ? Icons.visibility_off
+                                    : Icons.visibility),
+                                onPressed: () {
+                                  setState(() {
+                                    _isObscure = !_isObscure;
+                                  });
+                                },
                               ),
-                              onSelected: (String newValue) {
-                                setState(() {
-                                  _roleController.text = newValue;
-                                });
-                              },
-                              itemBuilder: (BuildContext context) {
-                                return <PopupMenuEntry<String>>[
-                                  const PopupMenuItem<String>(
-                                    value: "Student",
-                                    child: Text("Student"),
-                                  ),
-                                  const PopupMenuItem<String>(
-                                    value: "Admin",
-                                    child: Text("Admin"),
-                                  ),
-                                  const PopupMenuItem<String>(
-                                    value: "Establishment",
-                                    child: Text("Establishment"),
-                                  ),
-                                ];
-                              },
                             ),
-                          )
+                          ),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: TextFormField(
-                          controller: _nameController,
-                          decoration:
-                              Style.textdesign.copyWith(labelText: 'Name'),
-                        ),
-                      ),
-                      TextFormField(
-                        controller: _idController,
-                        decoration: Style.textdesign.copyWith(
-                          labelText: 'ID',
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.refresh),
-                            onPressed: () {
-                              String id = generateId();
-                              _idController.text = id;
-                            },
+                      isActive: _currentStep >= 0,
+                      state: _currentStep >= 0
+                          ? StepState.complete
+                          : StepState.disabled,
+                    ),
+                    Step(
+                      title: const Text('Details'),
+                      content: Column(
+                        children: <Widget>[
+                          Stack(
+                            children: [
+                              TextFormField(
+                                readOnly: true,
+                                enableInteractiveSelection: false,
+                                // enabled: false,
+                                controller: _roleController,
+                                decoration: Style.textdesign
+                                    .copyWith(labelText: 'Role'),
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: PopupMenuButton<String>(
+                                  icon: const Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Color.fromARGB(255, 114, 123, 130),
+                                  ),
+                                  onSelected: (String newValue) {
+                                    setState(() {
+                                      _roleController.text = newValue;
+                                    });
+                                  },
+                                  itemBuilder: (BuildContext context) {
+                                    return <PopupMenuEntry<String>>[
+                                      const PopupMenuItem<String>(
+                                        value: "Student",
+                                        child: Text("Student"),
+                                      ),
+                                      const PopupMenuItem<String>(
+                                        value: "Admin",
+                                        child: Text("Admin"),
+                                      ),
+                                      const PopupMenuItem<String>(
+                                        value: "Establishment",
+                                        child: Text("Establishment"),
+                                      ),
+                                    ];
+                                  },
+                                ),
+                              )
+                            ],
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: TextFormField(
+                              controller: _nameController,
+                              decoration:
+                                  Style.textdesign.copyWith(labelText: 'Name'),
+                            ),
+                          ),
+                          TextFormField(
+                            controller: _idController,
+                            decoration: Style.textdesign.copyWith(
+                              labelText: 'ID',
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.refresh),
+                                onPressed: () {
+                                  String id = generateId();
+                                  _idController.text = id;
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  isActive: _currentStep >= 1,
-                  state: _currentStep >= 1
-                      ? StepState.complete
-                      : StepState.disabled,
+                      isActive: _currentStep >= 1,
+                      state: _currentStep >= 1
+                          ? StepState.complete
+                          : StepState.disabled,
+                    ),
+                    Step(
+                      title: Text(_currentStep == 2 ? "Confirm" : "Pending"),
+                      content: const SizedBox(),
+                      isActive: _currentStep >= 2,
+                      state: _currentStep >= 2
+                          ? StepState.complete
+                          : StepState.disabled,
+                    ),
+                  ],
                 ),
-                Step(
-                  title: Text(_currentStep == 2 ? "Confirm" : "Pending"),
-                  content: const SizedBox(),
-                  isActive: _currentStep >= 2,
-                  state: _currentStep >= 2
-                      ? StepState.complete
-                      : StepState.disabled,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: switchStepsType,

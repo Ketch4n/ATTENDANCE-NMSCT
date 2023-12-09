@@ -2,6 +2,7 @@ import 'package:attendance_nmsct/controller/Remove.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/admin/home.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/home.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -32,6 +33,7 @@ class _GlobalDashCardState extends State<GlobalDashCard> {
       child: ClipRRect(
         borderRadius: const BorderRadius.all(Radius.circular(10)),
         child: Container(
+          constraints: kIsWeb ? BoxConstraints(maxWidth: 480) : null,
           decoration: const BoxDecoration(
             color: Colors.white,
             boxShadow: [
@@ -67,7 +69,7 @@ class _GlobalDashCardState extends State<GlobalDashCard> {
                         : 'assets/images/green.jpg',
                     fit: BoxFit.cover,
                     height: 120,
-                    width: double.maxFinite,
+                    width: kIsWeb ? 480 : double.maxFinite,
                   ),
                 ),
                 Column(children: [

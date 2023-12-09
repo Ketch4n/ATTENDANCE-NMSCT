@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:attendance_nmsct/widgets/platform_alert.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:attendance_nmsct/data/server.dart';
@@ -22,7 +24,9 @@ Future removeClassRoom(
   final message = jsonResponse['message'];
 
   if (response.statusCode == 200) {
-    await showAlertDialog(context, status, message);
+    kIsWeb
+        ? platformInfo(context, status, message)
+        : showAlertDialog(context, status, message);
   } else {
     print('Failed to update database. Error: ${response.statusCode}');
   }

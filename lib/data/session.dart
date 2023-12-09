@@ -3,7 +3,8 @@ class Session {
   static String role = "";
   static String name = "";
   static String email = "";
-  static String location = "";
+  static String longitude = "";
+  static String latitude = "";
 }
 
 class Admin {
@@ -12,7 +13,7 @@ class Admin {
   static String email = "";
 }
 
-class User {
-  static double long = 0;
-  static double lat = 0;
-}
+// class User {
+//   static double long = 0;
+//   static double lat = 0;
+// }

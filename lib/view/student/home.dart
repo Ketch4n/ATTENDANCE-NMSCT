@@ -83,11 +83,16 @@ class _StudentHome extends State {
           centerTitle: true,
         ),
         bottomNavigationBar: isoffline
-            ? BottomAppBar(
-                elevation: 0,
-                child: Center(
-                  child:
-                      offlineSnackbar("You are currently Offline", isoffline),
+            ? SizedBox(
+                height: 80,
+                child: Expanded(
+                  child: BottomAppBar(
+                    elevation: 0,
+                    child: Center(
+                      child: offlineSnackbar(
+                          "You are currently Offline", isoffline),
+                    ),
+                  ),
                 ),
               )
             : const SizedBox(),

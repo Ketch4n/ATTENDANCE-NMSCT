@@ -17,10 +17,10 @@ Future fetchUser(userStreamController) async {
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final user = UserModel.fromJson(data);
-      final userEstabLocation = user.location;
-      prefs.setString('userEstabLocation', userEstabLocation);
+      Session.longitude = user.longitude;
+      Session.latitude = user.latitude;
+      // prefs.setString('userEstabLocation', userEstabLocation);
 
-      Session.location = userEstabLocation;
       // Add the user data to the stream
       userStreamController.add(user);
     } else {

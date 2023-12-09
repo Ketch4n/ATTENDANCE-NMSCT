@@ -4,6 +4,7 @@ import 'package:attendance_nmsct/controller/User.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:attendance_nmsct/widgets/dropdown_settings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class GlobalProfile extends StatefulWidget {
@@ -31,110 +32,120 @@ class _GlobalProfileState extends State<GlobalProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(
-          children: <Widget>[
-            Image.asset("assets/images/laptop.jpg"),
-            Padding(
-              padding: const EdgeInsets.only(left: 30.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 50.0, bottom: 10),
-                    child: ClipRRect(
-                        borderRadius: Style.radius50,
-                        child: InkWell(
-                          onTap: () {
-                            showGlobalProfileEdit(context);
-                          },
-                          child: Image.asset(
-                            'assets/images/admin.png',
-                            fit: BoxFit.cover,
-                            width: 80,
-                            height: 80,
-                          ),
-                        )),
+    return Center(
+      child: Container(
+        constraints: BoxConstraints(maxWidth: 500),
+        child: Column(
+          children: [
+            Stack(
+              children: <Widget>[
+                kIsWeb ? SizedBox() : Image.asset("assets/images/laptop.jpg"),
+                Padding(
+                  padding: EdgeInsets.only(left: 30.0),
+                  child: Column(
+                    crossAxisAlignment: kIsWeb
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 50.0, bottom: 10),
+                        child: ClipRRect(
+                            borderRadius: Style.radius50,
+                            child: InkWell(
+                              onTap: () {
+                                showGlobalProfileEdit(context);
+                              },
+                              child: Image.asset(
+                                'assets/images/admin.png',
+                                fit: BoxFit.cover,
+                                width: 80,
+                                height: 80,
+                              ),
+                            )),
+                      ),
+                      StreamBuilder<UserModel>(
+                          stream: _userStreamController.stream,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              UserModel user = snapshot.data!;
+                              return Column(
+                                crossAxisAlignment: kIsWeb
+                                    ? CrossAxisAlignment.center
+                                    : CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    user.name,
+                                    style: Style.profileText
+                                        .copyWith(fontSize: 18),
+                                  ),
+                                  Text(
+                                    user.email,
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.grey[600]),
+                                  ),
+                                ],
+                              );
+                            }
+                            return const SizedBox();
+                          }),
+                    ],
                   ),
-                  StreamBuilder<UserModel>(
-                      stream: _userStreamController.stream,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          UserModel user = snapshot.data!;
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user.name,
-                                style: Style.profileText.copyWith(fontSize: 18),
-                              ),
-                              Text(
-                                user.email,
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.grey[600]),
-                              ),
-                            ],
-                          );
-                        }
-                        return const SizedBox();
-                      }),
-                ],
-              ),
+                ),
+              ],
             ),
+            const SizedBox(
+              height: 20,
+            ),
+            const DropdownSettings(),
+            // Padding(
+            //   padding: Style.padding,
+            //   child: Container(
+            //     height: 90,
+            //     width: double.maxFinite,
+            //     decoration:
+            //         Style.boxdecor.copyWith(borderRadius: Style.defaultradius),
+            //     child: Flex(direction: Axis.horizontal, children: [
+            //       Expanded(
+            //           child: Column(
+            //         children: [Icon(Icons.class_), Text("1"), Text("Section")],
+            //       )),
+            //       Expanded(
+            //           child: Column(
+            //         children: [Icon(Icons.room), Text("1"), Text("Establishment")],
+            //       )),
+            //       // Expanded(
+            //       //     child: Column(
+            //       //   children: [Text("436 h"), Icon(Icons.lock_clock)],
+            //       // ))
+            //     ]),
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: 10,
+            // ),
+
+            // Column(
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children: [
+            //     Text(
+            //       "Introducing",
+            //       style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            //     ),
+            //     Text(
+            //       "Face Recognition Feature",
+            //       style: TextStyle(fontSize: 14, color: Colors.grey[800]),
+            //     ),
+            //   ],
+            // ),
+            // TextButton(
+            //   onPressed: () {
+            //     // logout(context);
+            //   },
+            //   child: Text("Logout"),
+            // )
           ],
         ),
-        const SizedBox(
-          height: 20,
-        ),
-        const DropdownSettings(),
-        // Padding(
-        //   padding: Style.padding,
-        //   child: Container(
-        //     height: 90,
-        //     width: double.maxFinite,
-        //     decoration:
-        //         Style.boxdecor.copyWith(borderRadius: Style.defaultradius),
-        //     child: Flex(direction: Axis.horizontal, children: [
-        //       Expanded(
-        //           child: Column(
-        //         children: [Icon(Icons.class_), Text("1"), Text("Section")],
-        //       )),
-        //       Expanded(
-        //           child: Column(
-        //         children: [Icon(Icons.room), Text("1"), Text("Establishment")],
-        //       )),
-        //       // Expanded(
-        //       //     child: Column(
-        //       //   children: [Text("436 h"), Icon(Icons.lock_clock)],
-        //       // ))
-        //     ]),
-        //   ),
-        // ),
-        // SizedBox(
-        //   height: 10,
-        // ),
-
-        // Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     Text(
-        //       "Introducing",
-        //       style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-        //     ),
-        //     Text(
-        //       "Face Recognition Feature",
-        //       style: TextStyle(fontSize: 14, color: Colors.grey[800]),
-        //     ),
-        //   ],
-        // ),
-        // TextButton(
-        //   onPressed: () {
-        //     // logout(context);
-        //   },
-        //   child: Text("Logout"),
-        // )
-      ],
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:attendance_nmsct/view/administrator/dashboard/admin/metadata/view.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
@@ -116,35 +117,54 @@ class _AdminMetaDataIndexState extends State<AdminMetaDataIndex> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: ListView.builder(
-                    itemCount: _imageReferences.length,
-                    itemBuilder: (context, index) {
-                      String parentFolderName =
-                          _imageReferences[index].parent?.name ?? '';
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
+                  child: Wrap(
+                    spacing: 8.0, // You can adjust the spacing between items
+                    runSpacing: 8.0, // You can adjust the spacing between lines
+                    children: List.generate(
+                      _imageReferences.length,
+                      (index) {
+                        String parentFolderName =
+                            _imageReferences[index].parent?.name ?? '';
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
                                 builder: (context) => AdminViewMetaData(
-                                    email: parentFolderName,
-                                    date: _imageReferences[index].name,
-                                    section: widget.name)),
-                          );
-                          // Add your logic here for handling the tap event
-                        },
-                        child: Card(
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.blue,
+                                  email: parentFolderName,
+                                  date: _imageReferences[index].name,
+                                  section: widget.name,
+                                ),
+                              ),
+                            );
+                            // Add your logic here for handling the tap event
+                          },
+                          child: Card(
+                            child: Container(
+                              constraints: kIsWeb
+                                  ? BoxConstraints(maxWidth: screenWidth / 2)
+                                  : null,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor: Colors.blue,
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    Text(
+                                        "Date: ${_imageReferences[index].name}"),
+                                    SizedBox(height: 4.0),
+                                    Text(parentFolderName),
+                                  ],
+                                ),
+                              ),
                             ),
-                            subtitle: Text(parentFolderName),
-                            title:
-                                Text("Date: ${_imageReferences[index].name}"),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),

@@ -100,9 +100,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   },
                   child: const Icon(Icons.add),
                 ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
                 body: ListView(
                   children: [
-                    SizedBox(
+                    Expanded(
                       child: Column(
                         children: [
                           const Duck(),
@@ -127,18 +129,20 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   },
                   child: const Icon(Icons.add),
                 ),
-                body: ListView.builder(
-                    itemCount: sect2.length,
-                    itemBuilder: (context, index) {
-                      final SectionModel sec = sect2[index];
-                      return GlobalDashCard(
-                          id: sec.id,
-                          uid: sec.admin_id,
-                          name: sec.section_name,
-                          code: sec.code,
-                          path: uRole == 'Admin' ? "class" : "room",
-                          refreshCallback: _refreshData);
-                    }),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
+                body: Wrap(
+                  children: sect2.map((SectionModel sec) {
+                    return GlobalDashCard(
+                      id: sec.id,
+                      uid: sec.admin_id,
+                      name: sec.section_name,
+                      code: sec.code,
+                      path: uRole == 'Admin' ? "class" : "room",
+                      refreshCallback: _refreshData,
+                    );
+                  }).toList(),
+                ),
               );
             }
           } else {

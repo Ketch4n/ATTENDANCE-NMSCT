@@ -39,10 +39,13 @@
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
-</head>
-
-<body>
+  
   <script type="module">
+          
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
+    import { getStorage } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js';
+
     const firebaseConfig = {
       name: "attendance-monitoring",
 
@@ -54,13 +57,14 @@
       appId: "1:923340212066:web:cfa048f322dbd305098e3b",
 
     };
-
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-  </script>
-  <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-storage.js"></script>
+    // Initialize Firebase
 
+  </script>
+   
+</head>
+
+<body>
 
 
   <script>

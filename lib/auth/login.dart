@@ -1,6 +1,7 @@
 import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/controller/Login.dart';
 import 'package:attendance_nmsct/include/style.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
@@ -24,6 +25,8 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -67,66 +70,70 @@ class _LoginState extends State<Login> {
                     ),
                   ),
 
-                  Padding(
-                    padding: Style.padding,
-                    child: Column(
-                      children: [
-                        TextField(
-                          controller: _emailController,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          decoration:
-                              Style.textdesign.copyWith(hintText: "Username"),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextField(
-                          obscureText: _isObscure,
-                          enableSuggestions: false,
-                          controller: _passController,
-                          decoration: Style.textdesign.copyWith(
-                            hintText: "Password",
-                            suffixIcon: IconButton(
-                                icon: Icon(_isObscure
-                                    ? Icons.visibility_off
-                                    : Icons.visibility),
-                                onPressed: () {
-                                  setState(() {
-                                    _isObscure = !_isObscure;
-                                  });
-                                }),
+                  Container(
+                    constraints: BoxConstraints(maxWidth: 500),
+                    child: Padding(
+                      padding: Style.padding,
+                      child: Column(
+                        children: [
+                          TextField(
+                            controller: _emailController,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            decoration:
+                                Style.textdesign.copyWith(hintText: "Username"),
                           ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            child: Text("Forgot Password ?", style: Style.link),
-                            onPressed: () {},
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        TextButton(
-                          onPressed: () async {
-                            final email = _emailController.text.trim();
-                            final password = _passController.text.trim();
-                            await login(context, email, password);
-                            // ignore: avoid_print
-                            print("Clicked");
-                          },
-                          autofocus: true,
-                          style: TextButton.styleFrom(
-                              fixedSize: const Size.fromHeight(50),
-                              backgroundColor: Style.themecolor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: Style.radius12)),
-                          child: Center(
-                            child: Text(
-                              'LOG IN',
-                              style: Style.text,
+                          TextField(
+                            obscureText: _isObscure,
+                            enableSuggestions: false,
+                            controller: _passController,
+                            decoration: Style.textdesign.copyWith(
+                              hintText: "Password",
+                              suffixIcon: IconButton(
+                                  icon: Icon(_isObscure
+                                      ? Icons.visibility_off
+                                      : Icons.visibility),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isObscure = !_isObscure;
+                                    });
+                                  }),
                             ),
                           ),
-                        ),
-                      ],
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              child:
+                                  Text("Forgot Password ?", style: Style.link),
+                              onPressed: () {},
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              final email = _emailController.text.trim();
+                              final password = _passController.text.trim();
+                              await login(context, email, password);
+                              // ignore: avoid_print
+                              print("Clicked");
+                            },
+                            autofocus: true,
+                            style: TextButton.styleFrom(
+                                fixedSize: const Size.fromHeight(50),
+                                backgroundColor: Style.themecolor,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: Style.radius12)),
+                            child: Center(
+                              child: Text(
+                                'LOG IN',
+                                style: Style.text,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
 

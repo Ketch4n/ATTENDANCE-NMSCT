@@ -90,7 +90,7 @@ class _EstabDTRState extends State<EstabDTR> {
                 titleTextStyle: TextStyle(
                   color: Colors.black,
                   fontFamily: "NexaBold",
-                  fontSize: screenWidth / 15,
+                  // fontSize: screenWidth / 15,
                 ),
                 title: Row(
                   children: [

@@ -4,6 +4,8 @@ class EstabModel {
   final String establishment_name;
   final String creator_id;
   final String location;
+  final String longitude;
+  final String latitude;
   final String status;
 
   EstabModel({
@@ -12,6 +14,8 @@ class EstabModel {
     required this.establishment_name,
     required this.creator_id,
     required this.location,
+    required this.longitude,
+    required this.latitude,
     required this.status,
   });
 
@@ -22,6 +26,8 @@ class EstabModel {
         'establishment_name': establishment_name,
         'creator_id': creator_id,
         'location': location,
+        'longitude': longitude,
+        'latitude': latitude,
         'status': status,
       };
 
@@ -32,6 +38,8 @@ class EstabModel {
         establishment_name: json['establishment_name'],
         creator_id: json['creator_id'],
         location: json['location'],
+        longitude: json['longitude'],
+        latitude: json['latitude'],
         status: json['status'],
       );
 }

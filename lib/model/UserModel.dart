@@ -10,6 +10,8 @@ class UserModel {
   final String establishment_id;
   final String establishment_name;
   final String location;
+  final String longitude;
+  final String latitude;
   final String creator_id;
 
   UserModel(
@@ -24,6 +26,8 @@ class UserModel {
       required this.establishment_id,
       required this.establishment_name,
       required this.location,
+      required this.longitude,
+      required this.latitude,
       required this.creator_id});
 
   Map<String, dynamic> toJson() => {
@@ -39,6 +43,8 @@ class UserModel {
         'establishment_id': establishment_id,
         'establishment_name': establishment_name,
         'location': location,
+        'longitude': longitude,
+        'latitude': latitude,
         'creator_id': creator_id
       };
 
@@ -55,5 +61,7 @@ class UserModel {
       establishment_id: json['establishment_id'],
       establishment_name: json['establishment_name'],
       location: json['location'],
+      longitude: json['longitude'],
+      latitude: json['latitude'],
       creator_id: json['creator_id']);
 }
