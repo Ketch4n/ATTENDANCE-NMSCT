@@ -1,6 +1,7 @@
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/record.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -83,6 +84,7 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(height: kIsWeb ? 10 : 0),
             MaterialButton(
               color: Colors.blue,
               onPressed: () async {
@@ -106,7 +108,7 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: "NexaBold",
-                  fontSize: screenWidth / 15,
+                  fontSize: 18,
                 ),
               ),
             ),

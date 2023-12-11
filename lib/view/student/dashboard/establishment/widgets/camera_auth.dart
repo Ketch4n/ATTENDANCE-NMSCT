@@ -30,24 +30,26 @@ class _CameraState extends State<CameraAuth> {
   StreamSubscription<Position>? _positionSubscription;
 
   bool _processingImage = false;
+  bool _no = false;
+
   int userId = 0;
 
   @override
   void initState() {
     super.initState();
     _initializeControllerFuture = _initializeCamera();
-    Geolocator.checkPermission();
-    getCurrentPosition();
+    // Geolocator.checkPermission();
+    // getCurrentPosition();
     estabLocation();
     // Listen to location changes
-    // _positionSubscription = Geolocator.getPositionStream().listen(
-    //   (Position position) {
-    //     getCurrentPosition();
-    //   },
-    //   onError: (e) {
-    //     print("Error getting location: $e");
-    //   },
-    // );
+    _positionSubscription = Geolocator.getPositionStream().listen(
+      (Position position) {
+        getCurrentPosition();
+      },
+      onError: (e) {
+        print("Error getting location: $e");
+      },
+    );
   }
 
   final code = TextEditingController();
@@ -146,10 +148,10 @@ class _CameraState extends State<CameraAuth> {
       return;
     }
 
-    // Set the flag to true to indicate that an image is being processed
-    setState(() {
-      _processingImage = true;
-    });
+    // // Set the flag to true to indicate that an image is being processed
+    // setState(() {
+    //   _processingImage = true;
+    // });
 
     try {
       await _initializeControllerFuture;
@@ -164,7 +166,10 @@ class _CameraState extends State<CameraAuth> {
       // Check if at least one face is detected
       if (faces.isNotEmpty) {
         const title = "Success";
-        final message = Session.name;
+        final message = "Face Auth Detected";
+        setState(() {
+          _no = true;
+        });
         Navigator.of(context).pop(false);
         cameraAlertDialog(context, title, message);
         widget.refreshCallback();
@@ -174,28 +179,31 @@ class _CameraState extends State<CameraAuth> {
         // No face detected
         const title = "Error";
         const message = "No Face Detected";
-        await cameraAlertDialog(context, title, message);
+        Navigator.of(context).pop(false);
+        cameraAlertDialog(context, title, message);
       }
     } catch (e) {
       await showAlertDialog(context, 'Error capturing image', '$e');
-    } finally {
-      // Reset the flag when the image processing is complete
-      setState(() {
-        _processingImage = false;
-      });
-
-      // Navigator.of(context).pop(); // Close the processing dialog
     }
+    // finally {
+    //   // Reset the flag when the image processing is complete
+    //   setState(() {
+    //     _processingImage = false;
+    //   });
+
+    //   // Navigator.of(context).pop(); // Close the processing dialog
+    // }
   }
 
   @override
   void dispose() {
     _controller.dispose();
     fulladdress.dispose();
-    getCurrentPosition;
+
+    // getCurrentPosition;
     getAddress;
     estabLocation;
-    // _positionSubscription?.cancel(); // Cancel the location subscription
+    _positionSubscription?.cancel(); // Cancel the location subscription
     super.dispose();
   }
 
@@ -206,30 +214,34 @@ class _CameraState extends State<CameraAuth> {
         title: const Text('Face Auth'),
         centerTitle: true,
       ),
-      floatingActionButton: fulladdress.text.isEmpty
-          ? FloatingActionButton(
-              onPressed: () {
-                // print("current this: ${Session.location}");
-                getCurrentPosition();
-              },
-              child: const Icon(
-                Icons.location_pin,
-                color: Colors.red,
-              ),
-            )
-          : FloatingActionButton(
-              onPressed: _captureImage,
-              child: const Icon(
-                Icons.camera,
-              ),
-            ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // floatingActionButton: fulladdress.text.isEmpty
+      //     ? FloatingActionButton(
+      //         onPressed: () {
+      //           // print("current this: ${Session.location}");
+      //           getCurrentPosition();
+      //         },
+      //         child: const Icon(
+      //           Icons.location_pin,
+      //           color: Colors.red,
+      //         ),
+      //       )
+      //     : FloatingActionButton(
+      //         onPressed: _captureImage,
+      //         child: const Icon(
+      //           Icons.camera,
+      //         ),
+      //       ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done &&
-              !_processingImage) {
+          if (snapshot.connectionState == ConnectionState.done) {
             if (fulladdress != "") {
+              if (fulladdress.text != estabAddressLocation.text &&
+                  _no == false) {
+                // Location matched, automatically capture image
+                _captureImage();
+              }
               return Column(
                 children: [
                   ListTile(
@@ -240,8 +252,8 @@ class _CameraState extends State<CameraAuth> {
                               style: TextStyle(color: Colors.blue),
                             )
                           : Text(
-                              "Offline",
-                              style: TextStyle(color: Colors.red),
+                              "Scanning...",
+                              style: TextStyle(color: Colors.blue),
                             )),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

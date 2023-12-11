@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:io';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/functions/generate.dart';
@@ -26,6 +24,8 @@ class _CameraState extends State<Camera> {
   late Future<void> _initializeControllerFuture;
   int userId = 0;
   bool _processingImage = false;
+  File? _capturedImage;
+  bool _option = false;
 
   @override
   void initState() {
@@ -88,7 +88,45 @@ class _CameraState extends State<Camera> {
 
       await cameraAlertDialog(context, title, message);
       widget.refresh();
-      // Navigator.of(context).pop(false);
+    } catch (e) {
+      print('Error uploading image to Firebase: $e');
+    }
+  }
+
+  Future<void> _uploadImage(File imageFile) async {
+    DateTime now = DateTime.now();
+    final date = DateFormat('yyyy-MM-dd').format(now.toLocal());
+    final storage = FirebaseStorage.instance;
+    final section = widget.name;
+    final folderName =
+        'face_data/$section/${Session.email}'; // Specify your folder name
+    final randomFilename = getRandomString(10);
+
+    final Reference storageRef = storage.ref().child(
+        '$folderName/$date/$randomFilename.jpg'); // Use folder name in the path
+
+    final metadata = SettableMetadata(
+      customMetadata: {
+        'Time taken': DateFormat('hh:mm a').format(now.toLocal()),
+        'Date taken': DateFormat('yyyy-MM-dd').format(now.toLocal()),
+        'Name': Session.name,
+        'Location': 'offline',
+      },
+    );
+
+    try {
+      final uploadTask = storageRef.putFile(
+        imageFile,
+        SettableMetadata(contentType: 'image/jpeg'),
+      );
+
+      await uploadTask;
+      await storageRef.updateMetadata(metadata);
+      const title = "Success";
+      final message = "Face ID : ${Session.name}";
+      await cameraAlertDialog(context, title, message);
+      Navigator.of(context).pop();
+      widget.refresh();
     } catch (e) {
       print('Error uploading image to Firebase: $e');
     }
@@ -96,11 +134,9 @@ class _CameraState extends State<Camera> {
 
   Future<void> _captureImage() async {
     if (_processingImage) {
-      // Avoid capturing an image while processing another one
       return;
     }
 
-    // Set the flag to true to indicate that an image is being processed
     setState(() {
       _processingImage = true;
     });
@@ -110,29 +146,64 @@ class _CameraState extends State<Camera> {
       final image = await _controller.takePicture();
       final inputImage = InputImage.fromFilePath(image.path);
 
-      // Initialize the face detector
       final faceDetector = GoogleMlKit.vision.faceDetector();
 
       final List<Face> faces = await faceDetector.processImage(inputImage);
 
-      // Check if at least one face is detected
       if (faces.isNotEmpty) {
-        await uploadImageToFirebaseStorage(File(image.path));
+        setState(() {
+          _capturedImage = File(image.path);
+          _option = true;
+        });
       } else {
-        // No face detected
         const title = "Error";
         const message = "No Face Detected";
         await cameraAlertDialog(context, title, message);
+        setState(() {
+          _processingImage = false;
+        });
       }
     } catch (e) {
       print('Error capturing image: $e');
     } finally {
-      // Reset the flag when the image processing is complete
-      setState(() {
-        _processingImage = false;
-      });
+      // setState(() {
+      //   _processingImage = false;
+      // });
 
-      Navigator.of(context).pop(); // Close the processing dialog
+      // Navigator.of(context).pop();
+    }
+  }
+
+  Widget _buildCapturedImagePreview() {
+    if (_capturedImage != null) {
+      return Column(
+        children: [
+          Image.file(_capturedImage!),
+          ListTile(
+              leading: TextButton(
+                child: const Text('Retake'),
+                onPressed: () {
+                  setState(() {
+                    _capturedImage = null;
+                    _processingImage = true;
+                  });
+                },
+              ),
+              trailing: TextButton(
+                child: Text('Upload Now'),
+                onPressed: () {
+                  _processingImage = false;
+
+                  _uploadImage(_capturedImage!);
+                },
+              )
+              // Placeholder for loading indicator
+
+              )
+        ],
+      );
+    } else {
+      return Container();
     }
   }
 
@@ -142,19 +213,21 @@ class _CameraState extends State<Camera> {
       appBar: AppBar(
         title: const Text('Camera Screen'),
       ),
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done &&
-              !_processingImage) {
-            return Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: CameraPreview(_controller),
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+      body: Column(
+        children: [
+          FutureBuilder<void>(
+            future: _initializeControllerFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  !_processingImage) {
+                return CameraPreview(_controller);
+              } else {
+                return SizedBox();
+              }
+            },
+          ),
+          _buildCapturedImagePreview(),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _captureImage,

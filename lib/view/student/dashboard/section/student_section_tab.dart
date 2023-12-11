@@ -153,7 +153,7 @@ class _StudentSectionTabState extends State<StudentSectionTab> {
                       if (data.isEmpty) {
                         return Center(
                           child: Text(
-                            'No data uploaded today !',
+                            'No record of absent',
                             style: TextStyle(fontSize: 18),
                           ),
                         );

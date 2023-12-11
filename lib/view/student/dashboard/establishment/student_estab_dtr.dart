@@ -108,7 +108,7 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: "NexaBold",
-                  fontSize: screenWidth / 15,
+                  // fontSize: screenWidth / 15,
                 ),
               ),
             ),
