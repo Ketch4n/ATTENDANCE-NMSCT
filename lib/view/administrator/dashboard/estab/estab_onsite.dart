@@ -10,8 +10,10 @@ class EstabOnsite extends StatefulWidget {
 class _EstabOnsiteState extends State<EstabOnsite> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text("Establishment On-site"),
-    );
+    return ListTile(
+        leading: Text(
+          "Push Notification",
+        ),
+        trailing: Icon(Icons.notification_important));
   }
 }

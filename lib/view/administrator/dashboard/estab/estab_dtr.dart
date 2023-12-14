@@ -11,8 +11,13 @@ import 'package:month_year_picker/month_year_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EstabDTR extends StatefulWidget {
-  const EstabDTR({super.key});
-
+  const EstabDTR({
+    super.key,
+    required this.id,
+    required this.name,
+  });
+  final String id;
+  final String name;
   @override
   State<EstabDTR> createState() => _EstabDTRState();
 }
@@ -32,11 +37,9 @@ class _EstabDTRState extends State<EstabDTR> {
 
   Future<void> monthly_report(monthStream) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final userId = prefs.getString('userId');
       final response = await http.post(
-        Uri.parse('${Server.host}users/student/monthly_report.php'),
-        body: {'id': userId, 'month': _yearMonth},
+        Uri.parse('${Server.host}users/establishment/monthly_report.php'),
+        body: {'id': widget.id, 'month': _yearMonth},
       );
       print("TEST : $_yearMonth");
       if (response.statusCode == 200) {
@@ -83,49 +86,30 @@ class _EstabDTRState extends State<EstabDTR> {
       child: Scaffold(
         body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 10.0, right: 10, top: 20, bottom: 5),
-              child: ListTile(
-                titleTextStyle: TextStyle(
-                  color: Colors.black,
+            MaterialButton(
+              color: Colors.blue,
+              onPressed: () async {
+                final month = await showMonthYearPicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2023),
+                  lastDate: DateTime(2099),
+                );
+
+                if (month != null) {
+                  setState(() {
+                    _month = DateFormat('MMMM').format(month);
+                    _yearMonth = DateFormat('yyyy-MM').format(month);
+                  });
+                }
+                monthly_report(_monthStream);
+              },
+              child: Text(
+                _month,
+                style: TextStyle(
+                  color: Colors.white,
                   fontFamily: "NexaBold",
                   // fontSize: screenWidth / 15,
-                ),
-                title: Row(
-                  children: [
-                    Text(_month),
-                    const SizedBox(width: 10),
-
-                    TextButton(
-                      onPressed: () async {
-                        final month = await showMonthYearPicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2023),
-                          lastDate: DateTime(2099),
-                        );
-
-                        if (month != null) {
-                          setState(() {
-                            _month = DateFormat('MMMM').format(month);
-                            _yearMonth = DateFormat('yyyy-MM').format(month);
-                          });
-                          monthly_report(_monthStream);
-                        }
-                      },
-                      child: const FaIcon(
-                        FontAwesomeIcons.refresh,
-                        size: 18,
-                        color: Colors.blue,
-                      ),
-                    ),
-                    // FaIcon(
-                    //   FontAwesomeIcons.refresh,
-                    //   size: 18,
-                    //   color: Colors.blue,
-                    // ),
-                  ],
                 ),
               ),
             ),
@@ -191,26 +175,35 @@ class _EstabDTRState extends State<EstabDTR> {
                                           ),
                                         ),
                                         child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
                                           children: [
-                                            Text(
-                                              DateFormat('EE').format(
-                                                  DateFormat('yyyy-mm-dd')
-                                                      .parse(dtr.date)),
-                                              style: const TextStyle(
-                                                  fontFamily: "NexaBold",
-                                                  fontSize: 20,
-                                                  color: Colors.white),
-                                            ),
-                                            Text(
-                                              DateFormat('dd ').format(
-                                                  DateFormat('yyyy-mm-dd')
-                                                      .parse(dtr.date)),
-                                              style: const TextStyle(
-                                                  fontFamily: "NexaBold",
-                                                  fontSize: 20,
-                                                  color: Colors.white),
+                                            Text(dtr.name,
+                                                style: TextStyle(
+                                                    color: Colors.white)),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  DateFormat('EE').format(
+                                                      DateFormat('yyyy-mm-dd')
+                                                          .parse(dtr.date)),
+                                                  style: const TextStyle(
+                                                      fontFamily: "NexaBold",
+                                                      fontSize: 20,
+                                                      color: Colors.white),
+                                                ),
+                                                Text(
+                                                  DateFormat('dd ').format(
+                                                      DateFormat('yyyy-mm-dd')
+                                                          .parse(dtr.date)),
+                                                  style: const TextStyle(
+                                                      fontFamily: "NexaBold",
+                                                      fontSize: 20,
+                                                      color: Colors.white),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),

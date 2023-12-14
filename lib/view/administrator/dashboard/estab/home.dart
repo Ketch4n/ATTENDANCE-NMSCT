@@ -5,7 +5,6 @@ import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room.d
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-
 class EstabHome extends StatefulWidget {
   const EstabHome({
     super.key,
@@ -37,7 +36,7 @@ class _EstabHomeState extends State<EstabHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("EstabHome"),
+        title: const Text("Establishment"),
         centerTitle: true,
       ),
       // bottomNavigationBar: BottomNavigationBar(
@@ -65,9 +64,9 @@ class _EstabHomeState extends State<EstabHome> {
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.locationDot), label: 'GPS'),
+              icon: FaIcon(FontAwesomeIcons.sun), label: 'Today'),
           BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.calendar), label: 'DTR'),
+              icon: FaIcon(FontAwesomeIcons.calendar), label: 'Attendance'),
           BottomNavigationBarItem(
               icon: FaIcon(FontAwesomeIcons.building), label: 'On-site'),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'People'),
@@ -77,7 +76,7 @@ class _EstabHomeState extends State<EstabHome> {
         index: _selectedIndex,
         children: [
           EstabFaceAuth(id: widget.id, name: widget.name),
-          const EstabDTR(),
+          EstabDTR(id: widget.id, name: widget.name),
           const EstabOnsite(),
           EstabRoom(ids: widget.id, name: widget.name),
         ],

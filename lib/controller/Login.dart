@@ -32,15 +32,14 @@ Future<void> login(
         },
       );
 
-      Map<String, dynamic> data = json.decode(response.body);
-      final message = data['message'];
-      final userId = data['id'];
-      final userRole = data['role'];
-      final userName = data['name'];
-      final userEmail = data['email'];
-      // final status = "${response.statusCode}";
-
       if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        final message = data['message'];
+        final userId = data['id'];
+        final userRole = data['role'];
+        final userName = data['name'];
+        final userEmail = data['email'];
+        // final status = "${response.statusCode}";
         if (data['success']) {
           final prefs = await SharedPreferences.getInstance();
           prefs.setString('userId', userId);

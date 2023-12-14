@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/functions/generate.dart';
@@ -5,6 +6,8 @@ import 'package:attendance_nmsct/widgets/camera_alert_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +25,8 @@ class Camera extends StatefulWidget {
 class _CameraState extends State<Camera> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  StreamSubscription<Position>? _positionSubscription;
+
   int userId = 0;
   bool _processingImage = false;
   File? _capturedImage;
@@ -31,6 +36,63 @@ class _CameraState extends State<Camera> {
   void initState() {
     super.initState();
     _initializeControllerFuture = _initializeCamera();
+    _positionSubscription = Geolocator.getPositionStream().listen(
+      (Position position) {
+        getCurrentPosition();
+      },
+      onError: (e) {
+        print("Error getting location: $e");
+      },
+    );
+  }
+
+  final location = TextEditingController();
+
+  final fulladdress = TextEditingController();
+
+  void getCurrentPosition() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      print("Permission Not given");
+      LocationPermission asked = await Geolocator.requestPermission();
+    } else {
+      Position currentPosition = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+          forceAndroidLocationManager: true);
+      print("Latitude : ${currentPosition.latitude}");
+      print("Longitude : ${currentPosition.longitude}");
+      String lat = currentPosition.latitude.toString();
+      String long = currentPosition.longitude.toString();
+      getAddress(currentPosition.latitude, currentPosition.longitude);
+      setState(() {
+        location.text = lat + long;
+      });
+    }
+  }
+
+  void getAddress(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      // print(placemarks);
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks[2];
+        String address = "";
+
+        address +=
+            "${placemark.street}, ${placemark.locality}, ${placemark.subAdministrativeArea}";
+        print("Full Address: $address");
+
+        setState(() {
+          fulladdress.text = address;
+        });
+      } else {
+        print("No address found");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 
   Future<void> _initializeCamera() async {
@@ -51,6 +113,7 @@ class _CameraState extends State<Camera> {
   @override
   void dispose() {
     _controller.dispose();
+    _positionSubscription?.cancel();
     super.dispose();
   }
 
@@ -71,7 +134,7 @@ class _CameraState extends State<Camera> {
         'Time taken': DateFormat('hh:mm a').format(now.toLocal()),
         'Date taken': DateFormat('yyyy-MM-dd').format(now.toLocal()),
         'Name': Session.name,
-        'Location': 'offline',
+        'Location': fulladdress.text,
       },
     );
 
@@ -110,7 +173,7 @@ class _CameraState extends State<Camera> {
         'Time taken': DateFormat('hh:mm a').format(now.toLocal()),
         'Date taken': DateFormat('yyyy-MM-dd').format(now.toLocal()),
         'Name': Session.name,
-        'Location': 'offline',
+        'Location': fulladdress.text,
       },
     );
 
@@ -178,28 +241,20 @@ class _CameraState extends State<Camera> {
     if (_capturedImage != null) {
       return Column(
         children: [
-          Image.file(_capturedImage!),
           ListTile(
-              leading: TextButton(
-                child: const Text('Retake'),
-                onPressed: () {
-                  setState(() {
-                    _capturedImage = null;
-                    _processingImage = true;
-                  });
-                },
-              ),
-              trailing: TextButton(
-                child: Text('Upload Now'),
-                onPressed: () {
-                  _processingImage = false;
+              leading: Text("Location"),
+              trailing: fulladdress.text == ""
+                  ? Text("Scanning...")
+                  : Text(fulladdress.text)),
+          Image.file(_capturedImage!),
+          TextButton(
+            child: Text('Upload Now'),
+            onPressed: () {
+              _processingImage = false;
 
-                  _uploadImage(_capturedImage!);
-                },
-              )
-              // Placeholder for loading indicator
-
-              )
+              _uploadImage(_capturedImage!);
+            },
+          )
         ],
       );
     } else {

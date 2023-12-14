@@ -1,4 +1,4 @@
-class TodayModel {
+class DailyReportModel {
   final String id;
   final String student_id;
   final String estab_id;
@@ -14,7 +14,7 @@ class TodayModel {
   final String name;
   final String email;
 
-  TodayModel({
+  DailyReportModel({
     required this.id,
     required this.student_id,
     required this.estab_id,
@@ -49,7 +49,8 @@ class TodayModel {
         'email': email,
       };
 
-  static TodayModel fromJson(Map<String, dynamic> json) => TodayModel(
+  static DailyReportModel fromJson(Map<String, dynamic> json) =>
+      DailyReportModel(
         // id: json['id'],
         id: json['id'],
         student_id: json['student_id'],

@@ -163,7 +163,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                     DateFormat('hh:mm:ss a').format(DateTime.now()),
                     style: TextStyle(
                       fontFamily: "NexaRegular",
-                      fontSize: screenWidth / 15,
+                      fontSize: 20,
                       color: Colors.white,
                     ),
                   ),
@@ -214,7 +214,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                     "You have completed this day!",
                     style: TextStyle(
                       fontFamily: "NexaRegular",
-                      fontSize: screenWidth / 20,
+                      fontSize: 20,
                       color: Colors.black54,
                     ),
                   ),
@@ -236,7 +236,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         "Time-In",
                         style: TextStyle(
                           fontFamily: "NexaRegular",
-                          fontSize: screenWidth / 20,
+                          fontSize: 20,
                           color: Colors.green,
                         ),
                       ),
@@ -248,7 +248,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                                 inAM,
                         style: TextStyle(
                           fontFamily: "NexaBold",
-                          fontSize: screenWidth / 18,
+                          fontSize: 20,
                         ),
                       ),
                       const SizedBox(height: 40),
@@ -256,7 +256,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         "Time-In",
                         style: TextStyle(
                           fontFamily: "NexaRegular",
-                          fontSize: screenWidth / 20,
+                          fontSize: 20,
                           color: Colors.green,
                         ),
                       ),
@@ -268,7 +268,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                                 inPM,
                         style: TextStyle(
                           fontFamily: "NexaBold",
-                          fontSize: screenWidth / 18,
+                          fontSize: 20,
                         ),
                       ),
                     ],
@@ -283,7 +283,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         "Time-Out",
                         style: TextStyle(
                           fontFamily: "NexaRegular",
-                          fontSize: screenWidth / 20,
+                          fontSize: 20,
                           color: Colors.orange,
                         ),
                       ),
@@ -293,17 +293,14 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                             : DateFormat('hh:mm ').format(
                                     DateFormat('hh:mm').parse(checkOutAM)) +
                                 outAM,
-                        style: TextStyle(
-                          fontFamily: "NexaBold",
-                          fontSize: screenWidth / 18,
-                        ),
+                        style: TextStyle(fontFamily: "NexaBold", fontSize: 20),
                       ),
                       const SizedBox(height: 40),
                       Text(
                         "Time-Out",
                         style: TextStyle(
                           fontFamily: "NexaRegular",
-                          fontSize: screenWidth / 20,
+                          fontSize: 20,
                           color: Colors.orange,
                         ),
                       ),
@@ -315,7 +312,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                                 outPM,
                         style: TextStyle(
                           fontFamily: "NexaBold",
-                          fontSize: screenWidth / 18,
+                          fontSize: 20,
                         ),
                       ),
                     ],
