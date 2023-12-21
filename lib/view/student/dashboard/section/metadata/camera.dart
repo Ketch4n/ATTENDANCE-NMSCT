@@ -7,7 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart' as loc;
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,19 +25,21 @@ class Camera extends StatefulWidget {
 class _CameraState extends State<Camera> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
-  StreamSubscription<Position>? _positionSubscription;
+  StreamSubscription<loc.LocationData>? _positionSubscription;
 
+  final location = TextEditingController();
+  final fulladdress = TextEditingController();
   int userId = 0;
   bool _processingImage = false;
   File? _capturedImage;
-  bool _option = false;
+  bool _uploading = false;
 
   @override
   void initState() {
     super.initState();
     _initializeControllerFuture = _initializeCamera();
-    _positionSubscription = Geolocator.getPositionStream().listen(
-      (Position position) {
+    _positionSubscription = loc.Location().onLocationChanged.listen(
+      (loc.LocationData locationData) {
         getCurrentPosition();
       },
       onError: (e) {
@@ -46,41 +48,29 @@ class _CameraState extends State<Camera> {
     );
   }
 
-  final location = TextEditingController();
-
-  final fulladdress = TextEditingController();
-
   void getCurrentPosition() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      print("Permission Not given");
-      LocationPermission asked = await Geolocator.requestPermission();
-    } else {
-      Position currentPosition = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-          forceAndroidLocationManager: true);
-      print("Latitude : ${currentPosition.latitude}");
-      print("Longitude : ${currentPosition.longitude}");
-      String lat = currentPosition.latitude.toString();
-      String long = currentPosition.longitude.toString();
-      getAddress(currentPosition.latitude, currentPosition.longitude);
-      setState(() {
-        location.text = lat + long;
-      });
-    }
+    loc.LocationData locationData = await loc.Location().getLocation();
+    double latitude = locationData.latitude!;
+    double longitude = locationData.longitude!;
+
+    print("Latitude : $latitude");
+    print("Longitude : $longitude");
+
+    getAddress(latitude, longitude);
+
+    setState(() {
+      location.text = '$latitude, $longitude';
+    });
   }
 
   void getAddress(double latitude, double longitude) async {
     try {
       List<Placemark> placemarks =
           await placemarkFromCoordinates(latitude, longitude);
-      // print(placemarks);
+
       if (placemarks.isNotEmpty) {
         Placemark placemark = placemarks[2];
-        String address = "";
-
-        address +=
+        String address =
             "${placemark.street}, ${placemark.locality}, ${placemark.subAdministrativeArea}";
         print("Full Address: $address");
 
@@ -113,11 +103,56 @@ class _CameraState extends State<Camera> {
   @override
   void dispose() {
     _controller.dispose();
+    _initializeCamera;
+    fulladdress.text;
     _positionSubscription?.cancel();
     super.dispose();
   }
 
-  Future<void> uploadImageToFirebaseStorage(File imageFile) async {
+  // Future uploadImageToFirebaseStorage(File imageFile) async {
+  //   DateTime now = DateTime.now();
+  //   final date = DateFormat('yyyy-MM-dd').format(now.toLocal());
+  //   final storage = FirebaseStorage.instance;
+  //   final section = widget.name;
+  //   final folderName =
+  //       'face_data/$section/${Session.email}'; // Specify your folder name
+  //   final randomFilename = getRandomString(10);
+
+  //   final Reference storageRef = storage.ref().child(
+  //       '$folderName/$date/$randomFilename.jpg'); // Use folder name in the path
+
+  //   final metadata = SettableMetadata(
+  //     customMetadata: {
+  //       'Time taken': DateFormat('hh:mm a').format(now.toLocal()),
+  //       'Date taken': DateFormat('yyyy-MM-dd').format(now.toLocal()),
+  //       'Name': Session.name,
+  //       'Location': fulladdress.text,
+  //     },
+  //   );
+
+  //   try {
+  //     final uploadTask = storageRef.putFile(
+  //       imageFile,
+  //       SettableMetadata(contentType: 'image/jpeg'),
+  //     );
+
+  //     await uploadTask;
+  //     await storageRef.updateMetadata(metadata);
+  //     const title = "Success";
+  //     final message = "Face ID : ${Session.name}";
+  //     Navigator.of(context).pop();
+  //     await cameraAlertDialog(context, title, message);
+  //     widget.refresh();
+  //   } catch (e) {
+  //     print('Error uploading image to Firebase: $e');
+  //   }
+  // }
+
+  void _uploadImage(File imageFile) async {
+    setState(() {
+      _uploading = true;
+    });
+
     DateTime now = DateTime.now();
     final date = DateFormat('yyyy-MM-dd').format(now.toLocal());
     final storage = FirebaseStorage.instance;
@@ -146,56 +181,16 @@ class _CameraState extends State<Camera> {
 
       await uploadTask;
       await storageRef.updateMetadata(metadata);
-      const title = "Success";
-      final message = "Face ID : ${Session.name}";
-
-      await cameraAlertDialog(context, title, message);
-      widget.refresh();
     } catch (e) {
       print('Error uploading image to Firebase: $e');
+    } finally {
+      setState(() {
+        _uploading = false;
+      });
     }
   }
 
-  Future<void> _uploadImage(File imageFile) async {
-    DateTime now = DateTime.now();
-    final date = DateFormat('yyyy-MM-dd').format(now.toLocal());
-    final storage = FirebaseStorage.instance;
-    final section = widget.name;
-    final folderName =
-        'face_data/$section/${Session.email}'; // Specify your folder name
-    final randomFilename = getRandomString(10);
-
-    final Reference storageRef = storage.ref().child(
-        '$folderName/$date/$randomFilename.jpg'); // Use folder name in the path
-
-    final metadata = SettableMetadata(
-      customMetadata: {
-        'Time taken': DateFormat('hh:mm a').format(now.toLocal()),
-        'Date taken': DateFormat('yyyy-MM-dd').format(now.toLocal()),
-        'Name': Session.name,
-        'Location': fulladdress.text,
-      },
-    );
-
-    try {
-      final uploadTask = storageRef.putFile(
-        imageFile,
-        SettableMetadata(contentType: 'image/jpeg'),
-      );
-
-      await uploadTask;
-      await storageRef.updateMetadata(metadata);
-      const title = "Success";
-      final message = "Face ID : ${Session.name}";
-      await cameraAlertDialog(context, title, message);
-      Navigator.of(context).pop();
-      widget.refresh();
-    } catch (e) {
-      print('Error uploading image to Firebase: $e');
-    }
-  }
-
-  Future<void> _captureImage() async {
+  Future _captureImage() async {
     if (_processingImage) {
       return;
     }
@@ -216,49 +211,23 @@ class _CameraState extends State<Camera> {
       if (faces.isNotEmpty) {
         setState(() {
           _capturedImage = File(image.path);
-          _option = true;
+          _uploading = false;
         });
       } else {
         const title = "Error";
         const message = "No Face Detected";
-        await cameraAlertDialog(context, title, message);
+        cameraAlertDialog(context, title, message);
         setState(() {
-          _processingImage = false;
+          _processingImage = true;
+          _uploading = false;
         });
       }
     } catch (e) {
       print('Error capturing image: $e');
     } finally {
-      // setState(() {
-      //   _processingImage = false;
-      // });
-
-      // Navigator.of(context).pop();
-    }
-  }
-
-  Widget _buildCapturedImagePreview() {
-    if (_capturedImage != null) {
-      return Column(
-        children: [
-          ListTile(
-              leading: Text("Location"),
-              trailing: fulladdress.text == ""
-                  ? Text("Scanning...")
-                  : Text(fulladdress.text)),
-          Image.file(_capturedImage!),
-          TextButton(
-            child: Text('Upload Now'),
-            onPressed: () {
-              _processingImage = false;
-
-              _uploadImage(_capturedImage!);
-            },
-          )
-        ],
-      );
-    } else {
-      return Container();
+      setState(() {
+        _processingImage = true;
+      });
     }
   }
 
@@ -267,6 +236,7 @@ class _CameraState extends State<Camera> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Camera Screen'),
+        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -276,17 +246,39 @@ class _CameraState extends State<Camera> {
               if (snapshot.connectionState == ConnectionState.done &&
                   !_processingImage) {
                 return CameraPreview(_controller);
+              } else if (_capturedImage != null) {
+                return Column(
+                  children: [
+                    ListTile(
+                        title: const Text("Location"),
+                        subtitle: fulladdress.text == ""
+                            ? const Text("Scanning...")
+                            : Text(fulladdress.text)),
+                    Image.file(_capturedImage!),
+                  ],
+                );
               } else {
-                return SizedBox();
+                return const SizedBox();
               }
             },
           ),
-          _buildCapturedImagePreview(),
+          // _buildCapturedImagePreview(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _captureImage,
-        child: const Icon(Icons.camera),
+        onPressed: _capturedImage == null
+            ? _captureImage
+            : () async {
+                _processingImage = false;
+                _uploadImage(_capturedImage!);
+                const title = "Success";
+                final message = "Uploaded successfully";
+                await cameraAlertDialog(context, title, message);
+                Navigator.of(context).pop();
+
+                widget.refresh();
+              },
+        child: _capturedImage == null ? Icon(Icons.camera) : Icon(Icons.upload),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

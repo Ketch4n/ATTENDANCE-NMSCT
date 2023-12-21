@@ -8,8 +8,10 @@ import 'package:attendance_nmsct/widgets/camera_alert_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart' as loc;
+
 import 'package:google_ml_kit/google_ml_kit.dart';
+
 import 'package:lottie/lottie.dart';
 
 class CameraAuth extends StatefulWidget {
@@ -27,7 +29,7 @@ class _CameraState extends State<CameraAuth> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   // late Stream<Position> _positionStream;
-  StreamSubscription<Position>? _positionSubscription;
+  StreamSubscription<loc.LocationData>? _positionSubscription;
 
   bool _processingImage = false;
   bool _no = false;
@@ -42,8 +44,8 @@ class _CameraState extends State<CameraAuth> {
     // getCurrentPosition();
     estabLocation();
     // Listen to location changes
-    _positionSubscription = Geolocator.getPositionStream().listen(
-      (Position position) {
+    _positionSubscription = loc.Location().onLocationChanged.listen(
+      (loc.LocationData locationData) {
         getCurrentPosition();
       },
       onError: (e) {
@@ -59,39 +61,30 @@ class _CameraState extends State<CameraAuth> {
   final estabAddressLocation = TextEditingController();
 
   void getCurrentPosition() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      print("Permission Not given");
-      LocationPermission asked = await Geolocator.requestPermission();
-    } else {
-      Position currentPosition = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-          forceAndroidLocationManager: true);
-      print("Latitude : ${currentPosition.latitude}");
-      print("Longitude : ${currentPosition.longitude}");
-      String lat = currentPosition.latitude.toString();
-      String long = currentPosition.longitude.toString();
-      getAddress(currentPosition.latitude, currentPosition.longitude);
-      setState(() {
-        location.text = lat + long;
-      });
-    }
+    loc.LocationData locationData = await loc.Location().getLocation();
+    double latitude = locationData.latitude!;
+    double longitude = locationData.longitude!;
+
+    print("Latitude : $latitude");
+    print("Longitude : $longitude");
+
+    getAddress(latitude, longitude);
+
+    setState(() {
+      location.text = '$latitude, $longitude';
+    });
   }
 
   void getAddress(double latitude, double longitude) async {
     try {
       List<Placemark> placemarks =
           await placemarkFromCoordinates(latitude, longitude);
-      // print(placemarks);
       if (placemarks.isNotEmpty) {
-        Placemark placemark = placemarks[2];
+        Placemark placemark = placemarks[0];
         String address = "";
-
         address +=
             "${placemark.street}, ${placemark.locality}, ${placemark.subAdministrativeArea}";
         print("Full Address: $address");
-
         setState(() {
           fulladdress.text = address;
         });
@@ -107,15 +100,12 @@ class _CameraState extends State<CameraAuth> {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
           Session.latitude as double, Session.longitude as double);
-      // print(placemarks);
       if (placemarks.isNotEmpty) {
-        Placemark placemark = placemarks[2];
+        Placemark placemark = placemarks[0];
         String estabAddress = "";
-
         estabAddress +=
             "${placemark.street}, ${placemark.locality}, ${placemark.subAdministrativeArea}";
         print("Full Address: $estabAddress");
-
         setState(() {
           estabAddressLocation.text = estabAddress;
         });
@@ -171,7 +161,7 @@ class _CameraState extends State<CameraAuth> {
           _no = true;
         });
         Navigator.of(context).pop(false);
-        cameraAlertDialog(context, title, message);
+        await cameraAlertDialog(context, title, message);
         widget.refreshCallback();
 
         // Upload the image to Firebase Storage with metadata
@@ -242,46 +232,48 @@ class _CameraState extends State<CameraAuth> {
                 // Location matched, automatically capture image
                 _captureImage();
               }
-              return Column(
-                children: [
-                  ListTile(
-                      title: Text("Current Location:"),
-                      subtitle: fulladdress.text != ""
-                          ? Text(
-                              fulladdress.text,
-                              style: TextStyle(color: Colors.blue),
-                            )
-                          : Text(
-                              "Scanning...",
-                              style: TextStyle(color: Colors.blue),
-                            )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Status : "),
-                      fulladdress.text == estabAddressLocation.text
-                          ? Text(
-                              "unmatched location",
-                              style: TextStyle(color: Colors.red),
-                            )
-                          : Text(
-                              "Location matched",
-                              style: TextStyle(color: Colors.green),
-                            ),
-                    ],
-                  ),
-                  Center(
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        CameraPreview(_controller),
-                        Lottie.asset(
-                          'assets/scanning.json',
-                        ),
+              return Expanded(
+                child: Column(
+                  children: [
+                    ListTile(
+                        title: Text("Current Location:"),
+                        subtitle: fulladdress.text != ""
+                            ? Text(
+                                fulladdress.text,
+                                style: TextStyle(color: Colors.blue),
+                              )
+                            : Text(
+                                "Scanning...",
+                                style: TextStyle(color: Colors.blue),
+                              )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Status : "),
+                        fulladdress.text == estabAddressLocation.text
+                            ? Text(
+                                "unmatched location",
+                                style: TextStyle(color: Colors.red),
+                              )
+                            : Text(
+                                "Location matched",
+                                style: TextStyle(color: Colors.green),
+                              ),
                       ],
                     ),
-                  ),
-                ],
+                    Center(
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          CameraPreview(_controller),
+                          Lottie.asset(
+                            'assets/scanning.json',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               );
             } else {
               return Center(child: Text("Turn on Location"));

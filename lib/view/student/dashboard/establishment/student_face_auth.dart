@@ -34,16 +34,16 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   double screenWidth = 0;
   final _idController = TextEditingController();
 
-  String checkInAM = "00:00:00";
-  String inAM = "--";
-  String checkOutAM = "00:00:00";
-  String outAM = "--";
-  String checkInPM = "00:00:00";
-  String inPM = "--";
-  String checkOutPM = "00:00:00";
-  String outPM = "--";
-  String defaultValue = '00:00:00';
-  String defaultT = '--/--';
+  late String checkInAM = "00:00:00";
+  late String inAM = "--";
+  late String checkOutAM = "00:00:00";
+  late String outAM = "--";
+  late String checkInPM = "00:00:00";
+  late String inPM = "--";
+  late String checkOutPM = "00:00:00";
+  late String outPM = "--";
+  late String defaultValue = '00:00:00';
+  late String defaultT = '--/--';
 
   DateFormat format = DateFormat("hh:mm a");
 
@@ -62,7 +62,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   //    });
 
   // }
-  Future today(todayStream) async {
+  Future<void> today(todayStream) async {
     final response = await http.post(
       Uri.parse('${Server.host}users/student/today.php'),
       body: {
@@ -74,7 +74,6 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final today = TodayModel.fromJson(data);
-
       setState(() {
         checkInAM = today.time_in_am;
         inAM = today.in_am;
@@ -85,6 +84,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
         checkOutPM = today.time_out_pm;
         outPM = today.out_pm;
       });
+
       // todayStream.add(today);
     } else {
       throw Exception('Failed to load data');
@@ -92,7 +92,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   }
 
   // String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-  Future insertToday() async {
+  void insertToday() async {
     try {
       if (checkInAM == "00:00:00") {
         setState(() {
@@ -148,39 +148,38 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
 
-    return Column(
-      children: [
-        StreamBuilder(
-          stream: Stream.periodic(const Duration(seconds: 1)),
-          builder: (context, snapshot) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Container(
-                width: double.maxFinite,
-                color: Colors.blue,
-                child: Center(
-                  child: Text(
-                    DateFormat('hh:mm:ss a').format(DateTime.now()),
-                    style: TextStyle(
-                      fontFamily: "NexaRegular",
-                      fontSize: 20,
-                      color: Colors.white,
+    return Expanded(
+      child: Column(
+        children: [
+          StreamBuilder(
+            stream: Stream.periodic(const Duration(seconds: 1)),
+            builder: (context, snapshot) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Container(
+                  width: double.maxFinite,
+                  color: Colors.blue,
+                  child: Center(
+                    child: Text(
+                      DateFormat('hh:mm:ss a').format(DateTime.now()),
+                      style: TextStyle(
+                        fontFamily: "NexaRegular",
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
-        ),
-        SizedBox(height: 20),
-        checkInAM == defaultValue ||
-                checkOutAM == defaultValue ||
-                checkInPM == defaultValue ||
-                checkOutPM == defaultValue
-            ? Flexible(
-                flex: 1,
-                child: Container(
-                  // constraints: BoxConstraints(maxHeight: 50, maxWidth: 50),
+              );
+            },
+          ),
+          SizedBox(height: 20),
+          checkInAM == defaultValue ||
+                  checkOutAM == defaultValue ||
+                  checkInPM == defaultValue ||
+                  checkOutPM == defaultValue
+              ? Flexible(
+                  flex: 1,
                   child: Builder(
                     builder: (context) {
                       return GestureDetector(
@@ -204,24 +203,22 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                       );
                     },
                   ),
-                ),
-              )
-            : Flexible(
-                flex: 1,
-                child: Container(
-                  margin: const EdgeInsets.only(top: 20, bottom: 32),
-                  child: Text(
-                    "You have completed this day!",
-                    style: TextStyle(
-                      fontFamily: "NexaRegular",
-                      fontSize: 20,
-                      color: Colors.black54,
+                )
+              : Flexible(
+                  flex: 1,
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 20, bottom: 32),
+                    child: Text(
+                      "You have completed this day!",
+                      style: TextStyle(
+                        fontFamily: "NexaRegular",
+                        fontSize: 20,
+                        color: Colors.black54,
+                      ),
                     ),
                   ),
                 ),
-              ),
-        Expanded(
-          child: Padding(
+          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -321,8 +318,8 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

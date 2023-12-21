@@ -1,8 +1,7 @@
 import 'dart:async';
-
+import 'package:location/location.dart' as loc;
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 
 class StudentEstabOnsite extends StatefulWidget {
   const StudentEstabOnsite({super.key});
@@ -20,7 +19,6 @@ class _StudentEstabOnsiteState extends State<StudentEstabOnsite> {
   void initState() {
     super.initState();
 
-    Geolocator.checkPermission();
     getCurrentPosition();
     // Listen to location changes
     // _positionSubscription = Geolocator.getPositionStream().listen(
@@ -41,38 +39,28 @@ class _StudentEstabOnsiteState extends State<StudentEstabOnsite> {
     super.dispose();
   }
 
-  Future<void> getCurrentPosition() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      print("Permission Not given");
-      LocationPermission asked = await Geolocator.requestPermission();
-    } else {
-      Position currentPosition = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-          forceAndroidLocationManager: true);
-      print("Latitude : ${currentPosition.latitude}");
-      print("Longitude : ${currentPosition.longitude}");
-      String lat = currentPosition.latitude.toString();
-      String long = currentPosition.longitude.toString();
-      await getAddress(currentPosition.latitude, currentPosition.longitude);
+  void getCurrentPosition() async {
+    loc.LocationData locationData = await loc.Location().getLocation();
+    double latitude = locationData.latitude!;
+    double longitude = locationData.longitude!;
 
-      setState(() {
-        location.text = lat + long;
-      });
-    }
+    print("Latitude : $latitude");
+    print("Longitude : $longitude");
+
+    getAddress(latitude, longitude);
+
+    setState(() {
+      location.text = '$latitude, $longitude';
+    });
   }
 
-  Future<void> getAddress(double latitude, double longitude) async {
+  void getAddress(double latitude, double longitude) async {
     try {
       List<Placemark> placemarks =
           await placemarkFromCoordinates(latitude, longitude);
-      // print(placemarks);
       if (placemarks.isNotEmpty) {
-        Placemark placemark = placemarks[2];
-        String address = "";
-
-        address +=
+        Placemark placemark = placemarks[0]; // Use the first placemark
+        String address =
             "${placemark.street}, ${placemark.locality}, ${placemark.subAdministrativeArea}";
         print("Full Address: $address");
 
