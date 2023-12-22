@@ -5,6 +5,7 @@ import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/camera_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
@@ -34,16 +35,16 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   double screenWidth = 0;
   final _idController = TextEditingController();
 
-  late String checkInAM = "00:00:00";
-  late String inAM = "--";
-  late String checkOutAM = "00:00:00";
-  late String outAM = "--";
-  late String checkInPM = "00:00:00";
-  late String inPM = "--";
-  late String checkOutPM = "00:00:00";
-  late String outPM = "--";
-  late String defaultValue = '00:00:00';
-  late String defaultT = '--/--';
+  String checkInAM = "00:00:00";
+  String inAM = "--";
+  String checkOutAM = "00:00:00";
+  String outAM = "--";
+  String checkInPM = "00:00:00";
+  String inPM = "--";
+  String checkOutPM = "00:00:00";
+  String outPM = "--";
+  String defaultValue = '00:00:00';
+  String defaultT = '--/--';
 
   DateFormat format = DateFormat("hh:mm a");
 
@@ -62,7 +63,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   //    });
 
   // }
-  Future<void> today(todayStream) async {
+ void today(todayStream) async {
     final response = await http.post(
       Uri.parse('${Server.host}users/student/today.php'),
       body: {
@@ -73,6 +74,8 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
+
+       print("Response Data: $data");
       final today = TodayModel.fromJson(data);
       setState(() {
         checkInAM = today.time_in_am;
@@ -87,12 +90,13 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
 
       // todayStream.add(today);
     } else {
-      throw Exception('Failed to load data');
+        print("Failed to load data. Status Code: ${response.statusCode}");
+  throw Exception('Failed to load data');
     }
   }
 
   // String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-  void insertToday() async {
+ void  insertToday() async {
     try {
       if (checkInAM == "00:00:00") {
         setState(() {
@@ -126,7 +130,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
         '{"student_id": "$userId", "estab_id": "$estabId","time_in_am":"$checkInAM","in_am":"$inAM", "time_out_am":"$checkOutAM","out_am":"$outAM","time_in_pm":"$checkInPM","in_pm":"$inPM","time_out_pm":"$checkOutPM","out_pm":"$outPM","date":"$defaultDATE"}';
     final response =
         await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
-    await today(_todayStream);
+    today(_todayStream);
     _todayStream.close();
   }
 
@@ -141,6 +145,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   void dispose() {
     super.dispose();
     _todayStream.close();
+
   }
 
   @override
@@ -148,8 +153,8 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
 
-    return Expanded(
-      child: Column(
+    return Scaffold(
+     body: Column(
         children: [
           StreamBuilder(
             stream: Stream.periodic(const Duration(seconds: 1)),
@@ -196,7 +201,9 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                             child: SizedBox(
                               height: 100,
                               width: 100,
-                              child: Lottie.asset('assets/scan.json'),
+                              child: 
+                     
+                            kIsWeb ? Center(child: Text("SCAN")):  Lottie.asset('assets/scan.json'),
                             ),
                           ),
                         ),
@@ -218,14 +225,16 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                     ),
                   ),
                 ),
+                 SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  child: Column(
+               Expanded(
+                 child: Flex(
+                  direction: Axis.vertical,
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -270,9 +279,10 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                       ),
                     ],
                   ),
-                ),
-                Expanded(
-                  child: Column(
+               ),
+              Expanded(
+                child: Flex(
+                    direction: Axis.vertical,
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -314,7 +324,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                       ),
                     ],
                   ),
-                ),
+              ),
               ],
             ),
           ),

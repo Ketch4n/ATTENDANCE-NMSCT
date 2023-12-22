@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/report.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
@@ -30,33 +31,31 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
   double screenHeight = 0;
   double screenWidth = 0;
   String _month = DateFormat('MMMM').format(DateTime.now());
-  String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
+String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
 
-  Future<void> monthly_report(monthStream) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final userId = prefs.getString('userId');
+ Future<void> monthly_report(monthStream) async {
+
+     
       final response = await http.post(
         Uri.parse('${Server.host}users/student/monthly_report.php'),
-        body: {'id': userId, 'month': _yearMonth},
+        body: {'id': Session.id, 'month': _yearMonth},
       );
+       print("ID : ${Session.id}") ;
       print("TEST : $_yearMonth");
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
+        print("Response Data: $data");
         final List<TodayModel> dtr =
             data.map((dtrData) => TodayModel.fromJson(dtrData)).toList();
         // Add the list of classmates to the stream
         _monthStream.add(dtr);
       } else {
+         print("Failed to load data. Status Code: ${response.statusCode}");
         setState(() {
           error = 'Failed to load data';
         });
       }
-    } catch (e) {
-      setState(() {
-        error = 'An error occurred: $e';
-      });
-    }
+   
   }
 
   Future refreshData() async {

@@ -43,7 +43,22 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
 
   final fulladdress = TextEditingController();
   // StreamSubscription<loc.LocationData>? _positionSubscription;
+  @override
+  void initState() {
+    super.initState();
+    getCurrentPosition();
 
+    // Listen to location changes
+  }
+
+  @override
+  void dispose() {
+    fulladdress.dispose();
+
+    getCurrentPosition;
+
+    super.dispose();
+  }
   void getCurrentPosition() async {
     loc.LocationData locationData = await loc.Location().getLocation();
     double latitude = locationData.latitude!;
@@ -64,7 +79,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
           await placemarkFromCoordinates(latitude, longitude);
       print(placemarks);
       if (placemarks.isNotEmpty) {
-        Placemark placemark = placemarks[0];
+        Placemark placemark = placemarks[2];
         String address = "";
 
         address +=
@@ -82,22 +97,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getCurrentPosition();
 
-    // Listen to location changes
-  }
-
-  @override
-  void dispose() {
-    fulladdress.dispose();
-
-    getCurrentPosition;
-
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

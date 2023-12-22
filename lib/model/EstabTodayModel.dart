@@ -1,4 +1,4 @@
-class TodayModel {
+class EstabTodayModel {
   final String id;
   final String student_id;
   final String estab_id;
@@ -11,10 +11,10 @@ class TodayModel {
   final String time_out_pm;
   final String out_pm;
   final String date;
+final String name;
+  final String email;
 
-
-
-  TodayModel({
+  EstabTodayModel({
     required this.id,
     required this.student_id,
     required this.estab_id,
@@ -27,8 +27,8 @@ class TodayModel {
     required this.time_out_pm,
     required this.out_pm,
     required this.date,
-
-
+required this.name,
+    required this.email,
   });
 
   Map<String, dynamic> toJson() => {
@@ -45,11 +45,11 @@ class TodayModel {
         'time_out_pm': time_out_pm,
         'out_pm': out_pm,
         'date': date,
-  
-    
+  'name':name,
+        'email': email,
       };
 
-  static TodayModel fromJson(Map<String, dynamic> json) => TodayModel(
+  static EstabTodayModel fromJson(Map<String, dynamic> json) => EstabTodayModel(
         // id: json['id'],
         id: json['id'],
         student_id: json['student_id'],
@@ -63,7 +63,7 @@ class TodayModel {
         time_out_pm: json['time_out_pm'],
         out_pm: json['out_pm'],
         date: json['date'],
-   
-    
+   name: json['name'],
+        email: json['email'],
       );
 }

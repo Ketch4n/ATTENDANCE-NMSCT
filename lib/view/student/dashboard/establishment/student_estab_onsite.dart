@@ -14,28 +14,22 @@ class _StudentEstabOnsiteState extends State<StudentEstabOnsite> {
   final code = TextEditingController();
   final location = TextEditingController();
   final fulladdress = TextEditingController();
+    final longi = TextEditingController();
+  final lati = TextEditingController();
   // StreamSubscription<Position>? _positionSubscription;
   @override
   void initState() {
     super.initState();
 
     getCurrentPosition();
-    // Listen to location changes
-    // _positionSubscription = Geolocator.getPositionStream().listen(
-    //   (Position position) {
-    //     getCurrentPosition();
-    //   },
-    //   onError: (e) {
-    //     print("Error getting location: $e");
-    //   },
-    // );
+
   }
 
   @override
   void dispose() {
     fulladdress.dispose();
     getCurrentPosition;
-    // _positionSubscription?.cancel(); // Cancel the location subscription
+  
     super.dispose();
   }
 
@@ -44,13 +38,12 @@ class _StudentEstabOnsiteState extends State<StudentEstabOnsite> {
     double latitude = locationData.latitude!;
     double longitude = locationData.longitude!;
 
-    print("Latitude : $latitude");
-    print("Longitude : $longitude");
-
-    getAddress(latitude, longitude);
+    getAddress(locationData.latitude!, locationData.longitude!);
 
     setState(() {
-      location.text = '$latitude, $longitude';
+      longi.text = longitude.toString();
+      lati.text = latitude.toString();
+      location.text = latitude.toString() + longitude.toString();
     });
   }
 
@@ -58,9 +51,12 @@ class _StudentEstabOnsiteState extends State<StudentEstabOnsite> {
     try {
       List<Placemark> placemarks =
           await placemarkFromCoordinates(latitude, longitude);
+      print(placemarks);
       if (placemarks.isNotEmpty) {
-        Placemark placemark = placemarks[0]; // Use the first placemark
-        String address =
+        Placemark placemark = placemarks[2];
+        String address = "";
+
+        address +=
             "${placemark.street}, ${placemark.locality}, ${placemark.subAdministrativeArea}";
         print("Full Address: $address");
 

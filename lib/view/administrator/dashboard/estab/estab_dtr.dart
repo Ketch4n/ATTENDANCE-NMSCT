@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
-import 'package:attendance_nmsct/model/TodayModel.dart';
+import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/report.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -23,8 +23,8 @@ class EstabDTR extends StatefulWidget {
 }
 
 class _EstabDTRState extends State<EstabDTR> {
-  final StreamController<List<TodayModel>> _monthStream =
-      StreamController<List<TodayModel>>();
+  final StreamController<List<EstabTodayModel>> _monthStream =
+      StreamController<List<EstabTodayModel>>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   String defaultValue = '00:00:00';
@@ -44,8 +44,8 @@ class _EstabDTRState extends State<EstabDTR> {
       print("TEST : $_yearMonth");
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
-        final List<TodayModel> dtr =
-            data.map((dtrData) => TodayModel.fromJson(dtrData)).toList();
+        final List<EstabTodayModel> dtr =
+            data.map((dtrData) => EstabTodayModel.fromJson(dtrData)).toList();
         // Add the list of classmates to the stream
         _monthStream.add(dtr);
       } else {
@@ -114,7 +114,7 @@ class _EstabDTRState extends State<EstabDTR> {
               ),
             ),
             Expanded(
-              child: StreamBuilder<List<TodayModel>>(
+              child: StreamBuilder<List<EstabTodayModel>>(
                   stream: _monthStream.stream,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
@@ -127,7 +127,7 @@ class _EstabDTRState extends State<EstabDTR> {
                           child: ListView.builder(
                             itemCount: snap.length,
                             itemBuilder: (context, index) {
-                              final TodayModel dtr = snap[index];
+                              final EstabTodayModel dtr = snap[index];
 
                               return
                                   // DateFormat('MMMM').format(

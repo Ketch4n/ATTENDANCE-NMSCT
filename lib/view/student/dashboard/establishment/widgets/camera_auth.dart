@@ -6,6 +6,7 @@ import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:attendance_nmsct/widgets/camera_alert_dialog.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:location/location.dart' as loc;
@@ -160,8 +161,9 @@ class _CameraState extends State<CameraAuth> {
         setState(() {
           _no = true;
         });
-        Navigator.of(context).pop(false);
+       
         await cameraAlertDialog(context, title, message);
+         Navigator.of(context).pop(false);
         widget.refreshCallback();
 
         // Upload the image to Firebase Storage with metadata
@@ -232,48 +234,50 @@ class _CameraState extends State<CameraAuth> {
                 // Location matched, automatically capture image
                 _captureImage();
               }
-              return Expanded(
-                child: Column(
-                  children: [
-                    ListTile(
-                        title: Text("Current Location:"),
-                        subtitle: fulladdress.text != ""
-                            ? Text(
-                                fulladdress.text,
-                                style: TextStyle(color: Colors.blue),
-                              )
-                            : Text(
-                                "Scanning...",
-                                style: TextStyle(color: Colors.blue),
-                              )),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Status : "),
-                        fulladdress.text == estabAddressLocation.text
-                            ? Text(
-                                "unmatched location",
-                                style: TextStyle(color: Colors.red),
-                              )
-                            : Text(
-                                "Location matched",
-                                style: TextStyle(color: Colors.green),
-                              ),
+              return Column(
+                   
+                children: [
+                  ListTile(
+                      title: Text("Current Location:"),
+                      subtitle: fulladdress.text != ""
+                          ? Text(
+                              fulladdress.text,
+                              style: TextStyle(color: Colors.blue),
+                            )
+                          : Text(
+                              "Scanning...",
+                              style: TextStyle(color: Colors.blue),
+                            )),
+                Row(
+                  
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Status : "),
+                      fulladdress.text == estabAddressLocation.text
+                          ? Text(
+                              "unmatched location",
+                              style: TextStyle(color: Colors.red),
+                            )
+                          : Text(
+                              "Location matched",
+                              style: TextStyle(color: Colors.green),
+                            ),
+                    ],
+                  ),
+                  Center(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        CameraPreview(_controller),
+                       
+                       kIsWeb ? Text("Scanning..."):
+                        Lottie.asset(
+                          'assets/scanning.json',
+                        ),
                       ],
                     ),
-                    Center(
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: <Widget>[
-                          CameraPreview(_controller),
-                          Lottie.asset(
-                            'assets/scanning.json',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               );
             } else {
               return Center(child: Text("Turn on Location"));
