@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 import 'package:location/location.dart' as loc;
 import 'package:geocoding/geocoding.dart';
 import 'package:location/location.dart';
@@ -59,6 +60,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
 
     super.dispose();
   }
+
   void getCurrentPosition() async {
     loc.LocationData locationData = await loc.Location().getLocation();
     double latitude = locationData.latitude!;
@@ -96,8 +98,6 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
       print("Error: $e");
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -235,9 +235,9 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                                 context,
                                 code,
                                 pin,
-                                loc,
-                                longitude,
-                                latitude,
+                                loc as String,
+                                longitude as double,
+                                latitude as double,
                                 widget.admin_id,
                               );
                               // await pasteCode(context, title, message, code);

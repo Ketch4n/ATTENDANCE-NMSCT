@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   font_awesome_flutter: ^10.6.0
   lottie: ^2.7.0
+  google_maps_flutter: ^2.2.1
 
   intl: ^0.18.1
   http: ^1.1.2
@@ -63,8 +64,8 @@ dependencies:
   image: ^4.0.17
 
   location: ^5.0.3
-  # geolocator: ^10.1.0
-  geocoding: ^2.0.1
+  geolocator: ^9.0.2
+  geocoding: ^2.0.5
   month_year_picker: ^0.3.0+1
   slide_to_act: ^2.0.1
 

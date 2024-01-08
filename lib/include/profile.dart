@@ -74,7 +74,7 @@ class _GlobalProfileState extends State<GlobalProfile> {
                                     : CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    user.name,
+                                    user.fname,
                                     style: Style.profileText
                                         .copyWith(fontSize: 18),
                                   ),

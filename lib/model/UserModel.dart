@@ -1,8 +1,8 @@
 class UserModel {
   final String id;
   final String email;
-  final String name;
-  final String user_id;
+  final String fname;
+  final String lname;
   final String role;
   final String section_id;
   final String section_name;
@@ -12,13 +12,13 @@ class UserModel {
   final String location;
   final String longitude;
   final String latitude;
-  final String creator_id;
+  final String creator_email;
 
   UserModel(
       {required this.id,
       required this.email,
-      required this.name,
-      required this.user_id,
+      required this.fname,
+      required this.lname,
       required this.role,
       required this.section_id,
       required this.section_name,
@@ -28,14 +28,14 @@ class UserModel {
       required this.location,
       required this.longitude,
       required this.latitude,
-      required this.creator_id});
+      required this.creator_email});
 
   Map<String, dynamic> toJson() => {
         // 'id': id,
         'id': id,
         'email': email,
-        'name': name,
-        'user_id': user_id,
+        'fname': fname,
+        'lname': lname,
         'role': role,
         'section_id': section_id,
         'section_name': section_name,
@@ -45,15 +45,15 @@ class UserModel {
         'location': location,
         'longitude': longitude,
         'latitude': latitude,
-        'creator_id': creator_id
+        'creator_email': creator_email
       };
 
   static UserModel fromJson(Map<String, dynamic> json) => UserModel(
       // id: json['id'],
       id: json['id'],
       email: json['email'],
-      name: json['name'],
-      user_id: json['user_id'],
+      fname: json['fname'],
+      lname: json['lname'],
       role: json['role'],
       section_id: json['section_id'],
       section_name: json['section_name'],
@@ -63,5 +63,5 @@ class UserModel {
       location: json['location'],
       longitude: json['longitude'],
       latitude: json['latitude'],
-      creator_id: json['creator_id']);
+      creator_email: json['creator_email']);
 }

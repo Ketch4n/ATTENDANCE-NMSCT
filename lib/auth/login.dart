@@ -1,5 +1,8 @@
+import 'package:attendance_nmsct/auth/google/google_map.dart';
+import 'package:attendance_nmsct/auth/google/pin_map.dart';
 import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/controller/Login.dart';
+
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -186,6 +189,15 @@ class _LoginState extends State<Login> {
                       ),
                     ],
                   ),
+                  TextButton(
+                    onPressed: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => FaceNetApp()),
+                      // );
+                    },
+                    child: Text("FACE"),
+                  )
                 ],
               ),
             ),

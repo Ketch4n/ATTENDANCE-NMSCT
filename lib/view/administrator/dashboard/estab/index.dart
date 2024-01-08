@@ -161,7 +161,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
                   children: sect2.map((EstabModel sec) {
                     return GlobalDashCard(
                       id: sec.id,
-                      uid: sec.creator_id,
+                      uid: sec.creator_email,
                       name: sec.establishment_name,
                       code: sec.code,
                       path: uRole == 'Admin' ? "class" : "room",

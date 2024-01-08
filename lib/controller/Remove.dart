@@ -24,9 +24,7 @@ Future removeClassRoom(
   final message = jsonResponse['message'];
 
   if (response.statusCode == 200) {
-    kIsWeb
-        ? platformInfo(context, status, message)
-        : showAlertDialog(context, status, message);
+    showAlertDialog(context, status, message);
   } else {
     print('Failed to update database. Error: ${response.statusCode}');
   }

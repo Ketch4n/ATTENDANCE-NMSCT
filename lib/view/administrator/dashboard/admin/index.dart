@@ -109,7 +109,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         children: [
                           const Duck(),
                           Text(
-                              uRole == 'Admin'
+                              uRole == 'Administrator'
                                   ? "No Section Found !"
                                   : "No registered Establishment !",
                               style: Style.duck),

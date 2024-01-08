@@ -12,7 +12,7 @@ Future signup(BuildContext context, String email, String password, String id,
   String apiUrl = '${Server.host}auth/signup.php';
   Map<String, String> headers = {'Content-Type': 'application/json'};
   String jsonData =
-      '{"email": "$email", "password": "$password", "name": "$name", "user_id": "$id", "role":"$roleController"}';
+      '{"email": "$email", "password": "$password", "fname": "$name", "lname": "$id", "role":"$roleController"}';
   final response =
       await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
   final jsonResponse = json.decode(response.body);

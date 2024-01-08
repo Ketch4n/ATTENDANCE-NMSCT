@@ -120,9 +120,10 @@ class _AdministratorHome extends State {
           body: IndexedStack(
             index: _currentIndex,
             children: [
-              Session.role == 'Admin'
-                  ? const AdminDashboard()
-                  : const EstabDashboard(),
+              // Session.role == 'Administrator'
+              //     ? const AdminDashboard()
+              //     :
+              const EstabDashboard(),
               const GlobalProfile(),
             ],
           )
