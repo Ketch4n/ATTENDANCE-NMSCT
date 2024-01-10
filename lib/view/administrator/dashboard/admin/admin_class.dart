@@ -100,7 +100,7 @@ class _AdminClassState extends State<AdminClass> {
                 width: 50,
                 fit: BoxFit.cover,
               )),
-          title: Text("${Session.name} (You)",
+          title: Text("${Session.fname} (You)",
               style: const TextStyle(fontSize: 18)),
           subtitle: Text(
             Session.email,

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:attendance_nmsct/controller/Read.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/model/ClassModel.dart';
+import 'package:attendance_nmsct/model/RoomModel.dart';
 import 'package:attendance_nmsct/widgets/else_statement.dart';
 import 'package:flutter/material.dart';
 
@@ -15,8 +15,8 @@ class StudentSectionClass extends StatefulWidget {
 }
 
 class _StudentSectionClassState extends State<StudentSectionClass> {
-  final StreamController<List<ClassModel>> _classmateStreamController =
-      StreamController<List<ClassModel>>();
+  final StreamController<List<RoomModel>> _classmateStreamController =
+      StreamController<List<RoomModel>>();
 
   @override
   void initState() {
@@ -60,10 +60,10 @@ class _StudentSectionClassState extends State<StudentSectionClass> {
                 style: Style.classFont,
               ),
               subtitle: Style.classdivider),
-          StreamBuilder<List<ClassModel>>(
+          StreamBuilder<List<RoomModel>>(
               stream: _classmateStreamController.stream,
               builder: (context, snapshot) {
-                final List<ClassModel> classmates = snapshot.data!;
+                final List<RoomModel> classmates = snapshot.data!;
                 if (snapshot.hasData) {
                   if (classmates.isEmpty) {
                     nodata;
@@ -72,7 +72,7 @@ class _StudentSectionClassState extends State<StudentSectionClass> {
                     child: ListView.builder(
                         itemCount: classmates.length,
                         itemBuilder: (context, index) {
-                          final ClassModel classmate = classmates[index];
+                          final RoomModel classmate = classmates[index];
                           return ListTile(
                             leading: ClipRRect(
                                 borderRadius: Style.radius50,
@@ -84,8 +84,8 @@ class _StudentSectionClassState extends State<StudentSectionClass> {
                                 )),
                             title: Text(
                                 classmate.student_id == Session.id
-                                    ? "${classmate.name} (You)"
-                                    : classmate.name,
+                                    ? "${classmate.fname} (You)"
+                                    : classmate.fname,
                                 style: const TextStyle(fontSize: 18)),
                             subtitle: Text(
                               classmate.email,

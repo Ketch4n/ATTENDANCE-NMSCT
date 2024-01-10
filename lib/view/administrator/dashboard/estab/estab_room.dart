@@ -3,8 +3,9 @@ import 'dart:convert';
 
 import 'package:attendance_nmsct/controller/User.dart';
 import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/model/RoomModel.dart';
+import 'package:attendance_nmsct/model/EstabRoomModel.dart';
 import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,32 +22,25 @@ class EstabRoom extends StatefulWidget {
 }
 
 class _EstabRoomState extends State<EstabRoom> {
-  final StreamController<List<RoomModel>> _internsStreamController =
-      StreamController<List<RoomModel>>();
-  // Future<void> _refreshData() async {
-  //   await fetchUser(_userStreamController);
-  final StreamController<UserModel> _userStreamController =
-      StreamController<UserModel>();
+  final StreamController<List<EstabRoomModel>> _internsStreamController =
+      StreamController<List<EstabRoomModel>>();
 
   @override
   void initState() {
     super.initState();
-    fetchUser(_userStreamController);
+
     fetchinterns(_internsStreamController);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _userStreamController.close();
+
     _internsStreamController.close();
   }
 
   // }
   String yourID = "";
-  // String admin_ID = "";
-  // String admin_name = "";
-  // String admin_email = "";
 
   Future<void> fetchinterns(internstreamController) async {
     final prefs = await SharedPreferences.getInstance();
@@ -55,14 +49,14 @@ class _EstabRoomState extends State<EstabRoom> {
       yourID = userId!;
     });
     final response = await http.post(
-      Uri.parse('${Server.host}users/student/room.php'),
+      Uri.parse('${Server.host}users/establishment/estab_room.php'),
       body: {'establishment_id': widget.ids},
     );
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      final List<RoomModel> interns = data
-          .map((classmateData) => RoomModel.fromJson(classmateData))
+      final List<EstabRoomModel> interns = data
+          .map((classmateData) => EstabRoomModel.fromJson(classmateData))
           .toList();
 
       // Add the list of interns to the stream
@@ -105,26 +99,17 @@ class _EstabRoomState extends State<EstabRoom> {
                 const SizedBox(
                   width: 10,
                 ),
-                StreamBuilder<UserModel>(
-                    stream: _userStreamController.stream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        UserModel user = snapshot.data!;
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("${user.fname} (You)",
-                                style: const TextStyle(fontSize: 18)),
-                            Text(
-                              user.email,
-                              style: const TextStyle(fontSize: 12),
-                            )
-                          ],
-                        );
-                      } else {
-                        return const SizedBox();
-                      }
-                    }),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("${Session.fname} (You)",
+                        style: const TextStyle(fontSize: 18)),
+                    Text(
+                      Session.email,
+                      style: const TextStyle(fontSize: 12),
+                    )
+                  ],
+                ),
               ],
             ),
           ),
@@ -141,16 +126,16 @@ class _EstabRoomState extends State<EstabRoom> {
               thickness: 2,
             ),
           ),
-          StreamBuilder<List<RoomModel>>(
+          StreamBuilder<List<EstabRoomModel>>(
               stream: _internsStreamController.stream,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  final List<RoomModel> interns = snapshot.data!;
+                  final List<EstabRoomModel> interns = snapshot.data!;
                   return Expanded(
                     child: ListView.builder(
                         itemCount: interns.length,
                         itemBuilder: (context, index) {
-                          final RoomModel classmate = interns[index];
+                          final EstabRoomModel classmate = interns[index];
                           return Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ListTile(
@@ -171,7 +156,8 @@ class _EstabRoomState extends State<EstabRoom> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(classmate.name,
+                                      Text(
+                                          '${classmate.lname}, ${classmate.fname}',
                                           style: const TextStyle(fontSize: 18)),
                                       Text(
                                         classmate.email,

@@ -30,7 +30,7 @@ class _JoinState extends State<Join> {
       appBar: AppBar(
         title: Row(
           children: [
-            Text(widget.role == 'Student' ? 'Join ' : 'Create '),
+            const Text('Join'),
             Text(widget.purpose),
           ],
         ),
@@ -53,9 +53,7 @@ class _JoinState extends State<Join> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 15.0),
                   child: Text(
-                    widget.role == 'Admin'
-                        ? 'Type ${widget.purpose} first, code will be generated after'
-                        : "Ask for ${widget.purpose} code\nand enter it here",
+                    "Ask for ${widget.purpose} code\nand enter it here",
                     style: TextStyle(color: Colors.grey[600], fontSize: 15),
                   ),
                 ),
@@ -65,23 +63,15 @@ class _JoinState extends State<Join> {
                       controller: code,
                       enableSuggestions: false,
                       autocorrect: false,
-                      decoration: Style.textdesign.copyWith(
-                          hintText: widget.role == 'Admin'
-                              ? 'Section Name'
-                              : widget.role == "Student"
-                                  ? "${widget.purpose} Code"
-                                  : "${widget.purpose} Code"),
+                      decoration: Style.textdesign
+                          .copyWith(hintText: "${widget.purpose} Code"),
                     ),
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () async {
-                          final String path = widget.purpose == 'Establishment'
-                              ? 'establishment'
-                              : 'section';
-                          final String ref = widget.purpose == 'Establishment'
-                              ? 'room'
-                              : 'class';
+                          const String path = 'establishment';
+                          const String ref = 'room';
                           final String pin = code.text;
                           // const String mess = "You are now in a ";
                           if (pin.isEmpty) {

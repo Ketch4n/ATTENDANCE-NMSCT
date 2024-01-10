@@ -1,21 +1,22 @@
 class RoomModel {
   final String id;
+  // final String establishment_id;
   final String email;
-  final String name;
+  final String fname;
   final String student_id;
-  final String establishment_id;
-  final String creator_id;
-  final String creator_name;
+
+  // final String creator_id;
+  final String creator_fname;
   final String creator_email;
 
   RoomModel({
     required this.id,
     required this.email,
-    required this.name,
+    required this.fname,
     required this.student_id,
-    required this.establishment_id,
-    required this.creator_id,
-    required this.creator_name,
+    // required this.establishment_id,
+    // required this.creator_id,
+    required this.creator_fname,
     required this.creator_email,
   });
 
@@ -23,11 +24,11 @@ class RoomModel {
         // 'id': id,
         'id': id,
         'email': email,
-        'name': name,
+        'fname': fname,
         'student_id': student_id,
-        'establishment_id': establishment_id,
-        'creator_id': creator_id,
-        'creator_name': creator_name,
+        // 'establishment_id': establishment_id,
+        // 'creator_id': creator_id,
+        'creator_fname': creator_fname,
         'creator_email': creator_email
       };
 
@@ -35,10 +36,10 @@ class RoomModel {
       // id: json['id'],
       id: json['id'],
       email: json['email'],
-      name: json['name'],
+      fname: json['fname'],
       student_id: json['student_id'],
-      establishment_id: json['establishment_id'],
-      creator_id: json['creator_id'],
-      creator_name: json['creator_name'],
+      // establishment_id: json['establishment_id'],
+      // creator_id: json['creator_id'],
+      creator_fname: json['creator_fname'],
       creator_email: json['creator_email']);
 }

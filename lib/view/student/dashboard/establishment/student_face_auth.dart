@@ -63,11 +63,12 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   //    });
 
   // }
- void today(todayStream) async {
+  void today(todayStream) async {
     final response = await http.post(
       Uri.parse('${Server.host}users/student/today.php'),
       body: {
         'id': Session.id,
+        'estab_id': widget.id,
         'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
       },
     );
@@ -75,7 +76,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
 
-       print("Response Data: $data");
+      print("Response Data: $data");
       final today = TodayModel.fromJson(data);
       setState(() {
         checkInAM = today.time_in_am;
@@ -90,13 +91,13 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
 
       // todayStream.add(today);
     } else {
-        print("Failed to load data. Status Code: ${response.statusCode}");
-  throw Exception('Failed to load data');
+      print("Failed to load data. Status Code: ${response.statusCode}");
+      throw Exception('Failed to load data');
     }
   }
 
   // String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
- void  insertToday() async {
+  void insertToday() async {
     try {
       if (checkInAM == "00:00:00") {
         setState(() {
@@ -145,7 +146,6 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   void dispose() {
     super.dispose();
     _todayStream.close();
-
   }
 
   @override
@@ -154,7 +154,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-     body: Column(
+      body: Column(
         children: [
           StreamBuilder(
             stream: Stream.periodic(const Duration(seconds: 1)),
@@ -201,9 +201,9 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                             child: SizedBox(
                               height: 100,
                               width: 100,
-                              child: 
-                     
-                            kIsWeb ? Center(child: Text("SCAN")):  Lottie.asset('assets/scan.json'),
+                              child: kIsWeb
+                                  ? Center(child: Text("SCAN"))
+                                  : Lottie.asset('assets/scan.json'),
                             ),
                           ),
                         ),
@@ -225,16 +225,16 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                     ),
                   ),
                 ),
-                 SizedBox(height: 20),
+          SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-               Expanded(
-                 child: Flex(
-                  direction: Axis.vertical,
+                Expanded(
+                  child: Flex(
+                    direction: Axis.vertical,
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -279,9 +279,9 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                       ),
                     ],
                   ),
-               ),
-              Expanded(
-                child: Flex(
+                ),
+                Expanded(
+                  child: Flex(
                     direction: Axis.vertical,
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -324,7 +324,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                       ),
                     ],
                   ),
-              ),
+                ),
               ],
             ),
           ),

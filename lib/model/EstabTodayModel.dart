@@ -11,7 +11,7 @@ class EstabTodayModel {
   final String time_out_pm;
   final String out_pm;
   final String date;
-final String name;
+  final String lname;
   final String email;
 
   EstabTodayModel({
@@ -27,7 +27,7 @@ final String name;
     required this.time_out_pm,
     required this.out_pm,
     required this.date,
-required this.name,
+    required this.lname,
     required this.email,
   });
 
@@ -45,7 +45,7 @@ required this.name,
         'time_out_pm': time_out_pm,
         'out_pm': out_pm,
         'date': date,
-  'name':name,
+        'lname': lname,
         'email': email,
       };
 
@@ -63,7 +63,7 @@ required this.name,
         time_out_pm: json['time_out_pm'],
         out_pm: json['out_pm'],
         date: json['date'],
-   name: json['name'],
+        lname: json['lname'],
         email: json['email'],
       );
 }

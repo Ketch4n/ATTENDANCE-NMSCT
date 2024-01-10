@@ -178,7 +178,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => CreateClassRoom(
                         role: role,
-                        admin_id: adminId,
+                        // admin_id: adminId,
                         purpose: purpose,
                         refreshCallback: _refreshData)));
               }),

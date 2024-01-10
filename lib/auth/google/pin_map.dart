@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 
 import 'package:attendance_nmsct/data/session.dart';
@@ -6,7 +8,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PinMap extends StatefulWidget {
   const PinMap({super.key});
@@ -17,7 +18,7 @@ class PinMap extends StatefulWidget {
 
 class _PinMapState extends State<PinMap> {
   //get map controller to access map
-  Completer<GoogleMapController> _googleMapController = Completer();
+  final Completer<GoogleMapController> _googleMapController = Completer();
   CameraPosition? _cameraPosition;
   late LatLng _defaultLatLng;
   late LatLng _draggedLatlng;
@@ -51,7 +52,7 @@ class _PinMapState extends State<PinMap> {
         onPressed: () {
           _gotoUserCurrentPosition();
         },
-        child: Icon(Icons.location_on),
+        child: const Icon(Icons.location_on),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -76,7 +77,7 @@ class _PinMapState extends State<PinMap> {
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
                   _draggedAddress,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
@@ -96,7 +97,7 @@ class _PinMapState extends State<PinMap> {
                 Navigator.of(context).pop(_draggedAddress);
               });
             },
-            child: Text('Save'),
+            child: const Text('Save'),
           ),
         ],
       ),
@@ -139,7 +140,7 @@ class _PinMapState extends State<PinMap> {
 
   Widget _getCustomPin() {
     return Center(
-      child: Container(
+      child: SizedBox(
         width: 150,
         child: Lottie.asset("assets/pin.json"),
       ),

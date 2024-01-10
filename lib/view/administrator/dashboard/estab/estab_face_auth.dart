@@ -34,11 +34,10 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
       GlobalKey<RefreshIndicatorState>();
   Future<void> daily_report(dailyStream) async {
     try {
-      final userId = widget.id;
       String dateToday = DateFormat('yyyy-MM-dd').format(DateTime.now());
       final response = await http.post(
         Uri.parse('${Server.host}users/establishment/daily_report.php'),
-        body: {'id': userId, 'today': dateToday},
+        body: {'id': widget.id, 'today': dateToday},
       );
 
       if (response.statusCode == 200) {
@@ -141,7 +140,7 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                           //   ),
                                           // ),
                                           child: Text(
-                                            dtr.name,
+                                            dtr.lname,
                                             style:
                                                 TextStyle(color: Colors.white),
                                           )),

@@ -84,7 +84,7 @@ class _NavbarState extends State<Navbar> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(Session.name,
+                                Text(Session.fname,
                                     style: Style
                                         .navbartxt), // Use null safety check
                                 Text(Session.email,

@@ -82,7 +82,7 @@ class _EstablishmentState extends State<Establishment> {
         index: _selectedIndex,
         children: [
           StudentFaceAuth(id: widget.id, name: widget.name),
-          const StudentEstabDTR(),
+          StudentEstabDTR(id: widget.id),
           const StudentEstabOnsite(),
           StudentEstabRoom(ids: widget.id, name: widget.name),
         ],

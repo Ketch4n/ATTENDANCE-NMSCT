@@ -176,7 +176,7 @@ class _EstabDTRState extends State<EstabDTR> {
                                         ),
                                         child: Column(
                                           children: [
-                                            Text(dtr.name,
+                                            Text(dtr.lname,
                                                 style: TextStyle(
                                                     color: Colors.white)),
                                             Row(

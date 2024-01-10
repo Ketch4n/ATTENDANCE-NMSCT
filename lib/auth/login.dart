@@ -106,14 +106,17 @@ class _LoginState extends State<Login> {
                                   }),
                             ),
                           ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              child:
-                                  Text("Forgot Password ?", style: Style.link),
-                              onPressed: () {},
-                            ),
+                          SizedBox(
+                            height: 20,
                           ),
+                          // Align(
+                          //   alignment: Alignment.centerRight,
+                          //   child: TextButton(
+                          //     child:
+                          //         Text("Forgot Password ?", style: Style.link),
+                          //     onPressed: () {},
+                          //   ),
+                          // ),
                           TextButton(
                             onPressed: () async {
                               final email = _emailController.text.trim();
@@ -189,15 +192,15 @@ class _LoginState extends State<Login> {
                       ),
                     ],
                   ),
-                  TextButton(
-                    onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => FaceNetApp()),
-                      // );
-                    },
-                    child: Text("FACE"),
-                  )
+                  // TextButton(
+                  //   onPressed: () {
+                  //     // Navigator.push(
+                  //     //   context,
+                  //     //   MaterialPageRoute(builder: (context) => FaceNetApp()),
+                  //     // );
+                  //   },
+                  //   child: Text("FACE"),
+                  // )
                 ],
               ),
             ),

@@ -1,7 +1,9 @@
 // ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 import 'dart:async';
 
+import 'package:attendance_nmsct/auth/google/pin_map.dart';
 import 'package:attendance_nmsct/controller/Create.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/functions/generate.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
@@ -10,24 +12,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 import 'package:location/location.dart' as loc;
 import 'package:geocoding/geocoding.dart';
-import 'package:location/location.dart';
-import 'package:location/location.dart';
-import 'package:location/location.dart';
 
 class CreateClassRoom extends StatefulWidget {
   const CreateClassRoom({
     super.key,
     required this.role,
-    required this.admin_id,
     required this.purpose,
     required this.refreshCallback,
   });
   final String role;
-
-  final String admin_id;
 
   final String purpose;
 
@@ -44,61 +39,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
 
   final fulladdress = TextEditingController();
   // StreamSubscription<loc.LocationData>? _positionSubscription;
-  @override
-  void initState() {
-    super.initState();
-    getCurrentPosition();
-
-    // Listen to location changes
-  }
-
-  @override
-  void dispose() {
-    fulladdress.dispose();
-
-    getCurrentPosition;
-
-    super.dispose();
-  }
-
-  void getCurrentPosition() async {
-    loc.LocationData locationData = await loc.Location().getLocation();
-    double latitude = locationData.latitude!;
-    double longitude = locationData.longitude!;
-
-    getAddress(locationData.latitude!, locationData.longitude!);
-
-    setState(() {
-      longi.text = longitude.toString();
-      lati.text = latitude.toString();
-      location.text = latitude.toString() + longitude.toString();
-    });
-  }
-
-  void getAddress(double latitude, double longitude) async {
-    try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(latitude, longitude);
-      print(placemarks);
-      if (placemarks.isNotEmpty) {
-        Placemark placemark = placemarks[2];
-        String address = "";
-
-        address +=
-            "${placemark.street}, ${placemark.locality}, ${placemark.subAdministrativeArea}";
-        print("Full Address: $address");
-
-        setState(() {
-          fulladdress.text = address;
-        });
-      } else {
-        print("No address found");
-      }
-    } catch (e) {
-      print("Error: $e");
-    }
-  }
-
+  bool _show = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,123 +63,88 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                   Divider(
                     color: Colors.grey[600],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15.0),
-                    child: Text(
-                      widget.role == 'Admin'
-                          ? 'Type ${widget.purpose} first, code will be generated after'
-                          : 'Click to scan location and save',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 15),
-                    ),
-                  ),
                   Column(
                     children: [
-                      widget.role == 'Establishment'
-                          ? Container(
-                              height: 50,
-                              width: 50,
-                              decoration: Style.boxdecor.copyWith(
-                                  borderRadius: BorderRadius.circular(50)),
+                      !_show
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10.0),
+                              child: TextFormField(
+                                controller: fulladdress,
+                                readOnly: true,
+                                decoration: Style.textdesign.copyWith(
+                                    hintText: User.location == ""
+                                        ? 'Address'
+                                        : User.location),
+                              ),
+                            )
+                          : SizedBox(),
+                      !_show
+                          ? TextFormField(
+                              controller: location,
+                              decoration: Style.textdesign
+                                  .copyWith(labelText: 'Establishment name'),
+                            )
+                          : SizedBox(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15.0),
+                        child: Text(
+                          'Click to scan location',
+                          style:
+                              TextStyle(color: Colors.grey[600], fontSize: 15),
+                        ),
+                      ),
+                      Container(
+                        decoration: Style.boxdecor,
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: SizedBox(
+                              height: 100,
+                              width: 100,
                               child: IconButton(
                                 color: Colors.redAccent,
-                                iconSize: 30,
+                                iconSize: 50,
                                 icon: const Icon(Icons.location_pin),
-                                onPressed: () {
-                                  getCurrentPosition();
-                                  // _idController.text = id;
+                                onPressed: () async {
+                                  final value = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const PinMap()),
+                                  );
+                                  if (value != null) {
+                                    setState(() {
+                                      _show = false;
+                                    });
+                                  }
                                 },
-                              ),
-                            )
-                          : const SizedBox(),
-                      widget.role == 'Establishment'
-                          ? Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10.0),
-                                  child:
-                                      kIsWeb ? Text("") : Text(location.text),
-                                ),
-                                location.text == ''
-                                    ? const SizedBox()
-                                    : Container(
-                                        constraints:
-                                            BoxConstraints(maxWidth: 500),
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 10.0),
-                                          child: TextField(
-                                            readOnly: true,
-                                            controller:
-                                                kIsWeb ? location : fulladdress,
-                                            enableSuggestions: false,
-                                            autocorrect: false,
-                                            decoration: Style.textdesign
-                                                .copyWith(labelText: 'Address'),
-                                          ),
-                                        ),
-                                      ),
-                              ],
-                            )
-                          //  TextFormField(
-                          //     readOnly: true,
-                          //     controller: location,
-                          //     decoration: Style.textdesign.copyWith(
-                          //         labelText: 'Location',
-                          //         suffixIcon: IconButton(
-                          //           icon: const Icon(Icons.location_pin),
-                          //           onPressed: () {
-                          //             getCurrentPosition();
-                          //             // _idController.text = id;
-                          //           },
-                          //         )),
-                          //   )
-                          : const SizedBox(),
-                      widget.role == 'Establishment' && location.text.isEmpty
-                          ? const SizedBox()
-                          : Container(
-                              constraints: BoxConstraints(maxWidth: 500),
-                              child: TextField(
-                                controller: code,
-                                enableSuggestions: false,
-                                autocorrect: false,
-                                decoration: Style.textdesign.copyWith(
-                                    labelText: widget.role == 'Admin'
-                                        ? 'Section Name'
-                                        : 'Establishment Name'),
-                              ),
-                            ),
+                              )),
+                        ),
+                      ),
                       Align(
                         alignment: Alignment.center,
                         child: TextButton(
                           onPressed: () async {
-                            final String pin = code.text;
-                            final String loc = fulladdress.text;
-                            final String long_lat = location.text;
-                            final String longitude = longi.text;
-                            final String latitude = lati.text;
+                            final String loc = location.text;
 
-                            if (pin.isEmpty) {
+                            if (loc.isEmpty) {
                               String title = "Name Empty !";
                               String message = "Input name";
                               await showAlertDialog(context, title, message);
-                            } else if (widget.role == "Establishment" &&
-                                long_lat.isEmpty) {
-                              String title = "Click location icon";
-                              String message = "to register gps";
-                              await showAlertDialog(context, title, message);
                             } else {
-                              // String title = "Success";
-                              // String message = "Section created";
                               String code = generateAlphanumericId();
+                              String currentCoordinate = User.location;
+                              double? currentLat = User.latitude;
+                              double? currentLng = User.longitude;
+
+                              // ignore: use_build_context_synchronously
                               await CreateSectEstab(
                                 context,
                                 code,
-                                pin,
-                                loc as String,
-                                longitude as double,
-                                latitude as double,
-                                widget.admin_id,
+                                loc,
+                                currentCoordinate,
+                                currentLng!,
+                                currentLat!,
+                                Session.email,
                               );
                               // await pasteCode(context, title, message, code);
                               // String purpose = 'CreateClassRoom';

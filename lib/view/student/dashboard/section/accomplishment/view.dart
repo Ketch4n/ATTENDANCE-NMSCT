@@ -181,6 +181,11 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
         ),
         body: Column(
           children: [
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+                "${DateFormat('MMM dd, yyyy').format(DateTime.now())} - TODAY"),
             Expanded(
               child: StreamBuilder<List<AccomplishmentModel>>(
                 stream: _textStreamController.stream,

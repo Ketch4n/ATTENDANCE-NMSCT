@@ -1,5 +1,6 @@
 import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/view.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/view.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/student_section_dtr.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -15,23 +16,23 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         body: Column(
           children: [
             const TabBar(
-              tabs: [Tab(text: 'MetaData'), Tab(text: 'Accomplishment')],
+              tabs: [
+                Tab(text: 'MetaData'),
+                Tab(text: 'Accomplishment'),
+                Tab(text: 'Records')
+              ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-                "${DateFormat('MMM dd, yyyy').format(DateTime.now())} - TODAY"),
             Expanded(
               child: TabBarView(
                 children: [
                   MetaDataIndex(ids: widget.ids, name: widget.name),
-                  AccomplishmentView(ids: widget.ids, name: widget.name)
+                  AccomplishmentView(ids: widget.ids, name: widget.name),
+                  StudentSectionDTR(name: widget.name, ids: widget.ids),
                 ],
               ),
             ),

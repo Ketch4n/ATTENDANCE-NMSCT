@@ -39,26 +39,26 @@ class _DashCardState extends State<DashCard> {
           ),
           child: InkWell(
             onTap: () {
-              widget.path == "class"
-                  ? Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Section(
-                            ids: widget.id,
-                            name: widget.name,
-                          )))
-                  : Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Establishment(
-                            id: widget.id,
-                            name: widget.name,
-                          )));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Section(
+                        ids: widget.id,
+                        name: widget.name,
+                      )));
+              // : Navigator.of(context).push(MaterialPageRoute(
+              //     builder: (context) => Establishment(
+              //           id: widget.id,
+              //           name: widget.name,
+              //         )));
             },
             child: Stack(
               children: <Widget>[
                 ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
                   child: Image.asset(
-                    widget.path == 'class'
-                        ? 'assets/images/blue.jpg'
-                        : 'assets/images/green.jpg',
+                    // widget.path == 'class'
+                    //     ?
+                    'assets/images/blue.jpg',
+                    // : 'assets/images/green.jpg',
                     fit: BoxFit.cover,
                     height: 120,
                     width: double.maxFinite,
@@ -70,7 +70,9 @@ class _DashCardState extends State<DashCard> {
                     iconColor: Colors.white,
                     title: Text(widget.name),
                     subtitle: Text(
-                      widget.path == 'class' ? "Section" : "OJT Establishment",
+                      // widget.path == 'class' ?
+                      // "Section",
+                      "OJT Establishment",
                       style: const TextStyle(color: Colors.white),
                     ),
                     // subtitle: Text("Supervisor"),
@@ -94,7 +96,7 @@ class _DashCardState extends State<DashCard> {
                     },
                     onSelected: (String value) async {
                       if (value == 'Leave') {
-                        await leaveClass(context, widget.path);
+                        await leaveClass(context, "room");
                         widget.refreshCallback();
                         print('Refresh Callback Triggered');
                       }

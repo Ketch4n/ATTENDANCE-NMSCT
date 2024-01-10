@@ -24,7 +24,7 @@ Widget userProfile() {
             direction: Axis.vertical,
             // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(Session.name),
+              Text(Session.fname),
               Text(
                 Session.email,
                 textScaleFactor: 0.7,

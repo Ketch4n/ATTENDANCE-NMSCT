@@ -37,25 +37,28 @@ Future<void> login(
         final message = data['message'];
         final userId = data['id'];
         final userRole = data['role'];
-        final userName = data['name'];
+        final userFName = data['fname'];
+        final userLName = data['lname'];
         final userEmail = data['email'];
         // final status = "${response.statusCode}";
         if (data['success']) {
           final prefs = await SharedPreferences.getInstance();
           prefs.setString('userId', userId);
           prefs.setString('userRole', userRole);
-          prefs.setString('userName', userName);
+          prefs.setString('userFName', userFName);
+          prefs.setString('userLName', userLName);
           prefs.setString('userEmail', userEmail);
           Session.id = userId;
           Session.role = userRole;
-          Session.name = userName;
+          Session.fname = userFName;
+          Session.lname = userLName;
           Session.email = userEmail;
 
           const title = "Login success";
           String content = "Welcome $message";
 
           await showAlertDialog(context, title, content);
-          userRole == 'Student'
+          userRole == 'Intern'
               ? Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(

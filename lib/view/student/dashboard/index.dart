@@ -42,24 +42,24 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
   Future<void> fetchUserAndData() async {
     await fetchUser(_userStreamController);
-    await fetchData();
+    // await fetchData();
   }
 
-  Future<void> fetchData() async {
-    final response =
-        await http.get(Uri.parse('${Server.host}pages/student/class_room.php'));
+  // Future<void> fetchData() async {
+  //   final response =
+  //       await http.get(Uri.parse('${Server.host}pages/student/class_room.php'));
 
-    if (response.statusCode == 200) {
-      Map<String, dynamic> data = json.decode(response.body);
+  //   if (response.statusCode == 200) {
+  //     Map<String, dynamic> data = json.decode(response.body);
 
-      setState(() {
-        classData = data['class_data'];
-        roomData = data['room_data'];
-      });
-    } else {
-      print('Failed to fetch data: ${response.reasonPhrase}');
-    }
-  }
+  //     setState(() {
+  //       classData = data['class_data'];
+  //       roomData = data['room_data'];
+  //     });
+  //   } else {
+  //     print('Failed to fetch data: ${response.reasonPhrase}');
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -82,12 +82,11 @@ class _StudentDashboardState extends State<StudentDashboard> {
           if (snapshot.hasData) {
             final user = snapshot.data!;
 
-            if (user.section_id == "null" && user.establishment_id == "null") {
+            if (user.establishment_id == "null") {
               return Scaffold(
                 floatingActionButton: FloatingActionButton(
                   onPressed: () async {
-                    bottomsheetJoin(context, user.role, user.section_name,
-                        user.establishment_name,
+                    bottomsheetJoin(context, user.role,
                         refreshCallback: _refreshData);
                   },
                   child: const Icon(Icons.add),
@@ -112,8 +111,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
               return Scaffold(
                 floatingActionButton: FloatingActionButton(
                   onPressed: () async {
-                    bottomsheetJoin(context, user.role, user.section_name,
-                        user.establishment_name,
+                    bottomsheetJoin(context, user.role,
                         refreshCallback: _refreshData);
                   },
                   child: const Icon(Icons.add),
@@ -122,20 +120,21 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     FloatingActionButtonLocation.centerFloat,
                 body: ListView(
                   children: [
-                    user.establishment_id != "null"
-                        ? DashCard(
-                            id: user.establishment_id,
-                            name: user.establishment_name,
-                            path: "room",
-                            refreshCallback: _refreshData)
-                        : const SizedBox(),
-                    user.section_id != "null"
-                        ? DashCard(
-                            id: user.section_id,
-                            name: user.section_name,
-                            path: "class",
-                            refreshCallback: _refreshData)
-                        : const SizedBox(),
+                    // user.establishment_id != "null"
+                    //     ?
+                    DashCard(
+                        id: user.establishment_id,
+                        name: user.establishment_name,
+                        path: "class",
+                        refreshCallback: _refreshData)
+                    // : const SizedBox(),
+                    // user.section_id != "null"
+                    //     ? DashCard(
+                    //         id: user.section_id,
+                    //         name: user.section_name,
+                    //         path: "class",
+                    //         refreshCallback: _refreshData)
+                    //     : const SizedBox(),
                   ],
                 ),
               );

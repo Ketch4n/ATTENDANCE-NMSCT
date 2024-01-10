@@ -14,8 +14,8 @@ import 'package:month_year_picker/month_year_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentEstabDTR extends StatefulWidget {
-  const StudentEstabDTR({super.key});
-
+  const StudentEstabDTR({super.key, required this.id});
+  final String id;
   @override
   State<StudentEstabDTR> createState() => _StudentEstabDTRState();
 }
@@ -31,31 +31,28 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
   double screenHeight = 0;
   double screenWidth = 0;
   String _month = DateFormat('MMMM').format(DateTime.now());
-String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
+  String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
 
- Future<void> monthly_report(monthStream) async {
-
-     
-      final response = await http.post(
-        Uri.parse('${Server.host}users/student/monthly_report.php'),
-        body: {'id': Session.id, 'month': _yearMonth},
-      );
-       print("ID : ${Session.id}") ;
-      print("TEST : $_yearMonth");
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        print("Response Data: $data");
-        final List<TodayModel> dtr =
-            data.map((dtrData) => TodayModel.fromJson(dtrData)).toList();
-        // Add the list of classmates to the stream
-        _monthStream.add(dtr);
-      } else {
-         print("Failed to load data. Status Code: ${response.statusCode}");
-        setState(() {
-          error = 'Failed to load data';
-        });
-      }
-   
+  Future<void> monthly_report(monthStream) async {
+    final response = await http.post(
+      Uri.parse('${Server.host}users/student/monthly_report.php'),
+      body: {'id': Session.id, 'estab_id': widget.id, 'month': _yearMonth},
+    );
+    print("ID : ${Session.id}");
+    print("TEST : $_yearMonth");
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      print("Response Data: $data");
+      final List<TodayModel> dtr =
+          data.map((dtrData) => TodayModel.fromJson(dtrData)).toList();
+      // Add the list of classmates to the stream
+      _monthStream.add(dtr);
+    } else {
+      print("Failed to load data. Status Code: ${response.statusCode}");
+      setState(() {
+        error = 'Failed to load data';
+      });
+    }
   }
 
   Future refreshData() async {

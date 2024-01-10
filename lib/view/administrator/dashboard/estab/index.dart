@@ -200,7 +200,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => CreateClassRoom(
                         role: role,
-                        admin_id: adminId,
+                        // admin_id: adminId,
                         purpose: purpose,
                         refreshCallback: _refreshData)));
               }),

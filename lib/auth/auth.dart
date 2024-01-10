@@ -27,7 +27,8 @@ class _AuthState extends State<Auth> {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     final userRole = prefs.getString('userRole');
-    final userName = prefs.getString('userName');
+    final userFName = prefs.getString('userFName');
+    final userLName = prefs.getString('userLName');
     final userEmail = prefs.getString('userEmail');
 
     // If user session exists, navigate to Home; otherwise, show Login
@@ -36,7 +37,8 @@ class _AuthState extends State<Auth> {
       role = userRole!;
       Session.id = userId!;
       Session.role = userRole;
-      Session.name = userName!;
+      Session.fname = userFName!;
+      Session.lname = userLName!;
       Session.email = userEmail!;
     });
   }

@@ -219,18 +219,18 @@ class _SignupState extends State<Signup> {
                             readOnly: true,
                             decoration: Style.textdesign.copyWith(
                               hintText: _default ? 'Administrator' : 'Intern',
-                              suffixIcon: IconButton(
-                                icon: const Icon(Icons.refresh),
-                                onPressed: () {
-                                  setState(() {
-                                    _default = !_default;
-                                    // _roleController.text =
-                                    //     _default ? 'Administrator' : 'Intern';
-                                  });
-                                  // String id = generateId();
-                                  // _roleController.text = id;
-                                },
-                              ),
+                              // suffixIcon: IconButton(
+                              //   icon: const Icon(Icons.refresh),
+                              //   onPressed: () {
+                              //     setState(() {
+                              //       _default = !_default;
+                              //       // _roleController.text =
+                              //       //     _default ? 'Administrator' : 'Intern';
+                              //     });
+                              //     // String id = generateId();
+                              //     // _roleController.text = id;
+                              //   },
+                              // ),
                             ),
                           ),
                           _default && !_show
@@ -349,10 +349,6 @@ class _SignupState extends State<Signup> {
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: switchStepsType,
-      //   child: const Icon(Icons.list),
-      // ),
     );
   }
 

@@ -9,7 +9,7 @@ Future fetchUser(userStreamController) async {
   final prefs = await SharedPreferences.getInstance();
   final userId = prefs.getString('userId');
   final userRole = prefs.getString('userRole');
-  if (userRole == 'Student') {
+  if (userRole == 'Intern') {
     final response = await http.post(
       Uri.parse('${Server.host}auth/user.php'),
       body: {'id': userId},

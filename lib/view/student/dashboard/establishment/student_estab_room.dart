@@ -23,16 +23,16 @@ class _StudentEstabRoomState extends State<StudentEstabRoom> {
   // Future<void> _refreshData() async {
   //   await fetchUser(_userStreamController);
   // }
-  String yourID = "";
-  String creator_ID = "";
-  String creator_name = "";
-  String creator_email = "";
+  // String yourID = "";
+  // String creator_ID = "";
+  // String creator_fname = "";
+  // String creator_email = "";
   Future<void> fetchroomates(roomateStreamController) async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
-    setState(() {
-      yourID = userId!;
-    });
+    // final prefs = await SharedPreferences.getInstance();
+    // final userId = prefs.getString('userId');
+    // setState(() {
+    //   yourID = userId!;
+    // });
     final response = await http.post(
       Uri.parse('${Server.host}users/student/room.php'),
       body: {'establishment_id': widget.ids},
@@ -42,11 +42,11 @@ class _StudentEstabRoomState extends State<StudentEstabRoom> {
       final List<dynamic> data = json.decode(response.body);
       final List<RoomModel> roomates =
           data.map((roomateData) => RoomModel.fromJson(roomateData)).toList();
-      setState(() {
-        creator_ID = roomates[0].creator_id;
-        creator_name = roomates[0].creator_name;
-        creator_email = roomates[0].creator_email;
-      });
+      // setState(() {
+      //   // creator_ID = roomates[0].creator_id;
+      //   creator_fname = roomates[0].creator_fname;
+      //   creator_email = roomates[0].creator_email;
+      // });
 
       // Add the list of roomates to the stream
       roomateStreamController.add(roomates);
@@ -100,19 +100,19 @@ class _StudentEstabRoomState extends State<StudentEstabRoom> {
                 const SizedBox(
                   width: 10,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      creator_name == Session.name
-                          ? '$creator_name (You)'
-                          : creator_name,
-                    ),
-                    Text(
-                      creator_email,
-                    )
-                  ],
-                )
+                // Column(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   children: [
+                //     Text(
+                //       User.creator_fname == Session.fname
+                //           ? '$creator_fname (You)'
+                //           : creator_fname,
+                //     ),
+                //     Text(
+                //       creator_email,
+                //     )
+                //   ],
+                // )
               ],
             ),
           ),
@@ -160,9 +160,9 @@ class _StudentEstabRoomState extends State<StudentEstabRoom> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                          roomate.student_id == yourID
-                                              ? "${roomate.name} (You)"
-                                              : roomate.name,
+                                          roomate.student_id == Session.id
+                                              ? "${roomate.fname} (You)"
+                                              : roomate.fname,
                                           style: const TextStyle(fontSize: 18)),
                                       Text(
                                         roomate.email,

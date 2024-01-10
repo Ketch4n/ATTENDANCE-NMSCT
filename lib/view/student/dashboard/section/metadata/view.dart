@@ -122,6 +122,11 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
         ),
         body: Column(
           children: [
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+                "${DateFormat('MMM dd, yyyy').format(DateTime.now())} - TODAY"),
             if (isLoading)
               Expanded(
                 child: CardPageSkeleton(),

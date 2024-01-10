@@ -3,7 +3,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class Session {
   static String id = "";
   static String role = "";
-  static String name = "";
+  static String fname = "";
+  static String lname = "";
   static String email = "";
   static String longitude = "";
   static String latitude = "";

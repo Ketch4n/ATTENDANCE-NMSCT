@@ -11,7 +11,9 @@ class DailyReportModel {
   final String time_out_pm;
   final String out_pm;
   final String date;
-  final String name;
+  final String fname;
+  final String lname;
+
   final String email;
 
   DailyReportModel({
@@ -27,7 +29,8 @@ class DailyReportModel {
     required this.time_out_pm,
     required this.out_pm,
     required this.date,
-    required this.name,
+    required this.fname,
+    required this.lname,
     required this.email,
   });
 
@@ -45,7 +48,9 @@ class DailyReportModel {
         'time_out_pm': time_out_pm,
         'out_pm': out_pm,
         'date': date,
-        'name': name,
+        'fname': fname,
+        'lname': lname,
+
         'email': email,
       };
 
@@ -64,7 +69,9 @@ class DailyReportModel {
         time_out_pm: json['time_out_pm'],
         out_pm: json['out_pm'],
         date: json['date'],
-        name: json['name'],
+        fname: json['fname'],
+        lname: json['lname'],
+
         email: json['email'],
       );
 }

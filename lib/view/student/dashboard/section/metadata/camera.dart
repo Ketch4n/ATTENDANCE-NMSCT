@@ -168,7 +168,7 @@ class _CameraState extends State<Camera> {
       customMetadata: {
         'Time taken': DateFormat('hh:mm a').format(now.toLocal()),
         'Date taken': DateFormat('yyyy-MM-dd').format(now.toLocal()),
-        'Name': Session.name,
+        'Name': Session.fname + Session.lname,
         'Location': fulladdress.text,
       },
     );

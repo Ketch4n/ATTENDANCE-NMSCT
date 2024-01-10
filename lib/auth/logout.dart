@@ -33,9 +33,11 @@ Future logout(BuildContext context, purpose) async {
             child: const Text('Yes'),
             onPressed: () async {
               final prefs = await SharedPreferences.getInstance();
+
               prefs.remove('userId');
               prefs.remove('userRole');
-              prefs.remove('userName');
+              prefs.remove('userFName');
+              prefs.remove('userLName');
               prefs.remove('userEmail');
               // prefs.remove('userEstabLocation');
               if (purpose == 'Exit') {
