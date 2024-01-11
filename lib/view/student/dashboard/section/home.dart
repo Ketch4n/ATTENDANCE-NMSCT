@@ -1,8 +1,6 @@
-import 'package:attendance_nmsct/view/student/dashboard/establishment/student_face_auth.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_daily_report.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_tab.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_class.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/student_section_dtr.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_today.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

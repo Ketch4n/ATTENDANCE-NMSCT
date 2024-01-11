@@ -1,4 +1,5 @@
 import 'package:attendance_nmsct/auth/auth.dart';
+import 'package:attendance_nmsct/locator.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:month_year_picker/month_year_picker.dart';
@@ -15,6 +16,7 @@ Future<void> main() async {
     messagingSenderId: "923340212066",
     appId: "1:923340212066:web:cfa048f322dbd305098e3b",
   ));
+  setupServices();
   runApp(const MyApp());
 }
 
@@ -31,6 +33,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       // home: isWin ? const AdminIndex() : const Auth(),
       home: const Auth(),

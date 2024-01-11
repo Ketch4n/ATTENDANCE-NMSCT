@@ -53,24 +53,32 @@ dependencies:
   timeline_tile: ^2.0.0
   flutter_keyboard_visibility: ^5.4.1
 
-  tflite_flutter: ^0.10.1
-  google_ml_kit: ^0.16.2
+  # tflite_flutter: ^0.10.1
+  # google_ml_kit: ^0.16.2
   firebase_core: ^2.24.2
   firebase_storage: ^11.5.5
   cloud_firestore: ^4.13.5
 
-  flutter_camera: ^1.0.0
+  tflite_flutter: ^0.9.0
+  camera: ^0.9.4+19
+  path_provider: ^2.0.9
+  path: ^1.8.0
+  google_ml_kit: ^0.13.0
+  image: ^3.0.2
+  url_launcher: ^6.0.3
+  sqflite: ^2.0.2
+  get_it: ^7.2.0
+
+  flutter_camera: ^0.1.1
   image_picker: ^1.0.4
-  image: ^4.0.17
+  # image: ^4.0.17
 
   location: ^5.0.3
   geolocator: ^9.0.2
   geocoding: ^2.0.5
   month_year_picker: ^0.3.0+1
-  slide_to_act: ^2.0.1
 
-  # device_info: ^2.0.3
-  local_auth: ^2.1.7
+
 
 
 dev_dependencies:
@@ -93,6 +101,8 @@ flutter:
   assets:
   - assets/images/
   - assets/
+  - assets/mobilefacenet.tflite
+  - assets/logo.png
 
   fonts:
     - family: MontserratBold

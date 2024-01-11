@@ -89,10 +89,10 @@ class _PinMapState extends State<PinMap> {
             onPressed: () {
               // _saveAddress();
               setState(() {
-                User.location = _draggedAddress;
-                User.coordinate = _draggedLatlng;
-                User.latitude = _draggedLatlng.latitude;
-                User.longitude = _draggedLatlng.longitude;
+                UserSession.location = _draggedAddress;
+                UserSession.coordinate = _draggedLatlng;
+                UserSession.latitude = _draggedLatlng.latitude;
+                UserSession.longitude = _draggedLatlng.longitude;
 
                 Navigator.of(context).pop(_draggedAddress);
               });

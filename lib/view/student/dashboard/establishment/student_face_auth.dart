@@ -4,6 +4,8 @@ import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
+import 'package:attendance_nmsct/pages/home.dart';
+import 'package:attendance_nmsct/pages/sign-in.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/camera_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -190,8 +192,8 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                       return GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => CameraAuth(
-                                  name: Session.email,
+                              builder: (context) => FaceLauncherPage(
+                                  purpose: 'auth',
                                   refreshCallback: insertToday)));
                         },
                         child: Container(

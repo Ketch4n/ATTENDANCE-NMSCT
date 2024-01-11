@@ -1,6 +1,7 @@
 import 'package:attendance_nmsct/auth/logout.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
+import 'package:attendance_nmsct/pages/db/databse_helper.dart';
 import 'package:flutter/material.dart';
 
 class Navbar extends StatefulWidget {
@@ -188,6 +189,45 @@ class _NavbarState extends State<Navbar> {
             //   },
             // ),
             const Divider(),
+            Session.role == 'Administrator'
+                ? ListTile(
+                    title: const Text('Clear Database'),
+                    leading: const Icon(Icons.face),
+                    onTap: () async {
+                      await showDialog(
+                        context:
+                            context, // Make sure to have access to the context
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Confirm Clear Database'),
+                            content: Text(
+                                'Are you sure you want to clear the database?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog
+                                },
+                                child: Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  DatabaseHelper _dataBaseHelper =
+                                      DatabaseHelper.instance;
+                                  _dataBaseHelper.deleteAll();
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog
+                                },
+                                child: Text('Clear DB'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  )
+                : SizedBox(),
+
             ListTile(
               title: const Text('Log-out'),
               leading: const Icon(Icons.exit_to_app),

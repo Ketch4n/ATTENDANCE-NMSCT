@@ -73,9 +73,9 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                                 controller: fulladdress,
                                 readOnly: true,
                                 decoration: Style.textdesign.copyWith(
-                                    hintText: User.location == ""
+                                    hintText: UserSession.location == ""
                                         ? 'Address'
-                                        : User.location),
+                                        : UserSession.location),
                               ),
                             )
                           : SizedBox(),
@@ -132,9 +132,9 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                               await showAlertDialog(context, title, message);
                             } else {
                               String code = generateAlphanumericId();
-                              String currentCoordinate = User.location;
-                              double? currentLat = User.latitude;
-                              double? currentLng = User.longitude;
+                              String currentCoordinate = UserSession.location;
+                              double? currentLat = UserSession.latitude;
+                              double? currentLng = UserSession.longitude;
 
                               // ignore: use_build_context_synchronously
                               await CreateSectEstab(

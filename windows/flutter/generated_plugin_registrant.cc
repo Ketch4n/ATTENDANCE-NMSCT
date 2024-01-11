@@ -13,7 +13,7 @@
 #include <firebase_storage/firebase_storage_plugin_c_api.h>
 #include <flutter_platform_alert/flutter_platform_alert_plugin.h>
 #include <geolocator_windows/geolocator_windows.h>
-#include <local_auth_windows/local_auth_plugin.h>
+#include <url_launcher_windows/url_launcher_windows.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   CloudFirestorePluginCApiRegisterWithRegistrar(
@@ -30,6 +30,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("FlutterPlatformAlertPlugin"));
   GeolocatorWindowsRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("GeolocatorWindows"));
-  LocalAuthPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("LocalAuthPlugin"));
+  UrlLauncherWindowsRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("UrlLauncherWindows"));
 }

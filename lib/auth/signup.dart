@@ -7,8 +7,10 @@ import 'package:attendance_nmsct/controller/Create.dart';
 import 'package:attendance_nmsct/controller/Signup.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
+import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/functions/generate.dart';
 import 'package:attendance_nmsct/include/style.dart';
+import 'package:attendance_nmsct/pages/home.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
@@ -42,7 +44,7 @@ class _SignupState extends State<Signup> {
   // String LatLng = '';
   late String lat = '';
   late String lng = '';
-
+  bool done = true;
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   final _controllController = TextEditingController();
@@ -219,18 +221,18 @@ class _SignupState extends State<Signup> {
                             readOnly: true,
                             decoration: Style.textdesign.copyWith(
                               hintText: _default ? 'Administrator' : 'Intern',
-                              // suffixIcon: IconButton(
-                              //   icon: const Icon(Icons.refresh),
-                              //   onPressed: () {
-                              //     setState(() {
-                              //       _default = !_default;
-                              //       // _roleController.text =
-                              //       //     _default ? 'Administrator' : 'Intern';
-                              //     });
-                              //     // String id = generateId();
-                              //     // _roleController.text = id;
-                              //   },
-                              // ),
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.refresh),
+                                onPressed: () {
+                                  setState(() {
+                                    _default = !_default;
+                                    _roleController.text =
+                                        _default ? 'Administrator' : 'Intern';
+                                  });
+                                  // String id = generateId();
+                                  // _roleController.text = id;
+                                },
+                              ),
                             ),
                           ),
                           _default && !_show
@@ -241,9 +243,9 @@ class _SignupState extends State<Signup> {
                                     controller: _locationController,
                                     readOnly: true,
                                     decoration: Style.textdesign.copyWith(
-                                        hintText: User.location == ""
+                                        hintText: UserSession.location == ""
                                             ? 'Address'
-                                            : User.location),
+                                            : UserSession.location),
                                   ),
                                 )
                               : SizedBox(),
@@ -263,37 +265,51 @@ class _SignupState extends State<Signup> {
                             child: Padding(
                               padding: const EdgeInsets.all(3.0),
                               child: SizedBox(
-                                height: 100,
-                                width: 100,
-                                child: _default
-                                    ? IconButton(
-                                        color: Colors.redAccent,
-                                        iconSize: 50,
-                                        icon: const Icon(Icons.location_pin),
-                                        onPressed: () async {
-                                          final value = await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => PinMap()),
-                                          );
-                                          if (value != null) {
-                                            setState(() {
-                                              _show = false;
-                                            });
-                                          }
-                                        },
-                                      )
-                                    : GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => PinMap()),
-                                          );
-                                        },
-                                        child:
-                                            Lottie.asset('assets/scan.json')),
-                              ),
+                                  height: 100,
+                                  width: 100,
+                                  child: _default
+                                      ? IconButton(
+                                          color: Colors.redAccent,
+                                          iconSize: 50,
+                                          icon: const Icon(Icons.location_pin),
+                                          onPressed: () async {
+                                            final value = await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PinMap()),
+                                            );
+                                            if (value != null) {
+                                              setState(() {
+                                                _show = false;
+                                              });
+                                            }
+                                          },
+                                        )
+                                      : GestureDetector(
+                                          onTap: () async {
+                                            Session.email =
+                                                _emailController.text.trim();
+                                            Session.password =
+                                                _passController.text.trim();
+                                            final value1 = await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FaceLauncherPage(
+                                                        purpose: 'signup',
+                                                        refreshCallback: () {},
+                                                      )),
+                                            );
+                                            if (value1 != null) {
+                                              setState(() {
+                                                done = false;
+                                                continued();
+                                              });
+                                            }
+                                          },
+                                          child: Lottie.asset(
+                                              'assets/scan.json'))),
                             ),
                           ),
                           // Stack(
@@ -394,7 +410,7 @@ class _SignupState extends State<Signup> {
     String name = _fnameController.text.trim();
     String id = _lnameController.text.trim();
     String role = _roleController.text.trim();
-    String loc = User.location.trim();
+    String loc = UserSession.location.trim();
     String cont = _controllController.text.trim();
 
     if ((email.isEmpty || password.isEmpty) && _currentStep == 0) {
@@ -409,19 +425,25 @@ class _SignupState extends State<Signup> {
       String message = "Please Enter Account Details";
       String title = name.isEmpty ? "Input First Name" : "Input Last Name";
       showAlertDialog(context, title, message);
-    } else if ((loc.isEmpty || cont.isEmpty && _default) && _currentStep == 2) {
-      String message = "Please Enter Location Details";
-      String title = loc.isEmpty
+    } else if (_default &&
+        (loc.isEmpty || cont.isEmpty && _default) &&
+        _currentStep == 2) {
+      String title = "Please Enter Location Details";
+      String message = loc.isEmpty
           ? "Click the location icon and Save"
           : "Input Establishment Name";
+      showAlertDialog(context, title, message);
+    } else if ((!_default && done) && _currentStep == 2) {
+      String title = "Please Register Face";
+      String message = "Click icon to scan";
       showAlertDialog(context, title, message);
     } else if (_currentStep == 2) {
       await signup(context, email, password, id, name,
           _default ? 'Administrator' : 'Intern');
       String code = generateAlphanumericId();
-      String currentCoordinate = User.location;
-      double? currentLat = User.latitude;
-      double? currentLng = User.longitude;
+      String currentCoordinate = UserSession.location;
+      double? currentLat = UserSession.latitude;
+      double? currentLng = UserSession.longitude;
 
       // ignore: use_build_context_synchronously
       await CreateSectEstab(

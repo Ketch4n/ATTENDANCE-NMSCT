@@ -8,6 +8,8 @@ class Session {
   static String email = "";
   static String longitude = "";
   static String latitude = "";
+
+  static String password = "";
 }
 
 class Admin {
@@ -16,7 +18,7 @@ class Admin {
   static String email = "";
 }
 
-class User {
+class UserSession {
   static String location = "";
   static LatLng? coordinate;
   static double? latitude;

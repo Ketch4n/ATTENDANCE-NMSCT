@@ -4,8 +4,10 @@ import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/controller/Login.dart';
 
 import 'package:attendance_nmsct/include/style.dart';
+import 'package:attendance_nmsct/pages/home.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -192,15 +194,46 @@ class _LoginState extends State<Login> {
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   // TextButton(
                   //   onPressed: () {
-                  //     // Navigator.push(
-                  //     //   context,
-                  //     //   MaterialPageRoute(builder: (context) => FaceNetApp()),
-                  //     // );
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => FaceLauncherPage(
+                  //                 purpose: 'signin',
+                  //               )),
+                  //     );
                   //   },
                   //   child: Text("FACE"),
                   // )
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FaceLauncherPage(
+                                  purpose: 'signin',
+                                  refreshCallback: () {},
+                                )),
+                      );
+                    },
+                    child: Container(
+                      decoration: Style.boxdecor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: kIsWeb
+                              ? Center(child: Text("SCAN"))
+                              : Lottie.asset('assets/scan.json'),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

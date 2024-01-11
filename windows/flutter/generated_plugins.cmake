@@ -10,11 +10,10 @@ list(APPEND FLUTTER_PLUGIN_LIST
   firebase_storage
   flutter_platform_alert
   geolocator_windows
-  local_auth_windows
+  url_launcher_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
-  tflite_flutter
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)
