@@ -1,4 +1,3 @@
-import 'package:attendance_nmsct/constants/constants.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/locator.dart';
 import 'package:attendance_nmsct/pages/db/databse_helper.dart';

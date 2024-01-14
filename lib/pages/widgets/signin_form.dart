@@ -72,9 +72,14 @@ class SignInSheet extends StatelessWidget {
                         labelText: "Password",
                         isPassword: true,
                       )
-                    : Text(user.user == Session.email
-                        ? 'FACE AND EMAIL MATCHED'
-                        : "UNMATCHED"),
+                    : Text(
+                        user.user == Session.email
+                            ? 'FACE AND EMAIL MATCHED'
+                            : "UNMATCHED",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold)),
                 SizedBox(height: 10),
                 Divider(),
                 SizedBox(height: 10),
@@ -89,20 +94,22 @@ class SignInSheet extends StatelessWidget {
                           color: Colors.white,
                         ),
                       )
-                    : AppButton(
-                        text: 'Time-in/out',
-                        onPressed: () async {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                    : user.user == Session.email
+                        ? AppButton(
+                            text: 'Time-in/out',
+                            onPressed: () async {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
 
-                          refresh();
-                        },
-                        icon: Icon(
-                          Icons.login,
-                          color: Colors.white,
-                        ),
-                      )
+                              refresh();
+                            },
+                            icon: Icon(
+                              Icons.login,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text('UNMATCH')
               ],
             ),
           ),

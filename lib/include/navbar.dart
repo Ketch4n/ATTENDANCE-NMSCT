@@ -210,16 +210,6 @@ class _NavbarState extends State<Navbar> {
                                 },
                                 child: Text('Cancel'),
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  DatabaseHelper _dataBaseHelper =
-                                      DatabaseHelper.instance;
-                                  _dataBaseHelper.deleteAll();
-                                  Navigator.of(context)
-                                      .pop(); // Close the dialog
-                                },
-                                child: Text('Clear DB'),
-                              ),
                             ],
                           );
                         },
