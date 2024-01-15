@@ -189,34 +189,34 @@ class _NavbarState extends State<Navbar> {
             //   },
             // ),
             const Divider(),
-            Session.role == 'Administrator'
-                ? ListTile(
-                    title: const Text('Clear Database'),
-                    leading: const Icon(Icons.face),
-                    onTap: () async {
-                      await showDialog(
-                        context:
-                            context, // Make sure to have access to the context
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Confirm Clear Database'),
-                            content: Text(
-                                'Are you sure you want to clear the database?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Close the dialog
-                                },
-                                child: Text('Cancel'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  )
-                : SizedBox(),
+            // Session.role == 'Administrator'
+            //     ? ListTile(
+            //         title: const Text('Clear Database'),
+            //         leading: const Icon(Icons.face),
+            //         onTap: () async {
+            //           await showDialog(
+            //             context:
+            //                 context, // Make sure to have access to the context
+            //             builder: (BuildContext context) {
+            //               return AlertDialog(
+            //                 title: Text('Confirm Clear Database'),
+            //                 content: Text(
+            //                     'Are you sure you want to clear the database?'),
+            //                 actions: [
+            //                   TextButton(
+            //                     onPressed: () {
+            //                       Navigator.of(context)
+            //                           .pop(); // Close the dialog
+            //                     },
+            //                     child: Text('Cancel'),
+            //                   ),
+            //                 ],
+            //               );
+            //             },
+            //           );
+            //         },
+            //       )
+            //     : SizedBox(),
 
             ListTile(
               title: const Text('Log-out'),

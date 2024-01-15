@@ -2,6 +2,7 @@ import 'package:attendance_nmsct/auth/google/google_map.dart';
 import 'package:attendance_nmsct/auth/google/pin_map.dart';
 import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/controller/Login.dart';
+import 'package:attendance_nmsct/data/settings.dart';
 
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/pages/home.dart';
@@ -179,14 +180,17 @@ class _LoginState extends State<Login> {
                       TextButton(
                         onPressed: null,
                         style: TextButton.styleFrom(textStyle: Style.link),
-                        child: const Text("create new account ?"),
+                        child: Text("create new account ?"),
                       ),
                       TextButton(
                         onPressed: () {
+                          final String purpose = 'Create';
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const Signup()),
+                                builder: (context) => Signup(
+                                      purpose: purpose,
+                                    )),
                           );
                         },
                         style: TextButton.styleFrom(textStyle: Style.link),
@@ -209,31 +213,36 @@ class _LoginState extends State<Login> {
                   //   },
                   //   child: Text("FACE"),
                   // )
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FaceLauncherPage(
-                                  purpose: 'signin',
-                                  refreshCallback: () {},
-                                )),
-                      );
-                    },
-                    child: Container(
-                      decoration: Style.boxdecor,
-                      child: Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: SizedBox(
-                          height: 100,
-                          width: 100,
-                          child: kIsWeb
-                              ? Center(child: Text("SCAN"))
-                              : Lottie.asset('assets/scan.json'),
-                        ),
-                      ),
-                    ),
-                  ),
+                  UserRole.role == 'Intern'
+                      ? GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FaceLauncherPage(
+                                        purpose: 'signin',
+                                        refreshCallback: () {},
+                                      )),
+                            );
+                          },
+                          child: Container(
+                            decoration: Style.boxdecor,
+                            child: Padding(
+                              padding: const EdgeInsets.all(3.0),
+                              child: SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: kIsWeb
+                                    ? Center(child: Text("SCAN"))
+                                    : Lottie.asset('assets/scan.json'),
+                              ),
+                            ),
+                          ),
+                        )
+                      : SizedBox(
+                          height: 150,
+                          width: 150,
+                          child: Image.asset('assets/settings.png')),
                 ],
               ),
             ),

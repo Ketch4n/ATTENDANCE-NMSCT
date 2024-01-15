@@ -21,8 +21,8 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Signup extends StatefulWidget {
-  const Signup({Key? key}) : super(key: key);
-
+  const Signup({Key? key, required this.purpose}) : super(key: key);
+  final String purpose;
   @override
   _SignupState createState() => _SignupState();
 }
@@ -45,6 +45,7 @@ class _SignupState extends State<Signup> {
   late String lat = '';
   late String lng = '';
   bool done = true;
+  bool clicked = false;
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   final _controllController = TextEditingController();
@@ -53,8 +54,36 @@ class _SignupState extends State<Signup> {
   final inputController = StreamController<String>();
   final _roleController = TextEditingController();
   final _locationController = TextEditingController();
+  final _bdayController = TextEditingController();
+  final _uidController = TextEditingController();
+  final _uaddressController = TextEditingController();
+
   Future<void> _ref() async {
     setState(() {});
+  }
+
+  DateTime _date = DateTime.now();
+
+  TimeOfDay _time = TimeOfDay.now();
+
+  Future _showDatePicker() async {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1980),
+      lastDate: DateTime(2030),
+    ).then((value) {
+      if (value != null) {
+        // Save the selected date
+        setState(() {
+          _date = value;
+          _bdayController.text = "${value.month}/${value.day}/${value.year}";
+        });
+
+        // Show a custom modal with a text field
+        // _showCustomModal();
+      }
+    });
   }
 
   @override
@@ -62,7 +91,9 @@ class _SignupState extends State<Signup> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Create Account'),
+        title: widget.purpose == 'Create'
+            ? Text('Create Account')
+            : Text('Register Intern'),
         centerTitle: true,
       ),
       body: Center(
@@ -179,32 +210,61 @@ class _SignupState extends State<Signup> {
                           //     )
                           //   ],
                           // ),
+                          UserRole.role == 'Intern'
+                              ? Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: TextFormField(
+                                    controller: _uidController,
+                                    decoration: Style.textdesign
+                                        .copyWith(labelText: 'Intern ID'),
+                                  ),
+                                )
+                              : SizedBox(),
+
+                          TextFormField(
+                            controller: _fnameController,
+                            decoration: Style.textdesign
+                                .copyWith(labelText: 'First Name'),
+                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: TextFormField(
-                              controller: _fnameController,
+                              controller: _lnameController,
                               decoration: Style.textdesign
-                                  .copyWith(labelText: 'First Name'),
+                                  .copyWith(labelText: 'Last Name'),
                             ),
                           ),
-                          TextFormField(
-                            controller: _lnameController,
-                            decoration: Style.textdesign
-                                .copyWith(labelText: 'Last Name'),
-                          ),
-                          // TextFormField(
-                          //   controller: _idController,
-                          //   decoration: Style.textdesign.copyWith(
-                          //     labelText: 'ID',
-                          //     suffixIcon: IconButton(
-                          //       icon: const Icon(Icons.refresh),
-                          //       onPressed: () {
-                          //         String id = generateId();
-                          //         _idController.text = id;
-                          //       },
-                          //     ),
-                          //   ),
-                          // ),
+
+                          UserRole.role == 'Intern'
+                              ? TextFormField(
+                                  readOnly: true,
+                                  controller: _bdayController,
+                                  decoration: Style.textdesign.copyWith(
+                                    hintText: !clicked
+                                        ? 'Birth Date'
+                                        : '${_bdayController.text}',
+                                    suffixIcon: IconButton(
+                                      icon: Icon(Icons.calendar_month),
+                                      onPressed: () {
+                                        clicked = !clicked;
+                                        _showDatePicker();
+                                      },
+                                    ),
+                                  ),
+                                )
+                              : SizedBox(),
+                          UserRole.role == 'Intern'
+                              ? Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: TextFormField(
+                                    controller: _uaddressController,
+                                    decoration: Style.textdesign
+                                        .copyWith(labelText: 'Address'),
+                                  ),
+                                )
+                              : SizedBox(),
                         ],
                       ),
                       isActive: _currentStep >= 1,
@@ -216,25 +276,26 @@ class _SignupState extends State<Signup> {
                       title: const Text("Account"),
                       content: Column(
                         children: [
-                          TextFormField(
-                            controller: _roleController,
-                            readOnly: true,
-                            decoration: Style.textdesign.copyWith(
-                              hintText: _default ? 'Administrator' : 'Intern',
-                              suffixIcon: IconButton(
-                                icon: const Icon(Icons.refresh),
-                                onPressed: () {
-                                  setState(() {
-                                    _default = !_default;
-                                    _roleController.text =
-                                        _default ? 'Administrator' : 'Intern';
-                                  });
-                                  // String id = generateId();
-                                  // _roleController.text = id;
-                                },
-                              ),
-                            ),
-                          ),
+                          // TextFormField(
+                          //   controller: _roleController,
+                          //   readOnly: true,
+                          //   decoration: Style.textdesign.copyWith(
+                          //     hintText: _default ? 'Administrator' : 'Intern',
+                          //     suffixIcon: IconButton(
+                          //       icon: const Icon(Icons.refresh),
+                          //       onPressed: () {
+                          //         setState(() {
+                          //           _default = !_default;
+                          //           _roleController.text =
+                          //               _default ? 'Administrator' : 'Intern';
+                          //         });
+                          //         // String id = generateId();
+                          //         // _roleController.text = id;
+                          //       },
+                          //     ),
+                          //   ),
+                          // ),
+
                           _default && !_show
                               ? Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -267,7 +328,7 @@ class _SignupState extends State<Signup> {
                               child: SizedBox(
                                   height: 100,
                                   width: 100,
-                                  child: _default
+                                  child: UserRole.role == 'Administrator'
                                       ? IconButton(
                                           color: Colors.redAccent,
                                           iconSize: 50,
@@ -412,6 +473,9 @@ class _SignupState extends State<Signup> {
     String role = _roleController.text.trim();
     String loc = UserSession.location.trim();
     String cont = _controllController.text.trim();
+    DateTime bday = _date;
+    String uid = _uidController.text.trim();
+    String address = _uaddressController.text.trim();
 
     if ((email.isEmpty || password.isEmpty) && _currentStep == 0) {
       String title = email.isEmpty ? "Email Empty !" : "Password Empty !";
@@ -425,21 +489,25 @@ class _SignupState extends State<Signup> {
       String message = "Please Enter Account Details";
       String title = name.isEmpty ? "Input First Name" : "Input Last Name";
       showAlertDialog(context, title, message);
-    } else if (_default &&
-        (loc.isEmpty || cont.isEmpty && _default) &&
+    } else if ((uid.isEmpty || address.isEmpty) && _currentStep == 1) {
+      String message = "Please Enter Account Details";
+      String title = name.isEmpty ? "Input First Name" : "Input Last Name";
+      showAlertDialog(context, title, message);
+    } else if (UserRole.role == 'Administrator' &&
+        (loc.isEmpty || cont.isEmpty) &&
         _currentStep == 2) {
       String title = "Please Enter Location Details";
       String message = loc.isEmpty
           ? "Click the location icon and Save"
           : "Input Establishment Name";
       showAlertDialog(context, title, message);
-    } else if ((!_default && done) && _currentStep == 2) {
+    } else if ((UserRole.role == 'Intern' && done) && _currentStep == 2) {
       String title = "Please Register Face";
       String message = "Click icon to scan";
       showAlertDialog(context, title, message);
     } else if (_currentStep == 2) {
-      await signup(context, email, password, id, name,
-          _default ? 'Administrator' : 'Intern');
+      await signup(context, email, password, id, name, UserRole.role, bday, uid,
+          address);
       String code = generateAlphanumericId();
       String currentCoordinate = UserSession.location;
       double? currentLat = UserSession.latitude;
