@@ -161,9 +161,9 @@ class _CameraState extends State<CameraAuth> {
         setState(() {
           _no = true;
         });
-       
+
         await cameraAlertDialog(context, title, message);
-         Navigator.of(context).pop(false);
+        Navigator.of(context).pop(false);
         widget.refreshCallback();
 
         // Upload the image to Firebase Storage with metadata
@@ -235,7 +235,6 @@ class _CameraState extends State<CameraAuth> {
                 _captureImage();
               }
               return Column(
-                   
                 children: [
                   ListTile(
                       title: Text("Current Location:"),
@@ -248,8 +247,7 @@ class _CameraState extends State<CameraAuth> {
                               "Scanning...",
                               style: TextStyle(color: Colors.blue),
                             )),
-                Row(
-                  
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("Status : "),
@@ -269,11 +267,11 @@ class _CameraState extends State<CameraAuth> {
                       alignment: Alignment.center,
                       children: <Widget>[
                         CameraPreview(_controller),
-                       
-                       kIsWeb ? Text("Scanning..."):
-                        Lottie.asset(
-                          'assets/scanning.json',
-                        ),
+                        kIsWeb
+                            ? Text("Scanning...")
+                            : Lottie.asset(
+                                'assets/scanning.json',
+                              ),
                       ],
                     ),
                   ),

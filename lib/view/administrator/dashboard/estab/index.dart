@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:adaptive_action_sheet/adaptive_action_sheet.dart';
 import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/EstabModel.dart';
 import 'package:attendance_nmsct/view/administrator/create.dart';
@@ -52,7 +53,9 @@ class _EstabDashboardState extends State<EstabDashboard> {
       uRole = userRole!;
     });
     final response = await http.post(
-      Uri.parse('${Server.host}users/establishment/estab.php'),
+      UserRole.role == "Administrator"
+          ? Uri.parse('${Server.host}users/establishment/estab.php')
+          : Uri.parse('${Server.host}users/establishment/estab_nmscst.php'),
       body: {
         'id': userId,
       },

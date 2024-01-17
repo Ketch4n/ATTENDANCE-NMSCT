@@ -26,9 +26,9 @@ Future<void> login(
     try {
       // HTTP request
       final response = await http.post(
-        UserRole.role == 'Administrator'
-            ? Uri.parse('${Server.host}auth/login.php')
-            : Uri.parse('${Server.host}auth/user_login.php'),
+        UserRole.role == 'Intern'
+            ? Uri.parse('${Server.host}auth/user_login.php')
+            : Uri.parse('${Server.host}auth/login.php'),
         body: {
           'email': email,
           'password': password,
@@ -56,7 +56,11 @@ Future<void> login(
           Session.fname = userFName;
           Session.lname = userLName;
           Session.email = userEmail;
-
+          if (UserRole.role == "Intern") {
+            UserProfileInfo.uid = data['uid'];
+            UserProfileInfo.bday = data['bday'];
+            UserProfileInfo.address = data['address'];
+          } else {}
           const title = "Login success";
           String content = "Welcome $message";
 

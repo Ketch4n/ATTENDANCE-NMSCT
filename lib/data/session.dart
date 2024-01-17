@@ -24,7 +24,13 @@ class UserSession {
   static double? latitude;
   static double? longitude;
 }
+
 // class User {
 //   static double long = 0;
 //   static double lat = 0;
 // }
+class UserProfileInfo {
+  static String uid = "";
+  static String bday = "";
+  static String address = "";
+}

@@ -321,58 +321,66 @@ class _SignupState extends State<Signup> {
 
                           const SizedBox(height: 20),
 
-                          Container(
-                            decoration: Style.boxdecor,
-                            child: Padding(
-                              padding: const EdgeInsets.all(3.0),
-                              child: SizedBox(
-                                  height: 100,
-                                  width: 100,
-                                  child: UserRole.role == 'Administrator'
-                                      ? IconButton(
-                                          color: Colors.redAccent,
-                                          iconSize: 50,
-                                          icon: const Icon(Icons.location_pin),
-                                          onPressed: () async {
-                                            final value = await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PinMap()),
-                                            );
-                                            if (value != null) {
-                                              setState(() {
-                                                _show = false;
-                                              });
-                                            }
-                                          },
-                                        )
-                                      : GestureDetector(
-                                          onTap: () async {
-                                            Session.email =
-                                                _emailController.text.trim();
-                                            Session.password =
-                                                _passController.text.trim();
-                                            final value1 = await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      FaceLauncherPage(
-                                                        purpose: 'signup',
-                                                        refreshCallback: () {},
-                                                      )),
-                                            );
-                                            if (value1 != null) {
-                                              setState(() {
-                                                done = false;
-                                                continued();
-                                              });
-                                            }
-                                          },
-                                          child: Lottie.asset(
-                                              'assets/scan.json'))),
-                            ),
-                          ),
+                          UserRole.role != "NMSCST"
+                              ? Container(
+                                  decoration: Style.boxdecor,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: SizedBox(
+                                        height: 100,
+                                        width: 100,
+                                        child: UserRole.role == 'Administrator'
+                                            ? IconButton(
+                                                color: Colors.redAccent,
+                                                iconSize: 50,
+                                                icon: const Icon(
+                                                    Icons.location_pin),
+                                                onPressed: () async {
+                                                  final value =
+                                                      await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            PinMap()),
+                                                  );
+                                                  if (value != null) {
+                                                    setState(() {
+                                                      _show = false;
+                                                    });
+                                                  }
+                                                },
+                                              )
+                                            : GestureDetector(
+                                                onTap: () async {
+                                                  Session.email =
+                                                      _emailController.text
+                                                          .trim();
+                                                  Session.password =
+                                                      _passController.text
+                                                          .trim();
+                                                  final value1 =
+                                                      await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            FaceLauncherPage(
+                                                              purpose: 'signup',
+                                                              refreshCallback:
+                                                                  () {},
+                                                            )),
+                                                  );
+                                                  if (value1 != null) {
+                                                    setState(() {
+                                                      done = false;
+                                                      continued();
+                                                    });
+                                                  }
+                                                },
+                                                child: Lottie.asset(
+                                                    'assets/scan.json'))),
+                                  ),
+                                )
+                              : SizedBox(),
                           // Stack(
                           //   children: [
                           //     TextFormField(
@@ -489,9 +497,11 @@ class _SignupState extends State<Signup> {
       String message = "Please Enter Account Details";
       String title = name.isEmpty ? "Input First Name" : "Input Last Name";
       showAlertDialog(context, title, message);
-    } else if ((uid.isEmpty || address.isEmpty) && _currentStep == 1) {
+    } else if (UserRole.role == "Intern" &&
+        (uid.isEmpty || address.isEmpty) &&
+        _currentStep == 1) {
       String message = "Please Enter Account Details";
-      String title = name.isEmpty ? "Input First Name" : "Input Last Name";
+      String title = "Input details";
       showAlertDialog(context, title, message);
     } else if (UserRole.role == 'Administrator' &&
         (loc.isEmpty || cont.isEmpty) &&

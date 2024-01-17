@@ -239,10 +239,12 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                         )
-                      : SizedBox(
-                          height: 150,
-                          width: 150,
-                          child: Image.asset('assets/settings.png')),
+                      : UserRole.role == 'Administrator'
+                          ? SizedBox(
+                              height: 150,
+                              width: 150,
+                              child: Image.asset('assets/settings.png'))
+                          : SizedBox(),
                 ],
               ),
             ),
