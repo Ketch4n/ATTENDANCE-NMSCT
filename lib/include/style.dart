@@ -72,4 +72,9 @@ class Style {
     color: Colors.blue,
     thickness: 2,
   );
+  static ScrollbarThemeData scrollbarTheme =
+      const ScrollbarThemeData().copyWith(
+    thumbColor: MaterialStateProperty.all(const Color(0xff52beff)),
+    interactive: true,
+  );
 }

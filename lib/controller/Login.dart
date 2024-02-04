@@ -56,6 +56,7 @@ Future<void> login(
           Session.fname = userFName;
           Session.lname = userLName;
           Session.email = userEmail;
+
           if (UserRole.role == "Intern") {
             UserProfileInfo.uid = data['uid'];
             UserProfileInfo.bday = data['bday'];

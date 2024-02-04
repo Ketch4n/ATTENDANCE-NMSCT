@@ -1,5 +1,7 @@
 import 'package:attendance_nmsct/auth/auth.dart';
+import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/locator.dart';
+import 'package:attendance_nmsct/widgets/scroll.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:month_year_picker/month_year_picker.dart';
@@ -30,7 +32,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Attendance NMSCT',
+      scrollBehavior: MyCustomScrollBehavior(),
       theme: ThemeData(
+        scrollbarTheme: Style.scrollbarTheme,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
         visualDensity: VisualDensity.adaptivePlatformDensity,

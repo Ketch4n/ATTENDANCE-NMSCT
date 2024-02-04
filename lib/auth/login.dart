@@ -71,11 +71,18 @@ class _LoginState extends State<Login> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text("Attendance\nMonitoring", style: Style.text),
+                        Text("OJT Attendance\nMonitoring", style: Style.text),
                       ],
                     ),
                   ),
-
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: UserRole.role == 'Intern'
+                        ? Text("OJT Student / Intern")
+                        : UserRole.role == 'Administrator'
+                            ? Text("Establishment")
+                            : Text("Administrator"),
+                  ),
                   Container(
                     constraints: BoxConstraints(maxWidth: 500),
                     child: Padding(

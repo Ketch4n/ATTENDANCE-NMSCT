@@ -7,6 +7,7 @@ import 'package:attendance_nmsct/include/navbar.dart';
 import 'package:attendance_nmsct/include/profile.dart';
 import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/admin/index.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/Dashboard.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/index.dart';
 import 'package:attendance_nmsct/widgets/offline_snackbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -123,7 +124,7 @@ class _AdministratorHome extends State {
               // Session.role == 'Administrator'
               //     ? const AdminDashboard()
               //     :
-              const EstabDashboard(),
+              const DashBoardEstab(),
               const GlobalProfile(),
             ],
           )

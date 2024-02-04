@@ -99,8 +99,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                       child: Column(
                         children: [
                           const Duck(),
-                          Text("No Section or Establishment !",
-                              style: Style.duck),
+                          Text("No Establishment !", style: Style.duck),
                         ],
                       ),
                     ),
@@ -109,15 +108,15 @@ class _StudentDashboardState extends State<StudentDashboard> {
               );
             } else {
               return Scaffold(
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () async {
-                    bottomsheetJoin(context, user.role,
-                        refreshCallback: _refreshData);
-                  },
-                  child: const Icon(Icons.add),
-                ),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.centerFloat,
+                // floatingActionButton: FloatingActionButton(
+                //   onPressed: () async {
+                //     bottomsheetJoin(context, user.role,
+                //         refreshCallback: _refreshData);
+                //   },
+                //   child: const Icon(Icons.add),
+                // ),
+                // floatingActionButtonLocation:
+                //     FloatingActionButtonLocation.centerFloat,
                 body: ListView(
                   children: [
                     // user.establishment_id != "null"

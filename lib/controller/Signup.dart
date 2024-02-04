@@ -18,12 +18,13 @@ Future signup(
     String roleController,
     DateTime bday,
     String uid,
-    String address) async {
+    String address,
+    String section) async {
   String apiUrl = '${Server.host}auth/signup.php';
   Map<String, String> headers = {'Content-Type': 'application/json'};
   final date = DateFormat('yyyy-MM-dd').format(bday.toLocal());
   String jsonData =
-      '{"email": "$email", "password": "$password", "fname": "$name", "lname": "$id","uid":"$uid", "bday":"$date","address":"$address","role":"$roleController"}';
+      '{"email": "$email", "password": "$password", "fname": "$name", "lname": "$id","uid":"$uid", "bday":"$date","address":"$address","section":"$section","role":"$roleController"}';
   final response =
       await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
   final jsonResponse = json.decode(response.body);

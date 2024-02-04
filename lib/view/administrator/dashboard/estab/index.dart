@@ -106,6 +106,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
   // }
   // List classData = [];
   // List roomData = [];
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -150,6 +151,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
               final EstabModel sec2 = sect2[0];
 
               return Scaffold(
+                appBar: AppBar(),
                 floatingActionButton: FloatingActionButton(
                   onPressed: () async {
                     bottomsheet(uRole, uId);

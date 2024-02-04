@@ -57,6 +57,7 @@ class _SignupState extends State<Signup> {
   final _bdayController = TextEditingController();
   final _uidController = TextEditingController();
   final _uaddressController = TextEditingController();
+  final _sectionController = TextEditingController();
 
   Future<void> _ref() async {
     setState(() {});
@@ -265,6 +266,13 @@ class _SignupState extends State<Signup> {
                                   ),
                                 )
                               : SizedBox(),
+                          UserRole.role == 'Intern'
+                              ? TextFormField(
+                                  controller: _sectionController,
+                                  decoration: Style.textdesign
+                                      .copyWith(labelText: 'Section'),
+                                )
+                              : SizedBox(),
                         ],
                       ),
                       isActive: _currentStep >= 1,
@@ -381,6 +389,14 @@ class _SignupState extends State<Signup> {
                                   ),
                                 )
                               : SizedBox(),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(UserRole.role == "Administrator"
+                                ? "Click the icon to register Location"
+                                : UserRole.role == "Intern"
+                                    ? "Click the icon to register Face Auth"
+                                    : "Click continue to confirm"),
+                          ),
                           // Stack(
                           //   children: [
                           //     TextFormField(
@@ -484,6 +500,7 @@ class _SignupState extends State<Signup> {
     DateTime bday = _date;
     String uid = _uidController.text.trim();
     String address = _uaddressController.text.trim();
+    String section = _sectionController.text.trim();
 
     if ((email.isEmpty || password.isEmpty) && _currentStep == 0) {
       String title = email.isEmpty ? "Email Empty !" : "Password Empty !";
@@ -498,7 +515,7 @@ class _SignupState extends State<Signup> {
       String title = name.isEmpty ? "Input First Name" : "Input Last Name";
       showAlertDialog(context, title, message);
     } else if (UserRole.role == "Intern" &&
-        (uid.isEmpty || address.isEmpty) &&
+        (uid.isEmpty || address.isEmpty || section.isEmpty) &&
         _currentStep == 1) {
       String message = "Please Enter Account Details";
       String title = "Input details";
@@ -517,7 +534,7 @@ class _SignupState extends State<Signup> {
       showAlertDialog(context, title, message);
     } else if (_currentStep == 2) {
       await signup(context, email, password, id, name, UserRole.role, bday, uid,
-          address);
+          address, section);
       String code = generateAlphanumericId();
       String currentCoordinate = UserSession.location;
       double? currentLat = UserSession.latitude;

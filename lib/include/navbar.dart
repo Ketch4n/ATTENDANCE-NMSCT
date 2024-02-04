@@ -1,7 +1,10 @@
 import 'package:attendance_nmsct/auth/logout.dart';
 import 'package:attendance_nmsct/data/session.dart';
+import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/pages/db/databse_helper.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_students.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/index.dart';
 import 'package:flutter/material.dart';
 
 class Navbar extends StatefulWidget {
@@ -175,19 +178,31 @@ class _NavbarState extends State<Navbar> {
                 Navigator.pop(context); // Close the drawer
               },
             ),
-            // ListTile(
-            //   leading: const Icon(Icons.calendar_today),
-            //   title: const Text('Attendance'),
-            //   onTap: () {
-            //     // Navigator.of(context).pop(false);
+            UserRole.role == 'NMSCST' ? Divider() : SizedBox(),
+            UserRole.role == 'NMSCST'
+                ? ListTile(
+                    leading: const Icon(Icons.people),
+                    title: const Text('All Students'),
+                    onTap: () {
+                      Navigator.of(context).pop(false);
 
-            //     // Navigator.of(context).push(
-            //     //   MaterialPageRoute(
-            //     //     builder: (context) => const DTRScreen(),
-            //     //   ),
-            //     // );
-            //   },
-            // ),
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => EstabDashboard()));
+                    },
+                  )
+                : SizedBox(),
+            UserRole.role == 'NMSCST'
+                ? ListTile(
+                    leading: const Icon(Icons.book),
+                    title: const Text('All Establishments'),
+                    onTap: () {
+                      Navigator.of(context).pop(false);
+
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AllStudents()));
+                    },
+                  )
+                : SizedBox(),
             const Divider(),
             // Session.role == 'Administrator'
             //     ? ListTile(

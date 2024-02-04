@@ -156,7 +156,7 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                             "Time-In",
                                             style: TextStyle(
                                               fontFamily: "NexaRegular",
-                                              fontSize: screenWidth / 25,
+                                              fontSize: 25,
                                               color: Colors.green,
                                             ),
                                           ),
@@ -170,14 +170,14 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                                     dtr.in_am,
                                             style: TextStyle(
                                               fontFamily: "NexaBold",
-                                              fontSize: screenWidth / 20,
+                                              fontSize: 20,
                                             ),
                                           ),
                                           Text(
                                             "Time-In",
                                             style: TextStyle(
                                               fontFamily: "NexaRegular",
-                                              fontSize: screenWidth / 25,
+                                              fontSize: 25,
                                               color: Colors.green,
                                             ),
                                           ),
@@ -191,7 +191,7 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                                     dtr.in_pm,
                                             style: TextStyle(
                                               fontFamily: "NexaBold",
-                                              fontSize: screenWidth / 20,
+                                              fontSize: 20,
                                             ),
                                           ),
                                         ],
@@ -208,7 +208,7 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                             "Time-Out",
                                             style: TextStyle(
                                               fontFamily: "NexaRegular",
-                                              fontSize: screenWidth / 25,
+                                              fontSize: 25,
                                               color: Colors.orange,
                                             ),
                                           ),
@@ -222,14 +222,14 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                                     dtr.out_am,
                                             style: TextStyle(
                                               fontFamily: "NexaBold",
-                                              fontSize: screenWidth / 20,
+                                              fontSize: 20,
                                             ),
                                           ),
                                           Text(
                                             "Time-Out",
                                             style: TextStyle(
                                               fontFamily: "NexaRegular",
-                                              fontSize: screenWidth / 25,
+                                              fontSize: 25,
                                               color: Colors.orange,
                                             ),
                                           ),
@@ -243,7 +243,7 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                                     dtr.out_pm,
                                             style: TextStyle(
                                               fontFamily: "NexaBold",
-                                              fontSize: screenWidth / 20,
+                                              fontSize: 20,
                                             ),
                                           ),
                                         ],
