@@ -263,7 +263,8 @@ class _EstabDTRState extends State<EstabDTR> {
                                         //     ?
                                         GestureDetector(
                                       onTap: () {
-                                        showReport(context);
+                                        // showReport(context, dtr.time_in_am,
+                                        //     dtr.time_in_am);
                                       },
                                       child: Container(
                                         margin: EdgeInsets.only(

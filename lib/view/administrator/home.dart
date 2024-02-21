@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'package:attendance_nmsct/controller/User.dart';
 import 'package:attendance_nmsct/data/session.dart';
+import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/navbar.dart';
 import 'package:attendance_nmsct/include/profile.dart';
 import 'package:attendance_nmsct/model/UserModel.dart';
@@ -121,10 +122,9 @@ class _AdministratorHome extends State {
           body: IndexedStack(
             index: _currentIndex,
             children: [
-              // Session.role == 'Administrator'
-              //     ? const AdminDashboard()
-              //     :
-              const DashBoardEstab(),
+              UserRole.role == 'Administrator'
+                  ? const EstabDashboard()
+                  : const DashBoardEstab(),
               const GlobalProfile(),
             ],
           )

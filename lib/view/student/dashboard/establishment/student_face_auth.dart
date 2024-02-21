@@ -103,22 +103,22 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     try {
       if (checkInAM == "00:00:00") {
         setState(() {
-          checkInAM = DateFormat('hh:mm').format(DateTime.now());
+          checkInAM = DateFormat('HH:mm').format(DateTime.now());
           inAM = DateFormat('a').format(DateTime.now());
         });
       } else if (checkOutAM == "00:00:00") {
         setState(() {
-          checkOutAM = DateFormat('hh:mm').format(DateTime.now());
+          checkOutAM = DateFormat('HH:mm').format(DateTime.now());
           outAM = DateFormat('a').format(DateTime.now());
         });
       } else if (checkInPM == "00:00:00") {
         setState(() {
-          checkInPM = DateFormat('hh:mm').format(DateTime.now());
+          checkInPM = DateFormat('HH:mm').format(DateTime.now());
           inPM = DateFormat('a').format(DateTime.now());
         });
       } else {
         setState(() {
-          checkOutPM = DateFormat('hh:mm').format(DateTime.now());
+          checkOutPM = DateFormat('HH:mm').format(DateTime.now());
           outPM = DateFormat('a').format(DateTime.now());
         });
       }

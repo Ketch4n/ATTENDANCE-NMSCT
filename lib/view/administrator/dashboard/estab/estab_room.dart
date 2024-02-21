@@ -140,8 +140,8 @@ class _EstabRoomState extends State<EstabRoom> {
             StreamBuilder<List<EstabRoomModel>>(
                 stream: _internsStreamController.stream,
                 builder: (context, snapshot) {
+                  final List<EstabRoomModel> interns = snapshot.data!;
                   if (snapshot.hasData) {
-                    final List<EstabRoomModel> interns = snapshot.data!;
                     return Expanded(
                       child: ListView.builder(
                           itemCount: interns.length,

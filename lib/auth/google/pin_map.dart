@@ -132,6 +132,14 @@ class _PinMapState extends State<PinMap> {
           _googleMapController.complete(controller);
         }
       },
+      circles: {
+        Circle(
+            circleId: CircleId("1"),
+            center: _defaultLatLng,
+            radius: 10,
+            strokeWidth: 1,
+            fillColor: Colors.blue.withOpacity(0.2))
+      },
     );
   }
 
@@ -158,12 +166,37 @@ class _PinMapState extends State<PinMap> {
   Future _getAddress(LatLng position) async {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
-    Placemark address = placemarks[2];
-    String addresStr =
+    Placemark address = placemarks.first; // Get the first placemark
+    String addressStr =
         "${address.street}, ${address.locality}, ${address.country}";
     setState(() {
-      _draggedAddress = addresStr;
+      _draggedAddress = addressStr;
     });
+
+    // Calculate distance between dragged position and circle center
+    double distance = Geolocator.distanceBetween(
+      position.latitude,
+      position.longitude,
+      _defaultLatLng.latitude,
+      _defaultLatLng.longitude,
+    );
+
+    // Check if the distance is greater than circle radius (10 meters in this case)
+    if (distance > 10) {
+      // Notify the user that they are outside the circle
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('You are outside the circle!'),
+        ),
+      );
+    } else if (distance <= 10) {
+      print("inside");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('You are '),
+        ),
+      );
+    }
   }
 
   Future _gotoUserCurrentPosition() async {

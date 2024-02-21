@@ -5,13 +5,11 @@ import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/report.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
 import 'package:month_year_picker/month_year_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentEstabDTR extends StatefulWidget {
   const StudentEstabDTR({super.key, required this.id});
@@ -32,7 +30,7 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
   double screenWidth = 0;
   String _month = DateFormat('MMMM').format(DateTime.now());
   String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
-
+  Duration totalDuration = Duration.zero;
   Future<void> monthly_report(monthStream) async {
     final response = await http.post(
       Uri.parse('${Server.host}users/student/monthly_report.php'),
@@ -101,7 +99,7 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
               },
               child: Text(
                 _month,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontFamily: "NexaBold",
                   // fontSize: screenWidth / 15,
@@ -137,7 +135,15 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
 
                               return GestureDetector(
                                 onTap: () {
-                                  showReport(context);
+                                  showReport(
+                                      context,
+                                      dtr.total_hours_rendered,
+                                      DateFormat('HH:mm:ss').format(
+                                          DateFormat('HH:mm:ss')
+                                              .parse(dtr.time_in_am)),
+                                      DateFormat('HH:mm:ss').format(
+                                          DateFormat('HH:mm:ss')
+                                              .parse(dtr.time_in_pm)));
                                 },
                                 child: Card(
                                   child: Row(

@@ -121,7 +121,8 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
 
                             return GestureDetector(
                               onTap: () {
-                                showReport(context);
+                                // showReport(
+                                //     context, dtr.time_out_am, dtr.time_out_am);
                               },
                               child: Card(
                                 child: Row(

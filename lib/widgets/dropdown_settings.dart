@@ -101,7 +101,7 @@ class DropdownSettings extends StatelessWidget {
                               style: TextStyle(color: Colors.black),
                             ),
                             trailing: Text(
-                              Session.fname + Session.lname,
+                              "${Session.fname} " + Session.lname,
                               style: TextStyle(color: Colors.blue),
                             ),
                           ),
@@ -114,6 +114,7 @@ class DropdownSettings extends StatelessWidget {
                             ),
                             trailing: Text(
                               Session.email,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(color: Colors.blue),
                             ),
                           ),

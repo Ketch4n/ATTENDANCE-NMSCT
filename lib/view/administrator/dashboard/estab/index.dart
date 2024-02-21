@@ -151,30 +151,44 @@ class _EstabDashboardState extends State<EstabDashboard> {
               final EstabModel sec2 = sect2[0];
 
               return Scaffold(
-                appBar: AppBar(),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () async {
-                    bottomsheet(uRole, uId);
-                  },
-                  child: const Icon(Icons.add),
-                ),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.centerFloat,
-                body: Wrap(
-                  spacing: 0.0, // Adjust spacing as needed
-                  runSpacing: 10.0, // Adjust run spacing as needed
-                  children: sect2.map((EstabModel sec) {
-                    return GlobalDashCard(
-                      id: sec.id,
-                      uid: sec.creator_email,
-                      name: sec.establishment_name,
-                      code: sec.code,
-                      path: uRole == 'Admin' ? "class" : "room",
-                      refreshCallback: _refreshData,
-                    );
-                  }).toList(),
-                ),
-              );
+                  appBar: AppBar(),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () async {
+                      bottomsheet(uRole, uId);
+                    },
+                    child: const Icon(Icons.add),
+                  ),
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.centerFloat,
+                  body: UserRole.role == "NMSCST"
+                      ? Wrap(
+                          spacing: 0.0, // Adjust spacing as needed
+                          runSpacing: 10.0, // Adjust run spacing as needed
+                          children: sect2.map((EstabModel sec) {
+                            return GlobalDashCard(
+                              id: sec.id,
+                              uid: sec.creator_email,
+                              name: sec.establishment_name,
+                              code: sec.code,
+                              path: uRole == 'Admin' ? "class" : "room",
+                              refreshCallback: _refreshData,
+                            );
+                          }).toList(),
+                        )
+                      : ListView.builder(
+                          itemCount: sect2.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            EstabModel sec = sect2[index];
+                            return GlobalDashCard(
+                              id: sec.id,
+                              uid: sec.creator_email,
+                              name: sec.establishment_name,
+                              code: sec.code,
+                              path: uRole == 'Admin' ? "class" : "room",
+                              refreshCallback: _refreshData,
+                            );
+                          },
+                        ));
             }
           } else {
             return CardSkeleton(
