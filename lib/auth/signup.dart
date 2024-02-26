@@ -15,6 +15,7 @@ import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
@@ -58,6 +59,7 @@ class _SignupState extends State<Signup> {
   final _uidController = TextEditingController();
   final _uaddressController = TextEditingController();
   final _sectionController = TextEditingController();
+  final _hoursController = TextEditingController();
 
   Future<void> _ref() async {
     setState(() {});
@@ -305,25 +307,36 @@ class _SignupState extends State<Signup> {
                           // ),
 
                           _default && !_show
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10.0),
-                                  child: TextFormField(
-                                    controller: _locationController,
-                                    readOnly: true,
-                                    decoration: Style.textdesign.copyWith(
-                                        hintText: UserSession.location == ""
-                                            ? 'Address'
-                                            : UserSession.location),
-                                  ),
+                              ? TextFormField(
+                                  controller: _locationController,
+                                  readOnly: true,
+                                  decoration: Style.textdesign.copyWith(
+                                      hintText: UserSession.location == ""
+                                          ? 'Address'
+                                          : UserSession.location),
                                 )
                               : SizedBox(),
 
                           _default && !_show
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10.0),
+                                  child: TextFormField(
+                                    controller: _controllController,
+                                    decoration: Style.textdesign.copyWith(
+                                        labelText: 'Establishment name'),
+                                  ),
+                                )
+                              : SizedBox(),
+                          _default && !_show
                               ? TextFormField(
-                                  controller: _controllController,
-                                  decoration: Style.textdesign.copyWith(
-                                      labelText: 'Establishment name'),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  controller: _hoursController,
+                                  decoration: Style.textdesign
+                                      .copyWith(labelText: 'Hours Required'),
                                 )
                               : SizedBox(),
 
@@ -494,7 +507,8 @@ class _SignupState extends State<Signup> {
 
     String name = _fnameController.text.trim();
     String id = _lnameController.text.trim();
-    String role = _roleController.text.trim();
+    String hours = _hoursController.text.trim();
+
     String loc = UserSession.location.trim();
     String cont = _controllController.text.trim();
     DateTime bday = _date;
@@ -521,12 +535,14 @@ class _SignupState extends State<Signup> {
       String title = "Input details";
       showAlertDialog(context, title, message);
     } else if (UserRole.role == 'Administrator' &&
-        (loc.isEmpty || cont.isEmpty) &&
+        (loc.isEmpty || cont.isEmpty || hours.isEmpty) &&
         _currentStep == 2) {
       String title = "Please Enter Location Details";
       String message = loc.isEmpty
           ? "Click the location icon and Save"
-          : "Input Establishment Name";
+          : cont.isEmpty
+              ? "Input Establishment Name"
+              : "Hours required for Interns";
       showAlertDialog(context, title, message);
     } else if ((UserRole.role == 'Intern' && done) && _currentStep == 2) {
       String title = "Please Register Face";
@@ -541,15 +557,8 @@ class _SignupState extends State<Signup> {
       double? currentLng = UserSession.longitude;
 
       // ignore: use_build_context_synchronously
-      await CreateSectEstab(
-        context,
-        code,
-        cont,
-        currentCoordinate,
-        currentLng!,
-        currentLat!,
-        email,
-      );
+      await CreateSectEstab(context, code, cont, currentCoordinate, currentLng!,
+          currentLat!, email, hours);
     } else {
       _currentStep < 2 ? setState(() => _currentStep += 1) : null;
     }

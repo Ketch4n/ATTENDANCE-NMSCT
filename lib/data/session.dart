@@ -10,6 +10,7 @@ class Session {
   static String latitude = "";
 
   static String password = "";
+  static String hours_required = "";
 }
 
 class Admin {

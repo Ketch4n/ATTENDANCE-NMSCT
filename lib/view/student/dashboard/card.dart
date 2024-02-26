@@ -1,8 +1,16 @@
+import 'dart:convert';
+
+import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
+import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/home.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/controller/Leave.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/home.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DashCard extends StatefulWidget {
   const DashCard(
@@ -20,6 +28,38 @@ class DashCard extends StatefulWidget {
 }
 
 class _DashCardState extends State<DashCard> {
+  String grandTotal = '';
+  String req = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchGrandTotal();
+    List<String> parts = Session.hours_required.split(':');
+    String hours = parts[0];
+    req = hours;
+  }
+
+  Future<void> fetchGrandTotal() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+    try {
+      // Replace 'your_php_script_url' with the actual URL of your PHP script
+      final response = await http.post(
+        Uri.parse('${Server.host}users/student/hours_rendered_only.php'),
+        body: {'id': userId, 'estab_id': widget.id},
+      );
+      var responseData = json.decode(response.body);
+
+      // Extract the grand total hours rendered from the response
+      setState(() {
+        grandTotal = responseData['grand_total_hours_rendered'];
+      });
+    } catch (error) {
+      print('Error fetching grand total: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -102,7 +142,31 @@ class _DashCardState extends State<DashCard> {
                       }
                     },
                   ),
-                )
+                ),
+                Positioned(
+                    bottom: 0,
+                    left: 0,
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                      child: Text(
+                        "Overall hours rendered :",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    )),
+                Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                      child: Text(
+                        grandTotal + " / " + req + " hours",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    )),
               ],
             ),
           ),

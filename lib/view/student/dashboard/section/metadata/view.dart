@@ -8,6 +8,7 @@ import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AccomplishmentModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/insert.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadata.dart';
+import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -77,6 +78,9 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
   }
 
   Future<void> _uploadImage(File imageFile) async {
+    setState(() {
+      isLoading = true; // Set isLoading to true when starting to fetch data
+    });
     try {
       final storage = FirebaseStorage.instance;
       final prefs = await SharedPreferences.getInstance();
@@ -89,6 +93,10 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
       final Reference storageRef =
           storage.ref().child('$folderName/$fileName.jpg');
       await storageRef.putFile(imageFile);
+      final message = 'Uploaded Successfully';
+      final status = 'Success';
+
+      showAlertDialog(context, status, message);
 
       _getImageReferences();
     } catch (e) {
@@ -190,6 +198,8 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
         setState(() {
           _imageReferences.remove(imageRef);
         });
+        _getImageReferences();
+
         print('Image deleted successfully');
       } catch (e) {
         print('Error deleting image: $e');

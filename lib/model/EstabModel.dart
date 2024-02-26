@@ -6,6 +6,7 @@ class EstabModel {
   final String location;
   final String longitude;
   final String latitude;
+  final String hours_required;
   final String status;
 
   EstabModel({
@@ -16,6 +17,7 @@ class EstabModel {
     required this.location,
     required this.longitude,
     required this.latitude,
+    required this.hours_required,
     required this.status,
   });
 
@@ -28,6 +30,7 @@ class EstabModel {
         'location': location,
         'longitude': longitude,
         'latitude': latitude,
+        'hours_required': hours_required,
         'status': status,
       };
 
@@ -40,6 +43,7 @@ class EstabModel {
         location: json['location'],
         longitude: json['longitude'],
         latitude: json['latitude'],
+        hours_required: json['hours_required'],
         status: json['status'],
       );
 }

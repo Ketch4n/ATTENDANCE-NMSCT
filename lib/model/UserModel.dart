@@ -13,22 +13,25 @@ class UserModel {
   final String longitude;
   final String latitude;
   final String creator_email;
+  final String hours_required;
 
-  UserModel(
-      {required this.id,
-      required this.email,
-      required this.fname,
-      required this.lname,
-      required this.role,
-      // required this.section_id,
-      // required this.section_name,
-      // required this.admin_id,
-      required this.establishment_id,
-      required this.establishment_name,
-      required this.location,
-      required this.longitude,
-      required this.latitude,
-      required this.creator_email});
+  UserModel({
+    required this.id,
+    required this.email,
+    required this.fname,
+    required this.lname,
+    required this.role,
+    // required this.section_id,
+    // required this.section_name,
+    // required this.admin_id,
+    required this.establishment_id,
+    required this.establishment_name,
+    required this.location,
+    required this.longitude,
+    required this.latitude,
+    required this.creator_email,
+    required this.hours_required,
+  });
 
   Map<String, dynamic> toJson() => {
         // 'id': id,
@@ -45,23 +48,26 @@ class UserModel {
         'location': location,
         'longitude': longitude,
         'latitude': latitude,
-        'creator_email': creator_email
+        'creator_email': creator_email,
+        'hours_required': hours_required,
       };
 
   static UserModel fromJson(Map<String, dynamic> json) => UserModel(
-      // id: json['id'],
-      id: json['id'],
-      email: json['email'],
-      fname: json['fname'],
-      lname: json['lname'],
-      role: json['role'],
-      // section_id: json['section_id'],
-      // section_name: json['section_name'],
-      // admin_id: json['admin_id'],
-      establishment_id: json['establishment_id'],
-      establishment_name: json['establishment_name'],
-      location: json['location'],
-      longitude: json['longitude'],
-      latitude: json['latitude'],
-      creator_email: json['creator_email']);
+        // id: json['id'],
+        id: json['id'],
+        email: json['email'],
+        fname: json['fname'],
+        lname: json['lname'],
+        role: json['role'],
+        // section_id: json['section_id'],
+        // section_name: json['section_name'],
+        // admin_id: json['admin_id'],
+        establishment_id: json['establishment_id'],
+        establishment_name: json['establishment_name'],
+        location: json['location'],
+        longitude: json['longitude'],
+        latitude: json['latitude'],
+        creator_email: json['creator_email'],
+        hours_required: json['hours_required'],
+      );
 }

@@ -19,6 +19,7 @@ Future fetchUser(userStreamController) async {
       final user = UserModel.fromJson(data);
       Session.longitude = user.longitude;
       Session.latitude = user.latitude;
+      Session.hours_required = user.hours_required;
       // prefs.setString('userEstabLocation', userEstabLocation);
 
       // Add the user data to the stream
