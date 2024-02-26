@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DropdownSettings extends StatelessWidget {
   const DropdownSettings({super.key});
@@ -66,9 +69,14 @@ class DropdownSettings extends StatelessWidget {
   }
 
   Future showProfileInfo(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final uid = prefs.getString('internID');
+    final bday = prefs.getString('internBDAY');
+    final add = prefs.getString('internADDRESS');
+
     return showModalBottomSheet(
         context: context,
-        shape: const RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
         barrierColor: Colors.black87.withOpacity(0.5),
         isScrollControlled: true,
@@ -105,19 +113,19 @@ class DropdownSettings extends StatelessWidget {
                               style: TextStyle(color: Colors.blue),
                             ),
                           ),
-                          ListTile(
-                            leadingAndTrailingTextStyle:
-                                TextStyle(fontSize: 20),
-                            leading: Text(
-                              "Email :",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            trailing: Text(
-                              Session.email,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                          ),
+                          // ListTile(
+                          //   leadingAndTrailingTextStyle:
+                          //       TextStyle(fontSize: 20),
+                          //   leading: Text(
+                          //     "Email :",
+                          //     style: TextStyle(color: Colors.black),
+                          //   ),
+                          //   trailing: Text(
+                          //     Session.email,
+                          //     overflow: TextOverflow.ellipsis,
+                          //     style: TextStyle(color: Colors.blue),
+                          //   ),
+                          // ),
                           UserRole.role == 'Intern'
                               ? ListTile(
                                   leadingAndTrailingTextStyle:
@@ -127,7 +135,7 @@ class DropdownSettings extends StatelessWidget {
                                     style: TextStyle(color: Colors.black),
                                   ),
                                   trailing: Text(
-                                    UserProfileInfo.uid,
+                                    uid!,
                                     style: TextStyle(color: Colors.blue),
                                   ),
                                 )
@@ -141,7 +149,7 @@ class DropdownSettings extends StatelessWidget {
                                     style: TextStyle(color: Colors.black),
                                   ),
                                   trailing: Text(
-                                    UserProfileInfo.bday,
+                                    bday!,
                                     style: TextStyle(color: Colors.blue),
                                   ),
                                 )
@@ -155,7 +163,7 @@ class DropdownSettings extends StatelessWidget {
                                     style: TextStyle(color: Colors.black),
                                   ),
                                   trailing: Text(
-                                    UserProfileInfo.address,
+                                    add!,
                                     style: TextStyle(color: Colors.blue),
                                   ),
                                 )

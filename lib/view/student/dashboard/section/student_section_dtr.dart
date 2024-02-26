@@ -84,7 +84,7 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: kIsWeb ? 10 : 0),
+            SizedBox(height: kIsWeb ? 10 : 10),
             MaterialButton(
               color: Colors.blue,
               onPressed: () async {
@@ -108,7 +108,6 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: "NexaBold",
-                  fontSize: 18,
                 ),
               ),
             ),

@@ -73,7 +73,7 @@ dependencies:
 
 
   flutter_camera: ^0.1.1
-  image_picker: ^1.0.4
+  image_picker: ^0.8.4+3
   # image: ^4.0.17
 
   location: ^5.0.3

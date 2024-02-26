@@ -14,7 +14,7 @@ class _StudentEstabOnsiteState extends State<StudentEstabOnsite> {
   final code = TextEditingController();
   final location = TextEditingController();
   final fulladdress = TextEditingController();
-    final longi = TextEditingController();
+  final longi = TextEditingController();
   final lati = TextEditingController();
   // StreamSubscription<Position>? _positionSubscription;
   @override
@@ -22,14 +22,15 @@ class _StudentEstabOnsiteState extends State<StudentEstabOnsite> {
     super.initState();
 
     getCurrentPosition();
-
   }
 
   @override
   void dispose() {
+    code.dispose();
+    location.dispose();
     fulladdress.dispose();
-    getCurrentPosition;
-  
+    longi.dispose();
+    lati.dispose();
     super.dispose();
   }
 

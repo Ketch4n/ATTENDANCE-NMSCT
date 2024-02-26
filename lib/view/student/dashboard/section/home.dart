@@ -60,7 +60,8 @@ class _SectionState extends State<Section> {
           BottomNavigationBarItem(
               icon: FaIcon(FontAwesomeIcons.faceSmile), label: 'Auth'),
           BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.calendarDay), label: 'DTR'),
+              icon: FaIcon(FontAwesomeIcons.calendarDay),
+              label: 'Accomplishment'),
           // BottomNavigationBarItem(
           //     icon: Icon(Icons.calendar_month), label: 'Accomplishment'),
           BottomNavigationBarItem(

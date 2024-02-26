@@ -31,6 +31,7 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
   String _month = DateFormat('MMMM').format(DateTime.now());
   String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
   Duration totalDuration = Duration.zero;
+  String latestGrandTotalHours = "";
   Future<void> monthly_report(monthStream) async {
     final response = await http.post(
       Uri.parse('${Server.host}users/student/monthly_report.php'),
@@ -43,6 +44,11 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
       print("Response Data: $data");
       final List<TodayModel> dtr =
           data.map((dtrData) => TodayModel.fromJson(dtrData)).toList();
+      setState(() {
+        latestGrandTotalHours =
+            dtr.isNotEmpty ? dtr.last.grand_total_hours_rendered : '';
+      });
+
       // Add the list of classmates to the stream
       _monthStream.add(dtr);
     } else {
@@ -104,6 +110,35 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                   fontFamily: "NexaBold",
                   // fontSize: screenWidth / 15,
                 ),
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    latestGrandTotalHours == "" ? "" : "total rendered :",
+                    style: TextStyle(
+                      fontWeight:
+                          FontWeight.bold, // Add bold font weight for emphasis
+                      fontSize: 16, // Adjust font size as needed
+                      // Add any other text styles for emphasis (e.g., color)
+                    ),
+                  ),
+                  Text(
+                    latestGrandTotalHours == ""
+                        ? ""
+                        : latestGrandTotalHours + " hours",
+                    style: TextStyle(
+                      fontWeight:
+                          FontWeight.bold, // Add bold font weight for emphasis
+                      fontSize: 16, // Adjust font size as needed
+                      // Add any other text styles for emphasis (e.g., color)
+                    ),
+                  ),
+                ],
               ),
             ),
             Expanded(
@@ -317,7 +352,7 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                       );
                     }
                   }),
-            )
+            ),
           ],
         ),
       ),

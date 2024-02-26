@@ -80,38 +80,6 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
     }
   }
 
-  void _showUpdateDeleteModal(AccomplishmentModel record) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          // Your modal content here, e.g., buttons for update and delete
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: const Text('Update'),
-                onTap: () {
-                  // Implement update logic
-                  Navigator.pop(context); // Close the modal
-                },
-              ),
-              ListTile(
-                title: const Text('Delete'),
-                onTap: () {
-                  // const purpose = 'Delete';
-                  Navigator.of(context).pop(false);
-
-                  // confirm(context, purpose, record.id, _getTextReferences);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   Future<void> deleteImage(AccomplishmentModel record) async {
     // Show a confirmation dialog
     bool deleteConfirmed = await showDialog(

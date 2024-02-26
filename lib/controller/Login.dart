@@ -58,9 +58,12 @@ Future<void> login(
           Session.email = userEmail;
 
           if (UserRole.role == "Intern") {
-            UserProfileInfo.uid = data['uid'];
-            UserProfileInfo.bday = data['bday'];
-            UserProfileInfo.address = data['address'];
+            final uid = data['uid'];
+            final bday = data['bday'];
+            final address = data['address'];
+            prefs.setString('internID', uid);
+            prefs.setString('internBDAY', bday);
+            prefs.setString('internADDRESS', address);
           } else {}
           const title = "Login success";
           String content = "Welcome $message";

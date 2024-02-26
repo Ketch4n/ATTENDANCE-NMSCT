@@ -16,13 +16,13 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         body: Column(
           children: [
             const TabBar(
               tabs: [
-                Tab(text: 'MetaData'),
+                // Tab(text: 'MetaData'),
                 Tab(text: 'Accomplishment'),
                 Tab(text: 'Records')
               ],
@@ -31,7 +31,7 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
               child: TabBarView(
                 children: [
                   MetaDataIndex(ids: widget.ids, name: widget.name),
-                  AccomplishmentView(ids: widget.ids, name: widget.name),
+                  // AccomplishmentView(ids: widget.ids, name: widget.name),
                   StudentSectionDTR(name: widget.name, ids: widget.ids),
                 ],
               ),
