@@ -1,4 +1,5 @@
 class AllStudentModel {
+  final String id;
   final String fname;
   final String lname;
   final String email;
@@ -8,7 +9,8 @@ class AllStudentModel {
   final String section;
 
   AllStudentModel(
-      {required this.fname,
+      {required this.id,
+      required this.fname,
       required this.lname,
       required this.email,
       required this.bday,
@@ -17,6 +19,7 @@ class AllStudentModel {
       required this.section});
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'fname': fname,
         'lname': lname,
         'email': email,
@@ -27,6 +30,7 @@ class AllStudentModel {
       };
 
   static AllStudentModel fromJson(Map<String, dynamic> json) => AllStudentModel(
+      id: json['id'],
       fname: json['fname'],
       lname: json['lname'],
       email: json['email'],

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/pdf.dart';
@@ -14,16 +15,14 @@ import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EstabDTR extends StatefulWidget {
-  const EstabDTR({
-    super.key,
-    required this.id,
-    required this.name,
-  });
+  const EstabDTR({super.key, required this.id, required this.name});
   final String id;
   final String name;
+
   @override
   State<EstabDTR> createState() => _EstabDTRState();
 }
@@ -88,7 +87,10 @@ class _EstabDTRState extends State<EstabDTR> {
     try {
       final response = await http.post(
         Uri.parse('${Server.host}users/establishment/monthly_report.php'),
-        body: {'id': widget.id, 'month': _yearMonth},
+        body: {
+          'id': widget.id,
+          'month': _yearMonth,
+        },
       );
       print("TEST : $_yearMonth");
       if (response.statusCode == 200) {
@@ -141,344 +143,359 @@ class _EstabDTRState extends State<EstabDTR> {
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
-    return RefreshIndicator(
-      key: _refreshIndicatorKey,
-      onRefresh: refreshData,
-      child: Scaffold(
-        body: Column(
-          children: [
-            MaterialButton(
-              color: Colors.blue,
-              onPressed: () async {
-                final month = await showMonthYearPicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2023),
-                  lastDate: DateTime(2099),
-                );
+    return Consumer<UserRole>(builder: (context, user, child) {
+      return RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: refreshData,
+        child: Scaffold(
+          body: Column(
+            children: [
+              Session.role == "Administrator"
+                  ? MaterialButton(
+                      color: Colors.blue,
+                      onPressed: () async {
+                        final month = await showMonthYearPicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2023),
+                          lastDate: DateTime(2099),
+                        );
 
-                if (month != null) {
-                  setState(() {
-                    _month = DateFormat('MMMM').format(month);
-                    _yearMonth = DateFormat('yyyy-MM').format(month);
-                  });
-                }
-                monthly_report(_monthStream);
-              },
-              child: Text(
-                _month,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: "NexaBold",
-                  // fontSize: screenWidth / 15,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _searchController,
-                onChanged: (query) {
-                  // Filter the data based on the search query
-                  setState(() {});
-                },
-                decoration: InputDecoration(
-                  labelText: 'Search by Name',
-                  prefixIcon: Icon(Icons.search),
-                ),
-              ),
-            ),
-            Expanded(
-              child: StreamBuilder<List<EstabTodayModel>>(
-                  stream: _monthStream.stream,
-                  builder: (context, snapshot) {
-                    final snap2 = snapshot.data!;
-                    final snap = filteredRows(snap2);
-                    if (snapshot.hasData) {
-                      if (snap.isEmpty) {
-                        return const Center(child: Text("NO DATA THIS MONTH"));
-                      } else {
-                        return UserRole.role == "NMSCST"
-                            ? SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      width: double.maxFinite,
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.vertical,
-                                        child: PaginatedDataTable(
-                                          header: ListTile(
-                                            leading: const Text(
-                                              'DTR Records',
-                                              style: TextStyle(fontSize: 20),
-                                            ),
-                                            trailing: MaterialButton(
-                                              color: Colors.green,
-                                              onPressed: () {
-                                                exportToExcel(snap);
-                                              },
-                                              child: Text(
-                                                'Export to PDF',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontFamily: "NexaBold",
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-
-                                          columns: [
-                                            DataColumn(label: Text('Name')),
-                                            DataColumn(label: Text('Date')),
-                                            DataColumn(
-                                                label: Text('Time-In AM')),
-                                            DataColumn(
-                                                label: Text('Time-Out AM')),
-                                            DataColumn(
-                                                label: Text('Time-In PM')),
-                                            DataColumn(
-                                                label: Text('Time-Out PM')),
-                                          ],
-                                          source: DTRDataSource(
-                                              snap.cast<EstabTodayModel>()),
-                                          rowsPerPage:
-                                              5, // Adjust as per your requirement
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: ListView.builder(
-                                  itemCount: snap.length,
-                                  itemBuilder: (context, index) {
-                                    final EstabTodayModel dtr = snap[index];
-
-                                    return
-                                        // DateFormat('MMMM').format(
-                                        //             DateFormat('yyyy-mm-dd').parse(dtr.date)) ==
-                                        //         _month
-                                        //     ?
-                                        GestureDetector(
-                                      onTap: () {
-                                        // showReport(context, dtr.time_in_am,
-                                        //     dtr.time_in_am);
-                                      },
-                                      child: Container(
-                                        margin: EdgeInsets.only(
-                                            top: index > 0 ? 12 : 0,
-                                            bottom: 6,
-                                            left: 6,
-                                            right: 6),
-                                        height: 100,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black26,
-                                              blurRadius: 20,
-                                              offset: Offset(2, 2),
-                                            ),
-                                          ],
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20)),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                                child: Container(
-                                              margin: const EdgeInsets.all(5),
-                                              decoration: const BoxDecoration(
-                                                color: Colors.blue,
-                                                borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(20),
-                                                  topRight: Radius.circular(10),
-                                                  bottomLeft:
-                                                      Radius.circular(20),
-                                                  bottomRight:
-                                                      Radius.circular(80),
-                                                ),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Text(dtr.lname,
-                                                      style: TextStyle(
-                                                          color: Colors.white)),
-                                                  Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        DateFormat('EE').format(
-                                                            DateFormat(
-                                                                    'yyyy-mm-dd')
-                                                                .parse(
-                                                                    dtr.date)),
-                                                        style: const TextStyle(
-                                                            fontFamily:
-                                                                "NexaBold",
-                                                            color:
-                                                                Colors.white),
-                                                      ),
-                                                      Text(
-                                                        DateFormat('dd ')
-                                                            .format(DateFormat(
-                                                                    'yyyy-mm-dd')
-                                                                .parse(
-                                                                    dtr.date)),
-                                                        style: const TextStyle(
-                                                            fontFamily:
-                                                                "NexaBold",
-                                                            color:
-                                                                Colors.white),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            )),
-                                            Expanded(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "Time-In",
-                                                    style: TextStyle(
-                                                      fontFamily: "NexaRegular",
-                                                      color: Colors.green,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    dtr.time_in_am ==
-                                                            defaultValue
-                                                        ? defaultT
-                                                        : DateFormat('hh:mm ')
-                                                                .format(DateFormat(
-                                                                        'hh:mm:ss')
-                                                                    .parse(dtr
-                                                                        .time_in_am)) +
-                                                            dtr.in_am,
-                                                    style: TextStyle(
-                                                      fontFamily: "NexaBold",
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "Time-In",
-                                                    style: TextStyle(
-                                                      fontFamily: "NexaRegular",
-                                                      color: Colors.green,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    dtr.time_in_pm ==
-                                                            defaultValue
-                                                        ? defaultT
-                                                        : DateFormat('hh:mm ')
-                                                                .format(DateFormat(
-                                                                        'hh:mm:ss')
-                                                                    .parse(dtr
-                                                                        .time_in_pm)) +
-                                                            dtr.in_pm,
-                                                    style: TextStyle(
-                                                      fontFamily: "NexaBold",
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "Time-Out",
-                                                    style: TextStyle(
-                                                      fontFamily: "NexaRegular",
-                                                      color: Colors.orange,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    dtr.time_out_am ==
-                                                            defaultValue
-                                                        ? defaultT
-                                                        : DateFormat('hh:mm ')
-                                                                .format(DateFormat(
-                                                                        'hh:mm:ss')
-                                                                    .parse(dtr
-                                                                        .time_out_am)) +
-                                                            dtr.out_am,
-                                                    style: TextStyle(
-                                                      fontFamily: "NexaBold",
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "Time-Out",
-                                                    style: TextStyle(
-                                                      fontFamily: "NexaRegular",
-                                                      color: Colors.orange,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    dtr.time_out_pm ==
-                                                            defaultValue
-                                                        ? defaultT
-                                                        : DateFormat('hh:mm ')
-                                                                .format(DateFormat(
-                                                                        'hh:mm:ss')
-                                                                    .parse(dtr
-                                                                        .time_out_pm)) +
-                                                            dtr.out_pm,
-                                                    style: TextStyle(
-                                                      fontFamily: "NexaBold",
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                        // : const SizedBox()
-                                        ;
-                                  },
-                                ),
-                              );
-                      }
-                    } else if (snapshot.hasError || error.isNotEmpty) {
-                      return Center(
-                        child: Text(
-                          error.isNotEmpty ? error : 'Failed to load data',
-                          style: const TextStyle(
-                              color: Colors
-                                  .red), // You can adjust the error message style
+                        if (month != null) {
+                          setState(() {
+                            _month = DateFormat('MMMM').format(month);
+                            _yearMonth = DateFormat('yyyy-MM').format(month);
+                          });
+                        }
+                        monthly_report(_monthStream);
+                      },
+                      child: Text(
+                        _month,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "NexaBold",
+                          // fontSize: screenWidth / 15,
                         ),
-                      );
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  }),
-            )
-          ],
+                      ),
+                    )
+                  : SizedBox(),
+              Session.role == "Administrator"
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: (query) {
+                          // Filter the data based on the search query
+                          setState(() {});
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Search by Name',
+                          prefixIcon: Icon(Icons.search),
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
+              Expanded(
+                child: StreamBuilder<List<EstabTodayModel>>(
+                    stream: _monthStream.stream,
+                    builder: (context, snapshot) {
+                      final snap2 = snapshot.data!;
+                      final snap = filteredRows(snap2);
+                      if (snapshot.hasData) {
+                        if (snap.isEmpty) {
+                          return const Center(
+                              child: Text("NO DATA THIS MONTH"));
+                        } else {
+                          return user.role == "NMSCST"
+                              ? SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: double.maxFinite,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: PaginatedDataTable(
+                                            header: ListTile(
+                                              leading: const Text(
+                                                'DTR Records',
+                                                style: TextStyle(fontSize: 20),
+                                              ),
+                                              trailing: MaterialButton(
+                                                color: Colors.green,
+                                                onPressed: () {
+                                                  exportToExcel(snap);
+                                                },
+                                                child: Text(
+                                                  'Export to Excel',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: "NexaBold",
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+
+                                            columns: [
+                                              DataColumn(label: Text('Name')),
+                                              DataColumn(label: Text('Date')),
+                                              DataColumn(
+                                                  label: Text('Time-In AM')),
+                                              DataColumn(
+                                                  label: Text('Time-Out AM')),
+                                              DataColumn(
+                                                  label: Text('Time-In PM')),
+                                              DataColumn(
+                                                  label: Text('Time-Out PM')),
+                                            ],
+                                            source: DTRDataSource(
+                                                snap.cast<EstabTodayModel>()),
+                                            rowsPerPage:
+                                                5, // Adjust as per your requirement
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: ListView.builder(
+                                    itemCount: snap.length,
+                                    itemBuilder: (context, index) {
+                                      final EstabTodayModel dtr = snap[index];
+
+                                      return
+                                          // DateFormat('MMMM').format(
+                                          //             DateFormat('yyyy-mm-dd').parse(dtr.date)) ==
+                                          //         _month
+                                          //     ?
+                                          GestureDetector(
+                                        onTap: () {
+                                          // showReport(context, dtr.time_in_am,
+                                          //     dtr.time_in_am);
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                              top: index > 0 ? 12 : 0,
+                                              bottom: 6,
+                                              left: 6,
+                                              right: 6),
+                                          height: 100,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black26,
+                                                blurRadius: 20,
+                                                offset: Offset(2, 2),
+                                              ),
+                                            ],
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20)),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Expanded(
+                                                  child: Container(
+                                                margin: const EdgeInsets.all(5),
+                                                decoration: const BoxDecoration(
+                                                  color: Colors.blue,
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(20),
+                                                    topRight:
+                                                        Radius.circular(10),
+                                                    bottomLeft:
+                                                        Radius.circular(20),
+                                                    bottomRight:
+                                                        Radius.circular(80),
+                                                  ),
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    Text(dtr.lname,
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white)),
+                                                    Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          DateFormat('EE')
+                                                              .format(DateFormat(
+                                                                      'yyyy-mm-dd')
+                                                                  .parse(dtr
+                                                                      .date)),
+                                                          style: const TextStyle(
+                                                              fontFamily:
+                                                                  "NexaBold",
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                        Text(
+                                                          DateFormat('dd ')
+                                                              .format(DateFormat(
+                                                                      'yyyy-mm-dd')
+                                                                  .parse(dtr
+                                                                      .date)),
+                                                          style: const TextStyle(
+                                                              fontFamily:
+                                                                  "NexaBold",
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              )),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      "Time-In",
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            "NexaRegular",
+                                                        color: Colors.green,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      dtr.time_in_am ==
+                                                              defaultValue
+                                                          ? defaultT
+                                                          : DateFormat('hh:mm ')
+                                                                  .format(DateFormat(
+                                                                          'hh:mm:ss')
+                                                                      .parse(dtr
+                                                                          .time_in_am)) +
+                                                              dtr.in_am,
+                                                      style: TextStyle(
+                                                        fontFamily: "NexaBold",
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "Time-In",
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            "NexaRegular",
+                                                        color: Colors.green,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      dtr.time_in_pm ==
+                                                              defaultValue
+                                                          ? defaultT
+                                                          : DateFormat('hh:mm ')
+                                                                  .format(DateFormat(
+                                                                          'hh:mm:ss')
+                                                                      .parse(dtr
+                                                                          .time_in_pm)) +
+                                                              dtr.in_pm,
+                                                      style: TextStyle(
+                                                        fontFamily: "NexaBold",
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      "Time-Out",
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            "NexaRegular",
+                                                        color: Colors.orange,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      dtr.time_out_am ==
+                                                              defaultValue
+                                                          ? defaultT
+                                                          : DateFormat('hh:mm ')
+                                                                  .format(DateFormat(
+                                                                          'hh:mm:ss')
+                                                                      .parse(dtr
+                                                                          .time_out_am)) +
+                                                              dtr.out_am,
+                                                      style: TextStyle(
+                                                        fontFamily: "NexaBold",
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "Time-Out",
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            "NexaRegular",
+                                                        color: Colors.orange,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      dtr.time_out_pm ==
+                                                              defaultValue
+                                                          ? defaultT
+                                                          : DateFormat('hh:mm ')
+                                                                  .format(DateFormat(
+                                                                          'hh:mm:ss')
+                                                                      .parse(dtr
+                                                                          .time_out_pm)) +
+                                                              dtr.out_pm,
+                                                      style: TextStyle(
+                                                        fontFamily: "NexaBold",
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                          // : const SizedBox()
+                                          ;
+                                    },
+                                  ),
+                                );
+                        }
+                      } else if (snapshot.hasError || error.isNotEmpty) {
+                        return Center(
+                          child: Text(
+                            error.isNotEmpty ? error : 'Failed to load data',
+                            style: const TextStyle(
+                                color: Colors
+                                    .red), // You can adjust the error message style
+                          ),
+                        );
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    }),
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 

@@ -263,7 +263,7 @@ class _RecordState extends State<Record> {
 
                   if (text.isEmpty) {
                     return const Center(
-                      child: Text("No Accomplishment Report"),
+                      child: Text("No Attached description"),
                     );
                   }
 

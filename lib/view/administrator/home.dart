@@ -10,9 +10,11 @@ import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/admin/index.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/Dashboard.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/index.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/intern_report.dart';
 import 'package:attendance_nmsct/widgets/offline_snackbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AdministratorHome extends StatefulWidget {
   const AdministratorHome({super.key});
@@ -100,7 +102,11 @@ class _AdministratorHome extends State {
       child: Scaffold(
           drawer: Navbar(onMenuItemTap: _onMenuItemTap),
           appBar: AppBar(
-            title: Text(_currentIndex == 0 ? "Dashboard" : "Profile"),
+            backgroundColor: Colors.blue,
+            title: Text(
+              _currentIndex == 0 ? "Dashboard" : "Profile",
+              style: TextStyle(color: Colors.white),
+            ),
             centerTitle: true,
           ),
           bottomNavigationBar: isoffline
@@ -122,9 +128,9 @@ class _AdministratorHome extends State {
           body: IndexedStack(
             index: _currentIndex,
             children: [
-              UserRole.role == 'Administrator'
+              Session.role == 'Administrator'
                   ? const EstabDashboard()
-                  : const DashBoardEstab(),
+                  : InternReport(),
               const GlobalProfile(),
             ],
           )

@@ -13,10 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Make sure you import your server configuration
 
 Future<void> login(
-  BuildContext context,
-  String email,
-  String password,
-) async {
+    BuildContext context, String email, String password, role) async {
   if (email.isEmpty || password.isEmpty) {
     String title = "Please Input Data";
     String message = "Username or Password Empty !";
@@ -26,7 +23,7 @@ Future<void> login(
     try {
       // HTTP request
       final response = await http.post(
-        UserRole.role == 'Intern'
+        role == 'Intern'
             ? Uri.parse('${Server.host}auth/user_login.php')
             : Uri.parse('${Server.host}auth/login.php'),
         body: {
@@ -57,7 +54,7 @@ Future<void> login(
           Session.lname = userLName;
           Session.email = userEmail;
 
-          if (UserRole.role == "Intern") {
+          if (role == "Intern") {
             final uid = data['uid'];
             final bday = data['bday'];
             final address = data['address'];

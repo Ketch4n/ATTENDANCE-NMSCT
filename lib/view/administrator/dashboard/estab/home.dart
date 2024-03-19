@@ -4,6 +4,7 @@ import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_dtr.da
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_face_auth.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_onsite.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/absent_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -78,8 +79,11 @@ class _EstabHomeState extends State<EstabHome> {
         index: _selectedIndex,
         children: [
           EstabFaceAuth(id: widget.id, name: widget.name),
-          EstabDTR(id: widget.id, name: widget.name),
-          const EstabOnsite(),
+          EstabDTR(
+            id: widget.id,
+            name: widget.name,
+          ),
+          AbsentTab(name: widget.name, ids: widget.id),
           EstabRoom(ids: widget.id, name: widget.name),
         ],
       ),

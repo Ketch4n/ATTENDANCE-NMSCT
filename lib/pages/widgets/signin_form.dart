@@ -1,5 +1,6 @@
 import 'package:attendance_nmsct/controller/Login.dart';
 import 'package:attendance_nmsct/data/session.dart';
+import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/locator.dart';
 import 'package:attendance_nmsct/pages/models/user.model.dart';
 import 'package:attendance_nmsct/pages/profile.dart';
@@ -24,7 +25,7 @@ class SignInSheet extends StatelessWidget {
 
   Future _signIn(context, user) async {
     if (user.password == _passwordController.text) {
-      login(context, user.user, user.password);
+      login(context, user.user, user.password, UserRole().role);
 
       // Navigator.push(
       //     context,

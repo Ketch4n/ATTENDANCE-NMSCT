@@ -6,6 +6,7 @@ class AbsentModel {
   final String section_id;
   final String reason;
   final String status;
+  final String? email;
 
   AbsentModel({
     required this.id,
@@ -14,6 +15,7 @@ class AbsentModel {
     required this.section_id,
     required this.reason,
     required this.status,
+    this.email,
   });
 
   Map<String, dynamic> toJson() => {
@@ -25,6 +27,7 @@ class AbsentModel {
         'section_id': section_id,
         'reason': reason,
         'status': status,
+        'email': email
       };
 
   static AbsentModel fromJson(Map<String, dynamic> json) => AbsentModel(
@@ -34,5 +37,6 @@ class AbsentModel {
       student_id: json['student_id'],
       section_id: json['section_id'],
       reason: json['reason'],
-      status: json['status']);
+      status: json['status'],
+      email: json['email']);
 }

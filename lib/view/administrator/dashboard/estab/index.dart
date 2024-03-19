@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:adaptive_action_sheet/adaptive_action_sheet.dart';
 import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/EstabModel.dart';
@@ -10,6 +11,7 @@ import 'package:attendance_nmsct/view/administrator/dash_card.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
@@ -53,7 +55,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
       uRole = userRole!;
     });
     final response = await http.post(
-      UserRole.role == "Administrator"
+      UserRole().role == "Administrator"
           ? Uri.parse('${Server.host}users/establishment/estab.php')
           : Uri.parse('${Server.host}users/establishment/estab_nmscst.php'),
       body: {
@@ -130,7 +132,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
                 ),
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerFloat,
-                body: ListView(
+                body: Column(
                   children: [
                     Expanded(
                       child: Column(
@@ -160,7 +162,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
                   ),
                   floatingActionButtonLocation:
                       FloatingActionButtonLocation.centerFloat,
-                  body: UserRole.role == "NMSCST"
+                  body: Session.role == "NMSCST"
                       ? Wrap(
                           spacing: 0.0, // Adjust spacing as needed
                           runSpacing: 10.0, // Adjust run spacing as needed

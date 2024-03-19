@@ -19,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Signup extends StatefulWidget {
@@ -91,379 +92,383 @@ class _SignupState extends State<Signup> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: widget.purpose == 'Create'
-            ? Text('Create Account')
-            : Text('Register Intern'),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Container(
-          constraints: BoxConstraints(maxWidth: 500),
-          child: Column(
-            children: [
-              Expanded(
-                child: Stepper(
-                  type: stepperType,
-                  // physics: const ScrollPhysics(),
-                  currentStep: _currentStep,
-                  onStepTapped: tapped,
-                  onStepContinue: continued,
-                  onStepCancel: cancel,
-                  steps: <Step>[
-                    Step(
-                      title: const Text('Email'),
-                      content: Column(
-                        children: <Widget>[
-                          TextFormField(
-                              controller: _emailController,
-                              key: _email,
+    return Consumer<UserRole>(builder: (context, user, child) {
+      return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: widget.purpose == 'Create'
+              ? Text('Create Account')
+              : Text('Register Intern'),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 500),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Stepper(
+                    type: stepperType,
+                    // physics: const ScrollPhysics(),
+                    currentStep: _currentStep,
+                    onStepTapped: tapped,
+                    onStepContinue: () => continued(user: user.role),
+                    onStepCancel: cancel,
+                    steps: <Step>[
+                      Step(
+                        title: const Text('Email'),
+                        content: Column(
+                          children: <Widget>[
+                            TextFormField(
+                                controller: _emailController,
+                                key: _email,
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                validator: (email) => email != null &&
+                                        !EmailValidator.validate(email)
+                                    ? 'Enter a valid email'
+                                    : emailStatus == ""
+                                        ? null
+                                        : emailStatus,
+                                onChanged: (email) {
+                                  checkEmailAvailability(email);
+                                },
+                                decoration: Style.textdesign
+                                    .copyWith(labelText: 'Email Address')),
+                            const SizedBox(height: 10),
+                            TextFormField(
+                              controller: _passController,
+                              key: _pass,
+                              obscureText: _isObscure,
+                              enableSuggestions: false,
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
-                              validator: (email) => email != null &&
-                                      !EmailValidator.validate(email)
-                                  ? 'Enter a valid email'
-                                  : emailStatus == ""
-                                      ? null
-                                      : emailStatus,
-                              onChanged: (email) {
-                                checkEmailAvailability(email);
-                              },
-                              decoration: Style.textdesign
-                                  .copyWith(labelText: 'Email Address')),
-                          const SizedBox(height: 10),
-                          TextFormField(
-                            controller: _passController,
-                            key: _pass,
-                            obscureText: _isObscure,
-                            enableSuggestions: false,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (value) =>
-                                value != null && value.length < 6
-                                    ? 'Minimum of 6 characters'
-                                    : null,
-                            decoration: Style.textdesign.copyWith(
-                              labelText: 'Password',
-                              suffixIcon: IconButton(
-                                icon: Icon(_isObscure
-                                    ? Icons.visibility_off
-                                    : Icons.visibility),
-                                onPressed: () {
-                                  setState(() {
-                                    _isObscure = !_isObscure;
-                                  });
-                                },
+                              validator: (value) =>
+                                  value != null && value.length < 6
+                                      ? 'Minimum of 6 characters'
+                                      : null,
+                              decoration: Style.textdesign.copyWith(
+                                labelText: 'Password',
+                                suffixIcon: IconButton(
+                                  icon: Icon(_isObscure
+                                      ? Icons.visibility_off
+                                      : Icons.visibility),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isObscure = !_isObscure;
+                                    });
+                                  },
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                        isActive: _currentStep >= 0,
+                        state: _currentStep >= 0
+                            ? StepState.complete
+                            : StepState.disabled,
                       ),
-                      isActive: _currentStep >= 0,
-                      state: _currentStep >= 0
-                          ? StepState.complete
-                          : StepState.disabled,
-                    ),
-                    Step(
-                      title: const Text('Details'),
-                      content: Column(
-                        children: <Widget>[
-                          // Stack(
-                          //   children: [
-                          //     TextFormField(
-                          //       readOnly: true,
-                          //       enableInteractiveSelection: false,
-                          //       // enabled: false,
-                          //       controller: _roleController,
-                          //       decoration: Style.textdesign
-                          //           .copyWith(labelText: 'Role'),
-                          //     ),
-                          //     Positioned(
-                          //       top: 0,
-                          //       right: 0,
-                          //       child: PopupMenuButton<String>(
-                          //         icon: const Icon(
-                          //           Icons.arrow_drop_down,
-                          //           color: Color.fromARGB(255, 114, 123, 130),
-                          //         ),
-                          //         onSelected: (String newValue) {
-                          //           setState(() {
-                          //             _roleController.text = newValue;
-                          //           });
-                          //         },
-                          //         itemBuilder: (BuildContext context) {
-                          //           return <PopupMenuEntry<String>>[
-                          //             const PopupMenuItem<String>(
-                          //               value: "Student",
-                          //               child: Text("Student"),
-                          //             ),
-                          //             const PopupMenuItem<String>(
-                          //               value: "Admin",
-                          //               child: Text("Admin"),
-                          //             ),
-                          //             const PopupMenuItem<String>(
-                          //               value: "Establishment",
-                          //               child: Text("Establishment"),
-                          //             ),
-                          //           ];
-                          //         },
-                          //       ),
-                          //     )
-                          //   ],
-                          // ),
-                          UserRole.role == 'Intern'
-                              ? Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: TextFormField(
-                                    controller: _uidController,
-                                    decoration: Style.textdesign
-                                        .copyWith(labelText: 'Intern ID'),
-                                  ),
-                                )
-                              : SizedBox(),
-
-                          TextFormField(
-                            controller: _fnameController,
-                            decoration: Style.textdesign
-                                .copyWith(labelText: 'First Name'),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: TextFormField(
-                              controller: _lnameController,
-                              decoration: Style.textdesign
-                                  .copyWith(labelText: 'Last Name'),
-                            ),
-                          ),
-
-                          UserRole.role == 'Intern'
-                              ? TextFormField(
-                                  readOnly: true,
-                                  controller: _bdayController,
-                                  decoration: Style.textdesign.copyWith(
-                                    hintText: !clicked
-                                        ? 'Birth Date'
-                                        : '${_bdayController.text}',
-                                    suffixIcon: IconButton(
-                                      icon: Icon(Icons.calendar_month),
-                                      onPressed: () {
-                                        clicked = !clicked;
-                                        _showDatePicker();
-                                      },
+                      Step(
+                        title: const Text('Details'),
+                        content: Column(
+                          children: <Widget>[
+                            // Stack(
+                            //   children: [
+                            //     TextFormField(
+                            //       readOnly: true,
+                            //       enableInteractiveSelection: false,
+                            //       // enabled: false,
+                            //       controller: _roleController,
+                            //       decoration: Style.textdesign
+                            //           .copyWith(labelText: 'Role'),
+                            //     ),
+                            //     Positioned(
+                            //       top: 0,
+                            //       right: 0,
+                            //       child: PopupMenuButton<String>(
+                            //         icon: const Icon(
+                            //           Icons.arrow_drop_down,
+                            //           color: Color.fromARGB(255, 114, 123, 130),
+                            //         ),
+                            //         onSelected: (String newValue) {
+                            //           setState(() {
+                            //             _roleController.text = newValue;
+                            //           });
+                            //         },
+                            //         itemBuilder: (BuildContext context) {
+                            //           return <PopupMenuEntry<String>>[
+                            //             const PopupMenuItem<String>(
+                            //               value: "Student",
+                            //               child: Text("Student"),
+                            //             ),
+                            //             const PopupMenuItem<String>(
+                            //               value: "Admin",
+                            //               child: Text("Admin"),
+                            //             ),
+                            //             const PopupMenuItem<String>(
+                            //               value: "Establishment",
+                            //               child: Text("Establishment"),
+                            //             ),
+                            //           ];
+                            //         },
+                            //       ),
+                            //     )
+                            //   ],
+                            // ),
+                            user.role == 'Intern'
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: TextFormField(
+                                      controller: _uidController,
+                                      decoration: Style.textdesign
+                                          .copyWith(labelText: 'Intern ID'),
                                     ),
-                                  ),
-                                )
-                              : SizedBox(),
-                          UserRole.role == 'Intern'
-                              ? Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: TextFormField(
-                                    controller: _uaddressController,
-                                    decoration: Style.textdesign
-                                        .copyWith(labelText: 'Address'),
-                                  ),
-                                )
-                              : SizedBox(),
-                          UserRole.role == 'Intern'
-                              ? TextFormField(
-                                  controller: _sectionController,
-                                  decoration: Style.textdesign
-                                      .copyWith(labelText: 'Section'),
-                                )
-                              : SizedBox(),
-                        ],
-                      ),
-                      isActive: _currentStep >= 1,
-                      state: _currentStep >= 1
-                          ? StepState.complete
-                          : StepState.disabled,
-                    ),
-                    Step(
-                      title: const Text("Account"),
-                      content: Column(
-                        children: [
-                          // TextFormField(
-                          //   controller: _roleController,
-                          //   readOnly: true,
-                          //   decoration: Style.textdesign.copyWith(
-                          //     hintText: _default ? 'Administrator' : 'Intern',
-                          //     suffixIcon: IconButton(
-                          //       icon: const Icon(Icons.refresh),
-                          //       onPressed: () {
-                          //         setState(() {
-                          //           _default = !_default;
-                          //           _roleController.text =
-                          //               _default ? 'Administrator' : 'Intern';
-                          //         });
-                          //         // String id = generateId();
-                          //         // _roleController.text = id;
-                          //       },
-                          //     ),
-                          //   ),
-                          // ),
+                                  )
+                                : SizedBox(),
 
-                          _default && !_show
-                              ? TextFormField(
-                                  controller: _locationController,
-                                  readOnly: true,
-                                  decoration: Style.textdesign.copyWith(
-                                      hintText: UserSession.location == ""
-                                          ? 'Address'
-                                          : UserSession.location),
-                                )
-                              : SizedBox(),
+                            TextFormField(
+                              controller: _fnameController,
+                              decoration: Style.textdesign
+                                  .copyWith(labelText: 'First Name'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: TextFormField(
+                                controller: _lnameController,
+                                decoration: Style.textdesign
+                                    .copyWith(labelText: 'Last Name'),
+                              ),
+                            ),
 
-                          _default && !_show
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10.0),
-                                  child: TextFormField(
-                                    controller: _controllController,
+                            user.role == 'Intern'
+                                ? TextFormField(
+                                    readOnly: true,
+                                    controller: _bdayController,
                                     decoration: Style.textdesign.copyWith(
-                                        labelText: 'Establishment name'),
-                                  ),
-                                )
-                              : SizedBox(),
-                          _default && !_show
-                              ? TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: <TextInputFormatter>[
-                                    FilteringTextInputFormatter.digitsOnly,
-                                  ],
-                                  controller: _hoursController,
-                                  decoration: Style.textdesign
-                                      .copyWith(labelText: 'Hours Required'),
-                                )
-                              : SizedBox(),
-
-                          const SizedBox(height: 20),
-
-                          UserRole.role != "NMSCST"
-                              ? Container(
-                                  decoration: Style.boxdecor,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: SizedBox(
-                                        height: 100,
-                                        width: 100,
-                                        child: UserRole.role == 'Administrator'
-                                            ? IconButton(
-                                                color: Colors.redAccent,
-                                                iconSize: 50,
-                                                icon: const Icon(
-                                                    Icons.location_pin),
-                                                onPressed: () async {
-                                                  final value =
-                                                      await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            PinMap()),
-                                                  );
-                                                  if (value != null) {
-                                                    setState(() {
-                                                      _show = false;
-                                                    });
-                                                  }
-                                                },
-                                              )
-                                            : GestureDetector(
-                                                onTap: () async {
-                                                  Session.email =
-                                                      _emailController.text
-                                                          .trim();
-                                                  Session.password =
-                                                      _passController.text
-                                                          .trim();
-                                                  final value1 =
-                                                      await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            FaceLauncherPage(
-                                                              purpose: 'signup',
-                                                              refreshCallback:
-                                                                  () {},
-                                                            )),
-                                                  );
-                                                  if (value1 != null) {
-                                                    setState(() {
-                                                      done = false;
-                                                      continued();
-                                                    });
-                                                  }
-                                                },
-                                                child: Lottie.asset(
-                                                    'assets/scan.json'))),
-                                  ),
-                                )
-                              : SizedBox(),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(UserRole.role == "Administrator"
-                                ? "Click the icon to register Location"
-                                : UserRole.role == "Intern"
-                                    ? "Click the icon to register Face Auth"
-                                    : "Click continue to confirm"),
-                          ),
-                          // Stack(
-                          //   children: [
-                          //     TextFormField(
-                          //       readOnly: true,
-                          //       enableInteractiveSelection: false,
-                          //       // enabled: false,
-                          //       controller: _roleController,
-                          //       decoration: Style.textdesign
-                          //           .copyWith(labelText: 'Role'),
-                          //     ),
-                          //     Positioned(
-                          //       top: 0,
-                          //       right: 0,
-                          //       child: PopupMenuButton<String>(
-                          //         icon: const Icon(
-                          //           Icons.arrow_drop_down,
-                          //           color: Color.fromARGB(255, 114, 123, 130),
-                          //         ),
-                          //         onSelected: (String newValue) {
-                          //           setState(() {
-                          //             _roleController.text = newValue;
-                          //           });
-                          //         },
-                          //         itemBuilder: (BuildContext context) {
-                          //           return <PopupMenuEntry<String>>[
-                          //             const PopupMenuItem<String>(
-                          //               value: "Intern",
-                          //               child: Text("Intern"),
-                          //             ),
-                          //             const PopupMenuItem<String>(
-                          //               value: "Administrator",
-                          //               child: Text("Administrator"),
-                          //             ),
-                          //           ];
-                          //         },
-                          //       ),
-                          //     )
-                          //   ],
-                          // ),
-                        ],
+                                      hintText: !clicked
+                                          ? 'Birth Date'
+                                          : '${_bdayController.text}',
+                                      suffixIcon: IconButton(
+                                        icon: Icon(Icons.calendar_month),
+                                        onPressed: () {
+                                          clicked = !clicked;
+                                          _showDatePicker();
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                : SizedBox(),
+                            user.role == 'Intern'
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: TextFormField(
+                                      controller: _uaddressController,
+                                      decoration: Style.textdesign
+                                          .copyWith(labelText: 'Address'),
+                                    ),
+                                  )
+                                : SizedBox(),
+                            user.role == 'Intern'
+                                ? TextFormField(
+                                    controller: _sectionController,
+                                    decoration: Style.textdesign
+                                        .copyWith(labelText: 'Section'),
+                                  )
+                                : SizedBox(),
+                          ],
+                        ),
+                        isActive: _currentStep >= 1,
+                        state: _currentStep >= 1
+                            ? StepState.complete
+                            : StepState.disabled,
                       ),
-                      isActive: _currentStep >= 2,
-                      state: _currentStep >= 2
-                          ? StepState.complete
-                          : StepState.disabled,
-                    ),
-                  ],
+                      Step(
+                        title: const Text("Account"),
+                        content: Column(
+                          children: [
+                            // TextFormField(
+                            //   controller: _roleController,
+                            //   readOnly: true,
+                            //   decoration: Style.textdesign.copyWith(
+                            //     hintText: _default ? 'Administrator' : 'Intern',
+                            //     suffixIcon: IconButton(
+                            //       icon: const Icon(Icons.refresh),
+                            //       onPressed: () {
+                            //         setState(() {
+                            //           _default = !_default;
+                            //           _roleController.text =
+                            //               _default ? 'Administrator' : 'Intern';
+                            //         });
+                            //         // String id = generateId();
+                            //         // _roleController.text = id;
+                            //       },
+                            //     ),
+                            //   ),
+                            // ),
+
+                            _default && !_show
+                                ? TextFormField(
+                                    controller: _locationController,
+                                    readOnly: true,
+                                    decoration: Style.textdesign.copyWith(
+                                        hintText: UserSession.location == ""
+                                            ? 'Address'
+                                            : UserSession.location),
+                                  )
+                                : SizedBox(),
+
+                            _default && !_show
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10.0),
+                                    child: TextFormField(
+                                      controller: _controllController,
+                                      decoration: Style.textdesign.copyWith(
+                                          labelText: 'Establishment name'),
+                                    ),
+                                  )
+                                : SizedBox(),
+                            _default && !_show
+                                ? TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                    controller: _hoursController,
+                                    decoration: Style.textdesign
+                                        .copyWith(labelText: 'Hours Required'),
+                                  )
+                                : SizedBox(),
+
+                            const SizedBox(height: 20),
+
+                            user.role != "NMSCST"
+                                ? Container(
+                                    decoration: Style.boxdecor,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: SizedBox(
+                                          height: 100,
+                                          width: 100,
+                                          child: user.role == 'Administrator'
+                                              ? IconButton(
+                                                  color: Colors.redAccent,
+                                                  iconSize: 50,
+                                                  icon: const Icon(
+                                                      Icons.location_pin),
+                                                  onPressed: () async {
+                                                    final value =
+                                                        await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              PinMap()),
+                                                    );
+                                                    if (value != null) {
+                                                      setState(() {
+                                                        _show = false;
+                                                      });
+                                                    }
+                                                  },
+                                                )
+                                              : GestureDetector(
+                                                  onTap: () async {
+                                                    Session.email =
+                                                        _emailController.text
+                                                            .trim();
+                                                    Session.password =
+                                                        _passController.text
+                                                            .trim();
+                                                    final value1 =
+                                                        await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              FaceLauncherPage(
+                                                                purpose:
+                                                                    'signup',
+                                                                refreshCallback:
+                                                                    () {},
+                                                              )),
+                                                    );
+                                                    if (value1 != null) {
+                                                      setState(() {
+                                                        done = false;
+                                                        continued(
+                                                            user: user.role);
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Lottie.asset(
+                                                      'assets/scan.json'))),
+                                    ),
+                                  )
+                                : SizedBox(),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(user.role == "Administrator"
+                                  ? "Click the icon to register Location"
+                                  : user.role == "Intern"
+                                      ? "Click the icon to register Face Auth"
+                                      : "Click continue to confirm"),
+                            ),
+                            // Stack(
+                            //   children: [
+                            //     TextFormField(
+                            //       readOnly: true,
+                            //       enableInteractiveSelection: false,
+                            //       // enabled: false,
+                            //       controller: _roleController,
+                            //       decoration: Style.textdesign
+                            //           .copyWith(labelText: 'Role'),
+                            //     ),
+                            //     Positioned(
+                            //       top: 0,
+                            //       right: 0,
+                            //       child: PopupMenuButton<String>(
+                            //         icon: const Icon(
+                            //           Icons.arrow_drop_down,
+                            //           color: Color.fromARGB(255, 114, 123, 130),
+                            //         ),
+                            //         onSelected: (String newValue) {
+                            //           setState(() {
+                            //             _roleController.text = newValue;
+                            //           });
+                            //         },
+                            //         itemBuilder: (BuildContext context) {
+                            //           return <PopupMenuEntry<String>>[
+                            //             const PopupMenuItem<String>(
+                            //               value: "Intern",
+                            //               child: Text("Intern"),
+                            //             ),
+                            //             const PopupMenuItem<String>(
+                            //               value: "Administrator",
+                            //               child: Text("Administrator"),
+                            //             ),
+                            //           ];
+                            //         },
+                            //       ),
+                            //     )
+                            //   ],
+                            // ),
+                          ],
+                        ),
+                        isActive: _currentStep >= 2,
+                        state: _currentStep >= 2
+                            ? StepState.complete
+                            : StepState.disabled,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   // void switchStepsType() {
@@ -500,7 +505,7 @@ class _SignupState extends State<Signup> {
     }
   }
 
-  Future<void> continued() async {
+  Future<void> continued({required String user}) async {
     FocusScope.of(context).unfocus();
     String email = _emailController.text.trim();
     String password = _passController.text.trim();
@@ -528,13 +533,13 @@ class _SignupState extends State<Signup> {
       String message = "Please Enter Account Details";
       String title = name.isEmpty ? "Input First Name" : "Input Last Name";
       showAlertDialog(context, title, message);
-    } else if (UserRole.role == "Intern" &&
+    } else if (user == "Intern" &&
         (uid.isEmpty || address.isEmpty || section.isEmpty) &&
         _currentStep == 1) {
       String message = "Please Enter Account Details";
       String title = "Input details";
       showAlertDialog(context, title, message);
-    } else if (UserRole.role == 'Administrator' &&
+    } else if (user == 'Administrator' &&
         (loc.isEmpty || cont.isEmpty || hours.isEmpty) &&
         _currentStep == 2) {
       String title = "Please Enter Location Details";
@@ -544,13 +549,13 @@ class _SignupState extends State<Signup> {
               ? "Input Establishment Name"
               : "Hours required for Interns";
       showAlertDialog(context, title, message);
-    } else if ((UserRole.role == 'Intern' && done) && _currentStep == 2) {
+    } else if ((user == 'Intern' && done) && _currentStep == 2) {
       String title = "Please Register Face";
       String message = "Click icon to scan";
       showAlertDialog(context, title, message);
     } else if (_currentStep == 2) {
-      await signup(context, email, password, id, name, UserRole.role, bday, uid,
-          address, section);
+      await signup(context, email, password, id, name, user, bday, uid, address,
+          section);
       String code = generateAlphanumericId();
       String currentCoordinate = UserSession.location;
       double? currentLat = UserSession.latitude;

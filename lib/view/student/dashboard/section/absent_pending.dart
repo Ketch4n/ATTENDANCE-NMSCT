@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/controller/Insert.dart';
 import 'package:attendance_nmsct/data/session.dart';
+import 'package:attendance_nmsct/data/smtp.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/model/AbsentModel.dart';
@@ -21,9 +23,12 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
   final StreamController<List<AbsentModel>> _absentController =
       StreamController<List<AbsentModel>>();
   Future<void> streamAccomplishemnt(_absentController) async {
+    final String student_absent = "users/student/view_absent.php";
+    final String estab_absent = "users/establishment/view_all_absent.php";
+    final query = Session.role == "Intern" ? student_absent : estab_absent;
     try {
       final response = await http.post(
-        Uri.parse('${Server.host}users/student/view_absent.php'),
+        Uri.parse('${Server.host}$query'),
         body: {
           'student_id': Session.id,
           'section_id': widget.ids,
@@ -95,6 +100,44 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
     );
   }
 
+  void action(AbsentModel absent) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('Select Option'),
+          content: Text('Approved or Declined'),
+          actions: <Widget>[
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel')),
+            TextButton(
+              onPressed: () {
+                const String stats = "Declined";
+
+                Navigator.of(context).pop();
+                _actionDone(absent, stats);
+              },
+              child: Text('Decline'),
+            ),
+            TextButton(
+              onPressed: () {
+                const String stats = "Approved";
+
+                _actionDone(absent, stats);
+
+                Navigator.of(context).pop();
+              },
+              child: Text('Approve'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showDeleteConfirmationDialog(AbsentModel absent) {
     showDialog(
       context: context,
@@ -120,6 +163,27 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
         );
       },
     );
+  }
+
+  void _actionDone(AbsentModel absent, String stats) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${Server.host}users/establishment/update_absent.php'),
+        body: {'absent_id': absent.id, 'status': stats},
+      );
+      if (response.statusCode == 200) {
+        print("NOW OR NEVER :" + absent.id);
+        const purpose = "Absent";
+
+        // If deletion is successful, refresh the list
+        streamAccomplishemnt(_absentController);
+        sendEmailNotification(purpose, stats, absent.email!, widget.name);
+      } else {
+        throw Exception('Failed to delete data');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   void _deleteAbsent(AbsentModel absent) async {
@@ -209,8 +273,11 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
                                       : Colors.red,
                             ),
                             endChild: GestureDetector(
-                              onLongPress: () =>
-                                  _showDeleteConfirmationDialog(absent),
+                              onLongPress: () {
+                                Session.role == "Intern"
+                                    ? _showDeleteConfirmationDialog(absent)
+                                    : action(absent);
+                              },
                               child: Card(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -231,11 +298,18 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
                                       ],
                                     ),
                                     subtitle: Padding(
-                                      padding: const EdgeInsets.only(
+                                      padding: EdgeInsets.only(
                                         bottom: 8.0,
                                       ),
-                                      child: Text(
-                                          "Reason of absent: ${absent.reason}"),
+                                      child: Column(
+                                        children: [
+                                          Text(Session.role == "Intern"
+                                              ? ""
+                                              : absent.email!),
+                                          Text(
+                                              "Reason of absent: ${absent.reason}"),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

@@ -38,6 +38,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
   final lati = TextEditingController();
 
   final fulladdress = TextEditingController();
+  final hoursController = TextEditingController();
   // StreamSubscription<loc.LocationData>? _positionSubscription;
   bool _show = true;
   @override
@@ -66,24 +67,31 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                   Column(
                     children: [
                       !_show
+                          ? TextFormField(
+                              controller: fulladdress,
+                              readOnly: true,
+                              decoration: Style.textdesign.copyWith(
+                                  hintText: UserSession.location == ""
+                                      ? 'Address'
+                                      : UserSession.location),
+                            )
+                          : SizedBox(),
+                      !_show
                           ? Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 10.0),
                               child: TextFormField(
-                                controller: fulladdress,
-                                readOnly: true,
-                                decoration: Style.textdesign.copyWith(
-                                    hintText: UserSession.location == ""
-                                        ? 'Address'
-                                        : UserSession.location),
+                                controller: location,
+                                decoration: Style.textdesign
+                                    .copyWith(labelText: 'Establishment name'),
                               ),
                             )
                           : SizedBox(),
                       !_show
                           ? TextFormField(
-                              controller: location,
+                              controller: hoursController,
                               decoration: Style.textdesign
-                                  .copyWith(labelText: 'Establishment name'),
+                                  .copyWith(labelText: 'Total Hours required'),
                             )
                           : SizedBox(),
                       Padding(
@@ -125,10 +133,11 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                         child: TextButton(
                           onPressed: () async {
                             final String loc = location.text;
+                            final String hours = hoursController.text.trim();
 
-                            if (loc.isEmpty) {
-                              String title = "Name Empty !";
-                              String message = "Input name";
+                            if (loc.isEmpty || hours.isEmpty) {
+                              String title = "Name or Hours Empty !";
+                              String message = "Input details";
                               await showAlertDialog(context, title, message);
                             } else {
                               String code = generateAlphanumericId();
@@ -145,7 +154,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                                 currentLng!,
                                 currentLat!,
                                 Session.email,
-                                '00:00:00',
+                                hours,
                               );
                               // await pasteCode(context, title, message, code);
                               // String purpose = 'CreateClassRoom';

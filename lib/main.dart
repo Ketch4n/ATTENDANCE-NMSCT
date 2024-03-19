@@ -1,10 +1,12 @@
 import 'package:attendance_nmsct/auth/auth.dart';
+import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/locator.dart';
 import 'package:attendance_nmsct/widgets/scroll.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:month_year_picker/month_year_picker.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +21,19 @@ Future<void> main() async {
     appId: "1:923340212066:web:cfa048f322dbd305098e3b",
   ));
   setupServices();
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserRole>(
+          create: (_) => UserRole(),
+        ),
+        ChangeNotifierProvider<HoursRendered>(
+          create: (_) => HoursRendered(),
+        ),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
