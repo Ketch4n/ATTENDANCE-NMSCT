@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AllStudentModel.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_dtr.dart';
+import 'package:attendance_nmsct/view/student/dtr_details.dart';
 import 'package:excel/excel.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
@@ -138,6 +139,7 @@ class _AllStudentsState extends State<AllStudents> {
                           DataColumn(label: Text('Section')),
                           DataColumn(label: Text('Birth Date')),
                           DataColumn(label: Text('Address')),
+                          DataColumn(label: Text('View DTR'))
                         ],
                         rows: filteredInterns
                             .map(
@@ -202,6 +204,16 @@ class _AllStudentsState extends State<AllStudents> {
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ),
+                                  DataCell(ElevatedButton(
+                                    onPressed: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                StudentDTRDetails(
+                                                  id: classmate.id,
+                                                ))),
+                                    child: Icon(Icons.remove_red_eye),
+                                  )),
                                 ],
                               ),
                             )

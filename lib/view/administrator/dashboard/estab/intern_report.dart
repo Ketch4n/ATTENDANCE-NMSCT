@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/model/CalendarModel.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:calendar_view/calendar_view.dart';
@@ -11,7 +12,7 @@ class InternReport extends StatefulWidget {
 }
 
 class _InternReportState extends State<InternReport> {
-  List<dynamic> jsonData = [];
+  List<dynamic> jsonData = []; // Added to store fetched data
 
   @override
   void initState() {
@@ -27,7 +28,7 @@ class _InternReportState extends State<InternReport> {
 
       if (response.statusCode == 200) {
         setState(() {
-          jsonData = jsonDecode(response.body);
+          jsonData = json.decode(response.body);
         });
       } else {
         // Handle error
@@ -73,14 +74,15 @@ class _InternReportState extends State<InternReport> {
       events.add(CalendarEventData(
         date: DateTime.parse(data['date']),
         title: "${data['lname']}",
-        description:
-            "Time In: ${data['time_in_am']} - Time Out: ${data['time_out_pm']}",
+        // description:
+        //     "Time In: ${data['time_in_am']} - Time Out: ${data['time_out_pm']}",
         startTime: DateTime.parse('${data['date']} ${data['time_in_am']}'),
         endTime: DateTime.parse('${data['date']} ${data['time_out_pm']}'),
       ));
     }
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Calendar Page'),
         actions: [
           Padding(
@@ -103,7 +105,7 @@ class _InternReportState extends State<InternReport> {
         padding: const EdgeInsets.all(8.0),
         child: CalendarControllerProvider(
           controller: EventController()..addAll(events),
-          child: MonthView(),
+          child: const MonthView(),
         ),
       ),
     );

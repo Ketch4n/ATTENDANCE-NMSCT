@@ -182,32 +182,35 @@ class _LoginState extends State<Login> {
                     //     Logo(imagePath: 'assets/images/fb.png'),
                     //   ],
                     // ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          onPressed: null,
-                          style: TextButton.styleFrom(textStyle: Style.link),
-                          child: Text("create new account ?"),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            final String purpose = 'Create';
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Signup(
-                                        purpose: purpose,
-                                      )),
-                            );
-                          },
-                          style: TextButton.styleFrom(textStyle: Style.link),
-                          child: const Text("Sign up"),
-                        ),
-                      ],
-                    ),
+                    kIsWeb
+                        ? SizedBox()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              TextButton(
+                                onPressed: null,
+                                style:
+                                    TextButton.styleFrom(textStyle: Style.link),
+                                child: Text("create new account ?"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  final String purpose = 'Create';
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Signup(
+                                              purpose: purpose,
+                                            )),
+                                  );
+                                },
+                                style:
+                                    TextButton.styleFrom(textStyle: Style.link),
+                                child: const Text("Sign up"),
+                              ),
+                            ],
+                          ),
                     SizedBox(
                       height: 20,
                     ),

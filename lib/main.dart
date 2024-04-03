@@ -2,6 +2,8 @@ import 'package:attendance_nmsct/auth/auth.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/locator.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_dtr.dart';
+import 'package:attendance_nmsct/view/student/dtr_details.dart';
 import 'package:attendance_nmsct/widgets/scroll.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +57,7 @@ class MyApp extends StatelessWidget {
       ),
       // home: isWin ? const AdminIndex() : const Auth(),
       home: const Auth(),
+
       localizationsDelegates: const [
         MonthYearPickerLocalizations.delegate,
       ],

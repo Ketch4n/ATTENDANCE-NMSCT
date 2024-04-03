@@ -1,23 +1,30 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/locator.dart';
-import 'package:attendance_nmsct/pages/models/user.model.dart';
-import 'package:attendance_nmsct/pages/widgets/auth_button.dart';
-import 'package:attendance_nmsct/pages/widgets/camera_detection_preview.dart';
-import 'package:attendance_nmsct/pages/widgets/camera_header.dart';
-import 'package:attendance_nmsct/pages/widgets/signin_form.dart';
-import 'package:attendance_nmsct/pages/widgets/single_picture.dart';
 import 'package:attendance_nmsct/services/camera.service.dart';
 import 'package:attendance_nmsct/services/face_detector_service.dart';
 import 'package:attendance_nmsct/services/ml_service.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
+
+import 'models/user.model.dart';
+
+import 'widgets/auth_button.dart';
+import 'widgets/camera_detection_preview.dart';
+import 'widgets/camera_header.dart';
+import 'widgets/signin_form.dart';
+import 'widgets/single_picture.dart';
+
+import 'package:camera/camera.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key, required this.purpose, required this.refreshCallback})
       : super(key: key);
   final String purpose;
   final VoidCallback refreshCallback;
+
   @override
   SignInState createState() => SignInState();
 }
@@ -26,16 +33,22 @@ class SignInState extends State<SignIn> {
   CameraService _cameraService = locator<CameraService>();
   FaceDetectorService _faceDetectorService = locator<FaceDetectorService>();
   MLService _mlService = locator<MLService>();
+  Location _location = Location();
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool _isPictureTaken = false;
   bool _isInitializing = false;
+  LocationData? _currentLocation;
+
+  double _givenLatitude = double.parse(Session.latitude); // Example latitude
+  double _givenLongitude = double.parse(Session.longitude); // Example longitude
 
   @override
   void initState() {
     super.initState();
     _start();
+    _getLocation();
   }
 
   @override
@@ -139,4 +152,57 @@ class SignInState extends State<SignIn> {
         )
       : SignInSheet(
           user: user, purpose: widget.purpose, refresh: widget.refreshCallback);
+
+  void _getLocation() async {
+    try {
+      _location.onLocationChanged.listen((LocationData locationData) {
+        setState(() {
+          _currentLocation = locationData;
+          // Compare current location with given latitude and longitude
+          _compareLocations(locationData.latitude!, locationData.longitude!);
+        });
+      });
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  void _compareLocations(double latitude, double longitude) {
+    // Compare latitude and longitude with the given location
+    if (_givenLatitude == latitude && _givenLongitude == longitude) {
+      // User is at the given location
+      _showSnackBar('You are just in the radius');
+    } else {
+      // User is not at the given location
+      _showSnackBar('You are too far from the establishment');
+    }
+  }
+
+  // void _showDistanceSnackBar(double distance) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text('Distance from given location: $distance meters'),
+  //       behavior: SnackBarBehavior.floating,
+  //       margin: EdgeInsets.only(
+  //           bottom: MediaQuery.of(context).size.height - 200,
+  //           left: 10,
+  //           right: 10),
+  //     ),
+  //   );
+  // }
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: message == 'You are just in the radius'
+            ? Colors.green
+            : Colors.blue,
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height - 150,
+            left: 10,
+            right: 10),
+      ),
+    );
+  }
 }

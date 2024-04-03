@@ -1,8 +1,11 @@
 import 'package:attendance_nmsct/auth/logout.dart';
+import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
+import 'package:attendance_nmsct/include/admin_list.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/pages/db/databse_helper.dart';
+import 'package:attendance_nmsct/pages/sign-up.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_establishment.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_students.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/index.dart';
@@ -183,6 +186,32 @@ class _NavbarState extends State<Navbar> {
                   Navigator.pop(context); // Close the drawer
                 },
               ),
+              user.role == 'NMSCST'
+                  ? ListTile(
+                      leading: const Icon(Icons.settings),
+                      title: const Text('Add Admins'),
+                      onTap: () {
+                        Navigator.of(context).pop(false);
+
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => Signup(
+                                  purpose: 'Create',
+                                )));
+                      },
+                    )
+                  : SizedBox(),
+              user.role == 'NMSCST'
+                  ? ListTile(
+                      leading: const Icon(Icons.people),
+                      title: const Text('List of Admins'),
+                      onTap: () {
+                        Navigator.of(context).pop(false);
+
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => AdminList()));
+                      },
+                    )
+                  : SizedBox(),
               user.role == 'NMSCST' ? Divider() : SizedBox(),
               user.role == 'NMSCST'
                   ? ListTile(

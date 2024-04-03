@@ -104,7 +104,7 @@ class _AdministratorHome extends State {
           appBar: AppBar(
             backgroundColor: Colors.blue,
             title: Text(
-              _currentIndex == 0 ? "Dashboard" : "Profile",
+              _currentIndex == 0 ? "Admin Dashboard" : "Profile",
               style: TextStyle(color: Colors.white),
             ),
             centerTitle: true,
