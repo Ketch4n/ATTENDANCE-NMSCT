@@ -9,7 +9,10 @@ import 'package:attendance_nmsct/pages/sign-in.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/camera_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:geocoding/geocoding.dart';
+
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -30,6 +33,11 @@ class StudentFaceAuth extends StatefulWidget {
 class _StudentFaceAuthState extends State<StudentFaceAuth> {
   final StreamController<TodayModel> _todayStream =
       StreamController<TodayModel>();
+  // Location _location = Location();
+  // LocationData? currentLocation;
+  late String latitude;
+  late String longitude;
+  late String coordinate;
 
   bool isLoading = true; // Track if data is loading
   int userId = 0;
@@ -38,13 +46,21 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   final _idController = TextEditingController();
 
   String checkInAM = "00:00:00";
-  String inAM = "--";
+  String inAMLat = "0.0";
+  String inAMLong = "0.0";
+
   String checkOutAM = "00:00:00";
-  String outAM = "--";
+  String outAMLat = "0.0";
+  String outAMLong = "0.0";
+
   String checkInPM = "00:00:00";
-  String inPM = "--";
+  String inPMLat = "0.0";
+  String inPMLong = "0.0";
+
   String checkOutPM = "00:00:00";
-  String outPM = "--";
+  String outPMLat = "0.0";
+  String outPMLong = "0.0";
+
   String defaultValue = '00:00:00';
   String defaultT = '--/--';
 
@@ -82,13 +98,20 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
       final today = TodayModel.fromJson(data);
       setState(() {
         checkInAM = today.time_in_am;
-        inAM = today.in_am;
+        inAMLat = today.in_am_lat;
+        inAMLong = today.in_am_long;
+
         checkOutAM = today.time_out_am;
-        outAM = today.out_am;
+        outAMLat = today.out_am_lat;
+        outAMLong = today.out_am_long;
+
         checkInPM = today.time_in_pm;
-        inPM = today.in_pm;
+        inPMLat = today.in_pm_lat;
+        inPMLong = today.in_pm_long;
+
         checkOutPM = today.time_out_pm;
-        outPM = today.out_pm;
+        outPMLat = today.out_pm_lat;
+        outPMLong = today.out_pm_long;
       });
 
       // todayStream.add(today);
@@ -98,28 +121,69 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     }
   }
 
+  Future _determineUserCurrentPosition() async {
+    LocationPermission locationPermission;
+    bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!isLocationServiceEnabled) {
+      print("user don't enable location permission");
+    }
+
+    locationPermission = await Geolocator.checkPermission();
+
+    if (locationPermission == LocationPermission.denied) {
+      locationPermission = await Geolocator.requestPermission();
+      if (locationPermission == LocationPermission.denied) {
+        print("user denied location permission");
+      }
+    }
+
+    if (locationPermission == LocationPermission.deniedForever) {
+      print("user denied permission forever");
+    }
+
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+  }
+
+  void _getLocation() async {
+    try {
+      Position currentPosition = await _determineUserCurrentPosition();
+      setState(() {
+        latitude = currentPosition.latitude.toString();
+        longitude = currentPosition.longitude.toString();
+      });
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
   // String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
   void insertToday() async {
     try {
       if (checkInAM == "00:00:00") {
         setState(() {
           checkInAM = DateFormat('HH:mm').format(DateTime.now());
-          inAM = DateFormat('a').format(DateTime.now());
+          inAMLat = latitude;
+          inAMLong = longitude;
         });
       } else if (checkOutAM == "00:00:00") {
         setState(() {
           checkOutAM = DateFormat('HH:mm').format(DateTime.now());
-          outAM = DateFormat('a').format(DateTime.now());
+          outAMLat = latitude;
+          outAMLong = longitude;
         });
       } else if (checkInPM == "00:00:00") {
         setState(() {
           checkInPM = DateFormat('HH:mm').format(DateTime.now());
-          inPM = DateFormat('a').format(DateTime.now());
+          inPMLat = latitude;
+          inPMLong = longitude;
         });
       } else {
         setState(() {
           checkOutPM = DateFormat('HH:mm').format(DateTime.now());
-          outPM = DateFormat('a').format(DateTime.now());
+          outPMLat = latitude;
+          outPMLong = longitude;
         });
       }
     } catch (e) {}
@@ -130,7 +194,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     String apiUrl = '${Server.host}users/student/insert_estab.php';
     Map<String, String> headers = {'Content-Type': 'application/json'};
     String jsonData =
-        '{"student_id": "$userId", "estab_id": "$estabId","time_in_am":"$checkInAM","in_am":"$inAM", "time_out_am":"$checkOutAM","out_am":"$outAM","time_in_pm":"$checkInPM","in_pm":"$inPM","time_out_pm":"$checkOutPM","out_pm":"$outPM","date":"$defaultDATE"}';
+        '{"student_id": "$userId", "estab_id": "$estabId","time_in_am":"$checkInAM","in_am_lat":"$inAMLat", "in_am_long":"$inAMLong","time_out_am":"$checkOutAM","out_am_lat":"$outAMLat","out_am_long":"$outAMLong","time_in_pm":"$checkInPM","in_pm_lat":"$inPMLat","in_pm_long":"$inPMLong","time_out_pm":"$checkOutPM","out_pm_lat":"$outPMLat","out_pm_long":"$outPMLong","date":"$defaultDATE"}';
     final response =
         await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
     today(_todayStream);
@@ -142,6 +206,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     super.initState();
     // sharedPref();
     today(_todayStream);
+    _getLocation();
   }
 
   @override
@@ -251,9 +316,11 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                       Text(
                         checkInAM == defaultValue
                             ? defaultT
-                            : DateFormat('hh:mm ').format(
-                                    DateFormat('hh:mm').parse(checkInAM)) +
-                                inAM,
+                            : DateFormat('hh:mm a')
+                                .format(DateFormat('hh:mm').parse(checkInAM))
+                        //     +
+                        // inAM
+                        ,
                         style: TextStyle(
                           fontFamily: "NexaBold",
                           fontSize: 20,
@@ -271,9 +338,11 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                       Text(
                         checkInPM == defaultValue
                             ? defaultT
-                            : DateFormat('hh:mm ').format(
-                                    DateFormat('hh:mm').parse(checkInPM)) +
-                                inPM,
+                            : DateFormat('hh:mm a')
+                                .format(DateFormat('hh:mm').parse(checkInPM))
+                        //     +
+                        // inPM
+                        ,
                         style: TextStyle(
                           fontFamily: "NexaBold",
                           fontSize: 20,
@@ -299,9 +368,11 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                       Text(
                         checkOutAM == defaultValue
                             ? defaultT
-                            : DateFormat('hh:mm ').format(
-                                    DateFormat('hh:mm').parse(checkOutAM)) +
-                                outAM,
+                            : DateFormat('hh:mm a')
+                                .format(DateFormat('hh:mm').parse(checkOutAM))
+                        //     +
+                        // outAM
+                        ,
                         style: TextStyle(fontFamily: "NexaBold", fontSize: 20),
                       ),
                       const SizedBox(height: 40),
@@ -316,9 +387,11 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                       Text(
                         checkOutPM == defaultValue
                             ? defaultT
-                            : DateFormat('hh:mm ').format(
-                                    DateFormat('hh:mm').parse(checkOutPM)) +
-                                outPM,
+                            : DateFormat('hh:mm a')
+                                .format(DateFormat('hh:mm').parse(checkOutPM))
+                        //     +
+                        // outPM
+                        ,
                         style: TextStyle(
                           fontFamily: "NexaBold",
                           fontSize: 20,

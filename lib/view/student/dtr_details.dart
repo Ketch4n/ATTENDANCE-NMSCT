@@ -1,32 +1,26 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:attendance_nmsct/data/server.dart';
-import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/estab/pdf.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/report.dart';
+import 'package:attendance_nmsct/view/student/calculate_distance.dart';
 import 'package:excel/excel.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:month_year_picker/month_year_picker.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentDTRDetails extends StatefulWidget {
-  const StudentDTRDetails({
-    Key? key,
-    required this.id,
-  }) : super(key: key);
+  const StudentDTRDetails(
+      {super.key, required this.id, required this.estab_id});
 
   final String id;
+  final String estab_id;
 
   @override
   State<StudentDTRDetails> createState() => _StudentDTRDetailsState();
@@ -46,8 +40,8 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
   double screenHeight = 0;
   double screenWidth = 0;
 
-  String _month = DateFormat('MMMM').format(DateTime.now());
-  String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
+  // String _month = DateFormat('MMMM').format(DateTime.now());
+  // String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
 
   Future<void> exportToExcel(List<EstabTodayModel> filteredProducts) async {
     var excel = Excel.createExcel();
@@ -72,7 +66,7 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
 
     // Save the Excel file
     var file = 'dtr_report.xlsx';
-    await excel.save(fileName: file);
+    excel.save(fileName: file);
     OpenFile.open(file);
   }
 
@@ -82,7 +76,8 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
         Uri.parse('${Server.host}users/establishment/monthly_report.php'),
         body: {
           'id': widget.id,
-          'month': _yearMonth, // Pass selected month here
+          'estab_id': widget.estab_id,
+          'month': "none", // Pass selected month here
         },
       );
 
@@ -107,13 +102,13 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
   Future<void> report() async {
     final response = await http.post(
       Uri.parse('${Server.host}users/student/monthly_report.php'),
-      body: {'id': widget.id, 'estab_id': "none", 'month': "all"},
+      body: {'id': widget.id, 'estab_id': widget.estab_id, 'month': "all"},
     );
-    print("ID : ${Session.id}");
-    print("TEST : $_yearMonth");
+    // print("ID : ${Session.id}");
+    // print("TEST : $_yearMonth");
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      print("Response Data: $data");
+      // print("Response Data: $data");
       final List<TodayModel> dtr =
           data.map((dtrData) => TodayModel.fromJson(dtrData)).toList();
       setState(() {
@@ -125,7 +120,7 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
       _reportStream.add(dtr);
       // generatePDFReport(dtr);
     } else {
-      print("Failed to load data. Status Code: ${response.statusCode}");
+      // print("Failed to load data. Status Code: ${response.statusCode}");
       setState(() {
         error = 'Failed to load data';
       });
@@ -184,17 +179,15 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                                         leading: Text(
                                           latestGrandTotalHours == ""
                                               ? ""
-                                              : "Hours rendered: " +
-                                                  latestGrandTotalHours +
-                                                  " hours",
-                                          style: TextStyle(fontSize: 20),
+                                              : "Hours rendered: $latestGrandTotalHours hours",
+                                          style: const TextStyle(fontSize: 20),
                                         ),
                                         trailing: MaterialButton(
-                                          color: Colors.green,
+                                          color: Colors.blue,
                                           onPressed: () {
                                             exportToExcel(snap2);
                                           },
-                                          child: Text(
+                                          child: const Text(
                                             'Export to Excel',
                                             style: TextStyle(
                                               color: Colors.white,
@@ -203,7 +196,7 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                                           ),
                                         ),
                                       ),
-                                      columns: [
+                                      columns: const [
                                         DataColumn(label: Text('Name')),
                                         DataColumn(label: Text('Date')),
                                         DataColumn(label: Text('Time-In AM')),
@@ -218,6 +211,22 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                                   ),
                                 ),
                               ),
+                              const Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          "In-range - within the 5 meter radius"),
+                                      Text(
+                                          "Outside range - away from the 5 meter radius"),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -226,13 +235,13 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                       return Center(
                         child: Text(
                           error.isNotEmpty ? error : 'Failed to load data',
-                          style: TextStyle(
-                            color: Colors.red,
+                          style: const TextStyle(
+                            color: Colors.orange,
                           ),
                         ),
                       );
                     } else {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
                   },
                 ),
@@ -257,6 +266,34 @@ class DTRDataSource extends DataTableSource {
       return null;
     }
     final dtr = _data[index];
+    double INAMLAT = double.parse(dtr.in_am_lat);
+    double INAMLONG = double.parse(dtr.in_am_long);
+
+    double OUTAMLAT = double.parse(dtr.out_am_lat);
+    double OUTAMLONG = double.parse(dtr.out_am_long);
+
+    double INPMLAT = double.parse(dtr.in_pm_lat);
+    double INPMLONG = double.parse(dtr.in_pm_long);
+
+    double OUTPMLAT = double.parse(dtr.out_pm_lat);
+    double OUTPMLONG = double.parse(dtr.out_pm_long);
+
+    double estabLat = double.parse(dtr.latitude);
+    double estabLong = double.parse(dtr.longitude);
+
+    var distanceA = calculateDistance(INAMLAT, INAMLONG, estabLat, estabLong);
+    var distanceB = calculateDistance(OUTAMLAT, OUTAMLONG, estabLat, estabLong);
+    var distanceC = calculateDistance(INPMLAT, INPMLONG, estabLat, estabLong);
+    var distanceD = calculateDistance(OUTPMLAT, OUTPMLONG, estabLat, estabLong);
+
+    // //  Calculate distance between dragged position and circle center
+    // double distanceA = Geolocator.distanceBetween(
+    //   INAMLAT,
+    //   INAMLONG,
+    //   double.parse(dtr.latitude),
+    //   double.parse(dtr.longitude),
+    // );
+
     return DataRow(
       cells: [
         DataCell(Text(dtr.lname)),
@@ -267,41 +304,89 @@ class DTRDataSource extends DataTableSource {
             ),
           ),
         ),
-        DataCell(Text(
-          dtr.time_in_am == defaultValue
-              ? defaultT
-              : DateFormat('hh:mm a').format(
-                  DateFormat('hh:mm:ss').parse(
-                    dtr.time_in_am + ' ' + dtr.in_am,
-                  ),
-                ),
+        DataCell(Row(
+          children: [
+            Text(
+              dtr.time_in_am == defaultValue
+                  ? defaultT
+                  : DateFormat('hh:mm a').format(
+                      DateFormat('hh:mm:ss').parse(
+                        dtr.time_in_am,
+                      ),
+                    ),
+            ),
+            Text(
+                distanceA > 5
+                    ? "  / Outside range"
+                    : distanceA < 0
+                        ? ""
+                        : " / In-range",
+                style: TextStyle(
+                    color: distanceA > 5 ? Colors.orange : Colors.blue))
+          ],
         )),
-        DataCell(Text(
-          dtr.time_out_am == defaultValue
-              ? defaultT
-              : DateFormat('hh:mm a').format(
-                  DateFormat('hh:mm:ss').parse(
-                    dtr.time_out_am + ' ' + dtr.out_am,
-                  ),
-                ),
+        DataCell(Row(
+          children: [
+            Text(
+              dtr.time_out_am == defaultValue
+                  ? defaultT
+                  : DateFormat('hh:mm a').format(
+                      DateFormat('hh:mm:ss').parse(
+                        dtr.time_out_am,
+                      ),
+                    ),
+            ),
+            Text(
+                distanceB > 5
+                    ? "  / Outside range"
+                    : distanceB < 0
+                        ? ""
+                        : " / In-range",
+                style: TextStyle(
+                    color: distanceA > 5 ? Colors.orange : Colors.blue))
+          ],
         )),
-        DataCell(Text(
-          dtr.time_in_pm == defaultValue
-              ? defaultT
-              : DateFormat('hh:mm a').format(
-                  DateFormat('hh:mm:ss').parse(
-                    dtr.time_in_pm + ' ' + dtr.in_pm,
-                  ),
-                ),
+        DataCell(Row(
+          children: [
+            Text(
+              dtr.time_in_pm == defaultValue
+                  ? defaultT
+                  : DateFormat('hh:mm a').format(
+                      DateFormat('hh:mm:ss').parse(
+                        dtr.time_in_pm,
+                      ),
+                    ),
+            ),
+            Text(
+                distanceC > 5
+                    ? "  / Outside range"
+                    : distanceC < 0
+                        ? ""
+                        : " / In-range",
+                style: TextStyle(
+                    color: distanceA > 5 ? Colors.orange : Colors.blue))
+          ],
         )),
-        DataCell(Text(
-          dtr.time_out_pm == defaultValue
-              ? defaultT
-              : DateFormat('hh:mm a').format(
-                  DateFormat('hh:mm:ss').parse(
-                    dtr.time_out_pm + ' ' + dtr.out_pm,
-                  ),
-                ),
+        DataCell(Row(
+          children: [
+            Text(
+              dtr.time_out_pm == defaultValue
+                  ? defaultT
+                  : DateFormat('hh:mm a').format(
+                      DateFormat('hh:mm:ss').parse(
+                        dtr.time_out_pm,
+                      ),
+                    ),
+            ),
+            Text(
+                distanceD > 5
+                    ? "  / Outside range"
+                    : distanceD < 0
+                        ? ""
+                        : " / In-range",
+                style: TextStyle(
+                    color: distanceA > 5 ? Colors.orange : Colors.blue))
+          ],
         )),
       ],
     );

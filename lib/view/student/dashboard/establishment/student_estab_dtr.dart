@@ -380,11 +380,13 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                                                             defaultValue
                                                         ? defaultT
                                                         : DateFormat('hh:mm ')
-                                                                .format(DateFormat(
-                                                                        'hh:mm:ss')
-                                                                    .parse(dtr
-                                                                        .time_in_am)) +
-                                                            dtr.in_am,
+                                                            .format(DateFormat(
+                                                                    'hh:mm:ss')
+                                                                .parse(dtr
+                                                                    .time_in_am))
+                                                    //              +
+                                                    // dtr.in_am
+                                                    ,
                                                     style: TextStyle(
                                                       fontFamily: "NexaBold",
                                                       fontSize:
@@ -405,11 +407,13 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                                                             defaultValue
                                                         ? defaultT
                                                         : DateFormat('hh:mm ')
-                                                                .format(DateFormat(
-                                                                        'hh:mm:ss')
-                                                                    .parse(dtr
-                                                                        .time_in_pm)) +
-                                                            dtr.in_pm,
+                                                            .format(DateFormat(
+                                                                    'hh:mm:ss')
+                                                                .parse(dtr
+                                                                    .time_in_pm))
+                                                    //             +
+                                                    // dtr.in_pm
+                                                    ,
                                                     style: TextStyle(
                                                       fontFamily: "NexaBold",
                                                       fontSize:
@@ -440,11 +444,13 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                                                             defaultValue
                                                         ? defaultT
                                                         : DateFormat('hh:mm ')
-                                                                .format(DateFormat(
-                                                                        'hh:mm:ss')
-                                                                    .parse(dtr
-                                                                        .time_out_am)) +
-                                                            dtr.out_am,
+                                                            .format(DateFormat(
+                                                                    'hh:mm:ss')
+                                                                .parse(dtr
+                                                                    .time_out_am))
+                                                    //             +
+                                                    // dtr.out_am
+                                                    ,
                                                     style: TextStyle(
                                                       fontFamily: "NexaBold",
                                                       fontSize:
@@ -465,11 +471,13 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                                                             defaultValue
                                                         ? defaultT
                                                         : DateFormat('hh:mm ')
-                                                                .format(DateFormat(
-                                                                        'hh:mm:ss')
-                                                                    .parse(dtr
-                                                                        .time_out_pm)) +
-                                                            dtr.out_pm,
+                                                            .format(DateFormat(
+                                                                    'hh:mm:ss')
+                                                                .parse(dtr
+                                                                    .time_out_pm))
+                                                    //              +
+                                                    // dtr.out_pm
+                                                    ,
                                                     style: TextStyle(
                                                       fontFamily: "NexaBold",
                                                       fontSize:

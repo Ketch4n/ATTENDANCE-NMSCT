@@ -17,8 +17,8 @@ Future fetchUser(userStreamController) async {
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final user = UserModel.fromJson(data);
-      Session.longitude = user.longitude;
-      Session.latitude = user.latitude;
+      Session.longitude = double.parse(user.longitude);
+      Session.latitude = double.parse(user.latitude);
       Session.hours_required = user.hours_required;
       // prefs.setString('userEstabLocation', userEstabLocation);
 

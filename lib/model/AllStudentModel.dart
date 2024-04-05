@@ -7,16 +7,19 @@ class AllStudentModel {
   final String uid;
   final String address;
   final String section;
+  final String establishment_id;
 
-  AllStudentModel(
-      {required this.id,
-      required this.fname,
-      required this.lname,
-      required this.email,
-      required this.bday,
-      required this.uid,
-      required this.address,
-      required this.section});
+  AllStudentModel({
+    required this.id,
+    required this.fname,
+    required this.lname,
+    required this.email,
+    required this.bday,
+    required this.uid,
+    required this.address,
+    required this.section,
+    required this.establishment_id,
+  });
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -26,16 +29,19 @@ class AllStudentModel {
         'bday': bday,
         'uid': uid,
         'address': address,
-        'section': section
+        'section': section,
+        'establishment_id': establishment_id,
       };
 
   static AllStudentModel fromJson(Map<String, dynamic> json) => AllStudentModel(
-      id: json['id'],
-      fname: json['fname'],
-      lname: json['lname'],
-      email: json['email'],
-      bday: json['bday'],
-      uid: json['uid'],
-      address: json['address'],
-      section: json['section']);
+        id: json['id'],
+        fname: json['fname'],
+        lname: json['lname'],
+        email: json['email'],
+        bday: json['bday'],
+        uid: json['uid'],
+        address: json['address'],
+        section: json['section'],
+        establishment_id: json['establishment_id'],
+      );
 }

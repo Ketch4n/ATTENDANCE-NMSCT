@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:attendance_nmsct/auth/google/permission.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/locator.dart';
 import 'package:attendance_nmsct/services/camera.service.dart';
 import 'package:attendance_nmsct/services/face_detector_service.dart';
 import 'package:attendance_nmsct/services/ml_service.dart';
+import 'package:attendance_nmsct/view/student/calculate_distance.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 import 'models/user.model.dart';
@@ -37,18 +41,21 @@ class SignInState extends State<SignIn> {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
+  late StreamSubscription<Position> _positionStreamSubscription;
+  String _locationMessage = '';
+
   bool _isPictureTaken = false;
   bool _isInitializing = false;
   LocationData? _currentLocation;
 
-  double _givenLatitude = double.parse(Session.latitude); // Example latitude
-  double _givenLongitude = double.parse(Session.longitude); // Example longitude
+  double? _givenLatitude = Session.latitude; // Example latitude
+  double? _givenLongitude = Session.longitude; // Example longitude
 
   @override
   void initState() {
     super.initState();
     _start();
-    _getLocation();
+    _startStreamingLocation();
   }
 
   @override
@@ -56,7 +63,57 @@ class SignInState extends State<SignIn> {
     _cameraService.dispose();
     _mlService.dispose();
     _faceDetectorService.dispose();
+    _stopStreamingLocation();
     super.dispose();
+  }
+
+  _startStreamingLocation() async {
+    if (widget.purpose == "auth") {
+      Position currentPosition =
+          await determineUserCurrentPosition(widget.purpose);
+      double? estabLat = Session.latitude;
+      double? estabLong = Session.longitude;
+      var distance = calculateDistance(currentPosition.latitude,
+          currentPosition.longitude, estabLat!, estabLong!);
+      if (distance <= 5) {
+        // User is at the given location
+        _showSnackBar('You are In-range of the establishment');
+      } else {
+        // User is not at the given location
+        _showSnackBar('You are too far from the establishment');
+      }
+    } else {
+      return null;
+    }
+  }
+
+  void _stopStreamingLocation() {
+    if (_positionStreamSubscription != null) {
+      _positionStreamSubscription.cancel();
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: message == 'You are In-range of the establishment'
+            ? Colors.blue
+            : Colors.orange,
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height - 250,
+            left: 10,
+            right: 10),
+      ),
+    );
+    // Define the duration for the snackbar
+    const snackBarDuration = Duration(seconds: 5);
+
+    // Hide the snackbar after the defined duration
+    Future.delayed(snackBarDuration, () {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    });
   }
 
   Future _start() async {
@@ -152,57 +209,4 @@ class SignInState extends State<SignIn> {
         )
       : SignInSheet(
           user: user, purpose: widget.purpose, refresh: widget.refreshCallback);
-
-  void _getLocation() async {
-    try {
-      _location.onLocationChanged.listen((LocationData locationData) {
-        setState(() {
-          _currentLocation = locationData;
-          // Compare current location with given latitude and longitude
-          _compareLocations(locationData.latitude!, locationData.longitude!);
-        });
-      });
-    } catch (e) {
-      print("Error: $e");
-    }
-  }
-
-  void _compareLocations(double latitude, double longitude) {
-    // Compare latitude and longitude with the given location
-    if (_givenLatitude == latitude && _givenLongitude == longitude) {
-      // User is at the given location
-      _showSnackBar('You are just in the radius');
-    } else {
-      // User is not at the given location
-      _showSnackBar('You are too far from the establishment');
-    }
-  }
-
-  // void _showDistanceSnackBar(double distance) {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: Text('Distance from given location: $distance meters'),
-  //       behavior: SnackBarBehavior.floating,
-  //       margin: EdgeInsets.only(
-  //           bottom: MediaQuery.of(context).size.height - 200,
-  //           left: 10,
-  //           right: 10),
-  //     ),
-  //   );
-  // }
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: message == 'You are just in the radius'
-            ? Colors.green
-            : Colors.blue,
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).size.height - 150,
-            left: 10,
-            right: 10),
-      ),
-    );
-  }
 }

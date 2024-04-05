@@ -164,11 +164,12 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                           Text(
                                             dtr.time_in_am == defaultValue
                                                 ? defaultT
-                                                : DateFormat('hh:mm ').format(
-                                                        DateFormat('hh:mm:ss')
-                                                            .parse(dtr
-                                                                .time_in_am)) +
-                                                    dtr.in_am,
+                                                : DateFormat('hh:mm a').format(
+                                                    DateFormat('hh:mm:ss')
+                                                        .parse(dtr.time_in_am))
+                                            //              +
+                                            // dtr.in_am
+                                            ,
                                             style: TextStyle(
                                               fontFamily: "NexaBold",
                                               fontSize: 20,
@@ -185,11 +186,12 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                           Text(
                                             dtr.time_in_pm == defaultValue
                                                 ? defaultT
-                                                : DateFormat('hh:mm ').format(
-                                                        DateFormat('hh:mm:ss')
-                                                            .parse(dtr
-                                                                .time_in_pm)) +
-                                                    dtr.in_pm,
+                                                : DateFormat('hh:mm a').format(
+                                                    DateFormat('hh:mm:ss')
+                                                        .parse(dtr.time_in_pm))
+                                            //              +
+                                            // dtr.in_pm
+                                            ,
                                             style: TextStyle(
                                               fontFamily: "NexaBold",
                                               fontSize: 20,
@@ -216,11 +218,12 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                           Text(
                                             dtr.time_out_am == defaultValue
                                                 ? defaultT
-                                                : DateFormat('hh:mm ').format(
-                                                        DateFormat('hh:mm:ss')
-                                                            .parse(dtr
-                                                                .time_out_am)) +
-                                                    dtr.out_am,
+                                                : DateFormat('hh:mm a').format(
+                                                    DateFormat('hh:mm:ss')
+                                                        .parse(dtr.time_out_am))
+                                            //              +
+                                            // dtr.out_am
+                                            ,
                                             style: TextStyle(
                                               fontFamily: "NexaBold",
                                               fontSize: 20,
@@ -237,11 +240,12 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                           Text(
                                             dtr.time_out_pm == defaultValue
                                                 ? defaultT
-                                                : DateFormat('hh:mm ').format(
-                                                        DateFormat('hh:mm:ss')
-                                                            .parse(dtr
-                                                                .time_out_pm)) +
-                                                    dtr.out_pm,
+                                                : DateFormat('hh:mm a').format(
+                                                    DateFormat('hh:mm:ss')
+                                                        .parse(dtr.time_out_pm))
+                                            //             +
+                                            // dtr.out_pm
+                                            ,
                                             style: TextStyle(
                                               fontFamily: "NexaBold",
                                               fontSize: 20,

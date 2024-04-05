@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:attendance_nmsct/auth/google/permission.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -199,7 +200,8 @@ class _PinMapState extends State<PinMap> {
   }
 
   Future _gotoUserCurrentPosition() async {
-    Position currentPosition = await _determineUserCurrentPosition();
+    final purpose = "pin";
+    Position currentPosition = await determineUserCurrentPosition(purpose);
     _gotoSpecificPosition(
         LatLng(currentPosition.latitude, currentPosition.longitude));
   }
@@ -209,31 +211,6 @@ class _PinMapState extends State<PinMap> {
     mapController.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: position, zoom: 17.5)));
     await _getAddress(position);
-  }
-
-  Future _determineUserCurrentPosition() async {
-    LocationPermission locationPermission;
-    bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if (!isLocationServiceEnabled) {
-      print("user don't enable location permission");
-    }
-
-    locationPermission = await Geolocator.checkPermission();
-
-    if (locationPermission == LocationPermission.denied) {
-      locationPermission = await Geolocator.requestPermission();
-      if (locationPermission == LocationPermission.denied) {
-        print("user denied location permission");
-      }
-    }
-
-    if (locationPermission == LocationPermission.deniedForever) {
-      print("user denied permission forever");
-    }
-
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best);
   }
 
   void _toggleMapStyle() {

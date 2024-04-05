@@ -210,8 +210,9 @@ class _AllStudentsState extends State<AllStudents> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 StudentDTRDetails(
-                                                  id: classmate.id,
-                                                ))),
+                                                    id: classmate.id,
+                                                    estab_id: classmate
+                                                        .establishment_id))),
                                     child: Icon(Icons.remove_red_eye),
                                   )),
                                 ],
