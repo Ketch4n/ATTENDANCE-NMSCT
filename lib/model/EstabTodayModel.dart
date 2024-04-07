@@ -18,10 +18,10 @@ class EstabTodayModel {
   final String out_pm_lat;
   final String out_pm_long;
   final String date;
-  final String lname;
-  final String email;
-  final String latitude;
-  final String longitude;
+  final String? lname;
+  final String? email;
+  final String? latitude;
+  final String? longitude;
 
   EstabTodayModel({
     required this.id,
@@ -40,10 +40,10 @@ class EstabTodayModel {
     required this.out_pm_lat,
     required this.out_pm_long,
     required this.date,
-    required this.lname,
-    required this.email,
-    required this.latitude,
-    required this.longitude,
+    this.lname,
+    this.email,
+    this.latitude,
+    this.longitude,
   });
 
   Map<String, dynamic> toJson() => {

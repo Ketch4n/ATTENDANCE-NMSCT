@@ -91,6 +91,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
                 Navigator.of(context).pop();
                 await insertAbsent(context, widget.ids, _reason.text, _date);
                 streamAccomplishemnt(_absentController);
+                _reason.clear();
               },
               child: const Text('Save'),
             ),
@@ -100,7 +101,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
     );
   }
 
-  void action(AbsentModel absent) async {
+  void action(absent) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -109,18 +110,13 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
           content: Text('Approved or Declined'),
           actions: <Widget>[
             TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Cancel')),
-            TextButton(
               onPressed: () {
                 const String stats = "Declined";
 
                 Navigator.of(context).pop();
                 _actionDone(absent, stats);
               },
-              child: Text('Decline'),
+              child: Text('Decline', style: TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () {
@@ -130,7 +126,10 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
 
                 Navigator.of(context).pop();
               },
-              child: Text('Approve'),
+              child: Text(
+                'Approve',
+                style: TextStyle(color: Colors.green),
+              ),
             ),
           ],
         );
@@ -138,7 +137,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
     );
   }
 
-  void _showDeleteConfirmationDialog(AbsentModel absent) {
+  void _showDeleteConfirmationDialog(absent) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -223,12 +222,14 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showDatePicker();
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: Session.role == "Intern"
+          ? FloatingActionButton(
+              onPressed: () {
+                _showDatePicker();
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
       body: Column(
         children: [
           Expanded(
@@ -244,7 +245,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
                   if (data.isEmpty) {
                     return Center(
                       child: Text(
-                        'No record of absent',
+                        'No Pending absent request',
                         style: TextStyle(fontSize: 18),
                       ),
                     );
@@ -277,6 +278,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
                                 Session.role == "Intern"
                                     ? _showDeleteConfirmationDialog(absent)
                                     : action(absent);
+                                print(absent);
                               },
                               child: Card(
                                 child: Padding(
@@ -302,7 +304,12 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
                                         bottom: 8.0,
                                       ),
                                       child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
+                                          Text(Session.role == "Intern"
+                                              ? ""
+                                              : "From : ${absent.lname!}"),
                                           Text(Session.role == "Intern"
                                               ? ""
                                               : absent.email!),

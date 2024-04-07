@@ -17,6 +17,7 @@ class Admin {
   static String id = "";
   static String name = "";
   static String email = "";
+  static String estab_id = "";
 }
 
 class UserSession {

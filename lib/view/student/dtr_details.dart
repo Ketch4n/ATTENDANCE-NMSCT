@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
@@ -154,99 +155,122 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
         key: _refreshIndicatorKey,
         onRefresh: refreshData,
         child: Scaffold(
-          body: Column(
-            children: [
-              Expanded(
-                child: StreamBuilder<List<EstabTodayModel>>(
-                  stream: _monthStream.stream,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final snap2 = snapshot.data!;
-                      if (snap2.isEmpty) {
-                        return const Center(child: Text("NO DATA THIS MONTH"));
-                      } else {
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  width: double.maxFinite,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: PaginatedDataTable(
-                                      header: ListTile(
-                                        leading: Text(
-                                          latestGrandTotalHours == ""
-                                              ? ""
-                                              : "Hours rendered: $latestGrandTotalHours hours",
-                                          style: const TextStyle(fontSize: 20),
-                                        ),
-                                        trailing: MaterialButton(
-                                          color: Colors.blue,
-                                          onPressed: () {
-                                            exportToExcel(snap2);
-                                          },
-                                          child: const Text(
-                                            'Export to Excel',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: "NexaBold",
-                                            ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder<List<EstabTodayModel>>(
+                    stream: _monthStream.stream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final snap2 = snapshot.data!;
+                        if (snap2.isEmpty) {
+                          return const Center(
+                              child: Text("NO DATA THIS MONTH"));
+                        } else {
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Session.role == "Administrator"
+                                    ? MaterialButton(
+                                        color: Colors.blue,
+                                        onPressed: () {
+                                          exportToExcel(snap2);
+                                        },
+                                        child: const Text(
+                                          'Export to Excel',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "NexaBold",
                                           ),
                                         ),
+                                      )
+                                    : SizedBox(),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: SizedBox(
+                                    width: double.maxFinite,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: PaginatedDataTable(
+                                        header: ListTile(
+                                          leading: Text(
+                                            latestGrandTotalHours == ""
+                                                ? ""
+                                                : "Hours rendered: $latestGrandTotalHours hours",
+                                            style:
+                                                const TextStyle(fontSize: 20),
+                                          ),
+                                          trailing: Session.role == "NMSCST"
+                                              ? MaterialButton(
+                                                  color: Colors.blue,
+                                                  onPressed: () {
+                                                    exportToExcel(snap2);
+                                                  },
+                                                  child: const Text(
+                                                    'Export to Excel',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: "NexaBold",
+                                                    ),
+                                                  ),
+                                                )
+                                              : null,
+                                        ),
+                                        columns: const [
+                                          DataColumn(label: Text('Name')),
+                                          DataColumn(label: Text('Date')),
+                                          DataColumn(label: Text('Time-In AM')),
+                                          DataColumn(
+                                              label: Text('Time-Out AM')),
+                                          DataColumn(label: Text('Time-In PM')),
+                                          DataColumn(
+                                              label: Text('Time-Out PM')),
+                                        ],
+                                        source: DTRDataSource(
+                                            snap2.cast<EstabTodayModel>()),
+                                        rowsPerPage: 5,
                                       ),
-                                      columns: const [
-                                        DataColumn(label: Text('Name')),
-                                        DataColumn(label: Text('Date')),
-                                        DataColumn(label: Text('Time-In AM')),
-                                        DataColumn(label: Text('Time-Out AM')),
-                                        DataColumn(label: Text('Time-In PM')),
-                                        DataColumn(label: Text('Time-Out PM')),
-                                      ],
-                                      source: DTRDataSource(
-                                          snap2.cast<EstabTodayModel>()),
-                                      rowsPerPage: 5,
                                     ),
                                   ),
                                 ),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                          "In-range - within the 5 meter radius"),
-                                      Text(
-                                          "Outside range - away from the 5 meter radius"),
-                                    ],
+                                const Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            "In-range - within the 5 meter radius"),
+                                        Text(
+                                            "Outside range - away from the 5 meter radius"),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
+                          );
+                        }
+                      } else if (snapshot.hasError || error.isNotEmpty) {
+                        return Center(
+                          child: Text(
+                            error.isNotEmpty ? error : 'Failed to load data',
+                            style: const TextStyle(
+                              color: Colors.orange,
+                            ),
                           ),
                         );
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
                       }
-                    } else if (snapshot.hasError || error.isNotEmpty) {
-                      return Center(
-                        child: Text(
-                          error.isNotEmpty ? error : 'Failed to load data',
-                          style: const TextStyle(
-                            color: Colors.orange,
-                          ),
-                        ),
-                      );
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  },
-                ),
-              )
-            ],
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       );
@@ -278,8 +302,8 @@ class DTRDataSource extends DataTableSource {
     double OUTPMLAT = double.parse(dtr.out_pm_lat);
     double OUTPMLONG = double.parse(dtr.out_pm_long);
 
-    double estabLat = double.parse(dtr.latitude);
-    double estabLong = double.parse(dtr.longitude);
+    double estabLat = double.parse(dtr.latitude!);
+    double estabLong = double.parse(dtr.longitude!);
 
     var distanceA = calculateDistance(INAMLAT, INAMLONG, estabLat, estabLong);
     var distanceB = calculateDistance(OUTAMLAT, OUTAMLONG, estabLat, estabLong);
@@ -296,7 +320,7 @@ class DTRDataSource extends DataTableSource {
 
     return DataRow(
       cells: [
-        DataCell(Text(dtr.lname)),
+        DataCell(Text(dtr.lname!)),
         DataCell(
           Text(
             DateFormat('EE, dd MMM yyyy').format(

@@ -1,16 +1,20 @@
 import 'dart:convert';
 
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AllStudentModel.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_dtr.dart';
 import 'package:attendance_nmsct/view/student/dtr_details.dart';
 import 'package:excel/excel.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AllStudents extends StatefulWidget {
   const AllStudents({Key? key}) : super(key: key);
+  // final String purpose;
 
   @override
   State<AllStudents> createState() => _AllStudentsState();
@@ -29,25 +33,26 @@ class _AllStudentsState extends State<AllStudents> {
   }
 
   void fetchInterns() async {
-    try {
-      final response = await http.get(
-        Uri.parse('${Server.host}users/establishment/all_students.php'),
-      );
+    print("estab : ${Admin.estab_id}");
+    print("role : ${Session.role}");
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        interns = data
-            .map((classmateData) => AllStudentModel.fromJson(classmateData))
-            .toList();
-        filteredInterns = interns; // Initialize filtered list
-        setState(() {});
-      } else {
-        print('Server returned an error: ${response.statusCode}');
-        print('Response body: ${response.body}');
-      }
-    } catch (error) {
-      print('Error fetching data: $error');
-      // Handle the error accordingly
+    final response = await http.post(
+        Uri.parse('${Server.host}users/establishment/all_students.php'),
+        body: {
+          'estab_id': Admin.estab_id,
+          'role': Session.role,
+        });
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      interns = data
+          .map((classmateData) => AllStudentModel.fromJson(classmateData))
+          .toList();
+      filteredInterns = interns; // Initialize filtered list
+      setState(() {});
+    } else {
+      print('Server returned an error: ${response.statusCode}');
+      print('Response body: ${response.body}');
     }
   }
 
@@ -95,15 +100,19 @@ class _AllStudentsState extends State<AllStudents> {
   Widget build(BuildContext context) {
     final screenwidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('All Students List'),
-        centerTitle: true,
-      ),
+      appBar: Session.role == "NMSCST"
+          ? AppBar(
+              title: Text('All Students List'),
+              centerTitle: true,
+            )
+          : null,
       body: Center(
         child: Column(
           children: [
             Container(
-              constraints: BoxConstraints(maxWidth: screenwidth / 3),
+              constraints: Session.role == "NMSCST"
+                  ? BoxConstraints(maxWidth: screenwidth / 3)
+                  : null,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
@@ -205,14 +214,30 @@ class _AllStudentsState extends State<AllStudents> {
                                     ),
                                   ),
                                   DataCell(ElevatedButton(
-                                    onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
+                                    onPressed: () {
+                                      if (classmate.establishment_id ==
+                                          "none") {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content:
+                                                Text("No Establishment yet"),
+                                          ),
+                                        );
+                                      } else {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
                                             builder: (context) =>
                                                 StudentDTRDetails(
-                                                    id: classmate.id,
-                                                    estab_id: classmate
-                                                        .establishment_id))),
+                                              id: classmate.id,
+                                              estab_id:
+                                                  classmate.establishment_id,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
                                     child: Icon(Icons.remove_red_eye),
                                   )),
                                 ],

@@ -20,14 +20,17 @@ class AbsentRecordTab extends StatefulWidget {
 class _AbsentRecordTabState extends State<AbsentRecordTab> {
   final StreamController<List<AbsentModel>> _absentController =
       StreamController<List<AbsentModel>>();
+  late final TextEditingController _searchController;
   Future<void> streamAccomplishemnt(_absentController) async {
     try {
+      final purpose = Session.role == "Intern" ? "Intern" : "Estab";
       final response = await http.post(
         Uri.parse('${Server.host}users/student/view_absent.php'),
         body: {
           'student_id': Session.id,
           'section_id': widget.ids,
-          'status': 'Record'
+          'status': 'Record',
+          'purpose': purpose
         },
       );
       // print('API Response: ${response.body}');
@@ -48,10 +51,25 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
     }
   }
 
+  List filteredRows(List<AbsentModel> products) {
+    String query = _searchController.text.toLowerCase();
+    // Filter the products based on the search query
+    List<AbsentModel> filteredProducts = products.where((product) {
+      return product.id.toLowerCase().contains(query) ||
+          product.lname!.toLowerCase().contains(query) ||
+          product.reason.toLowerCase().contains(query) ||
+          product.status.toLowerCase().contains(query) ||
+          product.email!.toLowerCase().contains(query) ||
+          product.date.toLowerCase().contains(query);
+    }).toList();
+    // Build the DataRow widgets for the filtered products
+    return filteredProducts.toList();
+  }
+
   @override
   void initState() {
     super.initState();
-
+    _searchController = TextEditingController();
     streamAccomplishemnt(_absentController);
   }
 
@@ -75,7 +93,7 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
                     child: Text("Error: ${snapshot.error}"),
                   );
                 } else if (snapshot.hasData) {
-                  final List<AbsentModel> data = snapshot.data!;
+                  List<AbsentModel>? data = snapshot.data!;
                   if (data.isEmpty) {
                     return Center(
                       child: Text(
@@ -83,68 +101,110 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
                         style: TextStyle(fontSize: 18),
                       ),
                     );
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: ListView.builder(
-                        itemCount: data.length,
-                        itemBuilder: (context, index) {
-                          final AbsentModel absent = data[index];
-                          return Container(
-                            padding: EdgeInsets.only(
-                                bottom: index == snapshot.data!.length - 1
-                                    ? 70.0
-                                    : 0),
-                            child: TimelineTile(
-                              isFirst: index == 0,
-                              isLast: index == snapshot.data!.length - 1,
-                              alignment: TimelineAlign.start,
-                              indicatorStyle: IndicatorStyle(
-                                width: 20,
-                                color: absent.status == 'Pending'
-                                    ? Colors.blue
-                                    : absent.status == 'Approved'
-                                        ? Colors.green
-                                        : Colors.red,
-                              ),
-                              endChild: GestureDetector(
-                                // onLongPress: () => _showUpdateDeleteModal(record),
-                                child: Card(
-                                  child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ListTile(
-                                        // leading: Text(
-                                        //     "Absent Date: " + absent.date),
-                                        title: Row(
-                                          children: [
-                                            Text("Absent: ${absent.date}"),
-                                            Text(
-                                              "  (${absent.status})",
-                                              style: TextStyle(
-                                                color:
-                                                    absent.status == 'Pending'
-                                                        ? Colors.blue
-                                                        : absent.status ==
-                                                                'Approved'
-                                                            ? Colors.green
-                                                            : Colors.red,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        subtitle: Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 8.0),
-                                          child: Text(
-                                              "Reason of absent: ${absent.reason}"),
-                                        ),
-                                      )),
-                                ),
-                              ),
+                  } else {
+                    data = filteredRows(data).cast<AbsentModel>();
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: _searchController,
+                            onChanged: (query) {
+                              // Filter the data based on the search query
+                              setState(() {});
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Search',
+                              prefixIcon: Icon(Icons.search),
                             ),
-                          );
-                        }),
-                  );
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: ListView.builder(
+                                itemCount: data.length,
+                                itemBuilder: (context, index) {
+                                  final AbsentModel absent = data![index];
+
+                                  return Container(
+                                    padding: EdgeInsets.only(
+                                        bottom:
+                                            index == snapshot.data!.length - 1
+                                                ? 70.0
+                                                : 0),
+                                    child: TimelineTile(
+                                      isFirst: index == 0,
+                                      isLast:
+                                          index == snapshot.data!.length - 1,
+                                      alignment: TimelineAlign.start,
+                                      indicatorStyle: IndicatorStyle(
+                                        width: 20,
+                                        color: absent.status == 'Pending'
+                                            ? Colors.blue
+                                            : absent.status == 'Approved'
+                                                ? Colors.green
+                                                : Colors.red,
+                                      ),
+                                      endChild: GestureDetector(
+                                        // onLongPress: () => _showUpdateDeleteModal(record),
+                                        child: Card(
+                                          child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: ListTile(
+                                                // leading: Text(
+                                                //     "Absent Date: " + absent.date),
+                                                title: Row(
+                                                  children: [
+                                                    Text(
+                                                        "Absent: ${absent.date}"),
+                                                    Text(
+                                                      "  (${absent.status})",
+                                                      style: TextStyle(
+                                                        color: absent.status ==
+                                                                'Pending'
+                                                            ? Colors.blue
+                                                            : absent.status ==
+                                                                    'Approved'
+                                                                ? Colors.green
+                                                                : Colors.red,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                subtitle: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Session.role == "Intern"
+                                                          ? SizedBox()
+                                                          : Text(
+                                                              "From: ${absent.lname!}"),
+                                                      Session.role == "Intern"
+                                                          ? SizedBox()
+                                                          : Text(absent.email!),
+                                                      Text(
+                                                          "Reason of absent: ${absent.reason}"),
+                                                    ],
+                                                  ),
+                                                ),
+                                              )),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
                 } else {
                   return Expanded(
                     child: CardPageSkeleton(),

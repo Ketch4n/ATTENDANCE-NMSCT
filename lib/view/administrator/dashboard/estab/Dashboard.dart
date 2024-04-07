@@ -96,8 +96,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
               ),
             ),
             GestureDetector(
-              onTap: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => AllStudents())),
+              onTap: () {},
               child: Container(
                 height: screenHeight / 5,
                 width: screenWidth / 2.5,

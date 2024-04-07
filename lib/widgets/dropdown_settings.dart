@@ -126,7 +126,7 @@ class DropdownSettings extends StatelessWidget {
                           //     style: TextStyle(color: Colors.blue),
                           //   ),
                           // ),
-                          UserRole().role == 'Intern'
+                          Session.role == 'Intern'
                               ? ListTile(
                                   leadingAndTrailingTextStyle:
                                       TextStyle(fontSize: 20),
@@ -140,7 +140,7 @@ class DropdownSettings extends StatelessWidget {
                                   ),
                                 )
                               : SizedBox(),
-                          UserRole().role == 'Intern'
+                          Session.role == 'Intern'
                               ? ListTile(
                                   leadingAndTrailingTextStyle:
                                       TextStyle(fontSize: 20),
@@ -154,7 +154,7 @@ class DropdownSettings extends StatelessWidget {
                                   ),
                                 )
                               : SizedBox(),
-                          UserRole().role == 'Intern'
+                          Session.role == 'Intern'
                               ? ListTile(
                                   leadingAndTrailingTextStyle:
                                       TextStyle(fontSize: 20),

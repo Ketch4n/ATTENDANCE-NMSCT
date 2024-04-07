@@ -46,7 +46,7 @@ class _EstabDTRState extends State<EstabDTR> {
     // Filter the products based on the search query
     List<EstabTodayModel> filteredProducts = products.where((product) {
       return product.id.toLowerCase().contains(query) ||
-          product.lname.toLowerCase().contains(query) ||
+          product.lname!.toLowerCase().contains(query) ||
           product.time_in_am.toLowerCase().contains(query) ||
           product.time_out_am.toLowerCase().contains(query) ||
           product.time_in_pm.toLowerCase().contains(query) ||
@@ -121,7 +121,7 @@ class _EstabDTRState extends State<EstabDTR> {
       return data;
     }
     return data.where((dtr) {
-      return dtr.lname.toLowerCase().contains(query.toLowerCase());
+      return dtr.lname!.toLowerCase().contains(query.toLowerCase());
     }).toList();
   }
 
@@ -318,7 +318,7 @@ class _EstabDTRState extends State<EstabDTR> {
                                                 ),
                                                 child: Column(
                                                   children: [
-                                                    Text(dtr.lname,
+                                                    Text(dtr.lname!,
                                                         style: TextStyle(
                                                             color:
                                                                 Colors.white)),
@@ -521,7 +521,7 @@ class DTRDataSource extends DataTableSource {
     final dtr = _data[index];
     return DataRow(
       cells: [
-        DataCell(Text(dtr.lname)),
+        DataCell(Text(dtr.lname!)),
         DataCell(
           Text(
             DateFormat('EE, dd MMM yyyy').format(

@@ -33,6 +33,9 @@ Future<void> login(
       );
 
       if (response.statusCode == 200) {
+        // final List<dynamic> admin = json.decode(response.body);
+        // final List<Admin> dtr =
+        //     admin.map((dtrData) => Admin.fromJson(dtrData)).toList();
         Map<String, dynamic> data = json.decode(response.body);
         final message = data['message'];
         final userId = data['id'];
@@ -40,6 +43,8 @@ Future<void> login(
         final userFName = data['fname'];
         final userLName = data['lname'];
         final userEmail = data['email'];
+        final adminEstab = data['establishment_id'];
+
         // final status = "${response.statusCode}";
         if (data['success']) {
           final prefs = await SharedPreferences.getInstance();
@@ -61,7 +66,10 @@ Future<void> login(
             prefs.setString('internID', uid);
             prefs.setString('internBDAY', bday);
             prefs.setString('internADDRESS', address);
-          } else {}
+          } else {
+            prefs.setString('adminEstab', adminEstab);
+            Admin.estab_id = adminEstab;
+          }
           const title = "Login success";
           String content = "Welcome $message";
 

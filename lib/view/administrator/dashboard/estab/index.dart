@@ -55,11 +55,11 @@ class _EstabDashboardState extends State<EstabDashboard> {
       uRole = userRole!;
     });
     final response = await http.post(
-      UserRole().role == "Administrator"
+      Session.role == "Administrator"
           ? Uri.parse('${Server.host}users/establishment/estab.php')
           : Uri.parse('${Server.host}users/establishment/estab_nmscst.php'),
       body: {
-        'id': userId,
+        'id': Session.id,
       },
     );
 
@@ -150,15 +150,17 @@ class _EstabDashboardState extends State<EstabDashboard> {
                 ),
               );
             } else {
-              final EstabModel sec2 = sect2[0];
+              // final EstabModel sec2 = sect2[0];
 
               return Scaffold(
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () async {
-                      bottomsheet(uRole, uId);
-                    },
-                    child: const Icon(Icons.add),
-                  ),
+                  floatingActionButton: sect2.isEmpty
+                      ? FloatingActionButton(
+                          onPressed: () async {
+                            bottomsheet(uRole, uId);
+                          },
+                          child: const Icon(Icons.add),
+                        )
+                      : null,
                   floatingActionButtonLocation:
                       FloatingActionButtonLocation.centerFloat,
                   body: Session.role == "NMSCST"
