@@ -12,6 +12,7 @@ class UserModel {
   final String location;
   final String longitude;
   final String latitude;
+  final String radius;
   final String creator_email;
   final String hours_required;
 
@@ -29,6 +30,7 @@ class UserModel {
     required this.location,
     required this.longitude,
     required this.latitude,
+    required this.radius,
     required this.creator_email,
     required this.hours_required,
   });
@@ -48,6 +50,7 @@ class UserModel {
         'location': location,
         'longitude': longitude,
         'latitude': latitude,
+        'radius': radius,
         'creator_email': creator_email,
         'hours_required': hours_required,
       };
@@ -67,6 +70,7 @@ class UserModel {
         location: json['location'],
         longitude: json['longitude'],
         latitude: json['latitude'],
+        radius: json['radius'],
         creator_email: json['creator_email'],
         hours_required: json['hours_required'],
       );

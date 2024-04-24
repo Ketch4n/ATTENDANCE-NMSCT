@@ -1,7 +1,7 @@
 import 'dart:math';
 
 double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-  const double earthRadius = 6371; // Radius of the Earth in kilometers
+  const double earthRadius = 6371000; // Radius of the Earth in kilometers
 
   if (lat1 == 0.0 && lon1 == 0.0) {
     double distance = -1.0;

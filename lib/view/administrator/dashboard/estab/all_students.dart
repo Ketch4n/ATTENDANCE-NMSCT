@@ -33,13 +33,16 @@ class _AllStudentsState extends State<AllStudents> {
   }
 
   void fetchInterns() async {
-    print("estab : ${Admin.estab_id}");
+    final prefs = await SharedPreferences.getInstance();
+
+    final estab_id = prefs.getString('adminEstab');
+    print("estab : ${estab_id}");
     print("role : ${Session.role}");
 
     final response = await http.post(
         Uri.parse('${Server.host}users/establishment/all_students.php'),
         body: {
-          'estab_id': Admin.estab_id,
+          'estab_id': estab_id,
           'role': Session.role,
         });
 

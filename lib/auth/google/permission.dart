@@ -22,7 +22,9 @@ Future determineUserCurrentPosition(purpose) async {
   }
 
   return await Geolocator.getCurrentPosition(
-      desiredAccuracy: purpose == "pin"
-          ? LocationAccuracy.best
-          : LocationAccuracy.bestForNavigation);
+    desiredAccuracy: purpose == "pin"
+        ? LocationAccuracy.best
+        : LocationAccuracy.bestForNavigation,
+    forceAndroidLocationManager: true,
+  );
 }

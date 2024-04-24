@@ -61,6 +61,7 @@ class _SignupState extends State<Signup> {
   final _uaddressController = TextEditingController();
   final _sectionController = TextEditingController();
   final _hoursController = TextEditingController();
+  final _radiusController = TextEditingController();
 
   Future<void> _ref() async {
     setState(() {});
@@ -342,6 +343,19 @@ class _SignupState extends State<Signup> {
                                   )
                                 : SizedBox(),
 
+                            const SizedBox(height: 10),
+                            _default && !_show
+                                ? TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                    controller: _radiusController,
+                                    decoration: Style.textdesign.copyWith(
+                                        labelText: 'Radius (default 5 meters)'),
+                                  )
+                                : SizedBox(),
+
                             const SizedBox(height: 20),
 
                             user.role != "NMSCST"
@@ -520,6 +534,7 @@ class _SignupState extends State<Signup> {
     String uid = _uidController.text.trim();
     String address = _uaddressController.text.trim();
     String section = _sectionController.text.trim();
+    String radius = _radiusController.text.trim();
 
     if ((email.isEmpty || password.isEmpty) && _currentStep == 0) {
       String title = email.isEmpty ? "Email Empty !" : "Password Empty !";
@@ -554,16 +569,22 @@ class _SignupState extends State<Signup> {
       String message = "Click icon to scan";
       showAlertDialog(context, title, message);
     } else if (_currentStep == 2) {
-      await signup(context, email, password, id, name, user, bday, uid, address,
-          section);
-      String code = generateAlphanumericId();
-      String currentCoordinate = UserSession.location;
-      double? currentLat = UserSession.latitude;
-      double? currentLng = UserSession.longitude;
-
       // ignore: use_build_context_synchronously
-      await CreateSectEstab(context, code, cont, currentCoordinate, currentLng!,
-          currentLat!, email, hours);
+      if (user == 'Intern') {
+        await signup(context, email, password, id, name, user, bday, uid,
+            address, section);
+      } else {
+        String code = generateAlphanumericId();
+        String currentCoordinate = UserSession.location;
+        double? currentLat = UserSession.latitude;
+        double? currentLng = UserSession.longitude;
+        String radiusMeter = radius.isEmpty ? "5" : radius;
+
+        await CreateSectEstab(context, code, cont, currentCoordinate,
+            currentLng!, currentLat!, email, hours, radiusMeter);
+        await signup(context, email, password, id, name, user, bday, uid,
+            address, section);
+      }
     } else {
       _currentStep < 2 ? setState(() => _currentStep += 1) : null;
     }

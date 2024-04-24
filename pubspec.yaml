@@ -39,7 +39,7 @@ dependencies:
   provider:
   font_awesome_flutter: ^10.6.0
   lottie: ^2.7.0
-  google_maps_flutter: ^2.2.1
+  google_maps_flutter: ^2.6.1
 
   intl: ^0.18.1
   http: ^1.1.2
@@ -59,7 +59,8 @@ dependencies:
   firebase_storage: ^11.5.5
   cloud_firestore: ^4.13.5
 
-  tflite_flutter: ^0.9.0
+  # tflite_flutter: ^0.9.0
+  mapbox_gl: ^0.16.0
   camera: ^0.9.4+19
   path_provider: ^2.0.9
   path: ^1.8.0

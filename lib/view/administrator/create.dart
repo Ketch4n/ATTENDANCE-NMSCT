@@ -39,6 +39,8 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
 
   final fulladdress = TextEditingController();
   final hoursController = TextEditingController();
+  final radiusController = TextEditingController();
+
   // StreamSubscription<loc.LocationData>? _positionSubscription;
   bool _show = true;
   @override
@@ -94,6 +96,13 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                                   .copyWith(labelText: 'Total Hours required'),
                             )
                           : SizedBox(),
+                      !_show
+                          ? TextFormField(
+                              controller: radiusController,
+                              decoration: Style.textdesign.copyWith(
+                                  labelText: 'Radius (default 5 meters)'),
+                            )
+                          : SizedBox(),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 15.0),
                         child: Text(
@@ -134,6 +143,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                           onPressed: () async {
                             final String loc = location.text;
                             final String hours = hoursController.text.trim();
+                            final String radius = radiusController.text.trim();
 
                             if (loc.isEmpty || hours.isEmpty) {
                               String title = "Name or Hours Empty !";
@@ -144,18 +154,20 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                               String currentCoordinate = UserSession.location;
                               double? currentLat = UserSession.latitude;
                               double? currentLng = UserSession.longitude;
+                              String radiusMeter =
+                                  radius.isEmpty ? "5" : radius;
 
                               // ignore: use_build_context_synchronously
                               await CreateSectEstab(
-                                context,
-                                code,
-                                loc,
-                                currentCoordinate,
-                                currentLng!,
-                                currentLat!,
-                                Session.email,
-                                hours,
-                              );
+                                  context,
+                                  code,
+                                  loc,
+                                  currentCoordinate,
+                                  currentLng!,
+                                  currentLat!,
+                                  Session.email,
+                                  hours,
+                                  radiusMeter);
                               // await pasteCode(context, title, message, code);
                               // String purpose = 'CreateClassRoom';
                               // await CreateSectEstab(context, pin);

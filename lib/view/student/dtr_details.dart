@@ -8,6 +8,7 @@ import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
 import 'package:attendance_nmsct/view/student/calculate_distance.dart';
+import 'package:attendance_nmsct/view/student/location_label.dart';
 import 'package:excel/excel.dart';
 
 import 'package:http/http.dart' as http;
@@ -17,8 +18,8 @@ import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 
 class StudentDTRDetails extends StatefulWidget {
-  const StudentDTRDetails(
-      {super.key, required this.id, required this.estab_id});
+  const StudentDTRDetails({Key? key, required this.id, required this.estab_id})
+      : super(key: key);
 
   final String id;
   final String estab_id;
@@ -41,9 +42,6 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
   double screenHeight = 0;
   double screenWidth = 0;
 
-  // String _month = DateFormat('MMMM').format(DateTime.now());
-  // String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
-
   Future<void> exportToExcel(List<EstabTodayModel> filteredProducts) async {
     var excel = Excel.createExcel();
     var sheet = excel['Sheet1'];
@@ -55,13 +53,13 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
     // Add data rows
     for (var product in filteredProducts) {
       sheet.appendRow([
-        product.email,
-        product.lname,
-        product.time_in_am,
-        product.time_out_am,
-        product.time_in_pm,
-        product.time_out_pm,
-        product.date
+        product.email ?? '',
+        product.lname ?? '',
+        product.time_in_am ?? '',
+        product.time_out_am ?? '',
+        product.time_in_pm ?? '',
+        product.time_out_pm ?? '',
+        product.date ?? ''
       ]);
     }
 
@@ -72,6 +70,9 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
   }
 
   Future<void> monthly_report() async {
+    print(widget.id);
+    print(widget.estab_id);
+
     try {
       final response = await http.post(
         Uri.parse('${Server.host}users/establishment/monthly_report.php'),
@@ -105,23 +106,18 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
       Uri.parse('${Server.host}users/student/monthly_report.php'),
       body: {'id': widget.id, 'estab_id': widget.estab_id, 'month': "all"},
     );
-    // print("ID : ${Session.id}");
-    // print("TEST : $_yearMonth");
+
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      // print("Response Data: $data");
       final List<TodayModel> dtr =
           data.map((dtrData) => TodayModel.fromJson(dtrData)).toList();
       setState(() {
         latestGrandTotalHours =
-            dtr.isNotEmpty ? dtr.last.grand_total_hours_rendered : '';
+            dtr.isNotEmpty ? dtr.last.grand_total_hours_rendered ?? '' : '';
       });
 
-      // Add the list of classmates to the stream
       _reportStream.add(dtr);
-      // generatePDFReport(dtr);
     } else {
-      // print("Failed to load data. Status Code: ${response.statusCode}");
       setState(() {
         error = 'Failed to load data';
       });
@@ -162,8 +158,8 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                   child: StreamBuilder<List<EstabTodayModel>>(
                     stream: _monthStream.stream,
                     builder: (context, snapshot) {
+                      final snap2 = snapshot.data ?? [];
                       if (snapshot.hasData) {
-                        final snap2 = snapshot.data!;
                         if (snap2.isEmpty) {
                           return const Center(
                               child: Text("NO DATA THIS MONTH"));
@@ -195,7 +191,7 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                                       child: PaginatedDataTable(
                                         header: ListTile(
                                           leading: Text(
-                                            latestGrandTotalHours == ""
+                                            latestGrandTotalHours.isEmpty
                                                 ? ""
                                                 : "Hours rendered: $latestGrandTotalHours hours",
                                             style:
@@ -243,9 +239,9 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                            "In-range - within the 5 meter radius"),
+                                            "In-range - within the establishment meter radius"),
                                         Text(
-                                            "Outside range - away from the 5 meter radius"),
+                                            "Outside range - away from the establishment meter radius"),
                                       ],
                                     ),
                                   ),
@@ -282,6 +278,7 @@ class DTRDataSource extends DataTableSource {
   final List<EstabTodayModel> _data;
   String defaultValue = '00:00:00';
   String defaultT = '--/--';
+
   DTRDataSource(this._data);
 
   @override
@@ -290,41 +287,37 @@ class DTRDataSource extends DataTableSource {
       return null;
     }
     final dtr = _data[index];
-    double INAMLAT = double.parse(dtr.in_am_lat);
-    double INAMLONG = double.parse(dtr.in_am_long);
+    double meterValue = double.parse(dtr.radius ?? '0');
 
-    double OUTAMLAT = double.parse(dtr.out_am_lat);
-    double OUTAMLONG = double.parse(dtr.out_am_long);
+    // double negative = -1.0;
 
-    double INPMLAT = double.parse(dtr.in_pm_lat);
-    double INPMLONG = double.parse(dtr.in_pm_long);
+    double INAMLAT = double.parse(dtr.in_am_lat ?? '0');
+    double INAMLONG = double.parse(dtr.in_am_long ?? '0');
 
-    double OUTPMLAT = double.parse(dtr.out_pm_lat);
-    double OUTPMLONG = double.parse(dtr.out_pm_long);
+    double OUTAMLAT = double.parse(dtr.out_am_lat ?? '0');
+    double OUTAMLONG = double.parse(dtr.out_am_long ?? '0');
 
-    double estabLat = double.parse(dtr.latitude!);
-    double estabLong = double.parse(dtr.longitude!);
+    double INPMLAT = double.parse(dtr.in_pm_lat ?? '0');
+    double INPMLONG = double.parse(dtr.in_pm_long ?? '0');
+
+    double OUTPMLAT = double.parse(dtr.out_pm_lat ?? '0');
+    double OUTPMLONG = double.parse(dtr.out_pm_long ?? '0');
+
+    double estabLat = double.parse(dtr.latitude ?? '0');
+    double estabLong = double.parse(dtr.longitude ?? '0');
 
     var distanceA = calculateDistance(INAMLAT, INAMLONG, estabLat, estabLong);
     var distanceB = calculateDistance(OUTAMLAT, OUTAMLONG, estabLat, estabLong);
     var distanceC = calculateDistance(INPMLAT, INPMLONG, estabLat, estabLong);
     var distanceD = calculateDistance(OUTPMLAT, OUTPMLONG, estabLat, estabLong);
 
-    // //  Calculate distance between dragged position and circle center
-    // double distanceA = Geolocator.distanceBetween(
-    //   INAMLAT,
-    //   INAMLONG,
-    //   double.parse(dtr.latitude),
-    //   double.parse(dtr.longitude),
-    // );
-
     return DataRow(
       cells: [
-        DataCell(Text(dtr.lname!)),
+        DataCell(Text(dtr.lname ?? '')),
         DataCell(
           Text(
             DateFormat('EE, dd MMM yyyy').format(
-              DateFormat('yyyy-MM-dd').parse(dtr.date),
+              DateFormat('yyyy-MM-dd').parse(dtr.date ?? ''),
             ),
           ),
         ),
@@ -335,18 +328,18 @@ class DTRDataSource extends DataTableSource {
                   ? defaultT
                   : DateFormat('hh:mm a').format(
                       DateFormat('hh:mm:ss').parse(
-                        dtr.time_in_am,
+                        dtr.time_in_am!,
                       ),
                     ),
             ),
-            Text(
-                distanceA > 5
-                    ? "  / Outside range"
-                    : distanceA < 0
-                        ? ""
-                        : " / In-range",
-                style: TextStyle(
-                    color: distanceA > 5 ? Colors.orange : Colors.blue))
+            LocationLabel(
+              estabLat: estabLat,
+              estabLong: estabLong,
+              latitude: INAMLAT,
+              longitude: INAMLONG,
+              distance: distanceA,
+              meter: meterValue,
+            ),
           ],
         )),
         DataCell(Row(
@@ -356,18 +349,18 @@ class DTRDataSource extends DataTableSource {
                   ? defaultT
                   : DateFormat('hh:mm a').format(
                       DateFormat('hh:mm:ss').parse(
-                        dtr.time_out_am,
+                        dtr.time_out_am!,
                       ),
                     ),
             ),
-            Text(
-                distanceB > 5
-                    ? "  / Outside range"
-                    : distanceB < 0
-                        ? ""
-                        : " / In-range",
-                style: TextStyle(
-                    color: distanceA > 5 ? Colors.orange : Colors.blue))
+            LocationLabel(
+              estabLat: estabLat,
+              estabLong: estabLong,
+              latitude: OUTAMLAT,
+              longitude: OUTAMLONG,
+              distance: distanceB,
+              meter: meterValue,
+            ),
           ],
         )),
         DataCell(Row(
@@ -377,18 +370,18 @@ class DTRDataSource extends DataTableSource {
                   ? defaultT
                   : DateFormat('hh:mm a').format(
                       DateFormat('hh:mm:ss').parse(
-                        dtr.time_in_pm,
+                        dtr.time_in_pm!,
                       ),
                     ),
             ),
-            Text(
-                distanceC > 5
-                    ? "  / Outside range"
-                    : distanceC < 0
-                        ? ""
-                        : " / In-range",
-                style: TextStyle(
-                    color: distanceA > 5 ? Colors.orange : Colors.blue))
+            LocationLabel(
+              estabLat: estabLat,
+              estabLong: estabLong,
+              latitude: INPMLAT,
+              longitude: INPMLONG,
+              distance: distanceC,
+              meter: meterValue,
+            ),
           ],
         )),
         DataCell(Row(
@@ -398,18 +391,18 @@ class DTRDataSource extends DataTableSource {
                   ? defaultT
                   : DateFormat('hh:mm a').format(
                       DateFormat('hh:mm:ss').parse(
-                        dtr.time_out_pm,
+                        dtr.time_out_pm!,
                       ),
                     ),
             ),
-            Text(
-                distanceD > 5
-                    ? "  / Outside range"
-                    : distanceD < 0
-                        ? ""
-                        : " / In-range",
-                style: TextStyle(
-                    color: distanceA > 5 ? Colors.orange : Colors.blue))
+            LocationLabel(
+              estabLat: estabLat,
+              estabLong: estabLong,
+              latitude: OUTPMLAT,
+              longitude: OUTAMLONG,
+              distance: distanceD,
+              meter: meterValue,
+            ),
           ],
         )),
       ],

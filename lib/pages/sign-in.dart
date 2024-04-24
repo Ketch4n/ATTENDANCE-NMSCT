@@ -48,14 +48,10 @@ class SignInState extends State<SignIn> {
   bool _isInitializing = false;
   LocationData? _currentLocation;
 
-  double? _givenLatitude = Session.latitude; // Example latitude
-  double? _givenLongitude = Session.longitude; // Example longitude
-
   @override
   void initState() {
     super.initState();
     _start();
-    _startStreamingLocation();
   }
 
   @override
@@ -68,14 +64,16 @@ class SignInState extends State<SignIn> {
   }
 
   _startStreamingLocation() async {
+    double? _givenLatitude = Session.latitude; // Example latitude
+    double? _givenLongitude = Session.longitude; // Example longitude
+    double? radius = Session.radius;
     if (widget.purpose == "auth") {
       Position currentPosition =
           await determineUserCurrentPosition(widget.purpose);
-      double? estabLat = Session.latitude;
-      double? estabLong = Session.longitude;
+
       var distance = calculateDistance(currentPosition.latitude,
-          currentPosition.longitude, estabLat!, estabLong!);
-      if (distance <= 5) {
+          currentPosition.longitude, _givenLatitude!, _givenLongitude!);
+      if (distance <= radius!) {
         // User is at the given location
         _showSnackBar('You are In-range of the establishment');
       } else {
@@ -117,6 +115,7 @@ class SignInState extends State<SignIn> {
   }
 
   Future _start() async {
+    _startStreamingLocation();
     setState(() => _isInitializing = true);
     await _cameraService.initialize();
     setState(() => _isInitializing = false);
@@ -203,7 +202,7 @@ class SignInState extends State<SignIn> {
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.all(20),
           child: Text(
-            'User not found 😞',
+            'User not found',
             style: TextStyle(fontSize: 20),
           ),
         )

@@ -22,6 +22,7 @@ class EstabTodayModel {
   final String? email;
   final String? latitude;
   final String? longitude;
+  final String? radius;
 
   EstabTodayModel({
     required this.id,
@@ -44,6 +45,7 @@ class EstabTodayModel {
     this.email,
     this.latitude,
     this.longitude,
+    this.radius,
   });
 
   Map<String, dynamic> toJson() => {
@@ -71,6 +73,7 @@ class EstabTodayModel {
         'email': email,
         'latitude': latitude,
         'longitude': longitude,
+        'radius': radius,
       };
 
   static EstabTodayModel fromJson(Map<String, dynamic> json) => EstabTodayModel(
@@ -98,5 +101,6 @@ class EstabTodayModel {
         email: json['email'],
         latitude: json['latitude'],
         longitude: json['longitude'],
+        radius: json['radius'],
       );
 }

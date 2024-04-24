@@ -164,39 +164,36 @@ class _PinMapState extends State<PinMap> {
     );
   }
 
-  Future _getAddress(LatLng position) async {
+  Future<void> _getAddress(LatLng position) async {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
-    Placemark address = placemarks[2]; // Get the first placemark
-    String addressStr = "${address.locality}, ${address.country}";
-    setState(() {
-      _draggedAddress = addressStr;
-    });
 
-    // Calculate distance between dragged position and circle center
-    // double distance = Geolocator.distanceBetween(
-    //   position.latitude,
-    //   position.longitude,
-    //   _defaultLatLng.latitude,
-    //   _defaultLatLng.longitude,
-    // );
+    if (placemarks != null && placemarks.isNotEmpty) {
+      Placemark address = placemarks.first;
 
-    // Check if the distance is greater than circle radius (10 meters in this case)
-    // if (distance > 10) {
-    //   // Notify the user that they are outside the circle
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text('You are outside the circle!'),
-    //     ),
-    //   );
-    // } else if (distance <= 10) {
-    //   print("inside");
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text('You are '),
-    //     ),
-    //   );
-    // }
+      // Construct the address string using desired fields from the first placemark
+      String addressStr = "";
+
+      // Check if the thoroughfare is an unnamed road before including it in the address
+      if (address.thoroughfare != null &&
+          !address.thoroughfare!.toLowerCase().contains('unnamed')) {
+        addressStr += "${address.thoroughfare} ";
+      }
+
+      // Include other address components
+      addressStr +=
+          "${address.subThoroughfare ?? ''} ${address.subLocality ?? ''} ${address.locality ?? ''}, ${address.subAdministrativeArea ?? ''}";
+
+      // Update the state with the constructed address string
+      setState(() {
+        _draggedAddress = addressStr
+            .trim(); // Trim to remove any leading or trailing whitespace
+      });
+    } else {
+      setState(() {
+        _draggedAddress = "Address not found";
+      });
+    }
   }
 
   Future _gotoUserCurrentPosition() async {

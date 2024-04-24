@@ -80,7 +80,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
         stream: _userStreamController.stream,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
-            final user = snapshot.data!;
+            final UserModel user = snapshot.data;
 
             if (user.establishment_id == "null") {
               return Scaffold(

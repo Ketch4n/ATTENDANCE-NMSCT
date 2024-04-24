@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
@@ -17,8 +18,15 @@ Future fetchUser(userStreamController) async {
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final user = UserModel.fromJson(data);
-      Session.longitude = double.parse(user.longitude);
-      Session.latitude = double.parse(user.latitude);
+
+      try {
+        Session.longitude = double.parse(user.longitude.trim());
+        Session.latitude = double.parse(user.latitude.trim());
+        Session.radius = double.parse(user.radius.trim());
+      } catch (e) {
+        print("Error parsing longitude or latitude: $e");
+      }
+
       Session.hours_required = user.hours_required;
       // prefs.setString('userEstabLocation', userEstabLocation);
 
@@ -43,6 +51,13 @@ Future fetchUser(userStreamController) async {
       throw Exception('Failed to load data');
     }
   }
+  // Initial fetch
+  await fetchUser(userStreamController);
+
+  // Periodically check for updates
+  Timer.periodic(Duration(seconds: 5), (Timer timer) async {
+    await fetchUser(userStreamController);
+  });
 }
 
 Future<void> fetchClassRoom() async {

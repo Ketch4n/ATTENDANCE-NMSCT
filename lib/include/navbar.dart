@@ -3,6 +3,7 @@ import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/admin_list.dart';
+import 'package:attendance_nmsct/include/slider.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/pages/db/databse_helper.dart';
 import 'package:attendance_nmsct/pages/sign-up.dart';
@@ -186,6 +187,18 @@ class _NavbarState extends State<Navbar> {
                   Navigator.pop(context); // Close the drawer
                 },
               ),
+              Session.role == 'Administrator'
+                  ? ListTile(
+                      leading: const Icon(Icons.book),
+                      title: const Text('Establishment Radius'),
+                      onTap: () {
+                        Navigator.of(context).pop(false);
+
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SliderPage()));
+                      },
+                    )
+                  : SizedBox(),
               user.role == 'NMSCST'
                   ? ListTile(
                       leading: const Icon(Icons.settings),

@@ -8,6 +8,7 @@ class Session {
   static String email = "";
   static double? longitude;
   static double? latitude;
+  static double? radius;
 
   static String password = "";
   static String hours_required = "";

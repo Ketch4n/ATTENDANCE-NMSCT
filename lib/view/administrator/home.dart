@@ -130,7 +130,7 @@ class _AdministratorHome extends State {
             children: [
               Session.role == 'Administrator'
                   ? const EstabDashboard()
-                  : InternReport(),
+                  : const DashBoardEstab(),
               const GlobalProfile(),
             ],
           )
