@@ -59,8 +59,7 @@ dependencies:
   firebase_storage: ^11.5.5
   cloud_firestore: ^4.13.5
 
-  # tflite_flutter: ^0.9.0
-  mapbox_gl: ^0.16.0
+  tflite_flutter: ^0.9.0
   camera: ^0.9.4+19
   path_provider: ^2.0.9
   path: ^1.8.0
