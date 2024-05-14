@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
+import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/model/AllStudentModel.dart';
+import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_dtr.dart';
 import 'package:attendance_nmsct/view/student/dtr_details.dart';
 import 'package:excel/excel.dart';
@@ -12,17 +14,17 @@ import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AllStudents extends StatefulWidget {
-  const AllStudents({Key? key}) : super(key: key);
+class AllLateStudent extends StatefulWidget {
+  const AllLateStudent({Key? key}) : super(key: key);
   // final String purpose;
 
   @override
-  State<AllStudents> createState() => _AllStudentsState();
+  State<AllLateStudent> createState() => _AllStudentsState();
 }
 
-class _AllStudentsState extends State<AllStudents> {
-  List<AllStudentModel> interns = [];
-  List<AllStudentModel> filteredInterns = [];
+class _AllStudentsState extends State<AllLateStudent> {
+  List<EstabTodayModel> interns = [];
+  List<EstabTodayModel> filteredInterns = [];
   final horizontalController = ScrollController();
   TextEditingController searchController = TextEditingController();
 
@@ -39,17 +41,13 @@ class _AllStudentsState extends State<AllStudents> {
     print("estab : ${estab_id}");
     print("role : ${Session.role}");
 
-    final response = await http.post(
-        Uri.parse('${Server.host}users/establishment/all_students.php'),
-        body: {
-          'estab_id': estab_id,
-          'role': Session.role,
-        });
+    final response =
+        await http.get(Uri.parse('${Server.host}users/student/all_late.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       interns = data
-          .map((classmateData) => AllStudentModel.fromJson(classmateData))
+          .map((classmateData) => EstabTodayModel.fromJson(classmateData))
           .toList();
       filteredInterns = interns; // Initialize filtered list
       setState(() {});
@@ -63,8 +61,8 @@ class _AllStudentsState extends State<AllStudents> {
     setState(() {
       filteredInterns = interns
           .where((intern) =>
-              intern.fname.toLowerCase().contains(query.toLowerCase()) ||
-              intern.lname.toLowerCase().contains(query.toLowerCase()))
+              intern.email!.toLowerCase().contains(query.toLowerCase()) ||
+              intern.lname!.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -86,11 +84,11 @@ class _AllStudentsState extends State<AllStudents> {
     for (var estabModel in interns) {
       sheet.appendRow([
         estabModel.lname,
-        estabModel.fname,
+        // estabModel.fname,
         estabModel.email,
-        estabModel.section,
-        estabModel.bday,
-        estabModel.address,
+        // estabModel.section,
+        // estabModel.bday,
+        // estabModel.address,
       ]);
     }
 
@@ -148,10 +146,11 @@ class _AllStudentsState extends State<AllStudents> {
                         columns: [
                           DataColumn(label: Text('Name')),
                           DataColumn(label: Text('Email')),
-                          DataColumn(label: Text('Section')),
-                          DataColumn(label: Text('Birth Date')),
-                          DataColumn(label: Text('Address')),
-                          DataColumn(label: Text('View DTR'))
+                          DataColumn(label: Text('Time-in AM')),
+                          DataColumn(label: Text('Time-out AM')),
+                          DataColumn(label: Text('Time-in PM')),
+                          DataColumn(label: Text('Time-out PM')),
+                          DataColumn(label: Text('Date')),
                         ],
                         rows: filteredInterns
                             .map(
@@ -182,7 +181,7 @@ class _AllStudentsState extends State<AllStudents> {
                                           Wrap(
                                             children: [
                                               Text(
-                                                '${classmate.lname}, ${classmate.fname}',
+                                                '${classmate.lname}',
                                                 style: const TextStyle(
                                                     fontSize: 18),
                                               ),
@@ -194,55 +193,44 @@ class _AllStudentsState extends State<AllStudents> {
                                   ),
                                   DataCell(
                                     Text(
-                                      classmate.email,
+                                      classmate.email!,
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ),
                                   DataCell(
                                     Text(
-                                      classmate.section,
+                                      classmate.time_in_am,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Text(
+                                      classmate.time_out_am,
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ),
                                   DataCell(
                                     Text(
-                                      classmate.bday,
+                                      classmate.time_in_pm,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Text(
+                                      classmate.time_out_pm,
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ),
                                   DataCell(
                                     Text(
-                                      classmate.address,
+                                      classmate.date,
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ),
-                                  DataCell(ElevatedButton(
-                                    onPressed: () {
-                                      if (classmate.establishment_id ==
-                                          "none") {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content:
-                                                Text("No Establishment yet"),
-                                          ),
-                                        );
-                                      } else {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                StudentDTRDetails(
-                                              id: classmate.id,
-                                              estab_id:
-                                                  classmate.establishment_id,
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    child: Icon(Icons.remove_red_eye),
-                                  )),
                                 ],
                               ),
                             )

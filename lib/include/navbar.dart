@@ -5,11 +5,9 @@ import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/admin_list.dart';
 import 'package:attendance_nmsct/include/slider.dart';
 import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/pages/db/databse_helper.dart';
-import 'package:attendance_nmsct/pages/sign-up.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_establishment.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_students.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/estab/index.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -172,6 +170,18 @@ class _NavbarState extends State<Navbar> {
                     Text(Session.role, style: const TextStyle(fontSize: 15)),
               ),
               ListTile(
+                leading: Icon(Icons.notification_add),
+                trailing: Text("Notify"),
+                onTap: () {
+                  AwesomeNotifications().createNotification(
+                      content: NotificationContent(
+                          id: 1,
+                          channelKey: "Flutter_Key",
+                          title: "Test",
+                          body: "Test"));
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.home_sharp),
                 title: const Text('Home'),
                 onTap: () {
@@ -199,7 +209,7 @@ class _NavbarState extends State<Navbar> {
                       },
                     )
                   : SizedBox(),
-              user.role == 'NMSCST'
+              Session.role == 'SUPER ADMIN'
                   ? ListTile(
                       leading: const Icon(Icons.settings),
                       title: const Text('Add Admins'),
@@ -213,7 +223,7 @@ class _NavbarState extends State<Navbar> {
                       },
                     )
                   : SizedBox(),
-              user.role == 'NMSCST'
+              Session.role == 'SUPER ADMIN'
                   ? ListTile(
                       leading: const Icon(Icons.people),
                       title: const Text('List of Admins'),

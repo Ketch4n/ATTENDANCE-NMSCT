@@ -3,18 +3,16 @@
 import 'dart:async';
 import 'package:attendance_nmsct/controller/User.dart';
 import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/navbar.dart';
 import 'package:attendance_nmsct/include/profile.dart';
 import 'package:attendance_nmsct/model/UserModel.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/admin/index.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/Dashboard.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/index.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/estab/intern_report.dart';
+import 'package:attendance_nmsct/widgets/firebase_notif.dart';
 import 'package:attendance_nmsct/widgets/offline_snackbar.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AdministratorHome extends StatefulWidget {
   const AdministratorHome({super.key});
@@ -64,6 +62,13 @@ class _AdministratorHome extends State {
   @override
   void initState() {
     super.initState();
+    AwesomeNotifications().setListeners(
+      onActionReceivedMethod: NotificationController.onNotificationRecieved,
+      onNotificationCreatedMethod: NotificationController.onNotificationCreate,
+      onDismissActionReceivedMethod:
+          NotificationController.onNotificationRecieved,
+      onNotificationDisplayedMethod: NotificationController.onNotificationClick,
+    );
     fetchUser(_userStreamController);
     internetconnection = Connectivity()
         .onConnectivityChanged

@@ -570,7 +570,7 @@ class _SignupState extends State<Signup> {
       showAlertDialog(context, title, message);
     } else if (_currentStep == 2) {
       // ignore: use_build_context_synchronously
-      if (user == 'Intern') {
+      if (user == 'Intern' || user == 'NMSCST') {
         await signup(context, email, password, id, name, user, bday, uid,
             address, section);
       } else {

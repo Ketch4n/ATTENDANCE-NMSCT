@@ -166,7 +166,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
               ],
             )
           : interns.isEmpty
-              ? Center(child: CircularProgressIndicator())
+              ? Center(child: Text("NO ESTABLISHMENT REGISTERED"))
               : Center(child: Text("Error fetching data")),
     );
   }

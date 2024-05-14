@@ -20,32 +20,47 @@ class BoxComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
-    return Container(
-      height: screenHeight / 5,
-      width: screenWidth / 6,
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(12), color: color),
-      child: Column(
-        children: [
-          Padding(
+    return Stack(
+      children: [
+        Container(
+          height: 100,
+          width: 400,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12), color: color),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  child,
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Center(
+                child: Text(
+                  count,
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ),
+              ),
+              // Text(
+              //   "See more ->",
+              //   style: TextStyle(color: Colors.white),
+              // )
+            ],
+          ),
+        ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              child,
-              style: TextStyle(fontSize: 20),
+              "See more ->",
+              style: TextStyle(color: Colors.white),
             ),
           ),
-          Center(
-            child: Text(
-              count,
-              style: TextStyle(color: Colors.white, fontSize: 25),
-            ),
-          ),
-          // Text(
-          //   "See more ->",
-          //   style: TextStyle(color: Colors.white),
-          // )
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -10,7 +10,6 @@ import 'package:attendance_nmsct/services/ml_service.dart';
 import 'package:attendance_nmsct/view/student/calculate_distance.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 import 'models/user.model.dart';

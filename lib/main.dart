@@ -2,8 +2,9 @@ import 'package:attendance_nmsct/auth/auth.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/locator.dart';
-import 'package:attendance_nmsct/view/student/view_map.dart';
+import 'package:attendance_nmsct/widgets/firebase_notif.dart';
 import 'package:attendance_nmsct/widgets/scroll.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:month_year_picker/month_year_picker.dart';
@@ -11,6 +12,21 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // await AwesomeNotifications().initialize(null, [
+  //   NotificationChannel(
+  //       channelKey: "Flutter_Key",
+  //       channelName: "Flutter Notification",
+  //       channelDescription: "Flutter Description")
+  // ], channelGroups: [
+  //   NotificationChannelGroup(
+  //       channelGroupKey: "Flutter_Key", channelGroupName: "Flutter Group")
+  // ]);
+  // bool isAllowedNotification =
+  //     await AwesomeNotifications().isNotificationAllowed();
+  // if (!isAllowedNotification) {
+  //   AwesomeNotifications().requestPermissionToSendNotifications();
+  // }
+
   await Firebase.initializeApp(
       // name: "attendance-monitoring",
       options: const FirebaseOptions(
@@ -21,6 +37,8 @@ Future<void> main() async {
     messagingSenderId: "923340212066",
     appId: "1:923340212066:web:cfa048f322dbd305098e3b",
   ));
+  // await FirebaseNOTIFICATIONapi().isNotifications();
+
   setupServices();
   runApp(
     MultiProvider(
