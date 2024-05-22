@@ -37,7 +37,9 @@ class _StudentDashboardState extends State<StudentDashboard> {
   @override
   void initState() {
     super.initState();
-    fetchUserAndData();
+    // fetchUserAndData();
+    fetchUser(_userStreamController);
+    startUserUpdateTimer(_userStreamController);
   }
 
   Future<void> fetchUserAndData() async {

@@ -32,6 +32,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
   late String absent = "";
   late String late = "";
   late double outside = 0;
+  late String announcement = "";
   late List<String> outsideIds = [];
 
   Future<void> fetchinterns() async {
@@ -46,7 +47,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
         count_estab = responseData['estab'];
         absent = responseData['absent'];
         late = responseData['late'];
-        // outside = responseData['outside'];
+        announcement = responseData['announcement'];
       });
       // Extract the count of users
     } else {
@@ -215,7 +216,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                               builder: (context) => Announcement()));
                         },
                         child: BoxComponent(
-                          count: '0',
+                          count: announcement,
                           color: Colors.grey,
                           child: 'Announcement',
                         ),

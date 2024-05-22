@@ -19,12 +19,6 @@ class _Meta_DataState extends State<Meta_Data> {
     _getImageUrlAndMetadata();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _getImageUrlAndMetadata;
-  }
-
   Future<void> _getImageUrlAndMetadata() async {
     try {
       // Fetch image URL
@@ -51,45 +45,48 @@ class _Meta_DataState extends State<Meta_Data> {
         centerTitle: true,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 30,
-            ),
-            if (_loading)
-              const CircularProgressIndicator(), // Show loading indicator while fetching data
-
-            if (!_loading)
-              Image.network(
-                _imageUrl!,
-                height: 450,
-                width: 400,
-              ),
-
-            if (!_loading)
-              Column(
-                children: [
-                  ListTile(
-                    leadingAndTrailingTextStyle:
-                        const TextStyle(fontSize: 12, color: Colors.black54),
-                    leading: Text(
-                      'Date : ${_imageMetadata?.customMetadata?['Date taken']}',
-                      style: const TextStyle(fontSize: 18),
+        child: _loading
+            ? CircularProgressIndicator() // Show loading indicator while fetching data
+            : SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 30,
                     ),
-                    trailing: Text(
-                      'Time : ${_imageMetadata?.customMetadata?['Time taken']}',
-                      style: const TextStyle(fontSize: 18),
+                    Image.network(
+                      _imageUrl!,
+                      height: 450,
+                      width: 400,
                     ),
-                  ),
-                  Text(
-                    'Location : ${_imageMetadata?.customMetadata?['Location']}',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                ],
+                    // SizedBox(height: 20),
+                    ListTile(
+                      title: Text(
+                        'Description: ${_imageMetadata?.customMetadata?['description'] ?? 'No Description'}',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                    ListTile(
+                      title: Text(
+                        'Date: ${_imageMetadata?.timeCreated}',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                    // ListTile(
+                    //   title: Text(
+                    //     'Date: ${_imageMetadata?.customMetadata?['Date taken'] ?? 'No Date'}',
+                    //     style: TextStyle(fontSize: 18),
+                    //   ),
+                    // ),
+                    // ListTile(
+                    //   title: Text(
+                    //     'Time: ${_imageMetadata?.customMetadata?['Time taken'] ?? 'No Time'}',
+                    //     style: TextStyle(fontSize: 18),
+                    //   ),
+                    // ),
+                  ],
+                ),
               ),
-          ],
-        ),
       ),
     );
   }

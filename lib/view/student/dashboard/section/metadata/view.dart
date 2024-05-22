@@ -1,24 +1,16 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'package:attendance_nmsct/controller/Delete.dart';
-import 'package:attendance_nmsct/data/server.dart';
-import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/model/AccomplishmentModel.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/insert.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadata.dart';
-import 'package:attendance_nmsct/widgets/alert_dialog.dart';
-import 'package:attendance_nmsct/widgets/duck.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:loader_skeleton/loader_skeleton.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timeline_tile/timeline_tile.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class MetaDataIndex extends StatefulWidget {
   const MetaDataIndex({Key? key, required this.name, required this.ids})
@@ -33,19 +25,27 @@ class MetaDataIndex extends StatefulWidget {
 class _MetaDataIndexState extends State<MetaDataIndex> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
+  final StreamController<List<String>> _textStreamController =
+      StreamController<List<String>>();
   List<Reference> _imageReferences = [];
-  List _imageUrls = [];
   final TextEditingController _commentController = TextEditingController();
   final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
   bool isLoading = false;
-  final StreamController<List<AccomplishmentModel>> _textStreamController =
-      StreamController<List<AccomplishmentModel>>();
+
+  List<String> _pendingUploads = [];
+  List<File> _localImages = [];
 
   @override
   void initState() {
     super.initState();
     _getImageReferences();
-    _getTextReferences();
+    _loadPendingUploads();
+    _loadLocalImages();
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result != ConnectivityResult.none) {
+        _checkPendingUploads();
+      }
+    });
   }
 
   @override
@@ -67,8 +67,6 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
 
       setState(() {
         _imageReferences = items.toList();
-        _imageUrls =
-            _imageReferences.map((ref) => ref.getDownloadURL()).toList();
         isLoading = false;
       });
     } catch (e) {
@@ -77,9 +75,44 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
     }
   }
 
-  Future<void> _uploadImage(File imageFile) async {
+  Future<void> _uploadImage(File imageFile, String description) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      // Save the image locally if offline
+      final directory = await getApplicationDocumentsDirectory();
+      final localPath =
+          '${directory.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      await imageFile.copy(localPath);
+
+      // Store the metadata for later upload
+      _pendingUploads.add(localPath);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('${localPath}_description', description);
+      await _savePendingUploads();
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Info'),
+              content: Text('No internet connection. Image saved locally.'),
+            );
+          });
+
+      setState(() {
+        _localImages.add(File(localPath));
+      });
+    } else {
+      // Upload the image if online
+      await _uploadImageToFirebase(imageFile, description);
+    }
+  }
+
+  Future<void> _uploadImageToFirebase(
+      File imageFile, String description) async {
     setState(() {
-      isLoading = true; // Set isLoading to true when starting to fetch data
+      isLoading = true;
     });
     try {
       final storage = FirebaseStorage.instance;
@@ -92,80 +125,75 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
       final fileName = DateTime.now().millisecondsSinceEpoch.toString();
       final Reference storageRef =
           storage.ref().child('$folderName/$fileName.jpg');
-      await storageRef.putFile(imageFile);
-      final message = 'Uploaded Successfully';
-      final status = 'Success';
 
-      showAlertDialog(context, status, message);
+      // Set metadata including description
+      final metadata = SettableMetadata(
+        customMetadata: {'description': description},
+      );
+
+      await storageRef.putFile(imageFile, metadata);
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Success'),
+              content: Text('Uploaded Successfully'),
+            );
+          });
 
       _getImageReferences();
     } catch (e) {
       print('Error uploading image: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
-  Future<void> _getTextReferences() async {
-    try {
-      final response = await http.post(
-        Uri.parse('${Server.host}users/student/accomplishment.php'),
-        body: {'email': Session.email, 'section_id': widget.ids, 'date': date},
-      );
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        final List<AccomplishmentModel> text = data
-            .map((textData) => AccomplishmentModel.fromJson(textData))
-            .toList();
-        _textStreamController.add(text);
-      } else {
-        print('Failed to load data. HTTP status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
-  Future<void> deleteText(AccomplishmentModel record) async {
-    // Show a confirmation dialog
-    bool deleteConfirmed = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return CupertinoAlertDialog(
-          title: const Text('Confirm Deletion'),
-          content: const Text(
-              'Are you sure you want to delete this accomplishment?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false); // User canceled deletion
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true); // User confirmed deletion
-              },
-              child: const Text('Delete'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (deleteConfirmed == true) {
-      // User confirmed deletion
-      try {
-        await deleteAccomplishment(context, record.id);
-
-        _getTextReferences();
-      } catch (e) {
-        print('Error deleting file: $e');
+  Future<void> _checkPendingUploads() async {
+    for (String localPath in _pendingUploads) {
+      final file = File(localPath);
+      if (await file.exists()) {
+        final prefs = await SharedPreferences.getInstance();
+        final description = prefs.getString('${localPath}_description') ?? '';
+        await _uploadImageToFirebase(file, description);
+        file.delete();
       }
     }
+
+    // Clear pending uploads
+    _pendingUploads.clear();
+    await _savePendingUploads();
+    _loadLocalImages();
   }
 
-  Future<void> _deleteImage(Reference imageRef) async {
-    // Show confirmation dialog
+  Future<void> _loadPendingUploads() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _pendingUploads = prefs.getStringList('pendingUploads') ?? [];
+    });
+  }
+
+  Future<void> _savePendingUploads() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('pendingUploads', _pendingUploads);
+  }
+
+  Future<void> _loadLocalImages() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final localImages = directory
+        .listSync()
+        .where((item) => item.path.endsWith('.jpg'))
+        .map((item) => File(item.path))
+        .toList();
+    setState(() {
+      _localImages = localImages;
+    });
+  }
+
+  Future<void> _deleteImage(Reference imageRef, int index) async {
     bool deleteConfirmed = await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -175,13 +203,13 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // User canceled deletion
+                Navigator.of(context).pop(false);
               },
               child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // User confirmed deletion
+                Navigator.of(context).pop(true);
               },
               child: Text('Delete'),
             ),
@@ -191,19 +219,113 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
     );
 
     if (deleteConfirmed == true) {
-      // User confirmed deletion
       try {
         await imageRef.delete();
-        // Remove the deleted image reference from the list
         setState(() {
-          _imageReferences.remove(imageRef);
+          _imageReferences.removeAt(index);
         });
         _getImageReferences();
-
-        print('Image deleted successfully');
       } catch (e) {
         print('Error deleting image: $e');
       }
+    }
+  }
+
+  Future<void> _refreshAndUpload() async {
+    await _loadLocalImages();
+    await _checkPendingUploads();
+  }
+
+  Future<void> _selectImageAndUpload() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      File imageFile = File(pickedFile.path);
+      String? description = await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Add Description'),
+            content: TextField(
+              controller: _commentController,
+              decoration: InputDecoration(labelText: 'Enter Description'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  String? finalDescription = await _getDescription();
+                  if (finalDescription != null && finalDescription.isNotEmpty) {
+                    Navigator.of(context).pop(finalDescription);
+                  }
+                },
+                child: Text('Upload'),
+              ),
+            ],
+          );
+        },
+      );
+      if (description != null && description.isNotEmpty) {
+        await _uploadImage(imageFile, description);
+      }
+    }
+  }
+
+  Future<String?> _getDescription() async {
+    // Determine user's current position
+    Position? currentPosition = await determineUserCurrentPosition("pin");
+    if (currentPosition != null) {
+      // Get the address from the current position
+      String? address = await _getAddress(
+          LatLng(currentPosition.latitude, currentPosition.longitude));
+      // Format the location as description
+      String locationDescription = "Location: $address";
+
+      // Combine the original description with the location information
+      String finalDescription =
+          "${_commentController.text}\n$locationDescription";
+
+      // Store the description and location in local storage
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('imageDescription', finalDescription);
+
+      return finalDescription;
+    } else {
+      // If unable to get location, use the entered description as it is
+      return _commentController.text;
+    }
+  }
+
+  Future<String> _getAddress(LatLng position) async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+
+    if (placemarks != null && placemarks.isNotEmpty) {
+      Placemark address = placemarks.first;
+
+      // Construct the address string using desired fields from the first placemark
+      String addressStr = "";
+
+      // Check if the thoroughfare is an unnamed road before including it in the address
+      if (address.thoroughfare != null &&
+          !address.thoroughfare!.toLowerCase().contains('unnamed')) {
+        addressStr += "${address.thoroughfare} ";
+      }
+
+      // Include other address components
+      addressStr +=
+          "${address.subThoroughfare ?? ''} ${address.subLocality ?? ''} ${address.locality ?? ''}, ${address.subAdministrativeArea ?? ''}";
+
+      return addressStr
+          .trim(); // Trim to remove any leading or trailing whitespace
+    } else {
+      return "Address not found";
     }
   }
 
@@ -211,229 +333,157 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final picker = ImagePicker();
-          final pickedFile = await showDialog<PickedFile>(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Select Image Source'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    ListTile(
-                      leading: const Icon(Icons.camera),
-                      title: const Text('Take a Picture'),
-                      onTap: () async {
-                        Navigator.pop(context,
-                            await picker.getImage(source: ImageSource.camera));
-                      },
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.image),
-                      title: const Text('Choose from Gallery'),
-                      onTap: () async {
-                        Navigator.pop(context,
-                            await picker.getImage(source: ImageSource.gallery));
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-
-          if (pickedFile != null) {
-            File imageFile = File(pickedFile.path);
-            _uploadImage(imageFile);
-          }
-        },
-        child: const Icon(Icons.add),
-      ),
-      body: Column(
+      floatingActionButton: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 10),
-          Text("${DateFormat('MMM dd, yyyy').format(DateTime.now())} - TODAY"),
-          if (isLoading)
-            const Expanded(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-          else if (_imageReferences.isEmpty)
-            const Expanded(
-              child: Center(
-                child: Column(
-                  children: [
-                    Duck(),
-                    Text(
-                      'No image added',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else
-            Flexible(
-              flex: 1,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _imageReferences.length,
-                  itemBuilder: (context, index) {
-                    final imageRef = _imageReferences[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 5),
-                      child: Container(
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width / 3,
-                        ),
-                        decoration: Style.boxdecor
-                            .copyWith(borderRadius: Style.radius12),
-                        child: ListTile(
-                          title: FutureBuilder(
-                            future: _imageUrls[index],
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                return GestureDetector(
-                                  onLongPress: () {
-                                    _deleteImage(_imageReferences[index]);
-                                  },
-                                  child: Image.network(
-                                    snapshot.data.toString(),
-                                    width: 100,
-                                    height: 80,
-                                    fit: BoxFit.contain,
-                                  ),
-                                );
-                              } else {
-                                return const SizedBox.shrink();
-                              }
-                            },
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    Meta_Data(image: imageRef),
-                              ),
-                            );
+          FloatingActionButton(
+            onPressed: _selectImageAndUpload,
+            child: Icon(Icons.add),
+          ),
+          SizedBox(width: 10),
+          FloatingActionButton(
+            onPressed: _refreshAndUpload,
+            child: Icon(Icons.sync),
+          ),
+        ],
+      ),
+      body: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: _getImageReferences,
+        child: ListView(
+          children: [
+            if (isLoading)
+              Center(child: CircularProgressIndicator())
+            else
+              ..._imageReferences.asMap().entries.map((entry) {
+                final index = entry.key;
+                final imageRef = entry.value;
+                return ListTile(
+                  title: FutureBuilder<String>(
+                    future: imageRef.getDownloadURL(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<String> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done &&
+                          snapshot.hasData) {
+                        return GestureDetector(
+                          onTap: () async {
+                            // Handle tap on the image (if needed)
+                            try {
+                              final metadata = await imageRef.getMetadata();
+                              final creationDate = metadata.timeCreated;
+                              final description =
+                                  metadata.customMetadata?['description'] ?? '';
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Image Details'),
+                                    content: SingleChildScrollView(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Image.network(snapshot.data!),
+                                          SizedBox(height: 10),
+                                          Text('Description: $description'),
+                                          Text('Creation Date: $creationDate'),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            } catch (e) {
+                              print('Error retrieving metadata: $e');
+                            }
                           },
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          _imageReferences.isEmpty
-              ? SizedBox()
-              : TextButton(
-                  onPressed: () async {
-                    await accomplishmentReport(context, widget.ids,
-                        _commentController, _getTextReferences);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Attach Description"),
-                      Icon(Icons.attach_file)
-                    ],
-                  ),
-                ),
-          _imageReferences.isEmpty
-              ? SizedBox()
-              : Flexible(
-                  flex: 3,
-                  child: StreamBuilder<List<AccomplishmentModel>>(
-                    stream: _textStreamController.stream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Center(
-                          child: Text("Error: ${snapshot.error}"),
-                        );
-                      } else if (snapshot.hasData) {
-                        final List<AccomplishmentModel> text = snapshot.data!;
-
-                        if (text.isEmpty) {
-                          return SizedBox();
-                        }
-
-                        return Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Expanded(
-                            child: ListView.builder(
-                              itemCount: text.length,
-                              itemBuilder: (context, index) {
-                                final AccomplishmentModel record = text[index];
-                                final time = record.time;
-                                return Container(
-                                  padding: EdgeInsets.only(
-                                      bottom: index == snapshot.data!.length - 1
-                                          ? 70.0
-                                          : 0),
-                                  child: TimelineTile(
-                                    isFirst: index == 0,
-                                    isLast: index == snapshot.data!.length - 1,
-                                    alignment: TimelineAlign.start,
-                                    indicatorStyle: const IndicatorStyle(
-                                      width: 20,
-                                      color: Colors.green,
-                                    ),
-                                    endChild: Container(
-                                      constraints: BoxConstraints(
-                                        maxWidth:
-                                            MediaQuery.of(context).size.width *
-                                                0.7,
-                                      ),
-                                      child: GestureDetector(
-                                        onLongPress: () =>
-                                            // _showUpdateDeleteModal(record),
-                                            deleteText(record),
-                                        child: Card(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Stack(
-                                              children: [
-                                                Text(record.comment
-                                                    .replaceAll('<br />', '')),
-                                                Positioned(
-                                                  right: 0,
-                                                  child: Text(DateFormat(
-                                                          'hh:mm ')
-                                                      .format(
-                                                          DateFormat('HH:mm:ss')
-                                                              .parse(time))),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
+                          child: AspectRatio(
+                            aspectRatio: 1, // Adjust the aspect ratio as needed
+                            child: Image.network(
+                              snapshot.data!,
+                              fit: BoxFit
+                                  .cover, // Ensure the image covers the whole
                             ),
                           ),
                         );
                       } else {
-                        return Expanded(
-                          child: CardPageSkeleton(),
-                        );
+                        return Text("Loading...");
                       }
                     },
                   ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      _deleteImage(imageRef, index);
+                    },
+                  ),
+                );
+              }).toList(),
+            if (_localImages.isNotEmpty) Divider(),
+            if (_localImages.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Text(
+                      "Local Images",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    ..._localImages.map((file) {
+                      return ListTile(
+                        title: Image.file(file),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () async {
+                            if (await file.exists()) {
+                              await file.delete();
+                              setState(() {
+                                _localImages.remove(file);
+                              });
+                            }
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ],
                 ),
-        ],
+              ),
+          ],
+        ),
       ),
     );
   }
+}
+
+Future<Position?> determineUserCurrentPosition(purpose) async {
+  LocationPermission locationPermission;
+  bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+
+  if (!isLocationServiceEnabled) {
+    print("user don't enable location permission");
+    return null;
+  }
+
+  locationPermission = await Geolocator.checkPermission();
+
+  if (locationPermission == LocationPermission.denied) {
+    locationPermission = await Geolocator.requestPermission();
+    if (locationPermission == LocationPermission.denied) {
+      print("user denied location permission");
+      return null;
+    }
+  }
+
+  if (locationPermission == LocationPermission.deniedForever) {
+    print("user denied permission forever");
+    return null;
+  }
+
+  return await Geolocator.getCurrentPosition(
+    desiredAccuracy: purpose == "pin"
+        ? LocationAccuracy.best
+        : LocationAccuracy.bestForNavigation,
+    forceAndroidLocationManager: true,
+  );
 }

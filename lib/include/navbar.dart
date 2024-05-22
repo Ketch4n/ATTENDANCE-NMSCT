@@ -169,18 +169,18 @@ class _NavbarState extends State<Navbar> {
                 leading:
                     Text(Session.role, style: const TextStyle(fontSize: 15)),
               ),
-              ListTile(
-                leading: Icon(Icons.notification_add),
-                trailing: Text("Notify"),
-                onTap: () {
-                  AwesomeNotifications().createNotification(
-                      content: NotificationContent(
-                          id: 1,
-                          channelKey: "Flutter_Key",
-                          title: "Test",
-                          body: "Test"));
-                },
-              ),
+              // ListTile(
+              //   leading: Icon(Icons.notification_add),
+              //   trailing: Text("Notify"),
+              //   onTap: () {
+              //     AwesomeNotifications().createNotification(
+              //         content: NotificationContent(
+              //             id: 1,
+              //             channelKey: "Flutter_Key",
+              //             title: "Test",
+              //             body: "Test"));
+              //   },
+              // ),
               ListTile(
                 leading: const Icon(Icons.home_sharp),
                 title: const Text('Home'),

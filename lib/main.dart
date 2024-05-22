@@ -1,4 +1,5 @@
 import 'package:attendance_nmsct/auth/auth.dart';
+import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/locator.dart';
@@ -7,11 +8,13 @@ import 'package:attendance_nmsct/widgets/scroll.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   // await AwesomeNotifications().initialize(null, [
   //   NotificationChannel(
   //       channelKey: "Flutter_Key",
@@ -33,12 +36,17 @@ Future<void> main() async {
     apiKey: "AIzaSyCatnsTU-2hveFqSVuU-wu04xya0r_PwAE",
     authDomain: "attendance-monitoring-c33b5.firebaseapp.com",
     projectId: "attendance-monitoring-c33b5",
+    databaseURL:
+        'https://attendance-monitoring-c33b5-default-rtdb.firebaseio.com/',
     storageBucket: "attendance-monitoring-c33b5.appspot.com",
     messagingSenderId: "923340212066",
     appId: "1:923340212066:web:cfa048f322dbd305098e3b",
   ));
+  Server.fetchHostFromDatabase();
   // await FirebaseNOTIFICATIONapi().isNotifications();
-
+  // await getServer();
+  await Hive.initFlutter();
+  await Hive.openBox('cacheBox');
   setupServices();
   runApp(
     MultiProvider(

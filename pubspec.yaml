@@ -45,6 +45,9 @@ dependencies:
   http: ^1.1.2
   shared_preferences: ^2.2.1
 
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
   connectivity_plus: ^5.0.2
   email_validator: ^2.1.17
   flutter_platform_alert: ^0.5.1
@@ -55,12 +58,16 @@ dependencies:
   timeline_tile: ^2.0.0
   flutter_keyboard_visibility: ^5.4.1
 
+  flutter_staggered_grid_view: ^0.4.0
+  
+
   firebase_core: ^2.31.0
   firebase_storage: ^11.7.5
   cloud_firestore: ^4.17.3
+  firebase_database: ^10.5.5
 
   awesome_notifications: ^0.8.2
-  # firebase_messaging: ^14.6.7
+  web_socket_channel: ^2.1.0
 
   tflite_flutter: ^0.9.0
   camera: ^0.9.4+19
@@ -79,7 +86,6 @@ dependencies:
 
   flutter_camera: ^0.1.1
   image_picker: ^0.8.4+3
-  # image: ^4.0.17
 
   location: ^5.0.3
   geolocator: ^9.0.2
@@ -104,6 +110,8 @@ dev_dependencies:
   ffigen: ^8.0.2
   flutter_test:
     sdk: flutter
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.9
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -5,13 +5,10 @@ import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
 import 'package:attendance_nmsct/pages/home.dart';
-import 'package:attendance_nmsct/pages/sign-in.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/camera_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:geocoding/geocoding.dart';
 
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';

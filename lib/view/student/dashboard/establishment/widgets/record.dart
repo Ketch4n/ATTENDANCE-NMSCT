@@ -157,7 +157,7 @@ class _RecordState extends State<Record> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
                 child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
+                  // scrollDirection: Axis.horizontal,
                   itemCount: _imageReferences.length,
                   itemBuilder: (context, index) {
                     final imageRef = _imageReferences[index];
@@ -187,52 +187,6 @@ class _RecordState extends State<Record> {
                               }
                             },
                           ),
-                          // subtitle: FutureBuilder(
-                          //   future: imageRef.getMetadata(),
-                          //   builder: (context, snapshot) {
-                          //     if (snapshot.connectionState ==
-                          //         ConnectionState.done) {
-                          //       if (snapshot.hasData) {
-                          //         final metadata = snapshot.data as FullMetadata;
-                          //         final location =
-                          //             metadata.customMetadata!['Location'] ??
-                          //                 'N/A';
-                          //         return Text('Location: $location');
-                          //       }
-                          //     }
-                          //     return const Text('Fetching metadata...');
-                          //   },
-                          // ),
-                          // trailing: IconButton(
-                          //   icon: const Icon(Icons.delete),
-                          //   onPressed: () {
-                          //     showDialog(
-                          //       context: context,
-                          //       builder: (BuildContext context) {
-                          //         return AlertDialog(
-                          //           title: const Text('Delete Image'),
-                          //           content: const Text(
-                          //               'Are you sure you want to delete this image?'),
-                          //           actions: <Widget>[
-                          //             TextButton(
-                          //               child: const Text('Cancel'),
-                          //               onPressed: () {
-                          //                 Navigator.of(context).pop();
-                          //               },
-                          //             ),
-                          //             TextButton(
-                          //               child: const Text('Delete'),
-                          //               onPressed: () {
-                          //                 deleteImage(imageRef);
-                          //                 Navigator.of(context).pop();
-                          //               },
-                          //             ),
-                          //           ],
-                          //         );
-                          //       },
-                          //     );
-                          //   },
-                          // ),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -249,88 +203,6 @@ class _RecordState extends State<Record> {
                 ),
               ),
             ),
-          Flexible(
-            flex: 4,
-            child: StreamBuilder<List<AccomplishmentModel>>(
-              stream: _textStreamController.stream,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text("Error: ${snapshot.error}"),
-                  );
-                } else if (snapshot.hasData) {
-                  final List<AccomplishmentModel> text = snapshot.data!;
-
-                  if (text.isEmpty) {
-                    return const Center(
-                      child: Text("No Attached description"),
-                    );
-                  }
-
-                  return Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Expanded(
-                      child: ListView.builder(
-                        itemCount: text.length,
-                        itemBuilder: (context, index) {
-                          final AccomplishmentModel record = text[index];
-                          final time = record.time;
-                          return Container(
-                            padding: EdgeInsets.only(
-                                bottom: index == snapshot.data!.length - 1
-                                    ? 70.0
-                                    : 0),
-                            child: TimelineTile(
-                              isFirst: index == 0,
-                              isLast: index == snapshot.data!.length - 1,
-                              alignment: TimelineAlign.start,
-                              indicatorStyle: const IndicatorStyle(
-                                width: 20,
-                                color: Colors.green, // Adjust color as needed
-                              ),
-                              endChild: Container(
-                                // padding: EdgeInsets.only(
-                                //     bottom: index == snapshot.data!.length - 1
-                                //         ? 80.0
-                                //         : 0),
-                                constraints: BoxConstraints(
-                                  maxWidth:
-                                      MediaQuery.of(context).size.width * 0.7,
-                                ),
-                                child: GestureDetector(
-                                  // onLongPress: () => _showUpdateDeleteModal(record),
-                                  child: Card(
-                                    child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Stack(
-                                          children: [
-                                            Text(record.comment
-                                                .replaceAll('<br />', '')),
-                                            Positioned(
-                                                right: 0,
-                                                child: Text(DateFormat('hh:mm ')
-                                                    .format(
-                                                        DateFormat('HH:mm:ss')
-                                                            .parse(time))))
-                                          ],
-                                        )),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  );
-                } else {
-                  return Expanded(
-                    child: CardPageSkeleton(),
-                  );
-                }
-              },
-            ),
-          )
         ],
       ),
     );

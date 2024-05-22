@@ -10,6 +10,7 @@ class StudentSectionClass extends StatefulWidget {
   const StudentSectionClass({super.key, required this.ids, required this.name});
   final String ids;
   final String name;
+
   @override
   State<StudentSectionClass> createState() => _StudentSectionClassState();
 }
@@ -26,8 +27,8 @@ class _StudentSectionClassState extends State<StudentSectionClass> {
 
   @override
   void dispose() {
-    super.dispose();
     _classmateStreamController.close();
+    super.dispose();
   }
 
   @override
@@ -63,40 +64,42 @@ class _StudentSectionClassState extends State<StudentSectionClass> {
           StreamBuilder<List<RoomModel>>(
               stream: _classmateStreamController.stream,
               builder: (context, snapshot) {
-                final List<RoomModel> classmates = snapshot.data!;
-                if (snapshot.hasData) {
-                  if (classmates.isEmpty) {
-                    nodata;
-                  }
-                  return Expanded(
-                    child: ListView.builder(
-                        itemCount: classmates.length,
-                        itemBuilder: (context, index) {
-                          final RoomModel classmate = classmates[index];
-                          return ListTile(
-                            leading: ClipRRect(
-                                borderRadius: Style.radius50,
-                                child: Image.asset(
-                                  "assets/images/admin.png",
-                                  height: 50,
-                                  width: 50,
-                                  fit: BoxFit.cover,
-                                )),
-                            title: Text(
-                                classmate.student_id == Session.id
-                                    ? "${classmate.fname} (You)"
-                                    : classmate.fname,
-                                style: const TextStyle(fontSize: 18)),
-                            subtitle: Text(
-                              classmate.email,
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                          );
-                        }),
-                  );
-                } else {
-                  return const Center(child: CircularProgressIndicator());
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: Text("Waiting for Network"));
                 }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                final List<RoomModel>? classmates = snapshot.data;
+                if (classmates == null || classmates.isEmpty) {
+                  return nodata(); // Ensure this is a valid widget or function
+                }
+                return Expanded(
+                  child: ListView.builder(
+                      itemCount: classmates.length,
+                      itemBuilder: (context, index) {
+                        final RoomModel classmate = classmates[index];
+                        return ListTile(
+                          leading: ClipRRect(
+                              borderRadius: Style.radius50,
+                              child: Image.asset(
+                                "assets/images/admin.png",
+                                height: 50,
+                                width: 50,
+                                fit: BoxFit.cover,
+                              )),
+                          title: Text(
+                              classmate.student_id == Session.id
+                                  ? "${classmate.fname} (You)"
+                                  : classmate.fname,
+                              style: const TextStyle(fontSize: 18)),
+                          subtitle: Text(
+                            classmate.email,
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        );
+                      }),
+                );
               }),
         ],
       ),

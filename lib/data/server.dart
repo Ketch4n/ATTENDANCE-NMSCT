@@ -1,12 +1,21 @@
+import 'package:firebase_database/firebase_database.dart';
+
+import 'package:firebase_database/firebase_database.dart';
+
 class Server {
-  static String host = "http://192.168.100.41/public_html/";
+  static String host = "";
+
+  static void fetchHostFromDatabase() {
+    DatabaseReference hostRef =
+        FirebaseDatabase.instance.reference().child('server');
+
+    hostRef.onValue.listen((event) {
+      // Update the host value when it changes in the database
+      host = (event.snapshot.value as String) ?? ''; // Specify type explicitly
+    });
+  }
 }
 
-// class Server {
-//   static String host = "https://attendance-nmscst.online/";
-// }
-
 class KeyAPI {
-  // static String code = "AIzaSyBe-HNFT3v6hHsA_I2dpS2WXHYb-tg7Y50";
   static String code = "AIzaSyCatnsTU-2hveFqSVuU-wu04xya0r_PwAE";
 }
