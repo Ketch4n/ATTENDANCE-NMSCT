@@ -38,7 +38,8 @@ class _MapScreenState extends State<MapScreen> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['status'] == 'OK' && data['results'].isNotEmpty) {
-          final addressComponents = data['results'][0]['address_components'];
+          final addressComponents = data['results'][1]['address_components'];
+          print(addressComponents);
           String street = '';
           String city = '';
           String sublocality = '';
@@ -70,16 +71,18 @@ class _MapScreenState extends State<MapScreen> {
           await placemarkFromCoordinates(position.latitude, position.longitude);
 
       if (placemarks.isNotEmpty) {
-        Placemark address = placemarks.first;
+        Placemark address = placemarks[0];
         String addressStr = "";
+        print(address);
 
-        if (address.thoroughfare != null &&
-            !address.thoroughfare!.toLowerCase().contains('unnamed')) {
-          addressStr += "${address.thoroughfare} ";
+        if (address.name != null &&
+            !address.name!.toLowerCase().contains('unnamed') &&
+            address.name != address.locality) {
+          addressStr += "${address.name} ";
         }
 
         addressStr +=
-            "${address.subThoroughfare ?? ''} ${address.subLocality ?? ''} ${address.locality ?? ''}, ${address.subAdministrativeArea ?? ''}";
+            "${address.subLocality ?? ''} ${address.locality ?? ''}, ${address.subAdministrativeArea ?? ''}";
 
         return addressStr;
       }
@@ -147,12 +150,13 @@ class _MapScreenState extends State<MapScreen> {
         if (data['status'] == 'OK' && data['results'].isNotEmpty) {
           final poi = data['results'][0];
           final poiName = poi['name'];
+
           final poiAddress = await _getAddress(LatLng(
               poi['geometry']['location']['lat'],
               poi['geometry']['location']['lng']));
 
           setState(() {
-            _address = '$poiName, $poiAddress';
+            _address = '$poiName $poiAddress';
           });
         } else {
           final address = await getAddressOld(_centerPosition);
