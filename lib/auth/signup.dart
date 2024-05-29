@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:attendance_nmsct/auth/google/map_google.dart';
 import 'package:attendance_nmsct/auth/google/pin_map.dart';
 import 'package:attendance_nmsct/controller/Create.dart';
 import 'package:attendance_nmsct/controller/Signup.dart';
@@ -378,7 +379,7 @@ class _SignupState extends State<Signup> {
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
-                                                              PinMap()),
+                                                              MapScreen()),
                                                     );
                                                     if (value != null) {
                                                       setState(() {

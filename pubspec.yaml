@@ -40,6 +40,7 @@ dependencies:
   font_awesome_flutter: ^10.6.0
   lottie: ^2.7.0
   google_maps_flutter: ^2.6.1
+  # flutter_map: ^6.1.0
 
   intl: ^0.18.1
   http: ^1.1.2
@@ -69,7 +70,7 @@ dependencies:
   awesome_notifications: ^0.8.2
   web_socket_channel: ^2.1.0
 
-  # tflite_flutter: ^0.9.0
+  tflite_flutter: ^0.9.0
   camera: ^0.9.4+19
   path_provider: ^2.0.9
   path: ^1.8.0
@@ -112,6 +113,7 @@ dev_dependencies:
     sdk: flutter
   hive_generator: ^2.0.1
   build_runner: ^2.4.9
+  permission_handler: ^10.0.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
