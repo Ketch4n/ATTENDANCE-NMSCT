@@ -236,9 +236,9 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
     await _checkPendingUploads();
   }
 
-  Future<void> _selectImageAndUpload() async {
+  Future<void> _selectImageAndUpload(option) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.getImage(source: option);
 
     if (pickedFile != null) {
       File imageFile = File(pickedFile.path);
@@ -337,7 +337,34 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
-            onPressed: _selectImageAndUpload,
+            onPressed: () async {
+              final source = await showDialog<ImageSource>(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Select Image Source'),
+                    content: Text(
+                        'Do you want to take a picture or choose from gallery?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(ImageSource.gallery);
+                        },
+                        child: Text('Gallery'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(ImageSource.camera);
+                        },
+                        child: Text('Camera'),
+                      ),
+                    ],
+                  );
+                },
+              );
+
+              _selectImageAndUpload(source);
+            },
             child: Icon(Icons.add),
           ),
           SizedBox(width: 10),
