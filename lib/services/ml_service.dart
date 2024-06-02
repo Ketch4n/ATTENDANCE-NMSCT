@@ -7,40 +7,40 @@ import 'package:attendance_nmsct/services/image_converter.dart';
 import 'package:camera/camera.dart';
 
 import 'package:google_ml_kit/google_ml_kit.dart';
-// import 'package:tflite_flutter/tflite_flutter.dart';
+import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as imglib;
 
 class MLService {
-  // Interpreter? _interpreter;
+  Interpreter? _interpreter;
   double threshold = 0.5;
 
   List _predictedData = [];
   List get predictedData => _predictedData;
 
   Future initialize() async {
-    // late Delegate delegate;
+    late Delegate delegate;
     try {
       if (Platform.isAndroid) {
-        // delegate = GpuDelegateV2(
-        //   options: GpuDelegateOptionsV2(
-        //     isPrecisionLossAllowed: false,
-        //     inferencePreference: TfLiteGpuInferenceUsage.fastSingleAnswer,
-        //     inferencePriority1: TfLiteGpuInferencePriority.minLatency,
-        //     inferencePriority2: TfLiteGpuInferencePriority.auto,
-        //     inferencePriority3: TfLiteGpuInferencePriority.auto,
-        //   ),
-        // );
+        delegate = GpuDelegateV2(
+          options: GpuDelegateOptionsV2(
+            isPrecisionLossAllowed: false,
+            inferencePreference: TfLiteGpuInferenceUsage.fastSingleAnswer,
+            inferencePriority1: TfLiteGpuInferencePriority.minLatency,
+            inferencePriority2: TfLiteGpuInferencePriority.auto,
+            inferencePriority3: TfLiteGpuInferencePriority.auto,
+          ),
+        );
       } else if (Platform.isIOS) {
-        // delegate = GpuDelegate(
-        //   options: GpuDelegateOptions(
-        //       allowPrecisionLoss: true,
-        //       waitType: TFLGpuDelegateWaitType.active),
-        // );
+        delegate = GpuDelegate(
+          options: GpuDelegateOptions(
+              allowPrecisionLoss: true,
+              waitType: TFLGpuDelegateWaitType.active),
+        );
       }
-      // var interpreterOptions = InterpreterOptions()..addDelegate(delegate);
+      var interpreterOptions = InterpreterOptions()..addDelegate(delegate);
 
-      // this._interpreter = await Interpreter.fromAsset('mobilefacenet.tflite',
-      //     options: interpreterOptions);
+      this._interpreter = await Interpreter.fromAsset('mobilefacenet.tflite',
+          options: interpreterOptions);
     } catch (e) {
       print('Failed to load model.');
       print(e);
@@ -48,15 +48,15 @@ class MLService {
   }
 
   void setCurrentPrediction(CameraImage cameraImage, Face? face) {
-    // if (_interpreter == null) throw Exception('Interpreter is null');
+    if (_interpreter == null) throw Exception('Interpreter is null');
     if (face == null) throw Exception('Face is null');
     List input = _preProcess(cameraImage, face);
 
-    // input = input.reshape([1, 112, 112, 3]);
+    input = input.reshape([1, 112, 112, 3]);
     List output = List.generate(1, (index) => List.filled(192, 0));
 
-    // this._interpreter?.run(input, output);
-    // output = output.reshape([192]);
+    this._interpreter?.run(input, output);
+    output = output.reshape([192]);
 
     this._predictedData = List.from(output);
   }
