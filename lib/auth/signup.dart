@@ -217,7 +217,8 @@ class _SignupState extends State<Signup> {
                             //     )
                             //   ],
                             // ),
-                            user.role == 'Intern'
+                            user.role == 'Intern' ||
+                                    widget.purpose == 'REGISTER'
                                 ? Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10),
@@ -243,7 +244,8 @@ class _SignupState extends State<Signup> {
                               ),
                             ),
 
-                            user.role == 'Intern'
+                            user.role == 'Intern' ||
+                                    widget.purpose == 'REGISTER'
                                 ? TextFormField(
                                     readOnly: true,
                                     controller: _bdayController,
@@ -261,7 +263,8 @@ class _SignupState extends State<Signup> {
                                     ),
                                   )
                                 : SizedBox(),
-                            user.role == 'Intern'
+                            user.role == 'Intern' ||
+                                    widget.purpose == 'REGISTER'
                                 ? Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10),
@@ -272,7 +275,8 @@ class _SignupState extends State<Signup> {
                                     ),
                                   )
                                 : SizedBox(),
-                            user.role == 'Intern'
+                            user.role == 'Intern' ||
+                                    widget.purpose == 'REGISTER'
                                 ? TextFormField(
                                     controller: _sectionController,
                                     decoration: Style.textdesign
@@ -573,7 +577,7 @@ class _SignupState extends State<Signup> {
       // ignore: use_build_context_synchronously
       if (user == 'Intern' || user == 'NMSCST') {
         await signup(context, email, password, id, name, user, bday, uid,
-            address, section);
+            address, section, widget.purpose);
       } else {
         String code = generateAlphanumericId();
         String currentCoordinate = UserSession.location;
@@ -584,7 +588,7 @@ class _SignupState extends State<Signup> {
         await CreateSectEstab(context, code, cont, currentCoordinate,
             currentLng!, currentLat!, email, hours, radiusMeter);
         await signup(context, email, password, id, name, user, bday, uid,
-            address, section);
+            address, section, widget.purpose);
       }
     } else {
       _currentStep < 2 ? setState(() => _currentStep += 1) : null;

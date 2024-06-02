@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/record.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,11 +10,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class StudentSectionDTR extends StatefulWidget {
-  const StudentSectionDTR({super.key, required this.name, required this.ids});
+  const StudentSectionDTR(
+      {super.key,
+      required this.name,
+      required this.ids,
+      required this.section});
   final String name;
   final String ids;
+  final String section;
   @override
   State<StudentSectionDTR> createState() => _StudentSectionDTRState();
 }
@@ -24,14 +33,17 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
   String _month = DateFormat('MMMM').format(DateTime.now());
   String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
   int userId = 0;
+  late String estabname = "";
   // final TextEditingController _commentController = TextEditingController();
   double screenHeight = 0;
   double screenWidth = 0;
   Future _getImageReferences() async {
+    print("IDS" + widget.ids);
+    print("name" + widget.name);
     final storage = FirebaseStorage.instance;
     final prefs = await SharedPreferences.getInstance();
-    final section = widget.name;
-    final email = prefs.getString('userEmail');
+    final section = kIsWeb ? estabname : widget.name;
+    final email = kIsWeb ? widget.ids : prefs.getString('userEmail');
     // final date = DateFormat('MM-dd-yyyy').format(DateTime.now());
     final folderName = 'face_data/$section/$email'; // Specify your folder name
 
@@ -61,10 +73,46 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
     }
   }
 
+  Future<void> getEstab() async {
+    try {
+      print("IDS" + widget.ids);
+      print("name" + widget.name);
+      final response = await http.post(
+        Uri.parse('${Server.host}users/establishment/all_establishment.php'),
+        body: {
+          'estab_id': widget.name,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        if (data.isNotEmpty) {
+          final Map<String, dynamic> firstItem = data[0];
+          final String establishmentName = firstItem['establishment_name'];
+          setState(() {
+            estabname = establishmentName;
+          });
+          _getImageReferences();
+        } else {
+          print('No establishment data found');
+        }
+      } else {
+        print('Server returned an error: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('An error occurred: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _getImageReferences();
+    if (kIsWeb) {
+      getEstab();
+    } else {
+      _getImageReferences();
+    }
   }
 
   @override
@@ -141,13 +189,20 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
                                   onTap: () {
                                     String folder = imageRef.name;
                                     print("Clicked on file: $imageName");
+                                    print(widget.ids);
+
+                                    print(widget.section);
+                                    print(estabname);
+
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => Record(
                                           ids: widget.ids,
-                                          name: widget.name,
+                                          name:
+                                              kIsWeb ? estabname : widget.name,
                                           date: folder,
+                                          section: widget.section,
                                         ),
                                       ),
                                     );

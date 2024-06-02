@@ -32,7 +32,11 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
                 children: [
                   MetaDataIndex(ids: widget.ids, name: widget.name),
                   // AccomplishmentView(ids: widget.ids, name: widget.name),
-                  StudentSectionDTR(name: widget.name, ids: widget.ids),
+                  StudentSectionDTR(
+                    name: widget.name,
+                    ids: widget.ids,
+                    section: '',
+                  ),
                 ],
               ),
             ),

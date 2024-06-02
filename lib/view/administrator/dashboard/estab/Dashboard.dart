@@ -115,6 +115,11 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
     }
   }
 
+  Future refresh() async {
+    fetchinterns();
+    dtr();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -139,15 +144,20 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
             child: Column(
               children: [
                 Container(
-                  height: 370,
+                  height: 350,
                   width: double.maxFinite,
                   child: Image.asset(
                     'assets/nmscst_bg.jpg',
                     fit: BoxFit.fill,
                   ),
                 ),
-                SizedBox(
-                  height: 10,
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        refresh();
+                      },
+                      child: Text("Reload Data / Refresh")),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -221,6 +231,17 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                           child: 'Announcement',
                         ),
                       ),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     Navigator.of(context).push(MaterialPageRoute(
+                      //         builder: (context) => Announcement()));
+                      //   },
+                      //   child: BoxComponent(
+                      //     count: announcement,
+                      //     color: Colors.amber,
+                      //     child: 'Accomplishment Report',
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

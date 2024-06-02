@@ -342,21 +342,21 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Select Image Source'),
-                    content: Text(
-                        'Do you want to take a picture or choose from gallery?'),
+                    title: Text('Capture Accomplishment'),
+                    // content: Text(
+                    //     'Do you want to take a picture or choose from gallery?'),
                     actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(ImageSource.gallery);
-                        },
-                        child: Text('Gallery'),
-                      ),
-                      TextButton(
+                      // TextButton(
+                      //   onPressed: () {
+                      //     Navigator.of(context).pop(ImageSource.gallery);
+                      //   },
+                      //   child: Text('Gallery'),
+                      // ),
+                      ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pop(ImageSource.camera);
                         },
-                        child: Text('Camera'),
+                        child: Text('Open Camera'),
                       ),
                     ],
                   );

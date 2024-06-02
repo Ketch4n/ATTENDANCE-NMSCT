@@ -1,9 +1,13 @@
 import 'dart:convert';
 
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AllStudentModel.dart';
 import 'package:attendance_nmsct/model/EstabModel.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/view_under_estab.dart';
 import 'package:excel/excel.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
@@ -114,28 +118,38 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                             (classmate) => DataRow(
                               cells: [
                                 DataCell(
-                                  Row(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: Style.radius50,
-                                        child: Image.asset(
-                                          "assets/images/estab.png",
-                                          height: 50,
-                                          width: 50,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Wrap(
-                                        children: [
-                                          Text(
-                                            classmate.establishment_name,
-                                            style:
-                                                const TextStyle(fontSize: 18),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                              builder: (context) => EstabRoom(
+                                                    ids: classmate.id,
+                                                    // name: Session.fname,
+                                                  )));
+                                    },
+                                    child: Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: Style.radius50,
+                                          child: Image.asset(
+                                            "assets/images/estab.png",
+                                            height: 50,
+                                            width: 50,
+                                            fit: BoxFit.cover,
                                           ),
-                                        ],
-                                      ),
-                                    ],
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Wrap(
+                                          children: [
+                                            Text(
+                                              classmate.establishment_name,
+                                              style:
+                                                  const TextStyle(fontSize: 18),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 DataCell(

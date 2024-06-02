@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AllStudentModel.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_dtr.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/student_section_dtr.dart';
 import 'package:attendance_nmsct/view/student/dtr_details.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/foundation.dart';
@@ -128,17 +130,40 @@ class _AllStudentsState extends State<AllStudents> {
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                exportToExcel();
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-              ),
-              child: Text(
-                'Export to Excel',
-                style: TextStyle(color: Colors.white),
-              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    exportToExcel();
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.green),
+                  ),
+                  child: Text(
+                    'Export to Excel',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                // SizedBox(
+                //   width: 20,
+                // ),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.of(context).push(MaterialPageRoute(
+                //         builder: (context) => Signup(
+                //               purpose: 'REGISTER',
+                //             )));
+                //   },
+                //   // style: ButtonStyle(
+                //   //   backgroundColor:
+                //   //       MaterialStateProperty.all<Color>(Colors.green),
+                //   // ),
+                //   child: Icon(Icons.add),
+                // ),
+              ],
             ),
             Expanded(
               child: filteredInterns.isNotEmpty
@@ -151,7 +176,8 @@ class _AllStudentsState extends State<AllStudents> {
                           DataColumn(label: Text('Section')),
                           DataColumn(label: Text('Birth Date')),
                           DataColumn(label: Text('Address')),
-                          DataColumn(label: Text('View DTR'))
+                          DataColumn(label: Text('View DTR')),
+                          DataColumn(label: Text('View Accomplishment Report'))
                         ],
                         rows: filteredInterns
                             .map(
@@ -240,6 +266,27 @@ class _AllStudentsState extends State<AllStudents> {
                                           ),
                                         );
                                       }
+                                    },
+                                    child: Icon(Icons.remove_red_eye),
+                                  )),
+                                  DataCell(ElevatedButton(
+                                    onPressed: () {
+                                      print(
+                                          "Name ${classmate.establishment_id}");
+                                      print("Ids ${classmate.email}");
+                                      print("section ${classmate.section}");
+
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              StudentSectionDTR(
+                                                  name: classmate
+                                                      .establishment_id,
+                                                  ids: classmate.email,
+                                                  section: classmate.section),
+                                        ),
+                                      );
                                     },
                                     child: Icon(Icons.remove_red_eye),
                                   )),

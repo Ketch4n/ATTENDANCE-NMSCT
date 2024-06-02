@@ -86,7 +86,7 @@ class _EstabHomeState extends State<EstabHome> {
           // ),
           AllStudents(),
           AbsentTab(name: widget.name, ids: widget.id),
-          EstabRoom(ids: widget.id, name: widget.name),
+          EstabRoom(ids: widget.id),
         ],
       ),
     );

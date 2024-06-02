@@ -7,6 +7,7 @@ import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AccomplishmentModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadata.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
@@ -16,10 +17,15 @@ import 'package:http/http.dart' as http;
 
 class Record extends StatefulWidget {
   const Record(
-      {super.key, required this.ids, required this.name, required this.date});
+      {super.key,
+      required this.ids,
+      required this.name,
+      required this.date,
+      required this.section});
   final String ids;
   final String name;
   final String date;
+  final String section;
   @override
   State<Record> createState() => _RecordState();
 }
@@ -46,30 +52,28 @@ class _RecordState extends State<Record> {
   Future<void> _getImageReferences() async {
     final storage = FirebaseStorage.instance;
     final prefs = await SharedPreferences.getInstance();
-    final section = widget.name;
+    final section = kIsWeb ? widget.name : widget.name;
     final file = widget.date;
-    final email = prefs.getString('userEmail');
-    // final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    final folderName =
-        'face_data/$section/$email/$file'; // Specify your folder name
+    final email = kIsWeb ? widget.ids : prefs.getString('userEmail');
+    final folderName = 'face_data/$section/$email/$file';
 
     try {
       final listResult = await storage.ref(folderName).list();
       final items = listResult.items;
 
-      // Filter items based on the name containing "datetoday"
-      // final datetodayItems = items.where((item) => item.name.contains(
-      //     date)); // You may need to adjust the condition based on your file naming convention
+      // Map each reference to its download URL asynchronously
+      final urls = items.map((ref) => ref.getDownloadURL()).toList();
+
       setState(() {
         _imageReferences = items.toList();
-        _imageUrls = _imageReferences.map((ref) {
-          return ref.getDownloadURL();
-        }).toList();
+        _imageUrls = urls;
         isLoading = false; // Data has loaded
       });
     } catch (e) {
       print('Error listing files: $e');
-      isLoading = false; // Data has failed to load
+      setState(() {
+        isLoading = false; // Data has failed to load
+      });
     }
   }
 

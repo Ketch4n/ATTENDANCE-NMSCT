@@ -7,6 +7,7 @@ import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/view/administrator/home.dart';
 import 'package:attendance_nmsct/view/student/home.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,9 +24,11 @@ Future<void> login(
     try {
       // HTTP request
       final response = await http.post(
-        role == 'Intern'
+        role == 'Intern' && !kIsWeb
             ? Uri.parse('${Server.host}auth/user_login.php')
-            : Uri.parse('${Server.host}auth/login.php'),
+            : role == 'Administrator' && !kIsWeb
+                ? Uri.parse('${Server.host}auth/login.php')
+                : Uri.parse('${Server.host}auth/super_login.php'),
         body: {
           'email': email,
           'password': password,

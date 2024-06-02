@@ -71,7 +71,7 @@ class _MapScreenState extends State<MapScreen> {
           await placemarkFromCoordinates(position.latitude, position.longitude);
 
       if (placemarks.isNotEmpty) {
-        Placemark address = placemarks[0];
+        Placemark address = placemarks[2];
         String addressStr = "";
         print(address);
 

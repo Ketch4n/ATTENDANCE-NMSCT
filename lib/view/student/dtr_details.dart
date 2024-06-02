@@ -197,7 +197,8 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                                             style:
                                                 const TextStyle(fontSize: 20),
                                           ),
-                                          trailing: Session.role == "NMSCST"
+                                          trailing: Session.role ==
+                                                  "SUPER ADMIN"
                                               ? MaterialButton(
                                                   color: Colors.blue,
                                                   onPressed: () {

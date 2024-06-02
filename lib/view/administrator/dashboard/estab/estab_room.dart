@@ -8,18 +8,19 @@ import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/EstabRoomModel.dart';
+import 'package:attendance_nmsct/model/UnRegisteredModel.dart';
 import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:attendance_nmsct/pages/sign-up.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room_unregstudents.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 
 class EstabRoom extends StatefulWidget {
-  const EstabRoom({super.key, required this.ids, required this.name});
+  const EstabRoom({Key? key, required this.ids}) : super(key: key);
   final String ids;
 
-  final String name;
   @override
   State<EstabRoom> createState() => _EstabRoomState();
 }
@@ -31,21 +32,19 @@ class _EstabRoomState extends State<EstabRoom> {
   @override
   void initState() {
     super.initState();
-
-    fetchinterns(_internsStreamController);
+    fetchInterns(_internsStreamController);
   }
 
   @override
   void dispose() {
     super.dispose();
-
     _internsStreamController.close();
   }
 
-  // }
   String yourID = "";
 
-  Future<void> fetchinterns(internstreamController) async {
+  Future<void> fetchInterns(
+      StreamController<List<EstabRoomModel>> internstreamController) async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     setState(() {
@@ -62,23 +61,45 @@ class _EstabRoomState extends State<EstabRoom> {
           .map((classmateData) => EstabRoomModel.fromJson(classmateData))
           .toList();
 
-      // Add the list of interns to the stream
       internstreamController.add(interns);
     } else {
       throw Exception('Failed to load data');
     }
   }
 
+  Future<void> showAddDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add Student Intern'),
+          content: Text('Manually join the student in this establishment'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => UnregUsers(ids: widget.ids)));
+                setState(() {});
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     bottomsheet();
-      //   },
-      //   child: const Icon(Icons.add),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
@@ -116,7 +137,7 @@ class _EstabRoomState extends State<EstabRoom> {
                       Text("${Session.fname} (You)",
                           style: const TextStyle(fontSize: 18)),
                       Text(
-                        Session.email,
+                        Session.email ?? "", // Handle potential null value
                         style: const TextStyle(fontSize: 12),
                       )
                     ],
@@ -137,11 +158,16 @@ class _EstabRoomState extends State<EstabRoom> {
                 thickness: 2,
               ),
             ),
+            ElevatedButton(
+                onPressed: () {
+                  showAddDialog();
+                },
+                child: Icon(Icons.add)),
             StreamBuilder<List<EstabRoomModel>>(
                 stream: _internsStreamController.stream,
                 builder: (context, snapshot) {
-                  final List<EstabRoomModel> interns = snapshot.data!;
-                  if (snapshot.hasData) {
+                  final List<EstabRoomModel>? interns = snapshot.data;
+                  if (snapshot.hasData && interns != null) {
                     return Expanded(
                       child: ListView.builder(
                           itemCount: interns.length,
@@ -193,7 +219,7 @@ class _EstabRoomState extends State<EstabRoom> {
     );
   }
 
-  Future bottomsheet() async {
+  Future<void> bottomSheet() async {
     showAdaptiveActionSheet(
         context: context,
         title: const Text('Add Interns'),

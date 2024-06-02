@@ -10,21 +10,23 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 Future signup(
-    BuildContext context,
-    String email,
-    String password,
-    String id,
-    String name,
-    String roleController,
-    DateTime bday,
-    String uid,
-    String address,
-    String section) async {
+  BuildContext context,
+  String email,
+  String password,
+  String id,
+  String name,
+  String roleController,
+  DateTime bday,
+  String uid,
+  String address,
+  String section,
+  String purpose,
+) async {
   String apiUrl = '${Server.host}auth/signup.php';
   Map<String, String> headers = {'Content-Type': 'application/json'};
   final date = DateFormat('yyyy-MM-dd').format(bday.toLocal());
   String jsonData =
-      '{"email": "$email", "password": "$password", "fname": "$name", "lname": "$id","uid":"$uid", "bday":"$date","address":"$address","section":"$section","role":"$roleController"}';
+      '{"email": "$email", "password": "$password", "fname": "$name", "lname": "$id","uid":"$uid", "bday":"$date","address":"$address","section":"$section","role":"$roleController","purpose":"$purpose"}';
   final response =
       await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
   final jsonResponse = json.decode(response.body);
