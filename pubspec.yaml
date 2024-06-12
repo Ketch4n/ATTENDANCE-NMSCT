@@ -142,3 +142,7 @@ flutter:
     - family: MontserratRegular
       fonts:
         - asset: assets/fonts/Montserrat-Regular.ttf
+
+    - family: DejaVuSans
+      fonts:
+        - asset: assets/fonts/DejaVuSans.ttf
