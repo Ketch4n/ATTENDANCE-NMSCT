@@ -45,7 +45,7 @@ class _EstabDTRState extends State<EstabDTR> {
     String query = _searchController.text.toLowerCase();
     // Filter the products based on the search query
     List<EstabTodayModel> filteredProducts = products.where((product) {
-      return product.id.toLowerCase().contains(query) ||
+      return product.id.toString().toLowerCase().contains(query) ||
           product.lname!.toLowerCase().contains(query) ||
           product.time_in_am.toLowerCase().contains(query) ||
           product.time_out_am.toLowerCase().contains(query) ||

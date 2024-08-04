@@ -1,7 +1,25 @@
 [
     {
         "origin": [
-            "https://attendance-nmsct.web.app/"
+            "https://attendance-monitoring-c33b5.web.app/"
+        ],
+        "method": [
+            "GET, POST"
+        ],
+        "maxAgeSeconds": 3600
+    },
+    {
+        "origin": [
+            "http://localhost/attendance_api/"
+        ],
+        "method": [
+            "GET, POST"
+        ],
+        "maxAgeSeconds": 3600
+    },
+    {
+        "origin": [
+            "https://attendance-nmscst.online/"
         ],
         "method": [
             "GET"

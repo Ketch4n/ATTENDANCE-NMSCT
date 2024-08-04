@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:attendance_nmsct/auth/login.dart';
-import 'package:attendance_nmsct/pages/widgets/app_button.dart';
+import 'package:attendance_nmsct/face_recognition/pages/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shimmer/main.dart';

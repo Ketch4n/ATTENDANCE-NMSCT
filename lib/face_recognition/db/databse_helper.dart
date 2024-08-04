@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:http/http.dart' as http;
-import 'package:attendance_nmsct/pages/models/user.model.dart';
+import 'package:attendance_nmsct/face_recognition/pages/models/user.model.dart';
 
 class DatabaseHelper {
   static final String baseUrl = "${Server.host}auth/face_data.php";

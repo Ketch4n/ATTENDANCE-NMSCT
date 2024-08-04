@@ -169,7 +169,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
                           runSpacing: 10.0, // Adjust run spacing as needed
                           children: sect2.map((EstabModel sec) {
                             return GlobalDashCard(
-                              id: sec.id,
+                              id: sec.id.toString(),
                               uid: sec.creator_email,
                               name: sec.establishment_name,
                               code: sec.code,
@@ -183,7 +183,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
                           itemBuilder: (BuildContext context, int index) {
                             EstabModel sec = sect2[index];
                             return GlobalDashCard(
-                              id: sec.id,
+                              id: sec.id.toString(),
                               uid: sec.creator_email,
                               name: sec.establishment_name,
                               code: sec.code,

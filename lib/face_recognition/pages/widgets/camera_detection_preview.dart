@@ -1,7 +1,7 @@
-import 'package:attendance_nmsct/locator.dart';
-import 'package:attendance_nmsct/pages/widgets/FacePainter.dart';
-import 'package:attendance_nmsct/services/camera.service.dart';
-import 'package:attendance_nmsct/services/face_detector_service.dart';
+import 'package:attendance_nmsct/face_recognition/locator.dart';
+import 'package:attendance_nmsct/face_recognition/pages/widgets/FacePainter.dart';
+import 'package:attendance_nmsct/face_recognition/services/camera.service.dart';
+import 'package:attendance_nmsct/face_recognition/services/face_detector_service.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 

@@ -85,7 +85,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
           ];
 
           if (distances.any((distance) => distance > meterValue)) {
-            outsideIds.add(dtrItem.id);
+            outsideIds.add(dtrItem.id.toString());
             return true;
           }
           // for (int i = 0; i < distances.length; i++) {

@@ -1,5 +1,5 @@
 class EstabRoomModel {
-  final String id;
+  final int id;
   final String fname;
   final String lname;
   final String email;

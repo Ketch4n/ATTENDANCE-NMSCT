@@ -1,5 +1,5 @@
-import 'package:attendance_nmsct/locator.dart';
-import 'package:attendance_nmsct/services/camera.service.dart';
+import 'package:attendance_nmsct/face_recognition/locator.dart';
+import 'package:attendance_nmsct/face_recognition/services/camera.service.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';

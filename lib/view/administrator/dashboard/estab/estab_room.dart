@@ -10,7 +10,7 @@ import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/EstabRoomModel.dart';
 import 'package:attendance_nmsct/model/UnRegisteredModel.dart';
 import 'package:attendance_nmsct/model/UserModel.dart';
-import 'package:attendance_nmsct/pages/sign-up.dart';
+import 'package:attendance_nmsct/face_recognition/pages/sign-up.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room_unregstudents.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

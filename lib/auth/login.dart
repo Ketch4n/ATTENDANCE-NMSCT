@@ -5,7 +5,7 @@ import 'package:attendance_nmsct/controller/Login.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 
 import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/pages/home.dart';
+import 'package:attendance_nmsct/face_recognition/pages/home.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';

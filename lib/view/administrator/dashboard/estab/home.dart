@@ -1,5 +1,5 @@
 import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/pages/db/databse_helper.dart';
+import 'package:attendance_nmsct/face_recognition/db/databse_helper.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_students.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_dtr.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_face_auth.dart';

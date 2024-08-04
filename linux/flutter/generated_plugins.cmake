@@ -6,7 +6,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   awesome_notifications
   file_selector_linux
   flutter_platform_alert
-  tflite_flutter
   url_launcher_linux
 )
 

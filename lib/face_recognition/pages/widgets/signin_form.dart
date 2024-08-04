@@ -1,12 +1,12 @@
 import 'package:attendance_nmsct/controller/Login.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
-import 'package:attendance_nmsct/locator.dart';
-import 'package:attendance_nmsct/pages/models/user.model.dart';
-import 'package:attendance_nmsct/pages/profile.dart';
-import 'package:attendance_nmsct/pages/widgets/app_button.dart';
-import 'package:attendance_nmsct/pages/widgets/app_text_field.dart';
-import 'package:attendance_nmsct/services/camera.service.dart';
+import 'package:attendance_nmsct/face_recognition/locator.dart';
+import 'package:attendance_nmsct/face_recognition/pages/models/user.model.dart';
+import 'package:attendance_nmsct/face_recognition/pages/profile.dart';
+import 'package:attendance_nmsct/face_recognition/pages/widgets/app_button.dart';
+import 'package:attendance_nmsct/face_recognition/pages/widgets/app_text_field.dart';
+import 'package:attendance_nmsct/face_recognition/services/camera.service.dart';
 import 'package:flutter/material.dart';
 
 class SignInSheet extends StatelessWidget {

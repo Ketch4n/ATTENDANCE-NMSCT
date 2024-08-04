@@ -2,7 +2,7 @@ import 'package:attendance_nmsct/auth/auth.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/locator.dart';
+import 'package:attendance_nmsct/face_recognition/locator.dart';
 import 'package:attendance_nmsct/widgets/firebase_notif.dart';
 import 'package:attendance_nmsct/widgets/scroll.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';

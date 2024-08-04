@@ -147,153 +147,157 @@ class _AllStudentsState extends State<AllStudents> {
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-                // SizedBox(
-                //   width: 20,
-                // ),
-                // ElevatedButton(
-                //   onPressed: () {
-                //     Navigator.of(context).push(MaterialPageRoute(
-                //         builder: (context) => Signup(
-                //               purpose: 'REGISTER',
-                //             )));
-                //   },
-                //   // style: ButtonStyle(
-                //   //   backgroundColor:
-                //   //       MaterialStateProperty.all<Color>(Colors.green),
-                //   // ),
-                //   child: Icon(Icons.add),
-                // ),
+                SizedBox(
+                  width: 20,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Signup(
+                              purpose: 'INTERN',
+                            )));
+                  },
+                  // style: ButtonStyle(
+                  //   backgroundColor:
+                  //       MaterialStateProperty.all<Color>(Colors.green),
+                  // ),
+                  child: Icon(Icons.add),
+                ),
               ],
             ),
             Expanded(
               child: filteredInterns.isNotEmpty
                   ? SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: [
-                          DataColumn(label: Text('Name')),
-                          DataColumn(label: Text('Email')),
-                          DataColumn(label: Text('Section')),
-                          DataColumn(label: Text('Birth Date')),
-                          DataColumn(label: Text('Address')),
-                          DataColumn(label: Text('View DTR')),
-                          DataColumn(label: Text('View Accomplishment Report'))
-                        ],
-                        rows: filteredInterns
-                            .map(
-                              (classmate) => DataRow(
-                                cells: [
-                                  DataCell(
-                                    GestureDetector(
-                                      onTap: () {
-                                        // Navigator.of(context)
-                                        //     .push(MaterialPageRoute(
-                                        //         builder: (context) => EstabDTR(
-                                        //               id: classmate.id,
-                                        //               name: classmate.lname,
-                                        //             )));
-                                      },
-                                      child: Row(
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius: Style.radius50,
-                                            child: Image.asset(
-                                              "assets/images/admin.png",
-                                              height: 50,
-                                              width: 50,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Wrap(
-                                            children: [
-                                              Text(
-                                                '${classmate.lname}, ${classmate.fname}',
-                                                style: const TextStyle(
-                                                    fontSize: 18),
+                      scrollDirection: Axis.vertical,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: DataTable(
+                          columns: [
+                            DataColumn(label: Text('Name')),
+                            DataColumn(label: Text('Email')),
+                            DataColumn(label: Text('Section')),
+                            DataColumn(label: Text('Birth Date')),
+                            DataColumn(label: Text('Address')),
+                            DataColumn(label: Text('View DTR')),
+                            DataColumn(
+                                label: Text('View Accomplishment Report'))
+                          ],
+                          rows: filteredInterns
+                              .map(
+                                (classmate) => DataRow(
+                                  cells: [
+                                    DataCell(
+                                      GestureDetector(
+                                        onTap: () {
+                                          // Navigator.of(context)
+                                          //     .push(MaterialPageRoute(
+                                          //         builder: (context) => EstabDTR(
+                                          //               id: classmate.id,
+                                          //               name: classmate.lname,
+                                          //             )));
+                                        },
+                                        child: Row(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: Style.radius50,
+                                              child: Image.asset(
+                                                "assets/images/admin.png",
+                                                height: 50,
+                                                width: 50,
+                                                fit: BoxFit.cover,
                                               ),
-                                            ],
-                                          ),
-                                        ],
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Wrap(
+                                              children: [
+                                                Text(
+                                                  '${classmate.lname}, ${classmate.fname}',
+                                                  style: const TextStyle(
+                                                      fontSize: 18),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      classmate.email,
-                                      style: const TextStyle(fontSize: 12),
+                                    DataCell(
+                                      Text(
+                                        classmate.email,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
                                     ),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      classmate.section,
-                                      style: const TextStyle(fontSize: 12),
+                                    DataCell(
+                                      Text(
+                                        classmate.section,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
                                     ),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      classmate.bday,
-                                      style: const TextStyle(fontSize: 12),
+                                    DataCell(
+                                      Text(
+                                        classmate.bday,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
                                     ),
-                                  ),
-                                  DataCell(
-                                    Text(
-                                      classmate.address,
-                                      style: const TextStyle(fontSize: 12),
+                                    DataCell(
+                                      Text(
+                                        classmate.address,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
                                     ),
-                                  ),
-                                  DataCell(ElevatedButton(
-                                    onPressed: () {
-                                      if (classmate.establishment_id ==
-                                          "none") {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content:
-                                                Text("No Establishment yet"),
-                                          ),
-                                        );
-                                      } else {
+                                    DataCell(ElevatedButton(
+                                      onPressed: () {
+                                        if (classmate.establishment_id ==
+                                            "none") {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content:
+                                                  Text("No Establishment yet"),
+                                            ),
+                                          );
+                                        } else {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  StudentDTRDetails(
+                                                id: classmate.id,
+                                                estab_id:
+                                                    classmate.establishment_id,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: Icon(Icons.remove_red_eye),
+                                    )),
+                                    DataCell(ElevatedButton(
+                                      onPressed: () {
+                                        print(
+                                            "Name ${classmate.establishment_id}");
+                                        print("Ids ${classmate.email}");
+                                        print("section ${classmate.section}");
+
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                StudentDTRDetails(
-                                              id: classmate.id,
-                                              estab_id:
-                                                  classmate.establishment_id,
-                                            ),
+                                                StudentSectionDTR(
+                                                    name: classmate
+                                                        .establishment_id,
+                                                    ids: classmate.email,
+                                                    section: classmate.section),
                                           ),
                                         );
-                                      }
-                                    },
-                                    child: Icon(Icons.remove_red_eye),
-                                  )),
-                                  DataCell(ElevatedButton(
-                                    onPressed: () {
-                                      print(
-                                          "Name ${classmate.establishment_id}");
-                                      print("Ids ${classmate.email}");
-                                      print("section ${classmate.section}");
-
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              StudentSectionDTR(
-                                                  name: classmate
-                                                      .establishment_id,
-                                                  ids: classmate.email,
-                                                  section: classmate.section),
-                                        ),
-                                      );
-                                    },
-                                    child: Icon(Icons.remove_red_eye),
-                                  )),
-                                ],
-                              ),
-                            )
-                            .toList(),
+                                      },
+                                      child: Icon(Icons.remove_red_eye),
+                                    )),
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ),
                       ),
                     )
                   : filteredInterns.isEmpty

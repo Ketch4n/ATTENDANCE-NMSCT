@@ -1,5 +1,5 @@
 class EstabModel {
-  final String id;
+  final int id;
   final String code;
   final String establishment_name;
   final String creator_email;

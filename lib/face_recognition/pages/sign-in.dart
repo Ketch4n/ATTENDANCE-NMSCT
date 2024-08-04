@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'package:attendance_nmsct/auth/google/permission.dart';
 import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/locator.dart';
-import 'package:attendance_nmsct/services/camera.service.dart';
-import 'package:attendance_nmsct/services/face_detector_service.dart';
-import 'package:attendance_nmsct/services/ml_service.dart';
+import 'package:attendance_nmsct/face_recognition/locator.dart';
+import 'package:attendance_nmsct/face_recognition/services/camera.service.dart';
+import 'package:attendance_nmsct/face_recognition/services/face_detector_service.dart';
+import 'package:attendance_nmsct/face_recognition/services/ml_service.dart';
 import 'package:attendance_nmsct/view/student/calculate_distance.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';

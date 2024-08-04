@@ -3,7 +3,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/auth/google/map_google.dart';
-import 'package:attendance_nmsct/auth/google/pin_map.dart';
 import 'package:attendance_nmsct/controller/Create.dart';
 import 'package:attendance_nmsct/controller/Signup.dart';
 import 'package:attendance_nmsct/data/server.dart';
@@ -11,17 +10,15 @@ import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/functions/generate.dart';
 import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/pages/home.dart';
+import 'package:attendance_nmsct/face_recognition/pages/home.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Signup extends StatefulWidget {
   const Signup({Key? key, required this.purpose}) : super(key: key);
@@ -98,9 +95,11 @@ class _SignupState extends State<Signup> {
       return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: widget.purpose == 'Create'
-              ? Text('Create Account')
-              : Text('Register Intern'),
+          title: widget.purpose == 'ESTAB'
+              ? Text('REGISTER ESTABLISHMENT')
+              : widget.purpose == 'INTERN'
+                  ? Text('Register Intern')
+                  : Text("Add Admin Account"),
           centerTitle: true,
         ),
         body: Center(
@@ -114,11 +113,13 @@ class _SignupState extends State<Signup> {
                     // physics: const ScrollPhysics(),
                     currentStep: _currentStep,
                     onStepTapped: tapped,
-                    onStepContinue: () => continued(user: user.role),
+                    onStepContinue: () => continued(user: widget.purpose),
                     onStepCancel: cancel,
                     steps: <Step>[
                       Step(
-                        title: const Text('Email'),
+                        title: widget.purpose != "ESTAB"
+                            ? Text('Email')
+                            : Text("Name"),
                         content: Column(
                           children: <Widget>[
                             TextFormField(
@@ -217,8 +218,7 @@ class _SignupState extends State<Signup> {
                             //     )
                             //   ],
                             // ),
-                            user.role == 'Intern' ||
-                                    widget.purpose == 'REGISTER'
+                            widget.purpose == 'INTERN'
                                 ? Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10),
@@ -230,22 +230,26 @@ class _SignupState extends State<Signup> {
                                   )
                                 : SizedBox(),
 
-                            TextFormField(
-                              controller: _fnameController,
-                              decoration: Style.textdesign
-                                  .copyWith(labelText: 'First Name'),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: TextFormField(
-                                controller: _lnameController,
-                                decoration: Style.textdesign
-                                    .copyWith(labelText: 'Last Name'),
-                              ),
-                            ),
+                            widget.purpose != 'ESTAB'
+                                ? TextFormField(
+                                    controller: _fnameController,
+                                    decoration: Style.textdesign
+                                        .copyWith(labelText: 'First Name'),
+                                  )
+                                : Text("Proceed"),
+                            widget.purpose != 'ESTAB'
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: TextFormField(
+                                      controller: _lnameController,
+                                      decoration: Style.textdesign
+                                          .copyWith(labelText: 'Last Name'),
+                                    ),
+                                  )
+                                : Text("Proceed"),
 
-                            user.role == 'Intern' ||
-                                    widget.purpose == 'REGISTER'
+                            widget.purpose == 'INTERN'
                                 ? TextFormField(
                                     readOnly: true,
                                     controller: _bdayController,
@@ -263,8 +267,7 @@ class _SignupState extends State<Signup> {
                                     ),
                                   )
                                 : SizedBox(),
-                            user.role == 'Intern' ||
-                                    widget.purpose == 'REGISTER'
+                            widget.purpose == 'INTERN'
                                 ? Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10),
@@ -275,8 +278,7 @@ class _SignupState extends State<Signup> {
                                     ),
                                   )
                                 : SizedBox(),
-                            user.role == 'Intern' ||
-                                    widget.purpose == 'REGISTER'
+                            widget.purpose == 'INTERN'
                                 ? TextFormField(
                                     controller: _sectionController,
                                     decoration: Style.textdesign
@@ -363,7 +365,7 @@ class _SignupState extends State<Signup> {
 
                             const SizedBox(height: 20),
 
-                            user.role != "NMSCST"
+                            widget.purpose == "ESTAB"
                                 ? Container(
                                     decoration: Style.boxdecor,
                                     child: Padding(
@@ -371,7 +373,7 @@ class _SignupState extends State<Signup> {
                                       child: SizedBox(
                                           height: 100,
                                           width: 100,
-                                          child: user.role == 'Administrator'
+                                          child: widget.purpose == 'ESTAB'
                                               ? IconButton(
                                                   color: Colors.redAccent,
                                                   iconSize: 50,
@@ -416,7 +418,8 @@ class _SignupState extends State<Signup> {
                                                       setState(() {
                                                         done = false;
                                                         continued(
-                                                            user: user.role);
+                                                            user:
+                                                                widget.purpose);
                                                       });
                                                     }
                                                   },
@@ -427,9 +430,9 @@ class _SignupState extends State<Signup> {
                                 : SizedBox(),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(user.role == "Administrator"
+                              child: Text(widget.purpose == "ESTAB"
                                   ? "Click the icon to register Location"
-                                  : user.role == "Intern"
+                                  : widget.purpose == "Intern"
                                       ? "Click the icon to register Face Auth"
                                       : "Click continue to confirm"),
                             ),
@@ -541,7 +544,9 @@ class _SignupState extends State<Signup> {
     String section = _sectionController.text.trim();
     String radius = _radiusController.text.trim();
 
-    if ((email.isEmpty || password.isEmpty) && _currentStep == 0) {
+    if ((widget.purpose != "ESTAB") &&
+        (email.isEmpty || password.isEmpty) &&
+        _currentStep == 0) {
       String title = email.isEmpty ? "Email Empty !" : "Password Empty !";
       String message = "Please Enter ${email.isEmpty ? "Email" : "Password"}";
       showAlertDialog(context, title, message);
@@ -549,17 +554,19 @@ class _SignupState extends State<Signup> {
       String title = 'Email is already taken';
       String message = 'Select another email';
       showAlertDialog(context, title, message);
-    } else if ((name.isEmpty || id.isEmpty) && _currentStep == 1) {
+    } else if ((widget.purpose != "ESTAB") &&
+        (name.isEmpty || id.isEmpty) &&
+        _currentStep == 1) {
       String message = "Please Enter Account Details";
       String title = name.isEmpty ? "Input First Name" : "Input Last Name";
       showAlertDialog(context, title, message);
-    } else if (user == "Intern" &&
+    } else if (user == "INTERN" &&
         (uid.isEmpty || address.isEmpty || section.isEmpty) &&
         _currentStep == 1) {
       String message = "Please Enter Account Details";
       String title = "Input details";
       showAlertDialog(context, title, message);
-    } else if (user == 'Administrator' &&
+    } else if (user == 'ESTAB' &&
         (loc.isEmpty || cont.isEmpty || hours.isEmpty) &&
         _currentStep == 2) {
       String title = "Please Enter Location Details";
@@ -569,13 +576,15 @@ class _SignupState extends State<Signup> {
               ? "Input Establishment Name"
               : "Hours required for Interns";
       showAlertDialog(context, title, message);
-    } else if ((user == 'Intern' && done) && _currentStep == 2) {
-      String title = "Please Register Face";
-      String message = "Click icon to scan";
-      showAlertDialog(context, title, message);
-    } else if (_currentStep == 2) {
+    }
+    // else if ((user == 'Intern' && done) && _currentStep == 2) {
+    //   String title = "Please Register Face";
+    //   String message = "Click icon to scan";
+    //   showAlertDialog(context, title, message);
+    // }
+    else if (_currentStep == 2) {
       // ignore: use_build_context_synchronously
-      if (user == 'Intern' || user == 'NMSCST') {
+      if (widget.purpose != 'ESTAB') {
         await signup(context, email, password, id, name, user, bday, uid,
             address, section, widget.purpose);
       } else {
@@ -587,8 +596,8 @@ class _SignupState extends State<Signup> {
 
         await CreateSectEstab(context, code, cont, currentCoordinate,
             currentLng!, currentLat!, email, hours, radiusMeter);
-        await signup(context, email, password, id, name, user, bday, uid,
-            address, section, widget.purpose);
+        // await signup(context, email, password, id, name, user, bday, uid,
+        //     address, section, widget.purpose);
       }
     } else {
       _currentStep < 2 ? setState(() => _currentStep += 1) : null;

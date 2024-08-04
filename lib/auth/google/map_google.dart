@@ -20,8 +20,8 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    _centerPosition = LatLng(10.339696878741954,
-        123.90249833464621); // Initial center position (San Francisco)
+    _centerPosition = LatLng(
+        10.339696878741954, 123.90249833464621); // Initial center position
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -29,7 +29,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<String> _getAddress(LatLng position) async {
-    final apiKey = 'AIzaSyCatnsTU-2hveFqSVuU-wu04xya0r_PwAE';
+    final apiKey = 'AIzaSyDMi2Vr5XERmRQOMISjj8V3Mk21T7z4LjU';
     final url =
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey';
 
@@ -38,8 +38,7 @@ class _MapScreenState extends State<MapScreen> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['status'] == 'OK' && data['results'].isNotEmpty) {
-          final addressComponents = data['results'][1]['address_components'];
-          print(addressComponents);
+          final addressComponents = data['results'][0]['address_components'];
           String street = '';
           String city = '';
           String sublocality = '';
@@ -52,7 +51,7 @@ class _MapScreenState extends State<MapScreen> {
               city = component['long_name'];
             } else if (types.contains('sublocality')) {
               sublocality = component['long_name'];
-            } else if (types.contains('subAdministrativeArea')) {
+            } else if (types.contains('administrative_area_level_2')) {
               subAdministrativeArea = component['long_name'];
             }
           }
@@ -63,40 +62,6 @@ class _MapScreenState extends State<MapScreen> {
       print('Error fetching address: $e');
     }
     return 'Unknown Location';
-  }
-
-  Future<String> getAddressOld(LatLng position) async {
-    try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
-
-      if (placemarks.isNotEmpty) {
-        Placemark address = placemarks[2];
-        String addressStr = "";
-        print(address);
-
-        if (address.name != null &&
-            !address.name!.toLowerCase().contains('unnamed') &&
-            address.name != address.locality) {
-          addressStr += "${address.name} ";
-        }
-
-        addressStr +=
-            "${address.subLocality ?? ''} ${address.locality ?? ''}, ${address.subAdministrativeArea ?? ''}";
-
-        return addressStr;
-      }
-    } catch (e) {
-      print('Error fetching address using old method: $e');
-    }
-    return "Address not found";
-  }
-
-  void _updateAddress() async {
-    String address = await getAddressOld(_centerPosition);
-    setState(() {
-      _address = address;
-    });
   }
 
   Future<void> _locateUser() async {
@@ -139,7 +104,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _fetchAndDisplayInfo() async {
-    final apiKey = 'AIzaSyCatnsTU-2hveFqSVuU-wu04xya0r_PwAE';
+    final apiKey = 'AIzaSyDMi2Vr5XERmRQOMISjj8V3Mk21T7z4LjU';
     final url =
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${_centerPosition.latitude},${_centerPosition.longitude}&radius=50&type=point_of_interest&key=$apiKey';
 
@@ -159,7 +124,7 @@ class _MapScreenState extends State<MapScreen> {
             _address = '$poiName $poiAddress';
           });
         } else {
-          final address = await getAddressOld(_centerPosition);
+          final address = await _getAddress(_centerPosition);
           setState(() {
             _address = address;
           });
@@ -171,6 +136,13 @@ class _MapScreenState extends State<MapScreen> {
         _address = 'Error fetching info.';
       });
     }
+  }
+
+  void _updateAddress() async {
+    String address = await _getAddress(_centerPosition);
+    setState(() {
+      _address = address;
+    });
   }
 
   @override
@@ -208,7 +180,6 @@ class _MapScreenState extends State<MapScreen> {
             child: Icon(Icons.location_pin, size: 50, color: Colors.red),
           ),
           Positioned(
-            // top: 20,
             left: 0,
             right: 0,
             child: Container(

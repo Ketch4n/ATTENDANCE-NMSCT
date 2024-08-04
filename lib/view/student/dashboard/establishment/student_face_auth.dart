@@ -4,7 +4,7 @@ import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
-import 'package:attendance_nmsct/pages/home.dart';
+import 'package:attendance_nmsct/face_recognition/pages/home.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
