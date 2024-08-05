@@ -7,6 +7,7 @@ import 'package:attendance_nmsct/model/AllStudentModel.dart';
 import 'package:attendance_nmsct/model/EstabModel.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_sched.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/pdf.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/view_under_estab.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/cupertino.dart';
@@ -123,6 +124,19 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                       //       MaterialStateProperty.all<Color>(Colors.green),
                       // ),
                       child: Icon(Icons.add),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        generatePdf();
+                      },
+                      // style: ButtonStyle(
+                      //   backgroundColor:
+                      //       MaterialStateProperty.all<Color>(Colors.green),
+                      // ),
+                      child: Icon(Icons.picture_as_pdf),
                     ),
                   ],
                 ),
