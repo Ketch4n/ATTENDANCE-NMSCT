@@ -182,35 +182,35 @@ class _LoginState extends State<Login> {
                     //     Logo(imagePath: 'assets/images/fb.png'),
                     //   ],
                     // ),
-                    kIsWeb
-                        ? SizedBox()
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              TextButton(
-                                onPressed: null,
-                                style:
-                                    TextButton.styleFrom(textStyle: Style.link),
-                                child: Text("create new account ?"),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  final String purpose = 'Create';
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Signup(
-                                              purpose: purpose,
-                                            )),
-                                  );
-                                },
-                                style:
-                                    TextButton.styleFrom(textStyle: Style.link),
-                                child: const Text("Sign up"),
-                              ),
-                            ],
-                          ),
+                    // kIsWeb
+                    //     ? SizedBox()
+                    //     : Row(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         crossAxisAlignment: CrossAxisAlignment.center,
+                    //         children: [
+                    //           TextButton(
+                    //             onPressed: null,
+                    //             style:
+                    //                 TextButton.styleFrom(textStyle: Style.link),
+                    //             child: Text("create new account ?"),
+                    //           ),
+                    //           TextButton(
+                    //             onPressed: () {
+                    //               final String purpose = 'Create';
+                    //               Navigator.push(
+                    //                 context,
+                    //                 MaterialPageRoute(
+                    //                     builder: (context) => Signup(
+                    //                           purpose: purpose,
+                    //                         )),
+                    //               );
+                    //             },
+                    //             style:
+                    //                 TextButton.styleFrom(textStyle: Style.link),
+                    //             child: const Text("Sign up"),
+                    //           ),
+                    //         ],
+                    //       ),
                     SizedBox(
                       height: 20,
                     ),
@@ -226,58 +226,58 @@ class _LoginState extends State<Login> {
                     //   },
                     //   child: Text("FACE"),
                     // )
-                    user.role == 'Intern'
-                        ? GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FaceLauncherPage(
-                                          purpose: 'signin',
-                                          refreshCallback: () {},
-                                        )),
-                              );
-                            },
-                            child: Container(
-                              decoration: Style.boxdecor,
-                              child: Padding(
-                                padding: const EdgeInsets.all(3.0),
-                                child: SizedBox(
-                                  height: 100,
-                                  width: 100,
-                                  child: kIsWeb
-                                      ? Center(child: Text("SCAN"))
-                                      : Lottie.asset('assets/scan.json'),
-                                ),
-                              ),
-                            ),
-                          )
-                        : user.role == 'Administrator'
-                            ? SizedBox(
-                                height: 150,
-                                width: 150,
-                                child: Image.asset('assets/settings.png'))
-                            : SizedBox(),
+                    // user.role == 'Intern'
+                    //     ? GestureDetector(
+                    //         onTap: () {
+                    //           Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) => FaceLauncherPage(
+                    //                       purpose: 'signin',
+                    //                       refreshCallback: () {},
+                    //                     )),
+                    //           );
+                    //         },
+                    //         child: Container(
+                    //           decoration: Style.boxdecor,
+                    //           child: Padding(
+                    //             padding: const EdgeInsets.all(3.0),
+                    //             child: SizedBox(
+                    //               height: 100,
+                    //               width: 100,
+                    //               child: kIsWeb
+                    //                   ? Center(child: Text("SCAN"))
+                    //                   : Lottie.asset('assets/scan.json'),
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       )
+                    //     : user.role == 'Administrator'
+                    //         ? SizedBox(
+                    //             height: 150,
+                    //             width: 150,
+                    //             child: Image.asset('assets/settings.png'))
+                    //         : SizedBox(),
 
-                    kIsWeb
-                        ? SizedBox()
-                        : Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
-                            child: TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  if (user.role == "Intern") {
-                                    user.role = "Administrator";
-                                  } else {
-                                    user.role = "Intern";
-                                  }
-                                });
-                              },
-                              child: Text(user.role == "Intern"
-                                  ? "Switch to Establishment"
-                                  : "Switch to Intern / OJT"),
-                            ),
-                          )
+                    // kIsWeb
+                    //     ? SizedBox()
+                    //     : Padding(
+                    //         padding: const EdgeInsets.only(top: 10.0),
+                    //         child: TextButton(
+                    //           onPressed: () {
+                    //             setState(() {
+                    //               if (user.role == "Intern") {
+                    //                 user.role = "Administrator";
+                    //               } else {
+                    //                 user.role = "Intern";
+                    //               }
+                    //             });
+                    //           },
+                    //           child: Text(user.role == "Intern"
+                    //               ? "Switch to Establishment"
+                    //               : "Switch to Intern / OJT"),
+                    //         ),
+                    //       )
                   ],
                 ),
               ),

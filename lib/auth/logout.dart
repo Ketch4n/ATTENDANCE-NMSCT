@@ -43,6 +43,7 @@ Future logout(BuildContext context, purpose) async {
               prefs.remove('internBDAY');
               prefs.remove('internADDRESS');
               prefs.remove('adminEstab');
+              prefs.remove('userStatus');
               // prefs.remove('userEstabLocation');
               if (purpose == 'Exit') {
                 Navigator.of(context).pop(true);

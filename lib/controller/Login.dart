@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
+import 'package:attendance_nmsct/face_recognition/pages/home.dart';
 import 'package:attendance_nmsct/view/administrator/home.dart';
 import 'package:attendance_nmsct/view/student/home.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
@@ -47,6 +48,7 @@ Future<void> login(
         final userLName = data['lname'];
         final userEmail = data['email'];
         final adminEstab = data['establishment_id'];
+        final userStatus = data['status'];
 
         // final status = "${response.statusCode}";
         if (data['success']) {
@@ -56,11 +58,13 @@ Future<void> login(
           prefs.setString('userFName', userFName);
           prefs.setString('userLName', userLName);
           prefs.setString('userEmail', userEmail);
+
           Session.id = userId;
           Session.role = userRole;
           Session.fname = userFName;
           Session.lname = userLName;
           Session.email = userEmail;
+          Session.status = userStatus;
 
           if (role == "Intern") {
             final uid = data['uid'];
@@ -69,6 +73,7 @@ Future<void> login(
             prefs.setString('internID', uid);
             prefs.setString('internBDAY', bday);
             prefs.setString('internADDRESS', address);
+            prefs.setString('userStatus', userStatus);
           } else {
             prefs.setString('adminEstab', adminEstab);
             Admin.estab_id = adminEstab;
@@ -77,19 +82,28 @@ Future<void> login(
           String content = "Welcome $message";
 
           await showAlertDialog(context, title, content);
-          userRole == 'Intern'
+          userRole == 'Intern' && userStatus == "Active"
               ? Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const StudentHome(),
                   ),
                 )
-              : Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AdministratorHome(),
-                  ),
-                );
+              : userRole == 'Intern' && userStatus == "Inactive"
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FaceLauncherPage(
+                                purpose: 'signup',
+                                refreshCallback: () {},
+                              )),
+                    )
+                  : Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AdministratorHome(),
+                      ),
+                    );
         } else {
           const title = "Login failed";
           await showAlertDialog(context, title, message);

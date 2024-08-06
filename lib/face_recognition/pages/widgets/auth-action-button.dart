@@ -1,4 +1,5 @@
 import 'package:attendance_nmsct/controller/Login.dart';
+import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/face_recognition/locator.dart';
@@ -8,10 +9,15 @@ import 'package:attendance_nmsct/face_recognition/pages/profile.dart';
 import 'package:attendance_nmsct/face_recognition/pages/widgets/app_button.dart';
 import 'package:attendance_nmsct/face_recognition/services/camera.service.dart';
 import 'package:attendance_nmsct/face_recognition/services/ml_service.dart';
+import 'package:attendance_nmsct/view/student/home.dart';
+import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../home.dart';
 import 'app_text_field.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class AuthActionButton extends StatefulWidget {
   AuthActionButton({
@@ -51,9 +57,21 @@ class _AuthActionButtonState extends State<AuthActionButton> {
     // FaceDone.status = false;
     await _databaseHelper.insert(userToSave);
     this._mlService.setPredictedData([]);
-    Navigator.pop(context, user);
-    Navigator.pop(context, user);
-    Navigator.pop(context, user);
+
+    final title = "Success";
+    final message = "Face Data Registered Successfully";
+    await updateUser();
+    await showAlertDialog(context, title, message);
+    // Navigator.pop(context, user);
+    // Navigator.pop(context, user);
+    // Navigator.pop(context, user);
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const StudentHome(),
+      ),
+    );
 
     // Navigator.pushReplacement(
     //     context,
@@ -61,6 +79,36 @@ class _AuthActionButtonState extends State<AuthActionButton> {
     //         builder: (BuildContext context) => FaceLauncherPage(
     //               purpose: 'signin',
     //             )));
+  }
+// URL of your PHP script
+
+  Future<void> updateUser() async {
+    String apiUrl = '${Server.host}auth/update_status.php';
+    final prefs = await SharedPreferences.getInstance();
+    final userID = prefs.getString('userId');
+    // final userEMAIL = prefs.getString('userEmail');
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'id': userID,
+        'status': "Active",
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      if (responseData['success']) {
+        print('Update successful: ${responseData['message']}');
+      } else {
+        print('Update failed: ${responseData['message']}');
+      }
+    } else {
+      print('Server error: ${response.statusCode}');
+    }
   }
 
   Future _signIn(context) async {

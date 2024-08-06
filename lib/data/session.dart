@@ -6,6 +6,7 @@ class Session {
   static String fname = "";
   static String lname = "";
   static String email = "";
+  static String status = "";
   static double? longitude;
   static double? latitude;
   static double? radius;

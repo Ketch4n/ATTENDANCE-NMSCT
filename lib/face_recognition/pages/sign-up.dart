@@ -9,6 +9,8 @@ import 'package:attendance_nmsct/face_recognition/pages/widgets/camera_header.da
 import 'package:attendance_nmsct/face_recognition/services/camera.service.dart';
 import 'package:attendance_nmsct/face_recognition/services/face_detector_service.dart';
 import 'package:attendance_nmsct/face_recognition/services/ml_service.dart';
+import 'package:attendance_nmsct/view/student/home.dart';
+import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:flutter/material.dart';
