@@ -1,5 +1,5 @@
 class EstabTodayModel {
-  final int id;
+  final String id;
   final String student_id;
   final String estab_id;
   final String time_in_am;

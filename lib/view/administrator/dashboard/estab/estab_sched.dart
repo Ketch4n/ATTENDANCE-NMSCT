@@ -19,6 +19,23 @@ class _ViewSchedState extends State<ViewSched> {
   TimeOfDay? _time3;
   TimeOfDay? _time4;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  TimeOfDay? _parseTime(String? timeString) {
+    if (timeString == null || timeString.isEmpty) return null;
+    final format = DateFormat('HH:mm');
+    try {
+      final dateTime = format.parse(timeString);
+      return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+    } catch (e) {
+      print('Error parsing time: $e');
+      return null;
+    }
+  }
+
   Future<void> _selectTime(BuildContext context, int index) async {
     TimeOfDay? selectedTime = await showTimePicker(
       context: context,
@@ -46,7 +63,7 @@ class _ViewSchedState extends State<ViewSched> {
   }
 
   String _formatTime(TimeOfDay? time) {
-    if (time == null) return 'Not Set';
+    if (time == null) return '';
     final now = DateTime.now(); // Use current date
     final dateTime = DateTime(
       now.year,

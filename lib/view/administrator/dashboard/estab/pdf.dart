@@ -1,22 +1,29 @@
+import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:intl/intl.dart'; // Import this for date formatting
 
-Future<void> generatePdf() async {
-  // CELL ALIGNMENT AND STYLE
-  pw.Widget centeredCell(String text, {pw.TextStyle? style}) {
-    return pw.Container(
-      padding: const pw.EdgeInsets.all(4), // Reduced padding
-      alignment: pw.Alignment.center,
-      child: pw.Text(
-        text,
-        style: style ?? pw.TextStyle(fontSize: 8), // Reduced font size
-      ),
-    );
-  }
+// CELL ALIGNMENT AND STYLE
+pw.Widget centeredCell(String text, {pw.TextStyle? style}) {
+  return pw.Container(
+    padding: const pw.EdgeInsets.all(4),
+    alignment: pw.Alignment.center,
+    child: pw.Text(
+      text,
+      style: style ?? pw.TextStyle(fontSize: 8),
+    ),
+  );
+}
 
+Future<void> generatePdf(
+    List<EstabTodayModel> dtrData, String latestGrandTotalHours) async {
+  if (dtrData.isEmpty) return;
   // INITIALIZE PDF
   final pdf = pw.Document();
+
+  DateTime firstDate = DateFormat('yyyy-MM-dd').parse(dtrData[0].date ?? '');
+  String monthFormatted = DateFormat('MMM yyyy').format(firstDate);
 
   // TABLE PAGE
   pdf.addPage(
@@ -27,133 +34,133 @@ Future<void> generatePdf() async {
           children: [
             pw.Text(
               'Daily Time Record',
-              style: const pw.TextStyle(fontSize: 16), // Reduced font size
+              style: const pw.TextStyle(fontSize: 16),
             ),
-            pw.SizedBox(height: 10), // Reduced space
+            pw.SizedBox(height: 10),
             pw.Padding(
-              padding: const pw.EdgeInsets.all(15), // Reduced padding
+              padding: pw.EdgeInsets.all(15),
               child: pw.ListView(
                 children: [
                   pw.Text(
-                    "LASTNAME, FIRSTNAME",
+                    dtrData[0].lname!,
                     style: const pw.TextStyle(
-                      fontSize: 12, // Reduced font size
+                      fontSize: 12,
                       decoration: pw.TextDecoration.underline,
                     ),
                   ),
-                  pw.Text("(NAME)",
-                      style: const pw.TextStyle(
-                          fontSize: 10)), // Reduced font size
+                  pw.Text("(NAME)", style: const pw.TextStyle(fontSize: 10)),
                 ],
               ),
             ),
-            pw.Expanded(
-                child: pw.Container(
-              child: pw.Column(
-                children: [
-                  // HEADER
-                  pw.Table(
-                    border: pw.TableBorder.all(
-                        width: 1,
-                        color: PdfColors.black), // Reduced border width
-                    columnWidths: {
-                      0: pw.FixedColumnWidth(30), // Reduced column width
-                      1: const pw.FlexColumnWidth(),
-                      2: const pw.FlexColumnWidth(),
-                      3: const pw.FlexColumnWidth(),
-                    },
-                    children: [
-                      pw.TableRow(
-                        children: [
-                          centeredCell('Day',
-                              style: const pw.TextStyle(
-                                  fontSize: 10)), // Reduced font size
-                          centeredCell('AM',
-                              style: const pw.TextStyle(
-                                  fontSize: 10)), // Reduced font size
-                          centeredCell('PM',
-                              style: const pw.TextStyle(
-                                  fontSize: 10)), // Reduced font size
-                          centeredCell('UNDERTIME',
-                              style: const pw.TextStyle(
-                                  fontSize: 10)), // Reduced font size
-                        ],
-                      ),
-                    ],
+            pw.ListView(
+              children: [
+                pw.Text(
+                  monthFormatted,
+                  style: const pw.TextStyle(
+                    fontSize: 12,
+                    decoration: pw.TextDecoration.underline,
                   ),
-                  // SUB-HEADER
-
-                  pw.Table(
-                    border: pw.TableBorder.all(
-                        width: 1,
-                        color: PdfColors.black), // Reduced border width
-                    columnWidths: {
-                      0: pw.FixedColumnWidth(30), // Reduced column width
-                      1: pw.FlexColumnWidth(),
-                      2: pw.FlexColumnWidth(),
-                      3: pw.FlexColumnWidth(),
-                      4: pw.FlexColumnWidth(),
-                      5: pw.FlexColumnWidth(),
-                      6: pw.FlexColumnWidth(),
-                    },
-                    children: [
-                      pw.TableRow(
-                        children: [
-                          centeredCell('Date',
-                              style: const pw.TextStyle(
-                                  fontSize: 10)), // Reduced font size
-                          centeredCell('Arrival',
-                              style: const pw.TextStyle(
-                                  fontSize: 10)), // Reduced font size
-                          centeredCell('Departure',
-                              style: const pw.TextStyle(
-                                  fontSize: 10)), // Reduced font size
-                          centeredCell('Arrival',
-                              style: const pw.TextStyle(
-                                  fontSize: 10)), // Reduced font size
-                          centeredCell('Departure',
-                              style: const pw.TextStyle(
-                                  fontSize: 10)), // Reduced font size
-                          centeredCell('Hours',
-                              style: const pw.TextStyle(
-                                  fontSize: 10)), // Reduced font size
-                          centeredCell('Minutes',
-                              style: const pw.TextStyle(
-                                  fontSize: 10)), // Reduced font size
-                        ],
-                      ),
-                      // BODY
-                      for (var i = 0; i < 30; i++)
+                ),
+                pw.SizedBox(height: 20)
+              ],
+            ),
+            pw.Expanded(
+              child: pw.Container(
+                child: pw.Column(
+                  children: [
+                    // HEADER
+                    pw.Table(
+                      border:
+                          pw.TableBorder.all(width: 1, color: PdfColors.black),
+                      columnWidths: {
+                        0: pw.FixedColumnWidth(30),
+                        1: const pw.FlexColumnWidth(),
+                        2: const pw.FlexColumnWidth(),
+                        3: const pw.FlexColumnWidth(),
+                      },
+                      children: [
                         pw.TableRow(
                           children: [
-                            centeredCell('${i + 1}',
-                                style: const pw.TextStyle(
-                                    fontSize: 8)), // Reduced font size
-                            centeredCell('08:00 AM',
-                                style: const pw.TextStyle(
-                                    fontSize: 8)), // Reduced font size
-                            centeredCell('12:00 PM',
-                                style: const pw.TextStyle(
-                                    fontSize: 8)), // Reduced font size
-                            centeredCell('01:00 PM',
-                                style: const pw.TextStyle(
-                                    fontSize: 8)), // Reduced font size
-                            centeredCell('05:00 PM',
-                                style: const pw.TextStyle(
-                                    fontSize: 8)), // Reduced font size
-                            centeredCell('8 hrs',
-                                style: const pw.TextStyle(
-                                    fontSize: 8)), // Reduced font size
-                            centeredCell('0 min',
-                                style: const pw.TextStyle(
-                                    fontSize: 8)), // Reduced font size
+                            centeredCell('Day',
+                                style: const pw.TextStyle(fontSize: 10)),
+                            centeredCell('AM',
+                                style: const pw.TextStyle(fontSize: 10)),
+                            centeredCell('PM',
+                                style: const pw.TextStyle(fontSize: 10)),
+                            centeredCell('UNDERTIME',
+                                style: const pw.TextStyle(fontSize: 10)),
                           ],
                         ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                    // SUB-HEADER
+                    pw.Table(
+                      border:
+                          pw.TableBorder.all(width: 1, color: PdfColors.black),
+                      columnWidths: {
+                        0: pw.FixedColumnWidth(30),
+                        1: pw.FlexColumnWidth(),
+                        2: pw.FlexColumnWidth(),
+                        3: pw.FlexColumnWidth(),
+                        4: pw.FlexColumnWidth(),
+                        5: pw.FlexColumnWidth(),
+                        6: pw.FlexColumnWidth(),
+                      },
+                      children: [
+                        pw.TableRow(
+                          children: [
+                            centeredCell('Date',
+                                style: const pw.TextStyle(fontSize: 10)),
+                            centeredCell('Arrival',
+                                style: const pw.TextStyle(fontSize: 10)),
+                            centeredCell('Departure',
+                                style: const pw.TextStyle(fontSize: 10)),
+                            centeredCell('Arrival',
+                                style: const pw.TextStyle(fontSize: 10)),
+                            centeredCell('Departure',
+                                style: const pw.TextStyle(fontSize: 10)),
+                            centeredCell('Hours',
+                                style: const pw.TextStyle(fontSize: 10)),
+                            centeredCell('Minutes',
+                                style: const pw.TextStyle(fontSize: 10)),
+                          ],
+                        ),
+                        // BODY
+                        for (var i = 0; i < dtrData.length; i++)
+                          pw.TableRow(
+                            children: [
+                              centeredCell(
+                                  DateFormat('d').format(
+                                    DateFormat('yyyy-MM-dd')
+                                        .parse(dtrData[i].date ?? ''),
+                                  ),
+                                  style: const pw.TextStyle(fontSize: 8)),
+                              centeredCell(dtrData[i].time_in_am ?? '',
+                                  style: const pw.TextStyle(fontSize: 8)),
+                              centeredCell(dtrData[i].time_out_am ?? '',
+                                  style: const pw.TextStyle(fontSize: 8)),
+                              centeredCell(dtrData[i].time_in_pm ?? '',
+                                  style: const pw.TextStyle(fontSize: 8)),
+                              centeredCell(dtrData[i].time_out_pm ?? '',
+                                  style: const pw.TextStyle(fontSize: 8)),
+                              centeredCell('Calculated Hours', // Placeholder
+                                  style: const pw.TextStyle(fontSize: 8)),
+                              centeredCell('Calculated Minutes', // Placeholder
+                                  style: const pw.TextStyle(fontSize: 8)),
+                            ],
+                          ),
+                      ],
+                    ),
+                    pw.SizedBox(height: 20),
+
+                    pw.Row(children: [
+                      pw.Text("Total Hours rendered:"),
+                      pw.Text(latestGrandTotalHours)
+                    ])
+                  ],
+                ),
               ),
-            )),
+            ),
           ],
         );
       },

@@ -125,19 +125,6 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                       // ),
                       child: Icon(Icons.add),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        generatePdf();
-                      },
-                      // style: ButtonStyle(
-                      //   backgroundColor:
-                      //       MaterialStateProperty.all<Color>(Colors.green),
-                      // ),
-                      child: Icon(Icons.picture_as_pdf),
-                    ),
                   ],
                 ),
                 Align(
@@ -148,9 +135,10 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                     child: DataTable(
                       columns: [
                         DataColumn(label: Text('Establishment Name')),
-                        // DataColumn(label: Text('Creator Email')),
-                        DataColumn(label: Text('Location')),
+                        DataColumn(label: Text('Coordinates')),
                         DataColumn(label: Text('Hours Required')),
+                        DataColumn(label: Text('Arrival AM')),
+                        DataColumn(label: Text('Arrival PM')),
                         DataColumn(label: Text('Schedule'))
                       ],
                       rows: interns
@@ -194,12 +182,6 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                                     ),
                                   ),
                                 ),
-                                // DataCell(
-                                //   Text(
-                                //     classmate.creator_email,
-                                //     style: const TextStyle(fontSize: 12),
-                                //   ),
-                                // ),
                                 DataCell(
                                   Text(
                                     classmate.location,
@@ -212,6 +194,20 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                                     style: const TextStyle(fontSize: 12),
                                   ),
                                 ),
+                                DataCell(Text(
+                                  classmate.in_am == null ||
+                                          classmate.in_am!.isEmpty
+                                      ? 'NOT SET'
+                                      : classmate.in_am!,
+                                  style: const TextStyle(fontSize: 12),
+                                )),
+                                DataCell(Text(
+                                  classmate.in_am == null ||
+                                          classmate.in_pm!.isEmpty
+                                      ? 'NOT SET'
+                                      : classmate.in_am!,
+                                  style: const TextStyle(fontSize: 12),
+                                )),
                                 DataCell(GestureDetector(
                                     onTap: () {
                                       _showAlertDialog(

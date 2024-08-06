@@ -50,7 +50,7 @@ class _AdminListState extends State<AdminList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Admin List'),
+        title: Text('Admin Instructor List'),
         centerTitle: true,
       ),
       body: interns.isNotEmpty

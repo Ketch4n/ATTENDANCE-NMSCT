@@ -212,7 +212,7 @@ class _NavbarState extends State<Navbar> {
               Session.role == 'SUPER ADMIN'
                   ? ListTile(
                       leading: const Icon(Icons.settings),
-                      title: const Text('Add Admins'),
+                      title: const Text('Add Instructor'),
                       onTap: () {
                         Navigator.of(context).pop(false);
 
@@ -226,7 +226,7 @@ class _NavbarState extends State<Navbar> {
               Session.role == 'SUPER ADMIN'
                   ? ListTile(
                       leading: const Icon(Icons.people),
-                      title: const Text('List of Admins'),
+                      title: const Text('Admin Instructors'),
                       onTap: () {
                         Navigator.of(context).pop(false);
 

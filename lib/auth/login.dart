@@ -84,8 +84,8 @@ class _LoginState extends State<Login> {
                       child: user.role == 'Intern'
                           ? Text("OJT Student / Intern", style: Style.text)
                           : user.role == 'Administrator'
-                              ? Text("Establishment", style: Style.text)
-                              : Text("Administrator", style: Style.text),
+                              ? Text("INSTRUCTOR", style: Style.text)
+                              : Text("OJT COORDINATOR", style: Style.text),
                     ),
                     Container(
                       constraints: BoxConstraints(maxWidth: 500),
@@ -133,16 +133,16 @@ class _LoginState extends State<Login> {
                             // ),
                             TextButton(
                               onPressed: () async {
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AdministratorHome()));
-                                // final email = _emailController.text.trim();
-                                // final password = _passController.text.trim();
-                                // await login(
-                                //     context, email, password, user.role);
-                                // // ignore: avoid_print
-                                // print("Clicked");
+                                // Navigator.of(context).pushReplacement(
+                                //     MaterialPageRoute(
+                                //         builder: (context) =>
+                                //             AdministratorHome()));
+                                final email = _emailController.text.trim();
+                                final password = _passController.text.trim();
+                                await login(
+                                    context, email, password, user.role);
+                                // ignore: avoid_print
+                                print("Clicked");
                               },
                               autofocus: true,
                               style: TextButton.styleFrom(

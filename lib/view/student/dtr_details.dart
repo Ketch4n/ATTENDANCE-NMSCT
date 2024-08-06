@@ -7,6 +7,7 @@ import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/pdf.dart';
 import 'package:attendance_nmsct/view/student/calculate_distance.dart';
 import 'package:attendance_nmsct/view/student/location_label.dart';
 import 'package:excel/excel.dart';
@@ -170,11 +171,14 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                                 Session.role == "Administrator"
                                     ? MaterialButton(
                                         color: Colors.blue,
-                                        onPressed: () {
-                                          exportToExcel(snap2);
+                                        onPressed: () async {
+                                          final dtrData = snapshot.data ??
+                                              []; // Retrieve your data
+                                          await generatePdf(
+                                              dtrData, latestGrandTotalHours);
                                         },
                                         child: const Text(
-                                          'Export to Excel',
+                                          'Export to PDF',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontFamily: "NexaBold",
@@ -201,11 +205,15 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                                                   "SUPER ADMIN"
                                               ? MaterialButton(
                                                   color: Colors.blue,
-                                                  onPressed: () {
-                                                    exportToExcel(snap2);
+                                                  onPressed: () async {
+                                                    final dtrData = snapshot
+                                                            .data ??
+                                                        []; // Retrieve your data
+                                                    await generatePdf(dtrData,
+                                                        latestGrandTotalHours);
                                                   },
                                                   child: const Text(
-                                                    'Export to Excel',
+                                                    'Export to PDF',
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontFamily: "NexaBold",
