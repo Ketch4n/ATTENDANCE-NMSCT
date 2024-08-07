@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:attendance_nmsct/auth/auth.dart';
 import 'package:attendance_nmsct/auth/login.dart';
+import 'package:attendance_nmsct/controller/Insert_Announcement.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +33,13 @@ Future signup(
   final jsonResponse = json.decode(response.body);
   final message = jsonResponse['message'];
   final status = jsonResponse['status'];
+  final details = Server.link;
+  const subject = "Click the link below to download the Application";
 
   if (response.statusCode == 200) {
     await showAlertDialog(context, status, message);
+
+    insertAnnouncement(context, details, email as List<String>, subject);
     // purpose == 'Create'
     //     ?
     Navigator.pushReplacement(

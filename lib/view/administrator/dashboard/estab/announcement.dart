@@ -116,12 +116,14 @@ class _AnnouncementState extends State<Announcement> {
             ElevatedButton(
               onPressed: () async {
                 String message = _announcement.text;
+                String subject = "Attention All Students !";
                 if (message.isEmpty) {
                   await accAlertDialog(
                       context, "Empty", "Cannot add empty message");
                 } else {
                   await fetchUserEmails(); // Fetch user emails
-                  await insertAnnouncement(context, message, _userEmails);
+                  await insertAnnouncement(
+                      context, message, _userEmails, subject);
                   _announcement.clear();
                   setState(() {});
                 }

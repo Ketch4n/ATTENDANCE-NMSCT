@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
 
-Future<void> insertAnnouncement(
-    BuildContext context, String details, List<String> userEmails) async {
+Future<void> insertAnnouncement(BuildContext context, String details,
+    List<String> userEmails, String subject) async {
   Map<String, String> headers = {'Content-Type': 'application/json'};
   String apiUrl = '${Server.host}users/student/write_announcement.php';
 
@@ -26,7 +26,9 @@ Future<void> insertAnnouncement(
       final status = jsonResponse['status'];
 
       showAlertDialog(context, status, message);
-      await sendToAll(userEmails, formattedDetails); // Await the email sending
+      await sendToAll(
+          userEmails, formattedDetails, subject); // Await the email sending
+      print("SUCCESS EMAIL");
 
       // Handle success message as needed
     } else {
@@ -42,7 +44,8 @@ Future<void> insertAnnouncement(
   }
 }
 
-Future<void> sendToAll(List<String> userEmails, String announce) async {
+Future<void> sendToAll(
+    List<String> userEmails, String announce, String subject) async {
   final url = '${Server.host}db/sendmail.php';
   final headers = {'Content-Type': 'application/json'};
   final body = json.encode({'user_emails': userEmails, 'announce': announce});
