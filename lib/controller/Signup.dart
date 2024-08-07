@@ -25,6 +25,7 @@ Future signup(
 ) async {
   String apiUrl = '${Server.host}auth/signup.php';
   Map<String, String> headers = {'Content-Type': 'application/json'};
+  final recipient = email;
   final date = DateFormat('yyyy-MM-dd').format(bday.toLocal());
   String jsonData =
       '{"email": "$email", "password": "$password", "fname": "$name", "lname": "$id","uid":"$uid", "bday":"$date","address":"$address","section":"$section","role":"$roleController","purpose":"$purpose"}';
@@ -34,12 +35,12 @@ Future signup(
   final message = jsonResponse['message'];
   final status = jsonResponse['status'];
   final details = Server.link;
+
   const subject = "Click the link below to download the Application";
 
   if (response.statusCode == 200) {
+    await sendToAll(context, recipient, details, subject);
     await showAlertDialog(context, status, message);
-
-    insertAnnouncement(context, details, email as List<String>, subject);
     // purpose == 'Create'
     //     ?
     Navigator.pushReplacement(

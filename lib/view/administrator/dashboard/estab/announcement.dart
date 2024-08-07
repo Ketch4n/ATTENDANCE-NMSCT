@@ -42,29 +42,29 @@ class _AnnouncementState extends State<Announcement> {
     }
   }
 
-  Future<void> fetchUserEmails() async {
-    try {
-      final response = await http.get(Uri.parse(
-          '${Server.host}users/establishment/get_all_students_email.php'));
+  // Future<void> fetchUserEmails() async {
+  //   try {
+  //     final response = await http.get(Uri.parse(
+  //         '${Server.host}users/establishment/get_all_students_email.php'));
 
-      if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.body);
-        List<String> userEmails =
-            data.map((email) => email['email'].toString()).toList();
+  //     if (response.statusCode == 200) {
+  //       List<dynamic> data = jsonDecode(response.body);
+  //       List<String> userEmails =
+  //           data.map((email) => email['email'].toString()).toList();
 
-        setState(() {
-          _userEmails = userEmails;
-        });
+  //       setState(() {
+  //         _userEmails = userEmails;
+  //       });
 
-        print("ALL EMAILS: ${_userEmails}");
-      } else {
-        throw Exception('Failed to load user emails');
-      }
-    } catch (e) {
-      print('Error fetching user emails: $e');
-      // Handle error, e.g., show error message to the user
-    }
-  }
+  //       print("ALL EMAILS: ${_userEmails}");
+  //     } else {
+  //       throw Exception('Failed to load user emails');
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching user emails: $e');
+  //     // Handle error, e.g., show error message to the user
+  //   }
+  // }
 
   Future<void> deleteAnnouncement(id) async {
     String apiUrl = '${Server.host}users/student/delete_announcement.php';
@@ -121,9 +121,8 @@ class _AnnouncementState extends State<Announcement> {
                   await accAlertDialog(
                       context, "Empty", "Cannot add empty message");
                 } else {
-                  await fetchUserEmails(); // Fetch user emails
-                  await insertAnnouncement(
-                      context, message, _userEmails, subject);
+                  // await fetchUserEmails(); // Fetch user emails
+                  await insertAnnouncement(context, message, subject);
                   _announcement.clear();
                   setState(() {});
                 }

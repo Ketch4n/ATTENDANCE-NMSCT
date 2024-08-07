@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
 
-Future<void> insertAnnouncement(BuildContext context, String details,
-    List<String> userEmails, String subject) async {
+Future<void> insertAnnouncement(
+    BuildContext context, String details, String subject) async {
   Map<String, String> headers = {'Content-Type': 'application/json'};
   String apiUrl = '${Server.host}users/student/write_announcement.php';
 
@@ -24,15 +24,16 @@ Future<void> insertAnnouncement(BuildContext context, String details,
       final jsonResponse = json.decode(response.body);
       final message = jsonResponse['message'];
       final status = jsonResponse['status'];
+      final email = "";
 
-      showAlertDialog(context, status, message);
       await sendToAll(
-          userEmails, formattedDetails, subject); // Await the email sending
+          context, email, formattedDetails, subject); // Await the email sending
       print("SUCCESS EMAIL");
+      showAlertDialog(context, status, message);
 
       // Handle success message as needed
     } else {
-      // Handle other status codes (e.g., 400, 500) as needed
+      // Handle other status codes (e.g., 400, 500) as needed+
       final errorMessage =
           'Failed to upload data. Status Code: ${response.statusCode}';
       showAlertDialog(context, 'Error', errorMessage);
@@ -44,11 +45,12 @@ Future<void> insertAnnouncement(BuildContext context, String details,
   }
 }
 
-Future<void> sendToAll(
-    List<String> userEmails, String announce, String subject) async {
-  final url = '${Server.host}db/sendmail.php';
-  final headers = {'Content-Type': 'application/json'};
-  final body = json.encode({'user_emails': userEmails, 'announce': announce});
+Future<void> sendToAll(BuildContext context, String emails, String announce,
+    String subject) async {
+  Map<String, String> headers = {'Content-Type': 'application/json'};
+  String url = '${Server.host}db/sendmail.php';
+  String body = json.encode(
+      {'user_emails': emails, 'announce': announce, 'subject': subject});
 
   try {
     final response =
