@@ -1,13 +1,19 @@
-import 'package:attendance_nmsct/data/server.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:attendance_nmsct/data/server.dart';
 
 class ViewSched extends StatefulWidget {
-  const ViewSched({super.key, required this.name, required this.id});
+  const ViewSched(
+      {super.key,
+      required this.name,
+      required this.id,
+      required this.onDialogClose});
   final String name;
   final int id;
+  final VoidCallback
+      onDialogClose; // Callback to notify parent when dialog is closed
 
   @override
   State<ViewSched> createState() => _ViewSchedState();
@@ -77,7 +83,7 @@ class _ViewSchedState extends State<ViewSched> {
 
   Future<void> _saveTimes() async {
     final times = {
-      'ESTAB_ID': widget.id,
+      'ESTAB_ID': widget.id.toString(), // Ensure ID is sent as a string
       'IN_AM': _formatTime(_time1),
       'OUT_AM': _formatTime(_time2),
       'IN_PM': _formatTime(_time3),
@@ -88,20 +94,20 @@ class _ViewSchedState extends State<ViewSched> {
     final jsonTimes = json.encode(times);
 
     // Call the API or function to save the time data
-    await saveTimesToServer(jsonTimes);
+    final success = await saveTimesToServer(jsonTimes);
+
+    // Close the dialog and call the callback
+    Navigator.of(context).pop();
+    widget.onDialogClose(); // Call the callback here
 
     // Show a confirmation dialog
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Saved Times'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: times.entries.map((entry) {
-              return Text('${entry.key}: ${entry.value}');
-            }).toList(),
-          ),
+          title: Text(success ? 'Success' : 'Error'),
+          content: Text(
+              success ? 'Times saved successfully.' : 'Failed to save times.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -115,18 +121,25 @@ class _ViewSchedState extends State<ViewSched> {
     );
   }
 
-  Future<void> saveTimesToServer(String jsonData) async {
+  Future<bool> saveTimesToServer(String jsonData) async {
     String apiUrl =
         '${Server.host}users/admin/create_schedule.php'; // Replace with your actual API URL
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
-    final response =
-        await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
+    try {
+      final response =
+          await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
 
-    if (response.statusCode == 200) {
-      print('Times saved successfully');
-    } else {
-      print('Failed to save times: ${response.body}');
+      if (response.statusCode == 200) {
+        print('Times saved successfully');
+        return true; // Indicate success
+      } else {
+        print('Failed to save times: ${response.body}');
+        return false; // Indicate failure
+      }
+    } catch (e) {
+      print('Error saving times: $e');
+      return false; // Indicate failure
     }
   }
 

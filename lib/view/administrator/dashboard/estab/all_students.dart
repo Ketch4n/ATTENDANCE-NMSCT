@@ -125,7 +125,7 @@ class _AllStudentsState extends State<AllStudents> {
     return Scaffold(
       appBar: Session.role == "SUPER ADMIN"
           ? AppBar(
-              title: Text('All Students List'),
+              title: const Text('All Students List'),
               centerTitle: true,
             )
           : null,
@@ -143,7 +143,27 @@ class _AllStudentsState extends State<AllStudents> {
                   onChanged: filterInterns,
                   decoration: InputDecoration(
                     labelText: 'Search',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: DropdownButton<String>(
+                      value: dropdownValue,
+                      icon: const Icon(Icons.arrow_drop_down),
+                      elevation: 16,
+                      iconSize: 40,
+                      onChanged: (String? value) {
+                        setState(() {
+                          dropdownValue = value!;
+                          filterByStatus(
+                              dropdownValue); // Filter the list based on status
+                        });
+                      },
+                      underline: const SizedBox.shrink(),
+                      items: list.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
               ),
@@ -160,42 +180,28 @@ class _AllStudentsState extends State<AllStudents> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.green),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Export to Excel',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.blue,
+                    backgroundColor: Colors.white, // Icon color of the button
+                  ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => Signup(
+                        builder: (context) => const Signup(
                               purpose: 'INTERN',
                             )));
                   },
-                  child: Icon(Icons.add),
+                  child: const Icon(Icons.add),
                 ),
               ],
-            ),
-            DropdownButton<String>(
-              value: dropdownValue,
-              icon: const Icon(Icons.arrow_downward),
-              elevation: 16,
-              onChanged: (String? value) {
-                setState(() {
-                  dropdownValue = value!;
-                  filterByStatus(
-                      dropdownValue); // Filter the list based on status
-                });
-              },
-              items: list.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
             ),
             Expanded(
               child: filteredInterns.isNotEmpty
@@ -207,14 +213,12 @@ class _AllStudentsState extends State<AllStudents> {
                           padding: const EdgeInsets.symmetric(vertical: 20),
                           child: DataTable(
                             columns: [
-                              DataColumn(label: Text('Name')),
-                              DataColumn(label: Text('Email')),
-                              DataColumn(label: Text('Section')),
-                              DataColumn(label: Text('Birth Date')),
-                              DataColumn(label: Text('Address')),
-                              DataColumn(label: Text('View DTR')),
-                              DataColumn(
-                                  label: Text('View Accomplishment Report'))
+                              const DataColumn(label: Text('Name')),
+                              const DataColumn(label: Text('Email')),
+                              const DataColumn(label: Text('Section')),
+                              const DataColumn(label: Text('Birth Date')),
+                              const DataColumn(label: Text('Address')),
+                              const DataColumn(label: Text('View Records')),
                             ],
                             rows: filteredInterns
                                 .map(
@@ -288,55 +292,64 @@ class _AllStudentsState extends State<AllStudents> {
                                           style: const TextStyle(fontSize: 12),
                                         ),
                                       ),
-                                      DataCell(ElevatedButton(
-                                        onPressed: () {
-                                          if (classmate.establishment_id ==
-                                              "none") {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                    "No Establishment yet"),
-                                              ),
-                                            );
-                                          } else {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    StudentDTRDetails(
-                                                  id: classmate.id,
-                                                  estab_id: classmate
-                                                      .establishment_id,
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        child: Icon(Icons.remove_red_eye),
-                                      )),
-                                      DataCell(ElevatedButton(
-                                        onPressed: () {
-                                          print(
-                                              "Name ${classmate.establishment_id}");
-                                          print("Ids ${classmate.email}");
-                                          print("section ${classmate.section}");
-
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  StudentSectionDTR(
-                                                      name: classmate
-                                                          .establishment_id,
-                                                      ids: classmate.email,
-                                                      section:
-                                                          classmate.section),
+                                      DataCell(
+                                        Row(
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                if (classmate
+                                                        .establishment_id ==
+                                                    "none") {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                          "No Establishment yet"),
+                                                    ),
+                                                  );
+                                                } else {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          StudentDTRDetails(
+                                                        id: classmate.id,
+                                                        estab_id: classmate
+                                                            .establishment_id,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                              child: const Text("DTR"),
                                             ),
-                                          );
-                                        },
-                                        child: Icon(Icons.check),
-                                      )),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                print(
+                                                    "Name ${classmate.establishment_id}");
+                                                print("Ids ${classmate.email}");
+                                                print(
+                                                    "section ${classmate.section}");
+
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        StudentSectionDTR(
+                                                            name: classmate
+                                                                .establishment_id,
+                                                            ids:
+                                                                classmate.email,
+                                                            section: classmate
+                                                                .section),
+                                                  ),
+                                                );
+                                              },
+                                              child: const Text("Report"),
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 )
@@ -346,8 +359,8 @@ class _AllStudentsState extends State<AllStudents> {
                       ),
                     )
                   : filteredInterns.isEmpty
-                      ? Center(child: Text("No matching interns found"))
-                      : Center(
+                      ? const Center(child: Text("No matching interns found"))
+                      : const Center(
                           child: CircularProgressIndicator(),
                         ),
             ),
