@@ -43,6 +43,7 @@ Future<void> main() async {
     appId: "1:923340212066:web:cfa048f322dbd305098e3b",
   ));
   Server.fetchHostFromDatabase();
+  Server.fetchLinkFromDatabase();
   // await FirebaseNOTIFICATIONapi().isNotifications();
   // await getServer();
   await Hive.initFlutter();

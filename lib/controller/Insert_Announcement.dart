@@ -27,7 +27,11 @@ Future<void> insertAnnouncement(
       final email = "";
 
       await sendToAll(
-          context, email, formattedDetails, subject); // Await the email sending
+        context,
+        email,
+        formattedDetails,
+        subject,
+      ); // Await the email sending
       print("SUCCESS EMAIL");
       showAlertDialog(context, status, message);
 
@@ -45,12 +49,19 @@ Future<void> insertAnnouncement(
   }
 }
 
-Future<void> sendToAll(BuildContext context, String emails, String announce,
-    String subject) async {
+Future<void> sendToAll(
+  BuildContext context,
+  String emails,
+  String announce,
+  String subject,
+) async {
   Map<String, String> headers = {'Content-Type': 'application/json'};
   String url = '${Server.host}db/sendmail.php';
-  String body = json.encode(
-      {'user_emails': emails, 'announce': announce, 'subject': subject});
+  String body = json.encode({
+    'user_emails': emails,
+    'announce': announce,
+    'subject': subject,
+  });
 
   try {
     final response =
