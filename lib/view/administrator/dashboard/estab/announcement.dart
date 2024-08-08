@@ -42,30 +42,6 @@ class _AnnouncementState extends State<Announcement> {
     }
   }
 
-  // Future<void> fetchUserEmails() async {
-  //   try {
-  //     final response = await http.get(Uri.parse(
-  //         '${Server.host}users/establishment/get_all_students_email.php'));
-
-  //     if (response.statusCode == 200) {
-  //       List<dynamic> data = jsonDecode(response.body);
-  //       List<String> userEmails =
-  //           data.map((email) => email['email'].toString()).toList();
-
-  //       setState(() {
-  //         _userEmails = userEmails;
-  //       });
-
-  //       print("ALL EMAILS: ${_userEmails}");
-  //     } else {
-  //       throw Exception('Failed to load user emails');
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching user emails: $e');
-  //     // Handle error, e.g., show error message to the user
-  //   }
-  // }
-
   Future<void> deleteAnnouncement(id) async {
     String apiUrl = '${Server.host}users/student/delete_announcement.php';
 
@@ -121,7 +97,6 @@ class _AnnouncementState extends State<Announcement> {
                   await accAlertDialog(
                       context, "Empty", "Cannot add empty message");
                 } else {
-                  // await fetchUserEmails(); // Fetch user emails
                   await insertAnnouncement(context, message, subject);
                   _announcement.clear();
                   setState(() {});
@@ -149,10 +124,35 @@ class _AnnouncementState extends State<Announcement> {
                           trailing: IconButton(
                             icon: Icon(Icons.delete),
                             onPressed: () async {
-                              print(
-                                  "Announcement ID: ${announcements[index].id}");
-                              await deleteAnnouncement(announcements[index].id);
-                              setState(() {});
+                              bool? confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Confirm Delete'),
+                                    content: Text(
+                                        'Are you sure you want to delete this announcement?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text('Cancel'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop(false);
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: Text('Delete'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop(true);
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              if (confirm == true) {
+                                await deleteAnnouncement(
+                                    announcements[index].id);
+                                setState(() {});
+                              }
                             },
                           ),
                         );

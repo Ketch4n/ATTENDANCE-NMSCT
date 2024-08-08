@@ -68,6 +68,17 @@ class _AllStudentsState extends State<AllStudents> {
     });
   }
 
+  void filterByStatus(String status) {
+    setState(() {
+      if (status.isEmpty) {
+        filteredInterns = interns; // Show all if no status is selected
+      } else {
+        filteredInterns =
+            interns.where((intern) => intern.status == status).toList();
+      }
+    });
+  }
+
   Future<void> exportToExcel() async {
     var excel = Excel.createExcel();
     var sheet = excel['Sheet1'];
@@ -97,6 +108,15 @@ class _AllStudentsState extends State<AllStudents> {
     var file = 'establishment_data_${DateTime.now().toIso8601String()}.xlsx';
     excel.save(fileName: file);
   }
+
+  static const List<String> list = <String>[
+    '',
+    'Active',
+    'Inactive',
+    'Archived'
+  ];
+
+  String dropdownValue = '';
 
   @override
   Widget build(BuildContext context) {
@@ -158,6 +178,24 @@ class _AllStudentsState extends State<AllStudents> {
                   child: Icon(Icons.add),
                 ),
               ],
+            ),
+            DropdownButton<String>(
+              value: dropdownValue,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              onChanged: (String? value) {
+                setState(() {
+                  dropdownValue = value!;
+                  filterByStatus(
+                      dropdownValue); // Filter the list based on status
+                });
+              },
+              items: list.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
             ),
             Expanded(
               child: filteredInterns.isNotEmpty
