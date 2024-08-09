@@ -6,7 +6,7 @@ Future<void> showReport(
 
   return showModalBottomSheet(
     context: context,
-    shape: RoundedRectangleBorder(
+    shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
     ),
     barrierColor: Colors.black87.withOpacity(0.5),
@@ -22,7 +22,7 @@ Future<void> showReport(
           height: 200,
           child: Center(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Column(
                 children: [
                   const SizedBox(
@@ -33,17 +33,17 @@ Future<void> showReport(
                     ),
                   ),
                   ListTile(
-                    leading: Text(
+                    leading: const Text(
                       "Total Hours rendered :",
                       style: TextStyle(color: Colors.black, fontSize: 20),
                     ),
                     trailing: Text(
                       report,
-                      style: TextStyle(color: Colors.blue, fontSize: 20),
+                      style: const TextStyle(color: Colors.blue, fontSize: 20),
                     ),
                   ),
                   ListTile(
-                    leading: Text(
+                    leading: const Text(
                       "Time In AM:",
                       style: TextStyle(color: Colors.black, fontSize: 20),
                     ),
@@ -57,7 +57,7 @@ Future<void> showReport(
                     ),
                   ),
                   ListTile(
-                    leading: Text(
+                    leading: const Text(
                       "Time In PM:",
                       style: TextStyle(color: Colors.black, fontSize: 20),
                     ),

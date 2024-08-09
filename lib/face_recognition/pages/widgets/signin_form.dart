@@ -3,7 +3,6 @@ import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/face_recognition/locator.dart';
 import 'package:attendance_nmsct/face_recognition/pages/models/user.model.dart';
-import 'package:attendance_nmsct/face_recognition/pages/profile.dart';
 import 'package:attendance_nmsct/face_recognition/pages/widgets/app_button.dart';
 import 'package:attendance_nmsct/face_recognition/pages/widgets/app_text_field.dart';
 import 'package:attendance_nmsct/face_recognition/services/camera.service.dart';
@@ -11,11 +10,10 @@ import 'package:flutter/material.dart';
 
 class SignInSheet extends StatelessWidget {
   SignInSheet(
-      {Key? key,
+      {super.key,
       required this.user,
       required this.purpose,
-      required this.refresh})
-      : super(key: key);
+      required this.refresh});
   final User user;
   final String purpose;
   final VoidCallback refresh;
@@ -38,7 +36,7 @@ class SignInSheet extends StatelessWidget {
       showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
+          return const AlertDialog(
             content: Text('Wrong password!'),
           );
         },
@@ -49,24 +47,24 @@ class SignInSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             user.user,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 20, color: Colors.blue, fontWeight: FontWeight.bold),
           ),
-          Text(
+          const Text(
             'Face Email Detected',
             style: TextStyle(color: Colors.green),
           ),
           Container(
             child: Column(
               children: [
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 purpose == 'signin'
                     ? AppTextField(
                         controller: _passwordController,
@@ -77,20 +75,20 @@ class SignInSheet extends StatelessWidget {
                         user.user == Session.email
                             ? 'FACE AND EMAIL MATCHED'
                             : "UNMATCHED",
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 20,
                             color: Colors.green,
                             fontWeight: FontWeight.bold)),
-                SizedBox(height: 10),
-                Divider(),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
+                const Divider(),
+                const SizedBox(height: 10),
                 purpose == 'signin'
                     ? AppButton(
                         text: 'LOGIN',
                         onPressed: () async {
                           _signIn(context, user);
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.login,
                           color: Colors.white,
                         ),
@@ -105,12 +103,12 @@ class SignInSheet extends StatelessWidget {
 
                               refresh();
                             },
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.login,
                               color: Colors.white,
                             ),
                           )
-                        : Text('UNMATCH')
+                        : const Text('UNMATCH')
               ],
             ),
           ),

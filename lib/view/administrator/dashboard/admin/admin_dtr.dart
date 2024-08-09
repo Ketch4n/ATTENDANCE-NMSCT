@@ -22,12 +22,11 @@ class _AdmindtrState extends State<Admindtr> {
         body: Column(
           children: [
             adminHeader(widget.name),
-            Text("Submitted - TODAY" +
-                DateFormat(' MM/dd/yy').format(DateTime.now())),
+            Text("Submitted - TODAY${DateFormat(' MM/dd/yy').format(DateTime.now())}"),
             const SizedBox(
               height: 10,
             ),
-            TabBar(
+            const TabBar(
               tabs: [Tab(text: 'MetaData'), Tab(text: 'Accomplishment')],
             ),
             Expanded(

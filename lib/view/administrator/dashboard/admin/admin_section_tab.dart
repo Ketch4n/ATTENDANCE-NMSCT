@@ -1,12 +1,9 @@
 import 'package:attendance_nmsct/view/administrator/dashboard/admin/widgets/record.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/record.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminSectionTab extends StatefulWidget {
   const AdminSectionTab({super.key, required this.name, required this.ids});
@@ -94,7 +91,7 @@ class _AdminSectionTabState extends State<AdminSectionTab> {
       onRefresh: _getImageReferences,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Attendance"),
+          title: const Text("Attendance"),
           centerTitle: true,
         ),
         body: Column(
@@ -120,7 +117,7 @@ class _AdminSectionTabState extends State<AdminSectionTab> {
               },
               child: Text(
                 _month,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontFamily: "NexaBold",
                   // fontSize: 15,
@@ -170,10 +167,10 @@ class _AdminSectionTabState extends State<AdminSectionTab> {
                                   },
                                   child: Card(
                                     child: ListTile(
-                                      leading: CircleAvatar(
+                                      leading: const CircleAvatar(
                                           // backgroundColor: Colors.blue,
                                           ),
-                                      title: Text("Student"),
+                                      title: const Text("Student"),
                                       subtitle: Text(imageName),
                                     ),
                                   ),

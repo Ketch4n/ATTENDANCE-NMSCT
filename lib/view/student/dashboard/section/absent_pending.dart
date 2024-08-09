@@ -22,10 +22,10 @@ class AbsentPendingTab extends StatefulWidget {
 class _AbsentPendingTabState extends State<AbsentPendingTab> {
   final StreamController<List<AbsentModel>> _absentController =
       StreamController<List<AbsentModel>>();
-  Future<void> streamAccomplishemnt(_absentController) async {
-    final String student_absent = "users/student/view_absent.php";
-    final String estab_absent = "users/establishment/view_all_absent.php";
-    final query = Session.role == "Intern" ? student_absent : estab_absent;
+  Future<void> streamAccomplishemnt(absentController) async {
+    const String studentAbsent = "users/student/view_absent.php";
+    const String estabAbsent = "users/establishment/view_all_absent.php";
+    final query = Session.role == "Intern" ? studentAbsent : estabAbsent;
     try {
       final response = await http.post(
         Uri.parse('${Server.host}$query'),
@@ -40,7 +40,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
         final List<AbsentModel> absent = jsonList
             .map((absentData) => AbsentModel.fromJson(absentData))
             .toList();
-        _absentController.add(absent);
+        absentController.add(absent);
       } else {
         throw Exception('Failed to load data');
       }
@@ -106,8 +106,8 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text('Select Option'),
-          content: Text('Approved or Declined'),
+          title: const Text('Select Option'),
+          content: const Text('Approved or Declined'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -116,7 +116,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
                 Navigator.of(context).pop();
                 _actionDone(absent, stats);
               },
-              child: Text('Decline', style: TextStyle(color: Colors.red)),
+              child: const Text('Decline', style: TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () {
@@ -126,7 +126,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
 
                 Navigator.of(context).pop();
               },
-              child: Text(
+              child: const Text(
                 'Approve',
                 style: TextStyle(color: Colors.green),
               ),
@@ -142,21 +142,21 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Cancel Absent?'),
-          content: Text('Are you sure you want to cancel this absent ?'),
+          title: const Text('Cancel Absent?'),
+          content: const Text('Are you sure you want to cancel this absent ?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 _deleteAbsent(absent);
               },
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
           ],
         );
@@ -171,7 +171,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
         body: {'absent_id': absent.id, 'status': stats},
       );
       if (response.statusCode == 200) {
-        print("NOW OR NEVER :" + absent.id);
+        print("NOW OR NEVER :${absent.id}");
         const purpose = "Absent";
 
         // If deletion is successful, refresh the list
@@ -187,7 +187,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
 
   void _deleteAbsent(AbsentModel absent) async {
     try {
-      print("ID" + absent.id);
+      print("ID${absent.id}");
       // Perform deletion logic here, such as making an HTTP request to delete the record from the server
       final response = await http.post(
         Uri.parse('${Server.host}users/student/delete_absent.php'),
@@ -243,7 +243,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
                 } else if (snapshot.hasData) {
                   final List<AbsentModel> data = snapshot.data!;
                   if (data.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Text(
                         'No Pending absent request',
                         style: TextStyle(fontSize: 18),
@@ -300,7 +300,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
                                       ],
                                     ),
                                     subtitle: Padding(
-                                      padding: EdgeInsets.only(
+                                      padding: const EdgeInsets.only(
                                         bottom: 8.0,
                                       ),
                                       child: Column(

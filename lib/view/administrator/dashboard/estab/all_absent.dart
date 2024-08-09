@@ -3,18 +3,14 @@ import 'dart:convert';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AbsentModel.dart';
-import 'package:attendance_nmsct/model/AllStudentModel.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_dtr.dart';
-import 'package:attendance_nmsct/view/student/dtr_details.dart';
 import 'package:excel/excel.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AllAbsentStudent extends StatefulWidget {
-  const AllAbsentStudent({Key? key}) : super(key: key);
+  const AllAbsentStudent({super.key});
   // final String purpose;
 
   @override
@@ -36,8 +32,8 @@ class _AllStudentsState extends State<AllAbsentStudent> {
   void fetchInterns() async {
     final prefs = await SharedPreferences.getInstance();
 
-    final estab_id = prefs.getString('adminEstab');
-    print("estab : ${estab_id}");
+    final estabId = prefs.getString('adminEstab');
+    print("estab : $estabId");
     print("role : ${Session.role}");
 
     final response =
@@ -102,7 +98,7 @@ class _AllStudentsState extends State<AllAbsentStudent> {
     return Scaffold(
       appBar: Session.role == "SUPER ADMIN"
           ? AppBar(
-              title: Text('All Students List'),
+              title: const Text('All Students List'),
               centerTitle: true,
             )
           : null,
@@ -118,7 +114,7 @@ class _AllStudentsState extends State<AllAbsentStudent> {
                 child: TextField(
                   controller: searchController,
                   onChanged: filterInterns,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Search',
                     border: OutlineInputBorder(),
                   ),
@@ -132,7 +128,7 @@ class _AllStudentsState extends State<AllAbsentStudent> {
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
               ),
-              child: Text(
+              child: const Text(
                 'Export to Excel',
                 style: TextStyle(color: Colors.white),
               ),
@@ -142,7 +138,7 @@ class _AllStudentsState extends State<AllAbsentStudent> {
                   ? SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: DataTable(
-                        columns: [
+                        columns: const [
                           DataColumn(label: Text('Name')),
                           DataColumn(label: Text('Email')),
                           DataColumn(label: Text('Reason')),
@@ -219,8 +215,8 @@ class _AllStudentsState extends State<AllAbsentStudent> {
                       ),
                     )
                   : filteredInterns.isEmpty
-                      ? Center(child: Text("No matching interns found"))
-                      : Center(
+                      ? const Center(child: Text("No matching interns found"))
+                      : const Center(
                           child: CircularProgressIndicator(),
                         ),
             ),

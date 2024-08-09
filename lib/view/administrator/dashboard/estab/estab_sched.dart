@@ -113,7 +113,7 @@ class _ViewSchedState extends State<ViewSched> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -153,17 +153,17 @@ class _ViewSchedState extends State<ViewSched> {
         children: [
           Text(
             widget.name,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           _buildTimePickerButton('IN - AM', _time1, 1),
           _buildTimePickerButton('OUT - AM', _time2, 2),
           _buildTimePickerButton('IN - PM', _time3, 3),
           _buildTimePickerButton('OUT - PM', _time4, 4),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: _saveTimes,
-            child: Text('Save'),
+            child: const Text('Save'),
           ),
         ],
       ),
@@ -180,10 +180,10 @@ class _ViewSchedState extends State<ViewSched> {
             onPressed: () => _selectTime(context, index),
             child: Text(label),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Text(
             _formatTime(time),
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
         ],
       ),

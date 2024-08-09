@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
@@ -24,7 +23,7 @@ Future<void> insertAnnouncement(
       final jsonResponse = json.decode(response.body);
       final message = jsonResponse['message'];
       final status = jsonResponse['status'];
-      final email = "";
+      const email = "";
 
       await sendToAll(
         context,

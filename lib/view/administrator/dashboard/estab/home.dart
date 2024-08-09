@@ -1,9 +1,5 @@
-import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/face_recognition/db/databse_helper.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_students.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_dtr.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_face_auth.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_onsite.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/absent_tab.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +80,7 @@ class _EstabHomeState extends State<EstabHome> {
           //   id: widget.id,
           //   name: widget.name,
           // ),
-          AllStudents(),
+          const AllStudents(),
           AbsentTab(name: widget.name, ids: widget.id),
           EstabRoom(ids: widget.id),
         ],

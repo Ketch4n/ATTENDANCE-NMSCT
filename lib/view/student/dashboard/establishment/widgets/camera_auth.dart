@@ -17,8 +17,7 @@ import 'package:lottie/lottie.dart';
 
 class CameraAuth extends StatefulWidget {
   const CameraAuth(
-      {Key? key, required this.name, required this.refreshCallback})
-      : super(key: key);
+      {super.key, required this.name, required this.refreshCallback});
   final String name;
   final VoidCallback refreshCallback;
 
@@ -32,7 +31,7 @@ class _CameraState extends State<CameraAuth> {
   // late Stream<Position> _positionStream;
   StreamSubscription<loc.LocationData>? _positionSubscription;
 
-  bool _processingImage = false;
+  final bool _processingImage = false;
   bool _no = false;
 
   int userId = 0;
@@ -157,7 +156,7 @@ class _CameraState extends State<CameraAuth> {
       // Check if at least one face is detected
       if (faces.isNotEmpty) {
         const title = "Success";
-        final message = "Face Auth Detected";
+        const message = "Face Auth Detected";
         setState(() {
           _no = true;
         });
@@ -237,26 +236,26 @@ class _CameraState extends State<CameraAuth> {
               return Column(
                 children: [
                   ListTile(
-                      title: Text("Current Location:"),
+                      title: const Text("Current Location:"),
                       subtitle: fulladdress.text != ""
                           ? Text(
                               fulladdress.text,
-                              style: TextStyle(color: Colors.blue),
+                              style: const TextStyle(color: Colors.blue),
                             )
-                          : Text(
+                          : const Text(
                               "Scanning...",
                               style: TextStyle(color: Colors.blue),
                             )),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Status : "),
+                      const Text("Status : "),
                       fulladdress.text == estabAddressLocation.text
-                          ? Text(
+                          ? const Text(
                               "unmatched location",
                               style: TextStyle(color: Colors.red),
                             )
-                          : Text(
+                          : const Text(
                               "Location matched",
                               style: TextStyle(color: Colors.green),
                             ),
@@ -268,7 +267,7 @@ class _CameraState extends State<CameraAuth> {
                       children: <Widget>[
                         CameraPreview(_controller),
                         kIsWeb
-                            ? Text("Scanning...")
+                            ? const Text("Scanning...")
                             : Lottie.asset(
                                 'assets/scanning.json',
                               ),
@@ -278,7 +277,7 @@ class _CameraState extends State<CameraAuth> {
                 ],
               );
             } else {
-              return Center(child: Text("Turn on Location"));
+              return const Center(child: Text("Turn on Location"));
             }
           } else {
             return const Center(child: CircularProgressIndicator());

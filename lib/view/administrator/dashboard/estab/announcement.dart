@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:attendance_nmsct/controller/Insert_Announcement.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/widgets/accomplishment_alert.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,15 +20,15 @@ class AnnouncementModel {
 }
 
 class Announcement extends StatefulWidget {
-  const Announcement({Key? key}) : super(key: key);
+  const Announcement({super.key});
 
   @override
   State<Announcement> createState() => _AnnouncementState();
 }
 
 class _AnnouncementState extends State<Announcement> {
-  TextEditingController _announcement = TextEditingController();
-  List<String> _userEmails = []; // List to hold user emails
+  final TextEditingController _announcement = TextEditingController();
+  final List<String> _userEmails = []; // List to hold user emails
 
   Future<List<AnnouncementModel>> fetchData() async {
     final response = await http
@@ -73,7 +72,7 @@ class _AnnouncementState extends State<Announcement> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Announcement'),
+        title: const Text('Add Announcement'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -82,13 +81,13 @@ class _AnnouncementState extends State<Announcement> {
           children: [
             TextField(
               controller: _announcement,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Add announcement...',
                 border: OutlineInputBorder(),
               ),
               maxLines: 5,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 String message = _announcement.text;
@@ -102,15 +101,15 @@ class _AnnouncementState extends State<Announcement> {
                   setState(() {});
                 }
               },
-              child: Text('Add Announcement'),
+              child: const Text('Add Announcement'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
               child: StreamBuilder<List<AnnouncementModel>>(
                 stream: Stream.fromFuture(fetchData()),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else {
@@ -122,24 +121,24 @@ class _AnnouncementState extends State<Announcement> {
                           title: _buildMessageWithLineBreaks(
                               announcements[index].message),
                           trailing: IconButton(
-                            icon: Icon(Icons.delete),
+                            icon: const Icon(Icons.delete),
                             onPressed: () async {
                               bool? confirm = await showDialog<bool>(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('Confirm Delete'),
-                                    content: Text(
+                                    title: const Text('Confirm Delete'),
+                                    content: const Text(
                                         'Are you sure you want to delete this announcement?'),
                                     actions: <Widget>[
                                       TextButton(
-                                        child: Text('Cancel'),
+                                        child: const Text('Cancel'),
                                         onPressed: () {
                                           Navigator.of(context).pop(false);
                                         },
                                       ),
                                       TextButton(
-                                        child: Text('Delete'),
+                                        child: const Text('Delete'),
                                         onPressed: () {
                                           Navigator.of(context).pop(true);
                                         },

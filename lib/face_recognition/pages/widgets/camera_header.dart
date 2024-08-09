@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CameraHeader extends StatelessWidget {
-  CameraHeader(this.title, {this.onBackPressed});
+  const CameraHeader(this.title, {super.key, this.onBackPressed});
   final String title;
   final void Function()? onBackPressed;
 
@@ -9,40 +9,40 @@ class CameraHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
+      height: 150,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: <Color>[Colors.black, Colors.transparent],
+        ),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           InkWell(
             onTap: onBackPressed,
             child: Container(
-              margin: EdgeInsets.all(20),
+              margin: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
               ),
               height: 50,
               width: 50,
-              child: Center(child: Icon(Icons.arrow_back)),
+              child: const Center(child: Icon(Icons.arrow_back)),
             ),
           ),
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.w600, fontSize: 20),
             textAlign: TextAlign.center,
           ),
-          SizedBox(
+          const SizedBox(
             width: 90,
           )
         ],
-      ),
-      height: 150,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: <Color>[Colors.black, Colors.transparent],
-        ),
       ),
     );
   }

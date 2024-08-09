@@ -14,7 +14,7 @@ import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:flutter/material.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key? key, required}) : super(key: key);
+  const SignUp({super.key, required});
 
   @override
   SignUpState createState() => SignUpState();
@@ -34,9 +34,9 @@ class SignUpState extends State<SignUp> {
   bool _bottomSheetVisible = false;
 
   // service injection
-  FaceDetectorService _faceDetectorService = locator<FaceDetectorService>();
-  CameraService _cameraService = locator<CameraService>();
-  MLService _mlService = locator<MLService>();
+  final FaceDetectorService _faceDetectorService = locator<FaceDetectorService>();
+  final CameraService _cameraService = locator<CameraService>();
+  final MLService _mlService = locator<MLService>();
 
   @override
   void initState() {
@@ -63,7 +63,7 @@ class SignUpState extends State<SignUp> {
       showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
+          return const AlertDialog(
             content: Text('No face detected!'),
           );
         },
@@ -72,9 +72,9 @@ class SignUpState extends State<SignUp> {
       return false;
     } else {
       _saving = true;
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       // await _cameraService.cameraController?.stopImageStream();
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       XFile? file = await _cameraService.takePicture();
       imagePath = file?.path;
 
@@ -134,33 +134,33 @@ class SignUpState extends State<SignUp> {
       _bottomSheetVisible = false;
       pictureTaken = false;
     });
-    this._start();
+    _start();
   }
 
   @override
   Widget build(BuildContext context) {
-    final double mirror = math.pi;
+    const double mirror = math.pi;
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
     late Widget body;
     if (_initializing) {
-      body = Center(
+      body = const Center(
         child: CircularProgressIndicator(),
       );
     }
 
     if (!_initializing && pictureTaken) {
-      body = Container(
+      body = SizedBox(
         width: width,
         height: height,
         child: Transform(
             alignment: Alignment.center,
+            transform: Matrix4.rotationY(mirror),
             child: FittedBox(
               fit: BoxFit.cover,
               child: Image.file(File(imagePath!)),
-            ),
-            transform: Matrix4.rotationY(mirror)),
+            )),
       );
     }
 
@@ -173,7 +173,7 @@ class SignUpState extends State<SignUp> {
             alignment: Alignment.center,
             child: FittedBox(
               fit: BoxFit.fitHeight,
-              child: Container(
+              child: SizedBox(
                 width: width,
                 height:
                     width * _cameraService.cameraController!.value.aspectRatio,

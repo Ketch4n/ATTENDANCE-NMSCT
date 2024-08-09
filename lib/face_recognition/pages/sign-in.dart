@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:attendance_nmsct/auth/google/permission.dart';
 import 'package:attendance_nmsct/data/session.dart';
@@ -23,8 +22,7 @@ import 'widgets/single_picture.dart';
 import 'package:camera/camera.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({Key? key, required this.purpose, required this.refreshCallback})
-      : super(key: key);
+  const SignIn({super.key, required this.purpose, required this.refreshCallback});
   final String purpose;
   final VoidCallback refreshCallback;
 
@@ -33,15 +31,15 @@ class SignIn extends StatefulWidget {
 }
 
 class SignInState extends State<SignIn> {
-  CameraService _cameraService = locator<CameraService>();
-  FaceDetectorService _faceDetectorService = locator<FaceDetectorService>();
-  MLService _mlService = locator<MLService>();
-  Location _location = Location();
+  final CameraService _cameraService = locator<CameraService>();
+  final FaceDetectorService _faceDetectorService = locator<FaceDetectorService>();
+  final MLService _mlService = locator<MLService>();
+  final Location _location = Location();
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   late StreamSubscription<Position> _positionStreamSubscription;
-  String _locationMessage = '';
+  final String _locationMessage = '';
 
   bool _isPictureTaken = false;
   bool _isInitializing = false;
@@ -63,15 +61,15 @@ class SignInState extends State<SignIn> {
   }
 
   _startStreamingLocation() async {
-    double? _givenLatitude = Session.latitude; // Example latitude
-    double? _givenLongitude = Session.longitude; // Example longitude
+    double? givenLatitude = Session.latitude; // Example latitude
+    double? givenLongitude = Session.longitude; // Example longitude
     double? radius = Session.radius;
     if (widget.purpose == "auth") {
       Position currentPosition =
           await determineUserCurrentPosition(widget.purpose);
 
       var distance = calculateDistance(currentPosition.latitude,
-          currentPosition.longitude, _givenLatitude!, _givenLongitude!);
+          currentPosition.longitude, givenLatitude!, givenLongitude!);
       if (distance <= radius!) {
         // User is at the given location
         _showSnackBar('You are In-range of the establishment');
@@ -85,10 +83,8 @@ class SignInState extends State<SignIn> {
   }
 
   void _stopStreamingLocation() {
-    if (_positionStreamSubscription != null) {
-      _positionStreamSubscription.cancel();
+    _positionStreamSubscription.cancel();
     }
-  }
 
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -149,7 +145,7 @@ class SignInState extends State<SignIn> {
       showDialog(
           context: context,
           builder: (context) =>
-              AlertDialog(content: Text('No face detected!')));
+              const AlertDialog(content: Text('No face detected!')));
     }
   }
 
@@ -173,9 +169,10 @@ class SignInState extends State<SignIn> {
   }
 
   Widget getBodyWidget() {
-    if (_isInitializing) return Center(child: CircularProgressIndicator());
-    if (_isPictureTaken)
+    if (_isInitializing) return const Center(child: CircularProgressIndicator());
+    if (_isPictureTaken) {
       return SinglePicture(imagePath: _cameraService.imagePath!);
+    }
     return CameraDetectionPreview();
   }
 
@@ -199,8 +196,8 @@ class SignInState extends State<SignIn> {
   signInSheet({@required User? user}) => user == null
       ? Container(
           width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.all(20),
-          child: Text(
+          padding: const EdgeInsets.all(20),
+          child: const Text(
             'User not found',
             style: TextStyle(fontSize: 20),
           ),

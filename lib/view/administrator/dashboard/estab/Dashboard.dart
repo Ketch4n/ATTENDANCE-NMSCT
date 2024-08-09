@@ -9,10 +9,7 @@ import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_outside.
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_students.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/announcement.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/box_component.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/estab/index.dart';
 import 'package:attendance_nmsct/view/student/calculate_distance.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
@@ -143,7 +140,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Container(
+                SizedBox(
                   height: 350,
                   width: double.maxFinite,
                   child: Image.asset(
@@ -157,7 +154,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                       onPressed: () {
                         refresh();
                       },
-                      child: Text("Reload Data / Refresh")),
+                      child: const Text("Reload Data / Refresh")),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -168,7 +165,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => AllLateStudent()));
+                              builder: (context) => const AllLateStudent()));
                         },
                         child: BoxComponent(
                           color: Colors.red,
@@ -192,7 +189,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: ((context) => AllAbsentStudent())));
+                              builder: ((context) => const AllAbsentStudent())));
                         },
                         child: BoxComponent(
                           count: absent,
@@ -203,7 +200,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                       GestureDetector(
                         onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (context) => AllEstablishment())),
+                                builder: (context) => const AllEstablishment())),
                         child: BoxComponent(
                           count: count_estab,
                           color: Colors.green,
@@ -213,7 +210,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                       GestureDetector(
                         onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (context) => AllStudents())),
+                                builder: (context) => const AllStudents())),
                         child: BoxComponent(
                           count: count,
                           color: Colors.purple,
@@ -223,7 +220,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => Announcement()));
+                              builder: (context) => const Announcement()));
                         },
                         child: BoxComponent(
                           count: announcement,

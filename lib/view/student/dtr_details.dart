@@ -19,8 +19,8 @@ import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 
 class StudentDTRDetails extends StatefulWidget {
-  const StudentDTRDetails({Key? key, required this.id, required this.estab_id})
-      : super(key: key);
+  const StudentDTRDetails(
+      {super.key, required this.id, required this.estab_id});
 
   final String id;
   final String estab_id;
@@ -185,7 +185,7 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                                           ),
                                         ),
                                       )
-                                    : SizedBox(),
+                                    : const SizedBox(),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: SizedBox(
@@ -337,7 +337,7 @@ class DTRDataSource extends DataTableSource {
                   ? defaultT
                   : DateFormat('hh:mm a').format(
                       DateFormat('hh:mm:ss').parse(
-                        dtr.time_in_am!,
+                        dtr.time_in_am,
                       ),
                     ),
             ),
@@ -358,7 +358,7 @@ class DTRDataSource extends DataTableSource {
                   ? defaultT
                   : DateFormat('hh:mm a').format(
                       DateFormat('hh:mm:ss').parse(
-                        dtr.time_out_am!,
+                        dtr.time_out_am,
                       ),
                     ),
             ),
@@ -379,7 +379,7 @@ class DTRDataSource extends DataTableSource {
                   ? defaultT
                   : DateFormat('hh:mm a').format(
                       DateFormat('hh:mm:ss').parse(
-                        dtr.time_in_pm!,
+                        dtr.time_in_pm,
                       ),
                     ),
             ),
@@ -400,7 +400,7 @@ class DTRDataSource extends DataTableSource {
                   ? defaultT
                   : DateFormat('hh:mm a').format(
                       DateFormat('hh:mm:ss').parse(
-                        dtr.time_out_pm!,
+                        dtr.time_out_pm,
                       ),
                     ),
             ),

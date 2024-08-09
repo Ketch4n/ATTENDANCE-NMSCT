@@ -46,12 +46,12 @@ class _Meta_DataState extends State<Meta_Data> {
       ),
       body: Center(
         child: _loading
-            ? CircularProgressIndicator() // Show loading indicator while fetching data
+            ? const CircularProgressIndicator() // Show loading indicator while fetching data
             : SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     Image.network(
@@ -63,13 +63,13 @@ class _Meta_DataState extends State<Meta_Data> {
                     ListTile(
                       title: Text(
                         'Description: ${_imageMetadata?.customMetadata?['description'] ?? 'No Description'}',
-                        style: TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 18),
                       ),
                     ),
                     ListTile(
                       title: Text(
                         'Date: ${_imageMetadata?.timeCreated}',
-                        style: TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 18),
                       ),
                     ),
                     // ListTile(

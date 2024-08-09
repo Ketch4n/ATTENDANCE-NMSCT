@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:attendance_nmsct/face_recognition/db/databse_helper.dart';
 import 'package:attendance_nmsct/face_recognition/pages/models/user.model.dart';
-import 'package:attendance_nmsct/face_recognition/services/image_converter.dart';
 import 'package:camera/camera.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image/image.dart' as imglib;
@@ -36,11 +34,11 @@ class MLService {
     // Replace this with actual ML model prediction if needed
     List<double> output = List.filled(192, 0.0);
 
-    this._predictedData = List.from(output);
+    _predictedData = List.from(output);
   }
 
   Future<User?> predict() async {
-    return _searchResult(this._predictedData);
+    return _searchResult(_predictedData);
   }
 
   List<double> _preProcess(CameraImage image, Face faceDetected) {
@@ -95,8 +93,8 @@ class MLService {
   }
 
   Future<User?> _searchResult(List<double> predictedData) async {
-    DatabaseHelper _dbHelper = DatabaseHelper.instance;
-    List<User> users = await _dbHelper.queryAllUsers();
+    DatabaseHelper dbHelper = DatabaseHelper.instance;
+    List<User> users = await dbHelper.queryAllUsers();
     double minDist = double.infinity;
     User? predictedResult;
 
@@ -124,7 +122,7 @@ class MLService {
   }
 
   void setPredictedData(List<double> value) {
-    this._predictedData = value;
+    _predictedData = value;
   }
 
   void dispose() {

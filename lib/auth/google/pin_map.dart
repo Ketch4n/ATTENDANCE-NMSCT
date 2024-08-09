@@ -11,7 +11,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
 
 class PinMap extends StatefulWidget {
-  const PinMap({Key? key}) : super(key: key);
+  const PinMap({super.key});
 
   @override
   State<PinMap> createState() => _PinMapState();
@@ -64,7 +64,7 @@ class _PinMapState extends State<PinMap> {
                   onPressed: _gotoUserCurrentPosition,
                   child: const Icon(Icons.location_on),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 FloatingActionButton(
                   onPressed: _toggleMapStyle,
                   child: const Icon(Icons.map),
@@ -168,7 +168,7 @@ class _PinMapState extends State<PinMap> {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
 
-    if (placemarks != null && placemarks.isNotEmpty) {
+    if (placemarks.isNotEmpty) {
       Placemark address = placemarks.first;
 
       // Construct the address string using desired fields from the first placemark
@@ -197,7 +197,7 @@ class _PinMapState extends State<PinMap> {
   }
 
   Future _gotoUserCurrentPosition() async {
-    final purpose = "pin";
+    const purpose = "pin";
     Position currentPosition = await determineUserCurrentPosition(purpose);
     _gotoSpecificPosition(
         LatLng(currentPosition.latitude, currentPosition.longitude));

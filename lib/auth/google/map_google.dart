@@ -1,12 +1,13 @@
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class MapScreen extends StatefulWidget {
+  const MapScreen({super.key});
+
   @override
   _MapScreenState createState() => _MapScreenState();
 }
@@ -20,7 +21,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    _centerPosition = LatLng(
+    _centerPosition = const LatLng(
         10.339696878741954, 123.90249833464621); // Initial center position
   }
 
@@ -29,12 +30,21 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<String> _getAddress(LatLng position) async {
-    final apiKey = 'AIzaSyDMi2Vr5XERmRQOMISjj8V3Mk21T7z4LjU';
+    // const apiKey = 'AIzaSyDMi2Vr5XERmRQOMISjj8V3Mk21T7z4LjU';
+    // final url =
+    //     'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey';
+
     final url =
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey';
+        'https://attendance-nmscst.online/db/address.php'; // Replace with your PHP script URL
+    final params = {
+      'latlng': '${position.latitude},${position.longitude}',
+    };
 
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await http.post(
+        Uri.parse(url),
+        body: params,
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['status'] == 'OK' && data['results'].isNotEmpty) {
@@ -96,7 +106,7 @@ class _MapScreenState extends State<MapScreen> {
     _markers.clear();
     _markers.add(
       Marker(
-        markerId: MarkerId('current-location'),
+        markerId: const MarkerId('current-location'),
         position: _centerPosition,
       ),
     );
@@ -104,12 +114,15 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _fetchAndDisplayInfo() async {
-    final apiKey = 'AIzaSyDMi2Vr5XERmRQOMISjj8V3Mk21T7z4LjU';
     final url =
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${_centerPosition.latitude},${_centerPosition.longitude}&radius=50&type=point_of_interest&key=$apiKey';
-
+        'https://attendance-nmscst.online/db/map.php'; // Replace with your PHP script URL
+    final params = {
+      'location': '${_centerPosition.latitude},${_centerPosition.longitude}',
+      'radius': '50',
+      'type': 'point_of_interest',
+    };
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await http.post(Uri.parse(url), body: params);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['status'] == 'OK' && data['results'].isNotEmpty) {
@@ -149,7 +162,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Google Map'),
+        title: const Text('Google Map'),
         centerTitle: true,
       ),
       body: Stack(
@@ -173,21 +186,21 @@ class _MapScreenState extends State<MapScreen> {
             right: 150,
             child: FloatingActionButton(
               onPressed: _locateUser,
-              child: Icon(Icons.my_location),
+              child: const Icon(Icons.my_location),
             ),
           ),
-          Center(
+          const Center(
             child: Icon(Icons.location_pin, size: 50, color: Colors.red),
           ),
           Positioned(
             left: 0,
             right: 0,
             child: Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               color: Colors.yellow,
               child: Text(
                 _address,
-                style: TextStyle(fontSize: 16, color: Colors.black),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
                 textAlign: TextAlign.center,
               ),
             ),

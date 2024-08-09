@@ -7,7 +7,6 @@ import 'package:attendance_nmsct/include/slider.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_establishment.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_students.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -205,10 +204,10 @@ class _NavbarState extends State<Navbar> {
                         Navigator.of(context).pop(false);
 
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => SliderPage()));
+                            builder: (context) => const SliderPage()));
                       },
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               Session.role == 'SUPER ADMIN'
                   ? ListTile(
                       leading: const Icon(Icons.settings),
@@ -217,12 +216,12 @@ class _NavbarState extends State<Navbar> {
                         Navigator.of(context).pop(false);
 
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => Signup(
+                            builder: (context) => const Signup(
                                   purpose: 'Create',
                                 )));
                       },
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               Session.role == 'SUPER ADMIN'
                   ? ListTile(
                       leading: const Icon(Icons.people),
@@ -231,11 +230,11 @@ class _NavbarState extends State<Navbar> {
                         Navigator.of(context).pop(false);
 
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => AdminList()));
+                            builder: (context) => const AdminList()));
                       },
                     )
-                  : SizedBox(),
-              user.role == 'NMSCST' ? Divider() : SizedBox(),
+                  : const SizedBox(),
+              user.role == 'NMSCST' ? const Divider() : const SizedBox(),
               user.role == 'NMSCST'
                   ? ListTile(
                       leading: const Icon(Icons.people),
@@ -244,10 +243,10 @@ class _NavbarState extends State<Navbar> {
                         Navigator.of(context).pop(false);
 
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => AllEstablishment()));
+                            builder: (context) => const AllEstablishment()));
                       },
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               user.role == 'NMSCST'
                   ? ListTile(
                       leading: const Icon(Icons.book),
@@ -256,10 +255,10 @@ class _NavbarState extends State<Navbar> {
                         Navigator.of(context).pop(false);
 
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => AllStudents()));
+                            builder: (context) => const AllStudents()));
                       },
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               const Divider(),
               // Session.role == 'Administrator'
               //     ? ListTile(

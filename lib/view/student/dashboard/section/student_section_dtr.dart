@@ -6,7 +6,6 @@ import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,8 +37,8 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
   double screenHeight = 0;
   double screenWidth = 0;
   Future _getImageReferences() async {
-    print("IDS" + widget.ids);
-    print("name" + widget.name);
+    print("IDS${widget.ids}");
+    print("name${widget.name}");
     final storage = FirebaseStorage.instance;
     final prefs = await SharedPreferences.getInstance();
     final section = kIsWeb ? estabname : widget.name;
@@ -75,8 +74,8 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
 
   Future<void> getEstab() async {
     try {
-      print("IDS" + widget.ids);
-      print("name" + widget.name);
+      print("IDS${widget.ids}");
+      print("name${widget.name}");
       final response = await http.post(
         Uri.parse('${Server.host}users/establishment/all_establishment.php'),
         body: {
@@ -132,7 +131,7 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: kIsWeb ? 10 : 10),
+            const SizedBox(height: kIsWeb ? 10 : 10),
             MaterialButton(
               color: Colors.blue,
               onPressed: () async {
@@ -153,7 +152,7 @@ class _StudentSectionDTRState extends State<StudentSectionDTR> {
               },
               child: Text(
                 _month,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontFamily: "NexaBold",
                 ),

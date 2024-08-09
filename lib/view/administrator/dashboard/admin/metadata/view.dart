@@ -1,13 +1,10 @@
-import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadata.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class AdminViewMetaData extends StatefulWidget {
@@ -116,7 +113,7 @@ class _AdminViewMetaDataState extends State<AdminViewMetaData> {
       onRefresh: _getImageReferences,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("MetaData"),
+          title: const Text("MetaData"),
           centerTitle: true,
         ),
         body: Center(
@@ -133,7 +130,7 @@ class _AdminViewMetaDataState extends State<AdminViewMetaData> {
                   Expanded(
                       child: ListView(
                     scrollDirection: Axis.vertical,
-                    children: [
+                    children: const [
                       Duck(),
                       Center(
                         child: Text(

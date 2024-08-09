@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class BoxComponent extends StatelessWidget {
   BoxComponent(
@@ -33,13 +31,13 @@ class BoxComponent extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   child,
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
               ),
               Center(
                 child: Text(
                   count,
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                  style: const TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ),
               // Text(
@@ -49,11 +47,11 @@ class BoxComponent extends StatelessWidget {
             ],
           ),
         ),
-        Positioned(
+        const Positioned(
           bottom: 0,
           right: 0,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
             child: Text(
               "See more ->",
               style: TextStyle(color: Colors.white),

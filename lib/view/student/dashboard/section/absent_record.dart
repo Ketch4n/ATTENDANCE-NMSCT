@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:attendance_nmsct/controller/Insert.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
@@ -21,7 +20,7 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
   final StreamController<List<AbsentModel>> _absentController =
       StreamController<List<AbsentModel>>();
   late final TextEditingController _searchController;
-  Future<void> streamAccomplishemnt(_absentController) async {
+  Future<void> streamAccomplishemnt(absentController) async {
     try {
       final purpose = Session.role == "Intern" ? "Intern" : "Estab";
       final response = await http.post(
@@ -40,7 +39,7 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
         final List<AbsentModel> absent = jsonList
             .map((absentData) => AbsentModel.fromJson(absentData))
             .toList();
-        _absentController.add(absent); // Add data to the stream
+        absentController.add(absent); // Add data to the stream
       } else {
         throw Exception('Failed to load data');
       }
@@ -95,7 +94,7 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
                 } else if (snapshot.hasData) {
                   List<AbsentModel>? data = snapshot.data!;
                   if (data.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Text(
                         'No records',
                         style: TextStyle(fontSize: 18),
@@ -113,7 +112,7 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
                               // Filter the data based on the search query
                               setState(() {});
                             },
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Search',
                               prefixIcon: Icon(Icons.search),
                             ),
@@ -183,11 +182,11 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
                                                             .start,
                                                     children: [
                                                       Session.role == "Intern"
-                                                          ? SizedBox()
+                                                          ? const SizedBox()
                                                           : Text(
                                                               "From: ${absent.lname!}"),
                                                       Session.role == "Intern"
-                                                          ? SizedBox()
+                                                          ? const SizedBox()
                                                           : Text(absent.email!),
                                                       Text(
                                                           "Reason of absent: ${absent.reason}"),

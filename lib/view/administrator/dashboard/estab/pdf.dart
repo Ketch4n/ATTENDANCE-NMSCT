@@ -11,7 +11,7 @@ pw.Widget centeredCell(String text, {pw.TextStyle? style}) {
     alignment: pw.Alignment.center,
     child: pw.Text(
       text,
-      style: style ?? pw.TextStyle(fontSize: 8),
+      style: style ?? const pw.TextStyle(fontSize: 8),
     ),
   );
 }
@@ -38,7 +38,7 @@ Future<void> generatePdf(
             ),
             pw.SizedBox(height: 10),
             pw.Padding(
-              padding: pw.EdgeInsets.all(15),
+              padding: const pw.EdgeInsets.all(15),
               child: pw.ListView(
                 children: [
                   pw.Text(
@@ -73,7 +73,7 @@ Future<void> generatePdf(
                       border:
                           pw.TableBorder.all(width: 1, color: PdfColors.black),
                       columnWidths: {
-                        0: pw.FixedColumnWidth(30),
+                        0: const pw.FixedColumnWidth(30),
                         1: const pw.FlexColumnWidth(),
                         2: const pw.FlexColumnWidth(),
                         3: const pw.FlexColumnWidth(),
@@ -98,13 +98,13 @@ Future<void> generatePdf(
                       border:
                           pw.TableBorder.all(width: 1, color: PdfColors.black),
                       columnWidths: {
-                        0: pw.FixedColumnWidth(30),
-                        1: pw.FlexColumnWidth(),
-                        2: pw.FlexColumnWidth(),
-                        3: pw.FlexColumnWidth(),
-                        4: pw.FlexColumnWidth(),
-                        5: pw.FlexColumnWidth(),
-                        6: pw.FlexColumnWidth(),
+                        0: const pw.FixedColumnWidth(30),
+                        1: const pw.FlexColumnWidth(),
+                        2: const pw.FlexColumnWidth(),
+                        3: const pw.FlexColumnWidth(),
+                        4: const pw.FlexColumnWidth(),
+                        5: const pw.FlexColumnWidth(),
+                        6: const pw.FlexColumnWidth(),
                       },
                       children: [
                         pw.TableRow(

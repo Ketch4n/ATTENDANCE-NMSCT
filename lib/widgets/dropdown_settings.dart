@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -76,7 +75,7 @@ class DropdownSettings extends StatelessWidget {
 
     return showModalBottomSheet(
         context: context,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
         barrierColor: Colors.black87.withOpacity(0.5),
         isScrollControlled: true,
@@ -91,10 +90,10 @@ class DropdownSettings extends StatelessWidget {
                   height: 300,
                   child: Center(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Column(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 50,
                             child: Divider(
                               color: Colors.black26,
@@ -103,14 +102,14 @@ class DropdownSettings extends StatelessWidget {
                           ),
                           ListTile(
                             leadingAndTrailingTextStyle:
-                                TextStyle(fontSize: 20),
-                            leading: Text(
+                                const TextStyle(fontSize: 20),
+                            leading: const Text(
                               "Name :",
                               style: TextStyle(color: Colors.black),
                             ),
                             trailing: Text(
-                              "${Session.fname} " + Session.lname,
-                              style: TextStyle(color: Colors.blue),
+                              "${Session.fname} ${Session.lname}",
+                              style: const TextStyle(color: Colors.blue),
                             ),
                           ),
                           // ListTile(
@@ -129,45 +128,45 @@ class DropdownSettings extends StatelessWidget {
                           Session.role == 'Intern'
                               ? ListTile(
                                   leadingAndTrailingTextStyle:
-                                      TextStyle(fontSize: 20),
-                                  leading: Text(
+                                      const TextStyle(fontSize: 20),
+                                  leading: const Text(
                                     "ID :",
                                     style: TextStyle(color: Colors.black),
                                   ),
                                   trailing: Text(
                                     uid!,
-                                    style: TextStyle(color: Colors.blue),
+                                    style: const TextStyle(color: Colors.blue),
                                   ),
                                 )
-                              : SizedBox(),
+                              : const SizedBox(),
                           Session.role == 'Intern'
                               ? ListTile(
                                   leadingAndTrailingTextStyle:
-                                      TextStyle(fontSize: 20),
-                                  leading: Text(
+                                      const TextStyle(fontSize: 20),
+                                  leading: const Text(
                                     "Birth Date :",
                                     style: TextStyle(color: Colors.black),
                                   ),
                                   trailing: Text(
                                     bday!,
-                                    style: TextStyle(color: Colors.blue),
+                                    style: const TextStyle(color: Colors.blue),
                                   ),
                                 )
-                              : SizedBox(),
+                              : const SizedBox(),
                           Session.role == 'Intern'
                               ? ListTile(
                                   leadingAndTrailingTextStyle:
-                                      TextStyle(fontSize: 20),
-                                  leading: Text(
+                                      const TextStyle(fontSize: 20),
+                                  leading: const Text(
                                     "Address :",
                                     style: TextStyle(color: Colors.black),
                                   ),
                                   trailing: Text(
                                     add!,
-                                    style: TextStyle(color: Colors.blue),
+                                    style: const TextStyle(color: Colors.blue),
                                   ),
                                 )
-                              : SizedBox()
+                              : const SizedBox()
                         ],
                       ),
                     ),

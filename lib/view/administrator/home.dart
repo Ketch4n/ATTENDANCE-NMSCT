@@ -110,7 +110,7 @@ class _AdministratorHome extends State {
             backgroundColor: Colors.blue,
             title: Text(
               _currentIndex == 0 ? "Admin Dashboard" : "Profile",
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
             centerTitle: true,
           ),

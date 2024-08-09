@@ -231,7 +231,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                   child: Center(
                     child: Text(
                       DateFormat('hh:mm:ss a').format(DateTime.now()),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: "NexaRegular",
                         fontSize: 20,
                         color: Colors.white,
@@ -242,7 +242,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
               );
             },
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           checkInAM == defaultValue ||
                   checkOutAM == defaultValue ||
                   checkInPM == defaultValue ||
@@ -266,7 +266,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                               height: 100,
                               width: 100,
                               child: kIsWeb
-                                  ? Center(child: Text("SCAN"))
+                                  ? const Center(child: Text("SCAN"))
                                   : Lottie.asset('assets/scan.json'),
                             ),
                           ),
@@ -279,7 +279,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                   flex: 1,
                   child: Container(
                     margin: const EdgeInsets.only(top: 20, bottom: 32),
-                    child: Text(
+                    child: const Text(
                       "You have completed this day!",
                       style: TextStyle(
                         fontFamily: "NexaRegular",
@@ -289,7 +289,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                     ),
                   ),
                 ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
@@ -302,7 +302,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         "Time-In",
                         style: TextStyle(
                           fontFamily: "NexaRegular",
@@ -318,13 +318,13 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         //     +
                         // inAM
                         ,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: "NexaBold",
                           fontSize: 20,
                         ),
                       ),
                       const SizedBox(height: 40),
-                      Text(
+                      const Text(
                         "Time-In",
                         style: TextStyle(
                           fontFamily: "NexaRegular",
@@ -340,7 +340,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         //     +
                         // inPM
                         ,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: "NexaBold",
                           fontSize: 20,
                         ),
@@ -354,7 +354,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         "Time-Out",
                         style: TextStyle(
                           fontFamily: "NexaRegular",
@@ -370,10 +370,10 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         //     +
                         // outAM
                         ,
-                        style: TextStyle(fontFamily: "NexaBold", fontSize: 20),
+                        style: const TextStyle(fontFamily: "NexaBold", fontSize: 20),
                       ),
                       const SizedBox(height: 40),
-                      Text(
+                      const Text(
                         "Time-Out",
                         style: TextStyle(
                           fontFamily: "NexaRegular",
@@ -389,7 +389,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         //     +
                         // outPM
                         ,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: "NexaBold",
                           fontSize: 20,
                         ),

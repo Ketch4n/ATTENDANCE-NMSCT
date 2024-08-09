@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:attendance_nmsct/data/server.dart';
-import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SliderPage extends StatefulWidget {
+  const SliderPage({super.key});
+
   @override
   _SliderPageState createState() => _SliderPageState();
 }
@@ -68,7 +69,7 @@ class _SliderPageState extends State<SliderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Adjust Radius'),
+        title: const Text('Adjust Radius'),
         centerTitle: true,
       ),
       body: Center(
@@ -77,7 +78,7 @@ class _SliderPageState extends State<SliderPage> {
           children: <Widget>[
             Text(
               'Meters : ${_currentSliderValue.toStringAsFixed(0)}',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             ),
             Slider(
               value: _currentSliderValue,
@@ -100,17 +101,17 @@ class _SliderPageState extends State<SliderPage> {
                         _currentSliderValue = 5;
                       });
                     },
-                    child: Text("default")),
+                    child: const Text("default")),
                 ElevatedButton(
                     onPressed: () {
                       _actionDone();
                     },
-                    child: Text("save")),
+                    child: const Text("save")),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text("cancel"))
+                    child: const Text("cancel"))
               ],
             )
           ],

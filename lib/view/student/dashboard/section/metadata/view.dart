@@ -13,8 +13,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class MetaDataIndex extends StatefulWidget {
-  const MetaDataIndex({Key? key, required this.name, required this.ids})
-      : super(key: key);
+  const MetaDataIndex({super.key, required this.name, required this.ids});
   final String name;
   final String ids;
 
@@ -94,7 +93,7 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
+            return const AlertDialog(
               title: Text('Info'),
               content: Text('No internet connection. Image saved locally.'),
             );
@@ -136,7 +135,7 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
+            return const AlertDialog(
               title: Text('Success'),
               content: Text('Uploaded Successfully'),
             );
@@ -198,20 +197,20 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure you want to delete this image?'),
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete this image?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
           ],
         );
@@ -246,17 +245,17 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Add Description'),
+            title: const Text('Add Description'),
             content: TextField(
               controller: _commentController,
-              decoration: InputDecoration(labelText: 'Enter Description'),
+              decoration: const InputDecoration(labelText: 'Enter Description'),
             ),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () async {
@@ -265,7 +264,7 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                     Navigator.of(context).pop(finalDescription);
                   }
                 },
-                child: Text('Upload'),
+                child: const Text('Upload'),
               ),
             ],
           );
@@ -306,7 +305,7 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
 
-    if (placemarks != null && placemarks.isNotEmpty) {
+    if (placemarks.isNotEmpty) {
       Placemark address = placemarks.first;
 
       // Construct the address string using desired fields from the first placemark
@@ -342,7 +341,7 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Capture Accomplishment'),
+                    title: const Text('Capture Accomplishment'),
                     // content: Text(
                     //     'Do you want to take a picture or choose from gallery?'),
                     actions: [
@@ -356,7 +355,7 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                         onPressed: () {
                           Navigator.of(context).pop(ImageSource.camera);
                         },
-                        child: Text('Open Camera'),
+                        child: const Text('Open Camera'),
                       ),
                     ],
                   );
@@ -365,12 +364,12 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
 
               _selectImageAndUpload(source);
             },
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           FloatingActionButton(
             onPressed: _refreshAndUpload,
-            child: Icon(Icons.sync),
+            child: const Icon(Icons.sync),
           ),
         ],
       ),
@@ -380,7 +379,7 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
         child: ListView(
           children: [
             if (isLoading)
-              Center(child: CircularProgressIndicator())
+              const Center(child: CircularProgressIndicator())
             else
               ..._imageReferences.asMap().entries.map((entry) {
                 final index = entry.key;
@@ -404,14 +403,14 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('Image Details'),
+                                    title: const Text('Image Details'),
                                     content: SingleChildScrollView(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Image.network(snapshot.data!),
-                                          SizedBox(height: 10),
+                                          const SizedBox(height: 10),
                                           Text('Description: $description'),
                                           Text('Creation Date: $creationDate'),
                                         ],
@@ -434,25 +433,25 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                           ),
                         );
                       } else {
-                        return Text("Loading...");
+                        return const Text("Loading...");
                       }
                     },
                   ),
                   trailing: IconButton(
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete),
                     onPressed: () {
                       _deleteImage(imageRef, index);
                     },
                   ),
                 );
-              }).toList(),
-            if (_localImages.isNotEmpty) Divider(),
+              }),
+            if (_localImages.isNotEmpty) const Divider(),
             if (_localImages.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    Text(
+                    const Text(
                       "Local Images",
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -461,7 +460,7 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                       return ListTile(
                         title: Image.file(file),
                         trailing: IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           onPressed: () async {
                             if (await file.exists()) {
                               await file.delete();
@@ -472,7 +471,7 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                           },
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               ),

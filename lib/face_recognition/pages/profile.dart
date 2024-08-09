@@ -4,13 +4,10 @@ import 'package:attendance_nmsct/auth/login.dart';
 import 'package:attendance_nmsct/face_recognition/pages/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:shimmer/main.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'home.dart';
 
 class Profile extends StatelessWidget {
-  const Profile(this.username, {Key? key, required this.imagePath})
-      : super(key: key);
+  const Profile(this.username, {super.key, required this.imagePath});
   final String username;
   final String imagePath;
 
@@ -39,38 +36,38 @@ class Profile extends StatelessWidget {
                         image: FileImage(File(imagePath)),
                       ),
                     ),
-                    margin: EdgeInsets.all(20),
+                    margin: const EdgeInsets.all(20),
                     width: 50,
                     height: 50,
                   ),
                   Text(
-                    'Hi ' + username + '!',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                    'Hi $username!',
+                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
               Container(
-                margin: EdgeInsets.all(20),
-                padding: EdgeInsets.all(20),
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Color(0xFFFEFFC1),
+                  color: const Color(0xFFFEFFC1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Column(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.warning_amber_outlined,
                       size: 30,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
-                    Text(
+                    const Text(
                       '''If you think this project seems interesting and you want to contribute or need some help implementing it, dont hesitate and lets get in touch!''',
                       style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.left,
                     ),
-                    Divider(
+                    const Divider(
                       height: 30,
                     ),
                     InkWell(
@@ -83,15 +80,15 @@ class Profile extends StatelessWidget {
                             BoxShadow(
                               color: Colors.blue.withOpacity(0.1),
                               blurRadius: 1,
-                              offset: Offset(0, 2),
+                              offset: const Offset(0, 2),
                             ),
                           ],
                         ),
                         alignment: Alignment.center,
                         padding:
-                            EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                            const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                         width: MediaQuery.of(context).size.width * 0.8,
-                        child: Row(
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
@@ -112,22 +109,22 @@ class Profile extends StatelessWidget {
                   ],
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               AppButton(
                 text: "LOG OUT",
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Login()),
+                    MaterialPageRoute(builder: (context) => const Login()),
                   );
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.logout,
                   color: Colors.white,
                 ),
-                color: Color(0xFFFF6161),
+                color: const Color(0xFFFF6161),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               )
             ],

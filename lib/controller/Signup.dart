@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:attendance_nmsct/auth/login.dart';
 import 'package:attendance_nmsct/controller/Insert_Announcement.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';

@@ -9,11 +9,8 @@ import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:attendance_nmsct/widgets/user_profile.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:location/location.dart' as loc;
-import 'package:geocoding/geocoding.dart';
 
 class CreateClassRoom extends StatefulWidget {
   const CreateClassRoom({
@@ -47,7 +44,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create ' + widget.purpose),
+        title: Text('Create ${widget.purpose}'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -77,7 +74,7 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                                       ? 'Address'
                                       : UserSession.location),
                             )
-                          : SizedBox(),
+                          : const SizedBox(),
                       !_show
                           ? Padding(
                               padding:
@@ -88,21 +85,21 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                                     .copyWith(labelText: 'Establishment name'),
                               ),
                             )
-                          : SizedBox(),
+                          : const SizedBox(),
                       !_show
                           ? TextFormField(
                               controller: hoursController,
                               decoration: Style.textdesign
                                   .copyWith(labelText: 'Total Hours required'),
                             )
-                          : SizedBox(),
+                          : const SizedBox(),
                       !_show
                           ? TextFormField(
                               controller: radiusController,
                               decoration: Style.textdesign.copyWith(
                                   labelText: 'Radius (default 5 meters)'),
                             )
-                          : SizedBox(),
+                          : const SizedBox(),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 15.0),
                         child: Text(

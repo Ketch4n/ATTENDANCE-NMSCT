@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:attendance_nmsct/data/server.dart';
-import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AccomplishmentModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadata.dart';
@@ -10,7 +9,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:http/http.dart' as http;
 
@@ -123,7 +121,7 @@ class _AdminRecordState extends State<AdminRecord> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Record"),
+        title: const Text("Record"),
         centerTitle: true,
       ),
       body: Column(

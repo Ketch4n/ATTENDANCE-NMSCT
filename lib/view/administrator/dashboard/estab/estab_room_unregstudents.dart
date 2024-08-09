@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/model/UnRegisteredModel.dart';
 
 class UnregUsers extends StatefulWidget {
-  const UnregUsers({Key? key, required this.ids}) : super(key: key);
+  const UnregUsers({super.key, required this.ids});
   final String ids;
 
   @override
@@ -69,7 +68,7 @@ class _UnregUsersState extends State<UnregUsers> {
       print('Response: ${response.body}');
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Data saved successfully!'),
           backgroundColor: Colors.green,
         ),
@@ -77,7 +76,7 @@ class _UnregUsersState extends State<UnregUsers> {
     } else {
       print('Response: ${response.body}');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Error saving data. Please try again later.'),
           backgroundColor: Colors.red,
         ),
@@ -91,14 +90,14 @@ class _UnregUsersState extends State<UnregUsers> {
       appBar: AppBar(),
       body: Container(
         width: double.maxFinite,
-        decoration: BoxDecoration(),
+        decoration: const BoxDecoration(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             selected.isEmpty
-                ? SizedBox()
+                ? const SizedBox()
                 : Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: Stack(
@@ -116,13 +115,13 @@ class _UnregUsersState extends State<UnregUsers> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Name: " + lname + fname,
-                                  style: TextStyle(
+                                  "Name: $lname$fname",
+                                  style: const TextStyle(
                                       color: Colors.white, fontSize: 20),
                                 ),
                                 Text(
-                                  "Email: " + selected,
-                                  style: TextStyle(
+                                  "Email: $selected",
+                                  style: const TextStyle(
                                       color: Colors.white, fontSize: 20),
                                 ),
                               ],
@@ -136,12 +135,12 @@ class _UnregUsersState extends State<UnregUsers> {
                                 onPressed: () {
                                   saveSelected();
                                 },
-                                child: Text("Save")))
+                                child: const Text("Save")))
                       ],
                     ),
                   ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
+            const Padding(
+              padding: EdgeInsets.all(20.0),
               child: Text(
                 "STUDENT WITH NO ESTABLISHMENTS YET",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -153,7 +152,7 @@ class _UnregUsersState extends State<UnregUsers> {
                 if (snapshot.hasData) {
                   final List<UnregmModel> unregStudents = snapshot.data!;
                   if (unregStudents.isEmpty) {
-                    return Text("No unregistered students");
+                    return const Text("No unregistered students");
                   } else {
                     return DropdownButton<UnregmModel>(
                       items: unregStudents.map((UnregmModel student) {
@@ -176,7 +175,7 @@ class _UnregUsersState extends State<UnregUsers> {
                 } else if (snapshot.hasError) {
                   return Text("Error: ${snapshot.error}");
                 } else {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
               },
             ),

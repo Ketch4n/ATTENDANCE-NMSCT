@@ -1,22 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/model/EstabTodayModel.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/estab/pdf.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/report.dart';
 import 'package:excel/excel.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class EstabDTR extends StatefulWidget {
   const EstabDTR({super.key, required this.id, required this.name});
@@ -79,7 +72,7 @@ class _EstabDTRState extends State<EstabDTR> {
     }
 
     // Save the Excel file
-    var file = '${sheet}.xlsx';
+    var file = '$sheet.xlsx';
     excel.save(fileName: file);
   }
 
@@ -171,14 +164,14 @@ class _EstabDTRState extends State<EstabDTR> {
                       },
                       child: Text(
                         _month,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontFamily: "NexaBold",
                           // fontSize: screenWidth / 15,
                         ),
                       ),
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               Session.role == "Administrator"
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -188,13 +181,13 @@ class _EstabDTRState extends State<EstabDTR> {
                           // Filter the data based on the search query
                           setState(() {});
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Search by Name',
                           prefixIcon: Icon(Icons.search),
                         ),
                       ),
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               Expanded(
                 child: StreamBuilder<List<EstabTodayModel>>(
                     stream: _monthStream.stream,
@@ -210,7 +203,7 @@ class _EstabDTRState extends State<EstabDTR> {
                               ? SingleChildScrollView(
                                   child: Column(
                                     children: [
-                                      Container(
+                                      SizedBox(
                                         width: double.maxFinite,
                                         child: SingleChildScrollView(
                                           scrollDirection: Axis.vertical,
@@ -225,7 +218,7 @@ class _EstabDTRState extends State<EstabDTR> {
                                                 onPressed: () {
                                                   exportToExcel(snap);
                                                 },
-                                                child: Text(
+                                                child: const Text(
                                                   'Export to Excel',
                                                   style: TextStyle(
                                                     color: Colors.white,
@@ -235,7 +228,7 @@ class _EstabDTRState extends State<EstabDTR> {
                                               ),
                                             ),
 
-                                            columns: [
+                                            columns: const [
                                               DataColumn(label: Text('Name')),
                                               DataColumn(label: Text('Date')),
                                               DataColumn(
@@ -319,7 +312,7 @@ class _EstabDTRState extends State<EstabDTR> {
                                                 child: Column(
                                                   children: [
                                                     Text(dtr.lname!,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             color:
                                                                 Colors.white)),
                                                     Row(
@@ -366,7 +359,7 @@ class _EstabDTRState extends State<EstabDTR> {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.center,
                                                   children: [
-                                                    Text(
+                                                    const Text(
                                                       "Time-In",
                                                       style: TextStyle(
                                                         fontFamily:
@@ -386,11 +379,11 @@ class _EstabDTRState extends State<EstabDTR> {
                                                       //             +
                                                       // dtr.in_am
                                                       ,
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                         fontFamily: "NexaBold",
                                                       ),
                                                     ),
-                                                    Text(
+                                                    const Text(
                                                       "Time-In",
                                                       style: TextStyle(
                                                         fontFamily:
@@ -410,7 +403,7 @@ class _EstabDTRState extends State<EstabDTR> {
                                                       //              +
                                                       // dtr.in_pm
                                                       ,
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                         fontFamily: "NexaBold",
                                                       ),
                                                     ),
@@ -424,7 +417,7 @@ class _EstabDTRState extends State<EstabDTR> {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.center,
                                                   children: [
-                                                    Text(
+                                                    const Text(
                                                       "Time-Out",
                                                       style: TextStyle(
                                                         fontFamily:
@@ -444,11 +437,11 @@ class _EstabDTRState extends State<EstabDTR> {
                                                       //              +
                                                       // dtr.out_am
                                                       ,
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                         fontFamily: "NexaBold",
                                                       ),
                                                     ),
-                                                    Text(
+                                                    const Text(
                                                       "Time-Out",
                                                       style: TextStyle(
                                                         fontFamily:
@@ -468,7 +461,7 @@ class _EstabDTRState extends State<EstabDTR> {
                                                       //             +
                                                       // dtr.out_pm
                                                       ,
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                         fontFamily: "NexaBold",
                                                       ),
                                                     ),

@@ -6,7 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 class CameraDetectionPreview extends StatelessWidget {
-  CameraDetectionPreview({Key? key}) : super(key: key);
+  CameraDetectionPreview({super.key});
 
   final CameraService _cameraService = locator<CameraService>();
   final FaceDetectorService _faceDetectorService =
@@ -23,7 +23,7 @@ class CameraDetectionPreview extends StatelessWidget {
           alignment: Alignment.center,
           child: FittedBox(
             fit: BoxFit.fitHeight,
-            child: Container(
+            child: SizedBox(
               width: width,
               height:
                   width * _cameraService.cameraController!.value.aspectRatio,

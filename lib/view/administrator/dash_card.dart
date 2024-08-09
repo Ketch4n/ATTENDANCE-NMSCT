@@ -33,7 +33,7 @@ class _GlobalDashCardState extends State<GlobalDashCard> {
       child: ClipRRect(
         borderRadius: const BorderRadius.all(Radius.circular(10)),
         child: Container(
-          constraints: kIsWeb ? BoxConstraints(maxWidth: 480) : null,
+          constraints: kIsWeb ? const BoxConstraints(maxWidth: 480) : null,
           decoration: const BoxDecoration(
             color: Colors.white,
             boxShadow: [

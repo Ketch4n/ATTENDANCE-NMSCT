@@ -1,8 +1,6 @@
-import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/view.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/view.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_dtr.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class StudentDailyReport extends StatefulWidget {
   const StudentDailyReport({super.key, required this.name, required this.ids});

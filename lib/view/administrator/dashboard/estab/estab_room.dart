@@ -3,14 +3,10 @@ import 'dart:convert';
 
 import 'package:adaptive_action_sheet/adaptive_action_sheet.dart';
 import 'package:attendance_nmsct/auth/signup.dart';
-import 'package:attendance_nmsct/controller/User.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/EstabRoomModel.dart';
-import 'package:attendance_nmsct/model/UnRegisteredModel.dart';
-import 'package:attendance_nmsct/model/UserModel.dart';
-import 'package:attendance_nmsct/face_recognition/pages/sign-up.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room_unregstudents.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class EstabRoom extends StatefulWidget {
-  const EstabRoom({Key? key, required this.ids}) : super(key: key);
+  const EstabRoom({super.key, required this.ids});
   final String ids;
 
   @override
@@ -72,14 +68,14 @@ class _EstabRoomState extends State<EstabRoom> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Student Intern'),
-          content: Text('Manually join the student in this establishment'),
+          title: const Text('Add Student Intern'),
+          content: const Text('Manually join the student in this establishment'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -88,7 +84,7 @@ class _EstabRoomState extends State<EstabRoom> {
                     builder: (context) => UnregUsers(ids: widget.ids)));
                 setState(() {});
               },
-              child: Text('Add'),
+              child: const Text('Add'),
             ),
           ],
         );
@@ -162,7 +158,7 @@ class _EstabRoomState extends State<EstabRoom> {
                 onPressed: () {
                   showAddDialog();
                 },
-                child: Icon(Icons.add)),
+                child: const Icon(Icons.add)),
             StreamBuilder<List<EstabRoomModel>>(
                 stream: _internsStreamController.stream,
                 builder: (context, snapshot) {
@@ -226,18 +222,18 @@ class _EstabRoomState extends State<EstabRoom> {
         androidBorderRadius: 20,
         actions: <BottomSheetAction>[
           BottomSheetAction(
-              title: Text(
+              title: const Text(
                 'Student',
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 18,
                     color: Colors.black,
                     fontFamily: "MontserratBold"),
               ),
               onPressed: (context) {
-                final String purpose = 'Register';
+                const String purpose = 'Register';
                 Navigator.of(context).pop(false);
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Signup(
+                    builder: (context) => const Signup(
                           purpose: purpose,
                         )));
               }),

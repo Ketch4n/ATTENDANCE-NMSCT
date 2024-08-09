@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/report.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -84,7 +81,6 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
           data.map((dtrData) => TodayModel.fromJson(dtrData)).toList();
 
       // Add the list of classmates to the stream
-      ;
       generatePDFReport(dtr);
     } else {
       print("Failed to load data. Status Code: ${response.statusCode}");
@@ -160,7 +156,7 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
   }
 
   void _openPDF(String filePath) {
-    Future<void> _loadPdf() async {
+    Future<void> loadPdf() async {
       try {
         final file = File(filePath);
         if (Platform.isIOS) {
@@ -173,7 +169,7 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
       }
     }
 
-    _loadPdf();
+    loadPdf();
   }
 
   @override
@@ -233,7 +229,7 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                 children: [
                   Text(
                     latestGrandTotalHours == "" ? "" : "total rendered :",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight:
                           FontWeight.bold, // Add bold font weight for emphasis
                       fontSize: 16, // Adjust font size as needed
@@ -243,8 +239,8 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                   Text(
                     latestGrandTotalHours == ""
                         ? ""
-                        : latestGrandTotalHours + " hours",
-                    style: TextStyle(
+                        : "$latestGrandTotalHours hours",
+                    style: const TextStyle(
                       fontWeight:
                           FontWeight.bold, // Add bold font weight for emphasis
                       fontSize: 16, // Adjust font size as needed
@@ -282,7 +278,7 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                                   onPressed: () {
                                     generate(_monthStream);
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.picture_as_pdf,
                                     color: Colors
                                         .redAccent, // Customize icon color here

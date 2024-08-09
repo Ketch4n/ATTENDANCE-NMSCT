@@ -9,7 +9,7 @@ import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room.d
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_sched.dart';
 
 class AllEstablishment extends StatefulWidget {
-  const AllEstablishment({Key? key}) : super(key: key);
+  const AllEstablishment({super.key});
 
   @override
   State<AllEstablishment> createState() => _AllEstablishmentState();
@@ -78,7 +78,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
       builder: (BuildContext context) {
         return Dialog(
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20)),
             ),
             height: MediaQuery.of(context).size.height / 2,
@@ -101,7 +101,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Establishment List'),
+        title: const Text('All Establishment List'),
         centerTitle: true,
       ),
       body: interns.isNotEmpty
@@ -119,23 +119,23 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                         backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.green),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Export to Excel',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => Signup(
+                            builder: (context) => const Signup(
                               purpose: 'ESTAB',
                             ),
                           ),
                         );
                       },
-                      child: Icon(Icons.add),
+                      child: const Icon(Icons.add),
                     ),
                   ],
                 ),
@@ -143,9 +143,9 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
-                      columns: [
+                      columns: const [
                         DataColumn(
-                          label: Container(
+                          label: SizedBox(
                             width: 200,
                             child: Text(
                               'Establishment Name',
@@ -154,7 +154,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                           ),
                         ),
                         DataColumn(
-                          label: Container(
+                          label: SizedBox(
                             width: 150,
                             child: Text(
                               'Coordinates',
@@ -163,7 +163,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                           ),
                         ),
                         DataColumn(
-                          label: Container(
+                          label: SizedBox(
                             width: 100,
                             child: Text(
                               'Hours Required',
@@ -172,7 +172,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                           ),
                         ),
                         DataColumn(
-                          label: Container(
+                          label: SizedBox(
                             width: 80,
                             child: Text(
                               'Arrival AM',
@@ -181,7 +181,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                           ),
                         ),
                         DataColumn(
-                          label: Container(
+                          label: SizedBox(
                             width: 80,
                             child: Text(
                               'Departure AM',
@@ -190,7 +190,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                           ),
                         ),
                         DataColumn(
-                          label: Container(
+                          label: SizedBox(
                             width: 80,
                             child: Text(
                               'Arrival PM',
@@ -199,7 +199,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                           ),
                         ),
                         DataColumn(
-                          label: Container(
+                          label: SizedBox(
                             width: 80,
                             child: Text(
                               'Departure PM',
@@ -208,7 +208,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                           ),
                         ),
                         DataColumn(
-                          label: Container(
+                          label: SizedBox(
                             width: 100,
                             child: Text(
                               'Schedule',
@@ -246,11 +246,11 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                                             fit: BoxFit.cover,
                                           ),
                                         ),
-                                        SizedBox(width: 10),
+                                        const SizedBox(width: 10),
                                         Flexible(
                                           child: Text(
                                             classmate.establishment_name,
-                                            style: TextStyle(fontSize: 18),
+                                            style: const TextStyle(fontSize: 18),
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
@@ -259,11 +259,11 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                                   ),
                                 ),
                                 DataCell(
-                                  Container(
+                                  SizedBox(
                                     width: 200,
                                     child: Text(
                                       classmate.location,
-                                      style: TextStyle(fontSize: 12),
+                                      style: const TextStyle(fontSize: 12),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
@@ -271,7 +271,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                                 DataCell(
                                   Text(
                                     classmate.hours_required,
-                                    style: TextStyle(fontSize: 12),
+                                    style: const TextStyle(fontSize: 12),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -281,7 +281,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                                             classmate.in_am!.isEmpty
                                         ? 'NOT SET'
                                         : classmate.in_am!,
-                                    style: TextStyle(fontSize: 12),
+                                    style: const TextStyle(fontSize: 12),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -291,7 +291,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                                             classmate.out_am!.isEmpty
                                         ? 'NOT SET'
                                         : classmate.out_am!,
-                                    style: TextStyle(fontSize: 12),
+                                    style: const TextStyle(fontSize: 12),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -301,7 +301,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                                             classmate.in_pm!.isEmpty
                                         ? 'NOT SET'
                                         : classmate.in_pm!,
-                                    style: TextStyle(fontSize: 12),
+                                    style: const TextStyle(fontSize: 12),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -311,7 +311,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                                             classmate.out_pm!.isEmpty
                                         ? 'NOT SET'
                                         : classmate.out_pm!,
-                                    style: TextStyle(fontSize: 12),
+                                    style: const TextStyle(fontSize: 12),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -323,7 +323,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                                           classmate.establishment_name,
                                           classmate.id);
                                     },
-                                    child: Icon(Icons.remove_red_eye),
+                                    child: const Icon(Icons.remove_red_eye),
                                   ),
                                 ),
                               ],
@@ -341,24 +341,24 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("NO ESTABLISHMENT REGISTERED"),
-                      SizedBox(height: 40),
+                      const Text("NO ESTABLISHMENT REGISTERED"),
+                      const SizedBox(height: 40),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => Signup(
+                              builder: (context) => const Signup(
                                 purpose: 'ESTAB',
                               ),
                             ),
                           );
                         },
-                        child: Icon(Icons.add),
+                        child: const Icon(Icons.add),
                       ),
                     ],
                   ),
                 )
-              : Center(child: Text("Error fetching data")),
+              : const Center(child: Text("Error fetching data")),
     );
   }
 }

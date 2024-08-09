@@ -6,11 +6,11 @@ import 'package:attendance_nmsct/face_recognition/pages/models/user.model.dart';
 class DatabaseHelper {
   static final String baseUrl = "${Server.host}auth/face_data.php";
 
-  static final table = 'face_id';
-  static final columnId = 'id';
-  static final columnUser = 'user';
-  static final columnPassword = 'password';
-  static final columnModelData = 'model_data';
+  static const table = 'face_id';
+  static const columnId = 'id';
+  static const columnUser = 'user';
+  static const columnPassword = 'password';
+  static const columnModelData = 'model_data';
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();

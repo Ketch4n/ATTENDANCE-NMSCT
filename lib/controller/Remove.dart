@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'package:attendance_nmsct/widgets/platform_alert.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:attendance_nmsct/data/server.dart';

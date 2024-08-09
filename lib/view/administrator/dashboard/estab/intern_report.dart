@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
-import 'package:attendance_nmsct/model/CalendarModel.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:calendar_view/calendar_view.dart';
 import 'package:excel/excel.dart';
 
 class InternReport extends StatefulWidget {
+  const InternReport({super.key});
+
   @override
   _InternReportState createState() => _InternReportState();
 }
@@ -83,7 +84,7 @@ class _InternReportState extends State<InternReport> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Calendar Page'),
+        title: const Text('Calendar Page'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
@@ -95,7 +96,7 @@ class _InternReportState extends State<InternReport> {
                 backgroundColor: MaterialStateProperty.all<Color>(
                     Colors.green), // Change the color here
               ),
-              child: Text('View Details in Excel',
+              child: const Text('View Details in Excel',
                   style: TextStyle(color: Colors.white)),
             ),
           )

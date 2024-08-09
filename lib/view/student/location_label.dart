@@ -1,7 +1,5 @@
 import 'package:attendance_nmsct/view/student/view_map.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class LocationLabel extends StatelessWidget {
   LocationLabel({

@@ -4,9 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/model/EstabTodayModel.dart';
-import 'package:attendance_nmsct/model/TodayModel.dart';
 import 'package:attendance_nmsct/view/student/calculate_distance.dart';
 import 'package:attendance_nmsct/view/student/location_label.dart';
 import 'package:excel/excel.dart';
@@ -15,13 +13,12 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
-import 'package:provider/provider.dart';
 
 class AllOutsideRange extends StatefulWidget {
-  AllOutsideRange({
-    Key? key,
+  const AllOutsideRange({
+    super.key,
     required this.ids,
-  }) : super(key: key);
+  });
 
   final List<String> ids;
 
@@ -77,7 +74,7 @@ class _AllOutsideRangeState extends State<AllOutsideRange> {
           'ids': jsonEncode(widget.ids),
         },
       );
-      print("TESTESTS" + jsonEncode(widget.ids));
+      print("TESTESTS${jsonEncode(widget.ids)}");
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -150,7 +147,7 @@ class _AllOutsideRangeState extends State<AllOutsideRange> {
                                         ),
                                       ),
                                     )
-                                  : SizedBox(),
+                                  : const SizedBox(),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: SizedBox(
@@ -272,7 +269,7 @@ class DTRDataSource extends DataTableSource {
                   ? defaultT
                   : DateFormat('hh:mm a').format(
                       DateFormat('hh:mm:ss').parse(
-                        dtr.time_in_am!,
+                        dtr.time_in_am,
                       ),
                     ),
             ),
@@ -293,7 +290,7 @@ class DTRDataSource extends DataTableSource {
                   ? defaultT
                   : DateFormat('hh:mm a').format(
                       DateFormat('hh:mm:ss').parse(
-                        dtr.time_out_am!,
+                        dtr.time_out_am,
                       ),
                     ),
             ),
@@ -314,7 +311,7 @@ class DTRDataSource extends DataTableSource {
                   ? defaultT
                   : DateFormat('hh:mm a').format(
                       DateFormat('hh:mm:ss').parse(
-                        dtr.time_in_pm!,
+                        dtr.time_in_pm,
                       ),
                     ),
             ),
@@ -335,7 +332,7 @@ class DTRDataSource extends DataTableSource {
                   ? defaultT
                   : DateFormat('hh:mm a').format(
                       DateFormat('hh:mm:ss').parse(
-                        dtr.time_out_pm!,
+                        dtr.time_out_pm,
                       ),
                     ),
             ),

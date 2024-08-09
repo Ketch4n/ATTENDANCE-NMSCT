@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:adaptive_action_sheet/adaptive_action_sheet.dart';
-import 'package:attendance_nmsct/controller/User.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/model/UserModel.dart';
 import 'package:attendance_nmsct/widgets/dropdown_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -35,14 +33,14 @@ class _GlobalProfileState extends State<GlobalProfile> {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        constraints: BoxConstraints(maxWidth: 500),
+        constraints: const BoxConstraints(maxWidth: 500),
         child: Column(
           children: [
             Stack(
               children: <Widget>[
-                kIsWeb ? SizedBox() : Image.asset("assets/images/laptop.jpg"),
+                kIsWeb ? const SizedBox() : Image.asset("assets/images/laptop.jpg"),
                 Padding(
-                  padding: EdgeInsets.only(left: 30.0),
+                  padding: const EdgeInsets.only(left: 30.0),
                   child: Column(
                     crossAxisAlignment: kIsWeb
                         ? CrossAxisAlignment.center

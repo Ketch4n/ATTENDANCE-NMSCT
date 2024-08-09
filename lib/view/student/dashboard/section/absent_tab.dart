@@ -1,11 +1,6 @@
-import 'package:attendance_nmsct/view/student/dashboard/establishment/student_estab_dtr.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/student_face_auth.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/absent_record.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/view.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/metadata/view.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/absent_pending.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class AbsentTab extends StatefulWidget {
   const AbsentTab({super.key, required this.name, required this.ids});

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:location/location.dart' as loc;
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -91,11 +90,11 @@ class _StudentEstabOnsiteState extends State<StudentEstabOnsite> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               fulladdress.text == ""
-                  ? Text("Unknown Location",
+                  ? const Text("Unknown Location",
                       style: TextStyle(color: Colors.red))
                   : Text(fulladdress.text,
-                      style: TextStyle(color: Colors.blue)),
-              Text("Your Current Location")
+                      style: const TextStyle(color: Colors.blue)),
+              const Text("Your Current Location")
             ]),
       ),
     );

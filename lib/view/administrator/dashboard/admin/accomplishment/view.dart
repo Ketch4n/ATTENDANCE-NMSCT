@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/controller/Delete.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/insert.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
-import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/model/AccomplishmentModel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -132,7 +130,7 @@ class _AdminViewAccomplishmentState extends State<AdminViewAccomplishment> {
       onRefresh: _getTextReferences,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Accomplishment"),
+          title: const Text("Accomplishment"),
           centerTitle: true,
         ),
         body: Center(
@@ -155,7 +153,7 @@ class _AdminViewAccomplishmentState extends State<AdminViewAccomplishment> {
                         if (text.isEmpty) {
                           return ListView(
                             scrollDirection: Axis.vertical,
-                            children: [
+                            children: const [
                               Duck(),
                               Center(
                                 child: Text(

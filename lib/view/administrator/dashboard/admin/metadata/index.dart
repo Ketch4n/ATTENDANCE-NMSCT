@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminMetaDataIndex extends StatefulWidget {
   const AdminMetaDataIndex({super.key, required this.name});
@@ -21,8 +20,8 @@ class _AdminMetaDataIndexState extends State<AdminMetaDataIndex> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicator =
       GlobalKey<RefreshIndicatorState>();
   bool isLoading = true; // Track if data is loading
-  String _month = DateFormat('MMMM').format(DateTime.now());
-  String _today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  final String _month = DateFormat('MMMM').format(DateTime.now());
+  final String _today = DateFormat('yyyy-MM-dd').format(DateTime.now());
   int userId = 0;
   // final TextEditingController _commentController = TextEditingController();
   double screenHeight = 0;
@@ -103,7 +102,7 @@ class _AdminMetaDataIndexState extends State<AdminMetaDataIndex> {
               Expanded(
                   child: ListView(
                 scrollDirection: Axis.vertical,
-                children: [
+                children: const [
                   Duck(),
                   Center(
                     child: Text(
@@ -149,13 +148,13 @@ class _AdminMetaDataIndexState extends State<AdminMetaDataIndex> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CircleAvatar(
+                                    const CircleAvatar(
                                       backgroundColor: Colors.blue,
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     Text(
                                         "Date: ${_imageReferences[index].name}"),
-                                    SizedBox(height: 4.0),
+                                    const SizedBox(height: 4.0),
                                     Text(parentFolderName),
                                   ],
                                 ),

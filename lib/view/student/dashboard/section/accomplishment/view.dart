@@ -168,7 +168,7 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
                     if (text.isEmpty) {
                       return ListView(
                         scrollDirection: Axis.vertical,
-                        children: [
+                        children: const [
                           Duck(),
                           Center(
                             child: Text(

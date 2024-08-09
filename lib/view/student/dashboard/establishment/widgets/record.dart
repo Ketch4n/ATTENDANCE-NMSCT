@@ -9,10 +9,7 @@ import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadat
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:loader_skeleton/loader_skeleton.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timeline_tile/timeline_tile.dart';
 import 'package:http/http.dart' as http;
 
 class Record extends StatefulWidget {

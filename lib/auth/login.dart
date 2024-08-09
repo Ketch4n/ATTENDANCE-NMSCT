@@ -1,13 +1,9 @@
-import 'package:attendance_nmsct/auth/google/google_map.dart';
-import 'package:attendance_nmsct/auth/google/pin_map.dart';
 import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/controller/Login.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/face_recognition/pages/home.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/admin/index.dart';
-import 'package:attendance_nmsct/view/administrator/home.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -34,8 +30,8 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
+    // final screenHeight = MediaQuery.of(context).size.height;
+    // final screenWidth = MediaQuery.of(context).size.width;
     return Consumer<UserRole>(builder: (context, user, child) {
       return GestureDetector(
         onTap: () {
@@ -88,7 +84,7 @@ class _LoginState extends State<Login> {
                               : Text("OJT COORDINATOR", style: Style.text),
                     ),
                     Container(
-                      constraints: BoxConstraints(maxWidth: 500),
+                      constraints: const BoxConstraints(maxWidth: 500),
                       child: Padding(
                         padding: Style.padding,
                         child: Column(
@@ -120,7 +116,7 @@ class _LoginState extends State<Login> {
                                     }),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             // Align(
@@ -189,7 +185,7 @@ class _LoginState extends State<Login> {
                     //   ],
                     // ),
                     kIsWeb
-                        ? SizedBox()
+                        ? const SizedBox()
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -198,15 +194,15 @@ class _LoginState extends State<Login> {
                                 onPressed: null,
                                 style:
                                     TextButton.styleFrom(textStyle: Style.link),
-                                child: Text("create new account ?"),
+                                child: const Text("create new account ?"),
                               ),
                               TextButton(
                                 onPressed: () {
-                                  final String purpose = 'Create';
+                                  const String purpose = 'Create';
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Signup(
+                                        builder: (context) => const Signup(
                                               purpose: purpose,
                                             )),
                                   );
@@ -217,7 +213,7 @@ class _LoginState extends State<Login> {
                               ),
                             ],
                           ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     // TextButton(
@@ -252,7 +248,7 @@ class _LoginState extends State<Login> {
                                   height: 100,
                                   width: 100,
                                   child: kIsWeb
-                                      ? Center(child: Text("SCAN"))
+                                      ? const Center(child: Text("SCAN"))
                                       : Lottie.asset('assets/scan.json'),
                                 ),
                               ),
@@ -263,10 +259,10 @@ class _LoginState extends State<Login> {
                                 height: 150,
                                 width: 150,
                                 child: Image.asset('assets/settings.png'))
-                            : SizedBox(),
+                            : const SizedBox(),
 
                     kIsWeb
-                        ? SizedBox()
+                        ? const SizedBox()
                         : Padding(
                             padding: const EdgeInsets.only(top: 10.0),
                             child: TextButton(

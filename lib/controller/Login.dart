@@ -3,7 +3,6 @@
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/view/administrator/home.dart';
 import 'package:attendance_nmsct/view/student/home.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';

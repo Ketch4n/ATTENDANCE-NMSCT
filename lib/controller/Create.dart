@@ -6,10 +6,7 @@ import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 Future CreateSectEstab(
     BuildContext context,
@@ -25,8 +22,8 @@ Future CreateSectEstab(
   final intHours = int.tryParse(hours) ?? 0; // Convert hours to integer
   // Calculate hours, minutes, and seconds
   final hoursPart = intHours.toString().padLeft(3, '0');
-  final minutesPart = '00';
-  final secondsPart = '00';
+  const minutesPart = '00';
+  const secondsPart = '00';
 
   // Construct the formatted duration string
   final durationH = '$hoursPart:$minutesPart:$secondsPart';

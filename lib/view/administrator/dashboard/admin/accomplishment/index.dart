@@ -4,13 +4,10 @@ import 'package:attendance_nmsct/view/administrator/dashboard/admin/accomplishme
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/model/AccomplishmentTodayModel.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/admin/metadata/view.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminAccomplishmentIndex extends StatefulWidget {
   const AdminAccomplishmentIndex({super.key, required this.id});
@@ -93,7 +90,7 @@ class _AdminAccomplishmentIndexState extends State<AdminAccomplishmentIndex> {
                     return Expanded(
                       child: ListView(
                         scrollDirection: Axis.vertical,
-                        children: [
+                        children: const [
                           Duck(),
                           Center(
                             child: Text(
@@ -136,12 +133,12 @@ class _AdminAccomplishmentIndexState extends State<AdminAccomplishmentIndex> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      CircleAvatar(
+                                      const CircleAvatar(
                                         backgroundColor: Colors.green,
                                       ),
-                                      SizedBox(height: 8.0),
+                                      const SizedBox(height: 8.0),
                                       Text("Date: ${record.date}"),
-                                      SizedBox(height: 4.0),
+                                      const SizedBox(height: 4.0),
                                       Text(record.email),
                                     ],
                                   ),

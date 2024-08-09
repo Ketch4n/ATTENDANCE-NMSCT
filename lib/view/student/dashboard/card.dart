@@ -4,12 +4,9 @@ import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/style.dart';
-import 'package:attendance_nmsct/model/UserModel.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/home.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/controller/Leave.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/home.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -121,11 +118,11 @@ class _DashCardState extends State<DashCard> {
                           Style.MontserratBold.copyWith(fontSize: 20),
                       iconColor: Colors.white,
                       title: Text(widget.name),
-                      subtitle: Text(
+                      subtitle: const Text(
                         // widget.path == 'class' ?
                         // "Section",
                         "OJT Establishment",
-                        style: const TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white),
                       ),
                       // subtitle: Text("Supervisor"),
                     ),
@@ -155,7 +152,7 @@ class _DashCardState extends State<DashCard> {
                       },
                     ),
                   ),
-                  Positioned(
+                  const Positioned(
                       bottom: 0,
                       left: 0,
                       child: Padding(
@@ -171,11 +168,11 @@ class _DashCardState extends State<DashCard> {
                       bottom: 0,
                       right: 0,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 10),
                         child: Text(
-                          hours + " / " + req + " hours",
-                          style: TextStyle(
+                          "$hours / $req hours",
+                          style: const TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       )),

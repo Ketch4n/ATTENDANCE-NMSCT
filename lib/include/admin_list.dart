@@ -1,12 +1,9 @@
 import 'dart:convert';
 
 import 'package:attendance_nmsct/data/server.dart';
-import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AdminModel.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 class AdminList extends StatefulWidget {
@@ -50,7 +47,7 @@ class _AdminListState extends State<AdminList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Instructor List'),
+        title: const Text('Admin Instructor List'),
         centerTitle: true,
       ),
       body: interns.isNotEmpty
@@ -62,7 +59,7 @@ class _AdminListState extends State<AdminList> {
                     // controller: horizontalController,
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
-                      columns: [
+                      columns: const [
                         DataColumn(label: Text('Email')),
                         DataColumn(label: Text('Full Name')),
                       ],
@@ -97,7 +94,7 @@ class _AdminListState extends State<AdminList> {
                                 ),
                                 DataCell(
                                   Text(
-                                    classmate.lname + " " + classmate.fname,
+                                    "${classmate.lname} ${classmate.fname}",
                                     style: const TextStyle(fontSize: 12),
                                   ),
                                 ),
@@ -111,8 +108,8 @@ class _AdminListState extends State<AdminList> {
               ],
             )
           : interns.isEmpty
-              ? Center(child: CircularProgressIndicator())
-              : Center(child: Text("Error fetching data")),
+              ? const Center(child: CircularProgressIndicator())
+              : const Center(child: Text("Error fetching data")),
     );
   }
 }

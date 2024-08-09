@@ -1,10 +1,8 @@
 // ignore_for_file: must_be_immutable
-import 'package:attendance_nmsct/data/server.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class DialogBox extends StatefulWidget {
-  DialogBox({
+  const DialogBox({
     super.key,
   });
 
@@ -22,19 +20,19 @@ class _DialogBoxState extends State<DialogBox> {
     return AlertDialog(
       backgroundColor: Colors.white,
       content: Container(
-        constraints: BoxConstraints(maxWidth: 500),
+        constraints: const BoxConstraints(maxWidth: 500),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
         height: height,
         width: double.maxFinite,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text("Add Announcement"),
+            const Text("Add Announcement"),
             TextField(
               controller: controller,
               keyboardType: TextInputType.multiline,
               maxLines: null,
-              decoration: InputDecoration(hintText: 'Type here...'),
+              decoration: const InputDecoration(hintText: 'Type here...'),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -48,7 +46,7 @@ class _DialogBoxState extends State<DialogBox> {
                 const SizedBox(
                   width: 8,
                 ),
-                ElevatedButton(onPressed: () {}, child: Text("Add"))
+                ElevatedButton(onPressed: () {}, child: const Text("Add"))
               ],
             )
           ],

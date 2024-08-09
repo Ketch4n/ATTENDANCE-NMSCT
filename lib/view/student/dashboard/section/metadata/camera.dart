@@ -10,11 +10,9 @@ import 'package:geocoding/geocoding.dart';
 import 'package:location/location.dart' as loc;
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Camera extends StatefulWidget {
-  const Camera({Key? key, required this.name, required this.refresh})
-      : super(key: key);
+  const Camera({super.key, required this.name, required this.refresh});
   final String name;
   final VoidCallback refresh;
 
@@ -272,13 +270,13 @@ class _CameraState extends State<Camera> {
                 _processingImage = false;
                 _uploadImage(_capturedImage!);
                 const title = "Success";
-                final message = "Uploaded successfully";
+                const message = "Uploaded successfully";
                 await cameraAlertDialog(context, title, message);
                 Navigator.of(context).pop();
 
                 widget.refresh();
               },
-        child: _capturedImage == null ? Icon(Icons.camera) : Icon(Icons.upload),
+        child: _capturedImage == null ? const Icon(Icons.camera) : const Icon(Icons.upload),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

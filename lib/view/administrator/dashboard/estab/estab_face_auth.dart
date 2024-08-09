@@ -1,17 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
-import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/DailyReportModel.dart';
-import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/report.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
-import 'package:lottie/lottie.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class EstabFaceAuth extends StatefulWidget {
@@ -89,7 +83,7 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
       child: Scaffold(
           body: Column(
         children: [
-          ListTile(
+          const ListTile(
             leading: Text("Today"),
           ),
           Expanded(
@@ -143,7 +137,7 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                           child: Text(
                                             dtr.lname,
                                             style:
-                                                TextStyle(color: Colors.white),
+                                                const TextStyle(color: Colors.white),
                                           )),
                                     ),
                                     Expanded(
@@ -153,7 +147,7 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text(
+                                          const Text(
                                             "Time-In",
                                             style: TextStyle(
                                               fontFamily: "NexaRegular",
@@ -170,12 +164,12 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                             //              +
                                             // dtr.in_am
                                             ,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontFamily: "NexaBold",
                                               fontSize: 20,
                                             ),
                                           ),
-                                          Text(
+                                          const Text(
                                             "Time-In",
                                             style: TextStyle(
                                               fontFamily: "NexaRegular",
@@ -192,7 +186,7 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                             //              +
                                             // dtr.in_pm
                                             ,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontFamily: "NexaBold",
                                               fontSize: 20,
                                             ),
@@ -207,7 +201,7 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text(
+                                          const Text(
                                             "Time-Out",
                                             style: TextStyle(
                                               fontFamily: "NexaRegular",
@@ -224,12 +218,12 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                             //              +
                                             // dtr.out_am
                                             ,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontFamily: "NexaBold",
                                               fontSize: 20,
                                             ),
                                           ),
-                                          Text(
+                                          const Text(
                                             "Time-Out",
                                             style: TextStyle(
                                               fontFamily: "NexaRegular",
@@ -246,7 +240,7 @@ class _EstabFaceAuthState extends State<EstabFaceAuth> {
                                             //             +
                                             // dtr.out_pm
                                             ,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontFamily: "NexaBold",
                                               fontSize: 20,
                                             ),

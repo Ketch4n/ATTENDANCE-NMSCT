@@ -59,7 +59,7 @@ Future<void> fetchUser(StreamController<UserModel> userStreamController) async {
 
 // Periodically check for updates
 void startUserUpdateTimer(StreamController<UserModel> userStreamController) {
-  Timer.periodic(Duration(seconds: 5), (Timer timer) async {
+  Timer.periodic(const Duration(seconds: 5), (Timer timer) async {
     await fetchUser(userStreamController);
   });
 }

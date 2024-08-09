@@ -1,20 +1,17 @@
 import 'dart:convert';
 import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AllStudentModel.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_dtr.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_dtr.dart';
 import 'package:attendance_nmsct/view/student/dtr_details.dart';
 import 'package:excel/excel.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AllStudents extends StatefulWidget {
-  const AllStudents({Key? key}) : super(key: key);
+  const AllStudents({super.key});
 
   @override
   State<AllStudents> createState() => _AllStudentsState();
@@ -33,14 +30,14 @@ class _AllStudentsState extends State<AllStudents> {
 
   void fetchInterns() async {
     final prefs = await SharedPreferences.getInstance();
-    final estab_id = prefs.getString('adminEstab');
-    print("estab : $estab_id");
+    final estabId = prefs.getString('adminEstab');
+    print("estab : $estabId");
     print("role : ${Session.role}");
 
     final response = await http.post(
       Uri.parse('${Server.host}users/establishment/all_students.php'),
       body: {
-        'estab_id': estab_id,
+        'estab_id': estabId,
         'role': Session.role,
       },
     );
@@ -212,13 +209,13 @@ class _AllStudentsState extends State<AllStudents> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 20),
                           child: DataTable(
-                            columns: [
-                              const DataColumn(label: Text('Name')),
-                              const DataColumn(label: Text('Email')),
-                              const DataColumn(label: Text('Section')),
-                              const DataColumn(label: Text('Birth Date')),
-                              const DataColumn(label: Text('Address')),
-                              const DataColumn(label: Text('View Records')),
+                            columns: const [
+                              DataColumn(label: Text('Name')),
+                              DataColumn(label: Text('Email')),
+                              DataColumn(label: Text('Section')),
+                              DataColumn(label: Text('Birth Date')),
+                              DataColumn(label: Text('Address')),
+                              DataColumn(label: Text('View Records')),
                             ],
                             rows: filteredInterns
                                 .map(
