@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'admin_section_tab.dart';
 
 class AdminHome extends StatefulWidget {
-  const AdminHome(
-      {super.key, required this.ids, required this.uid, required this.name});
+  const AdminHome({super.key, required this.ids, required this.name});
   final String ids;
-  final String uid;
+  // final String uid;
   final String name;
 
   @override
@@ -49,7 +48,7 @@ class _AdminHomeState extends State<AdminHome> {
             ids: widget.ids,
             name: widget.name,
           ),
-          AdminClass(ids: widget.ids, uid: widget.uid, name: widget.name),
+          AdminClass(ids: widget.ids, name: widget.name),
         ],
       ),
     );

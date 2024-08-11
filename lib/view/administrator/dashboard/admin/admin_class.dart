@@ -14,10 +14,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class AdminClass extends StatefulWidget {
-  const AdminClass(
-      {super.key, required this.ids, required this.uid, required this.name});
+  const AdminClass({super.key, required this.ids, required this.name});
   final String ids;
-  final String uid;
+  // final String uid;
   final String name;
   @override
   State<AdminClass> createState() => _AdminClassState();

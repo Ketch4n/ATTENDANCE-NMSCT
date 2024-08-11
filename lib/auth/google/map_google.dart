@@ -13,16 +13,16 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  late GoogleMapController mapController;
+  GoogleMapController? mapController;
   final Set<Marker> _markers = {};
-  late LatLng _centerPosition;
-  String _address = 'Fetching location...';
+  late LatLng _centerPosition =
+      const LatLng(10.339696878741954, 123.90249833464621);
+  String _address = 'Drag the screen';
 
   @override
   void initState() {
     super.initState();
-    _centerPosition = const LatLng(
-        10.339696878741954, 123.90249833464621); // Initial center position
+    _locateUser(); // Optionally fetch user's location on start
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -30,21 +30,12 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<String> _getAddress(LatLng position) async {
-    // const apiKey = 'AIzaSyDMi2Vr5XERmRQOMISjj8V3Mk21T7z4LjU';
-    // final url =
-    //     'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey';
-
     final url =
         'https://attendance-nmscst.online/db/address.php'; // Replace with your PHP script URL
-    final params = {
-      'latlng': '${position.latitude},${position.longitude}',
-    };
+    final params = {'latlng': '${position.latitude},${position.longitude}'};
 
     try {
-      final response = await http.post(
-        Uri.parse(url),
-        body: params,
-      );
+      final response = await http.post(Uri.parse(url), body: params);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['status'] == 'OK' && data['results'].isNotEmpty) {
@@ -96,24 +87,31 @@ class _MapScreenState extends State<MapScreen> {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
 
-    Position position = await Geolocator.getCurrentPosition();
-    _centerPosition = LatLng(position.latitude, position.longitude);
+    Position positions = await Geolocator.getCurrentPosition();
+    setState(() {
+      _centerPosition = LatLng(positions.latitude, positions.longitude);
+      _updateMap();
+    });
+  }
 
-    mapController
-        .animateCamera(CameraUpdate.newLatLngZoom(_centerPosition, 18));
-    _updateAddress();
-
-    _markers.clear();
-    _markers.add(
-      Marker(
-        markerId: const MarkerId('current-location'),
-        position: _centerPosition,
-      ),
-    );
-    setState(() {});
+  void _updateMap() {
+    if (mapController != null) {
+      mapController!
+          .animateCamera(CameraUpdate.newLatLngZoom(_centerPosition, 18));
+      _updateAddress();
+      _markers.clear();
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('current-location'),
+          position: _centerPosition,
+        ),
+      );
+    }
   }
 
   Future<void> _fetchAndDisplayInfo() async {
+    if (_centerPosition == null) return;
+
     final url =
         'https://attendance-nmscst.online/db/map.php'; // Replace with your PHP script URL
     final params = {
@@ -121,6 +119,7 @@ class _MapScreenState extends State<MapScreen> {
       'radius': '50',
       'type': 'point_of_interest',
     };
+
     try {
       final response = await http.post(Uri.parse(url), body: params);
       if (response.statusCode == 200) {
@@ -128,7 +127,6 @@ class _MapScreenState extends State<MapScreen> {
         if (data['status'] == 'OK' && data['results'].isNotEmpty) {
           final poi = data['results'][0];
           final poiName = poi['name'];
-
           final poiAddress = await _getAddress(LatLng(
               poi['geometry']['location']['lat'],
               poi['geometry']['location']['lng']));
@@ -176,8 +174,7 @@ class _MapScreenState extends State<MapScreen> {
             onCameraMove: (position) {
               _centerPosition = position.target;
             },
-            onCameraIdle:
-                _fetchAndDisplayInfo, // Fetch info when camera stops moving
+            onCameraIdle: _fetchAndDisplayInfo,
             markers: _markers,
           ),
           Positioned(

@@ -192,8 +192,11 @@ class _AllStudentsState extends State<AllStudents> {
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const Signup(
+                        builder: (context) => Signup(
                               purpose: 'INTERN',
+                              reload: () {
+                                fetchInterns();
+                              },
                             )));
                   },
                   child: const Icon(Icons.add),
@@ -215,6 +218,7 @@ class _AllStudentsState extends State<AllStudents> {
                               DataColumn(label: Text('Section')),
                               DataColumn(label: Text('Birth Date')),
                               DataColumn(label: Text('Address')),
+                              DataColumn(label: Text('Status')),
                               DataColumn(label: Text('View Records')),
                             ],
                             rows: filteredInterns
@@ -286,6 +290,12 @@ class _AllStudentsState extends State<AllStudents> {
                                       DataCell(
                                         Text(
                                           classmate.address,
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          classmate.status,
                                           style: const TextStyle(fontSize: 12),
                                         ),
                                       ),

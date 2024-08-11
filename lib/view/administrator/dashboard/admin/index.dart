@@ -135,9 +135,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   children: sect2.map((SectionModel sec) {
                     return GlobalDashCard(
                       id: sec.id,
-                      uid: sec.admin_id,
+                      // uid: sec.admin_id,
                       name: sec.section_name,
-                      code: sec.code,
+                      // code: sec.code,
                       path: uRole == 'Admin' ? "class" : "room",
                       refreshCallback: _refreshData,
                     );

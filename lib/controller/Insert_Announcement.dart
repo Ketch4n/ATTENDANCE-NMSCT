@@ -32,7 +32,6 @@ Future<void> insertAnnouncement(
         subject,
       ); // Await the email sending
       print("SUCCESS EMAIL");
-      showAlertDialog(context, status, message);
 
       // Handle success message as needed
     } else {

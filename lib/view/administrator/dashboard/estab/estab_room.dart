@@ -69,7 +69,8 @@ class _EstabRoomState extends State<EstabRoom> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Add Student Intern'),
-          content: const Text('Manually join the student in this establishment'),
+          content:
+              const Text('Manually join the student in this establishment'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -82,7 +83,7 @@ class _EstabRoomState extends State<EstabRoom> {
                 Navigator.of(context).pop();
                 await Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => UnregUsers(ids: widget.ids)));
-                setState(() {});
+                fetchInterns(_internsStreamController);
               },
               child: const Text('Add'),
             ),
@@ -233,8 +234,11 @@ class _EstabRoomState extends State<EstabRoom> {
                 const String purpose = 'Register';
                 Navigator.of(context).pop(false);
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const Signup(
+                    builder: (context) => Signup(
                           purpose: purpose,
+                          reload: () {
+                            setState(() {});
+                          },
                         )));
               }),
         ]);

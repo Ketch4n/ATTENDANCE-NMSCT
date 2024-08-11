@@ -10,8 +10,11 @@ import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/functions/generate.dart';
+import 'package:attendance_nmsct/include/admin_list.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/face_recognition/pages/home.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/admin/home.dart';
+import 'package:attendance_nmsct/view/administrator/home.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +24,9 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class Signup extends StatefulWidget {
-  const Signup({super.key, required this.purpose});
+  const Signup({super.key, required this.purpose, required this.reload});
   final String purpose;
+  final VoidCallback reload;
   @override
   _SignupState createState() => _SignupState();
 }
@@ -562,9 +566,14 @@ class _SignupState extends State<Signup> {
     // }
     else if (_currentStep == 2) {
       // ignore: use_build_context_synchronously
-      if (widget.purpose != 'ESTAB') {
+      if (widget.purpose == 'INTERN') {
         await signup(context, email, password, id, name, user, bday, uid,
             address, section, widget.purpose);
+        Navigator.of(context).pop(false);
+
+        // Navigator.of(context).pop(false);
+
+        widget.reload();
       } else {
         String code = generateAlphanumericId();
         String currentCoordinate = UserSession.location;
@@ -572,8 +581,13 @@ class _SignupState extends State<Signup> {
         double? currentLng = UserSession.longitude;
         String radiusMeter = radius.isEmpty ? "5" : radius;
 
-        await CreateSectEstab(context, code, cont, currentCoordinate,
-            currentLng!, currentLat!, email, hours, radiusMeter);
+        await signup(context, email, password, id, name, user, bday, uid,
+            address, section, widget.purpose);
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => AdminList()));
+
+        // await CreateSectEstab(context, code, cont, currentCoordinate,
+        //     currentLng!, currentLat!, email, hours, radiusMeter);
         // await signup(context, email, password, id, name, user, bday, uid,
         //     address, section, widget.purpose);
       }

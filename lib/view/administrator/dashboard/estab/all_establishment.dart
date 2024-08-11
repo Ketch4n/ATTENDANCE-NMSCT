@@ -1,3 +1,4 @@
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/add_location.dart';
 import 'package:flutter/material.dart';
 import 'package:excel/excel.dart';
 import 'dart:convert';
@@ -61,7 +62,7 @@ class _AllEstablishmentState extends State<AllEstablishment> {
     for (var estabModel in interns) {
       sheet.appendRow([
         estabModel.establishment_name,
-        estabModel.creator_email,
+        // estabModel.creator_email,
         estabModel.location,
         estabModel.hours_required,
       ]);
@@ -78,20 +79,29 @@ class _AllEstablishmentState extends State<AllEstablishment> {
       builder: (BuildContext context) {
         return Dialog(
           child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-            ),
-            height: MediaQuery.of(context).size.height / 2,
-            width: MediaQuery.of(context).size.width / 3,
-            child: ViewSched(
-              name: name,
-              id: id,
-              onDialogClose: () {
-                // Refresh the data when the dialog is closed
-                fetchInterns();
-              },
-            ),
-          ),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+              height: id != 0
+                  ? MediaQuery.of(context).size.height / 2
+                  : MediaQuery.of(context).size.height - 100,
+              width: MediaQuery.of(context).size.width / 3,
+              child: id == 0
+                  ? AddLocation(
+                      title: name,
+                      onDialogClose: () {
+                        // Refresh the data when the dialog is closed
+                        fetchInterns();
+                      },
+                    )
+                  : ViewSched(
+                      name: name,
+                      id: id,
+                      onDialogClose: () {
+                        // Refresh the data when the dialog is closed
+                        fetchInterns();
+                      },
+                    )),
         );
       },
     );
@@ -127,13 +137,9 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                     const SizedBox(width: 20),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const Signup(
-                              purpose: 'ESTAB',
-                            ),
-                          ),
-                        );
+                        const title = "Register Establishment";
+
+                        _showAlertDialog(context, title, 0);
                       },
                       child: const Icon(Icons.add),
                     ),
@@ -250,7 +256,8 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                                         Flexible(
                                           child: Text(
                                             classmate.establishment_name,
-                                            style: const TextStyle(fontSize: 18),
+                                            style:
+                                                const TextStyle(fontSize: 18),
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
@@ -345,13 +352,9 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                       const SizedBox(height: 40),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const Signup(
-                                purpose: 'ESTAB',
-                              ),
-                            ),
-                          );
+                          const String name = "Register Establisment";
+                          const int id = 0;
+                          _showAlertDialog(context, name, id);
                         },
                         child: const Icon(Icons.add),
                       ),

@@ -157,12 +157,12 @@ class _CreateClassRoomState extends State<CreateClassRoom> {
                               // ignore: use_build_context_synchronously
                               await CreateSectEstab(
                                   context,
-                                  code,
+                                  // code,
                                   loc,
                                   currentCoordinate,
                                   currentLng!,
                                   currentLat!,
-                                  Session.email,
+                                  // Session.email,
                                   hours,
                                   radiusMeter);
                               // await pasteCode(context, title, message, code);

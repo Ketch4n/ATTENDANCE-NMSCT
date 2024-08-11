@@ -168,9 +168,9 @@ class _EstabDashboardState extends State<EstabDashboard> {
                           children: sect2.map((EstabModel sec) {
                             return GlobalDashCard(
                               id: sec.id.toString(),
-                              uid: sec.creator_email,
+                              // uid: sec.creator_email,
                               name: sec.establishment_name,
-                              code: sec.code,
+                              // code: sec.code,
                               path: uRole == 'Admin' ? "class" : "room",
                               refreshCallback: _refreshData,
                             );
@@ -182,9 +182,9 @@ class _EstabDashboardState extends State<EstabDashboard> {
                             EstabModel sec = sect2[index];
                             return GlobalDashCard(
                               id: sec.id.toString(),
-                              uid: sec.creator_email,
+                              // uid: sec.creator_email,
                               name: sec.establishment_name,
-                              code: sec.code,
+                              // code: sec.code,
                               path: uRole == 'Admin' ? "class" : "room",
                               refreshCallback: _refreshData,
                             );

@@ -69,7 +69,7 @@ class _UnregUsersState extends State<UnregUsers> {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Data saved successfully!'),
+          content: Text('Added Successfully!'),
           backgroundColor: Colors.green,
         ),
       );

@@ -216,8 +216,11 @@ class _NavbarState extends State<Navbar> {
                         Navigator.of(context).pop(false);
 
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const Signup(
+                            builder: (context) => Signup(
                                   purpose: 'Create',
+                                  reload: () {
+                                    setState(() {});
+                                  },
                                 )));
                       },
                     )

@@ -39,19 +39,17 @@ Future<void> signup(
       final details =
           "Click the link below to download the Application\nComplete your account by registering facial recognition<br><a href='$link'>Download</a>";
       const subject = "Download the App";
-
-      await sendToAll(context, recipient, details, subject);
-
-      await showAlertDialog(context, status, message);
+      if (purpose == 'INTERN') {
+        showAlertDialog(context, status, message);
+        await sendToAll(context, recipient, details, subject);
+      } else {
+        await showAlertDialog(context, status, message);
+      }
 
       // Navigator.pushReplacement(
       //   context,
       //   MaterialPageRoute(builder: (context) => const Login()),
       // );
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
     } else if (response.statusCode == 400) {
       final jsonResponse = json.decode(response.body);
       final message = jsonResponse['message'];

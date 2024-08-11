@@ -10,15 +10,15 @@ class GlobalDashCard extends StatefulWidget {
   const GlobalDashCard(
       {super.key,
       required this.id,
-      required this.uid,
+      // required this.uid,
       required this.name,
-      required this.code,
+      // required this.code,
       required this.path,
       required this.refreshCallback});
   final String id;
-  final String uid;
+  // final String uid;
   final String name;
-  final String code;
+  // final String code;
   final String path;
   final VoidCallback refreshCallback;
   @override
@@ -50,7 +50,7 @@ class _GlobalDashCardState extends State<GlobalDashCard> {
                   ? Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => AdminHome(
                             ids: widget.id,
-                            uid: widget.uid,
+                            // uid: widget.uid,
                             name: widget.name,
                           )))
                   : Navigator.of(context).push(MaterialPageRoute(
@@ -110,13 +110,12 @@ class _GlobalDashCardState extends State<GlobalDashCard> {
                         widget.refreshCallback();
                         print('Refresh Callback Triggered');
                       } else {
-                        Clipboard.setData(ClipboardData(
-                            text: widget.code)); // Copies 'code' to clipboard
+                        // Clipboard.setData(ClipboardData(
+                        //     text: widget.code)); // Copies 'code' to clipboard
                         // Navigator.of(context).pop(false);
                         // Show a snackbar or any other indication that the text has been copied
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text('Text copied: ${widget.code}')),
+                          SnackBar(content: Text('Text copied: ')),
                         );
                       }
                       // print('Selected: $path');
