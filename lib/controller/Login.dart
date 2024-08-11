@@ -23,7 +23,7 @@ Future<void> login(
     try {
       // HTTP request
       final response = await http.post(
-        role == 'Intern' && !kIsWeb
+        role == 'INTERN' && !kIsWeb
             ? Uri.parse('${Server.host}auth/user_login.php')
             : role == 'Administrator' && !kIsWeb
                 ? Uri.parse('${Server.host}auth/login.php')
@@ -45,7 +45,7 @@ Future<void> login(
         final userFName = data['fname'];
         final userLName = data['lname'];
         final userEmail = data['email'];
-        final adminEstab = data['establishment_id'];
+        // final adminEstab = data['establishment_id'];
 
         // final status = "${response.statusCode}";
         if (data['success']) {
@@ -61,7 +61,7 @@ Future<void> login(
           Session.lname = userLName;
           Session.email = userEmail;
 
-          if (role == "Intern") {
+          if (role == "INTERN") {
             final uid = data['uid'];
             final bday = data['bday'];
             final address = data['address'];
@@ -69,8 +69,8 @@ Future<void> login(
             prefs.setString('internBDAY', bday);
             prefs.setString('internADDRESS', address);
           } else {
-            prefs.setString('adminEstab', adminEstab);
-            Admin.estab_id = adminEstab;
+            // prefs.setString('adminEstab', adminEstab);
+            // Admin.estab_id = adminEstab;
           }
           const title = "Login success";
           String content = "Welcome $message";

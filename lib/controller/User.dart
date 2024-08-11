@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<UserModel> _fetchUserFromApi(String userId, String userRole) async {
-  final Uri uri = userRole == 'Intern'
+  final Uri uri = userRole == 'INTERN'
       ? Uri.parse('${Server.host}auth/user.php')
       : Uri.parse('${Server.host}users/establishment/user.php');
 
