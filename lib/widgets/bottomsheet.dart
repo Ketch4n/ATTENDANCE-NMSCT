@@ -7,7 +7,7 @@ Future bottomsheetJoin(BuildContext context, String role,
     {required Future<void> Function() refreshCallback}) async {
   showAdaptiveActionSheet(
       context: context,
-      title: Text(role == 'Intern' ? 'Join' : 'Create'),
+      title: Text(role == 'INTERN' ? 'Join' : 'Create'),
       androidBorderRadius: 20,
       actions: <BottomSheetAction>[
         BottomSheetAction(
@@ -22,7 +22,7 @@ Future bottomsheetJoin(BuildContext context, String role,
               String purpose = "Establishment";
               Navigator.of(context).pop(false);
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => role == 'Intern'
+                  builder: (context) => role == 'INTERN'
                       ? Join(
                           role: role,
                           purpose: purpose,

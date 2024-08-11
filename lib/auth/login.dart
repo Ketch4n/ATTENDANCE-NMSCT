@@ -79,7 +79,7 @@ class _LoginState extends State<Login> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: user.role == 'Intern'
+                      child: user.role == 'INTERN'
                           ? Text("OJT Student / Intern", style: Style.text)
                           : user.role == 'Administrator'
                               ? Text("Establishment", style: Style.text)

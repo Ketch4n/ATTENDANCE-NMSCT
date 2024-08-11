@@ -23,7 +23,7 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
   late final TextEditingController _searchController;
   Future<void> streamAccomplishemnt(_absentController) async {
     try {
-      final purpose = Session.role == "Intern" ? "Intern" : "Estab";
+      final purpose = Session.role == "INTERN" ? "INTERN" : "Estab";
       final response = await http.post(
         Uri.parse('${Server.host}users/student/view_absent.php'),
         body: {
@@ -56,10 +56,8 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
     // Filter the products based on the search query
     List<AbsentModel> filteredProducts = products.where((product) {
       return product.id.toLowerCase().contains(query) ||
-          product.lname!.toLowerCase().contains(query) ||
           product.reason.toLowerCase().contains(query) ||
           product.status.toLowerCase().contains(query) ||
-          product.email!.toLowerCase().contains(query) ||
           product.date.toLowerCase().contains(query);
     }).toList();
     // Build the DataRow widgets for the filtered products
@@ -182,11 +180,11 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      Session.role == "Intern"
+                                                      Session.role == "INTERN"
                                                           ? SizedBox()
                                                           : Text(
                                                               "From: ${absent.lname!}"),
-                                                      Session.role == "Intern"
+                                                      Session.role == "INTERN"
                                                           ? SizedBox()
                                                           : Text(absent.email!),
                                                       Text(

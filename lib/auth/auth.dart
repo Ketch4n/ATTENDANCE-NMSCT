@@ -48,7 +48,7 @@ class _AuthState extends State<Auth> {
     return Scaffold(
         body: showLoginScreen
             ? const Login()
-            : role == 'Intern'
+            : role == 'INTERN'
                 ? const StudentHome()
                 : const AdministratorHome());
   }

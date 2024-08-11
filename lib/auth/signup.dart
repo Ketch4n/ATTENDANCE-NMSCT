@@ -432,7 +432,7 @@ class _SignupState extends State<Signup> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(widget.purpose == "ESTAB"
                                   ? "Click the icon to register Location"
-                                  : widget.purpose == "Intern"
+                                  : widget.purpose == "INTERN"
                                       ? "Click the icon to register Face Auth"
                                       : "Click continue to confirm"),
                             ),

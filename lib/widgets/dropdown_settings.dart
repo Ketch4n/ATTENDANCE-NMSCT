@@ -70,9 +70,9 @@ class DropdownSettings extends StatelessWidget {
 
   Future showProfileInfo(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    final uid = prefs.getString('internID');
-    final bday = prefs.getString('internBDAY');
-    final add = prefs.getString('internADDRESS');
+    final uid = prefs.getString('INTERNID');
+    final bday = prefs.getString('INTERNBDAY');
+    final add = prefs.getString('INTERNADDRESS');
 
     return showModalBottomSheet(
         context: context,
@@ -126,7 +126,7 @@ class DropdownSettings extends StatelessWidget {
                           //     style: TextStyle(color: Colors.blue),
                           //   ),
                           // ),
-                          Session.role == 'Intern'
+                          Session.role == 'INTERN'
                               ? ListTile(
                                   leadingAndTrailingTextStyle:
                                       TextStyle(fontSize: 20),
@@ -140,7 +140,7 @@ class DropdownSettings extends StatelessWidget {
                                   ),
                                 )
                               : SizedBox(),
-                          Session.role == 'Intern'
+                          Session.role == 'INTERN'
                               ? ListTile(
                                   leadingAndTrailingTextStyle:
                                       TextStyle(fontSize: 20),
@@ -154,7 +154,7 @@ class DropdownSettings extends StatelessWidget {
                                   ),
                                 )
                               : SizedBox(),
-                          Session.role == 'Intern'
+                          Session.role == 'INTERN'
                               ? ListTile(
                                   leadingAndTrailingTextStyle:
                                       TextStyle(fontSize: 20),

@@ -38,23 +38,23 @@ class _StudentSectionClassState extends State<StudentSectionClass> {
       child: Flex(
         direction: Axis.vertical,
         children: [
-          ListTile(
-              title: Text("Administrator", style: Style.classFont),
-              subtitle: Style.classdivider),
-          ListTile(
-            leading: ClipRRect(
-                borderRadius: Style.radius50,
-                child: Image.asset(
-                  "assets/images/estab.png",
-                  height: 50,
-                  width: 50,
-                  fit: BoxFit.cover,
-                )),
-            title: Text(Admin.name),
-            subtitle: Text(
-              Admin.email,
-            ),
-          ),
+          // ListTile(
+          //     title: Text("Administrator", style: Style.classFont),
+          //     subtitle: Style.classdivider),
+          // ListTile(
+          //   leading: ClipRRect(
+          //       borderRadius: Style.radius50,
+          //       child: Image.asset(
+          //         "assets/images/estab.png",
+          //         height: 50,
+          //         width: 50,
+          //         fit: BoxFit.cover,
+          //       )),
+          //   title: Text(Admin.name),
+          //   subtitle: Text(
+          //     Admin.email,
+          //   ),
+          // ),
           ListTile(
               title: Text(
                 "Classmates",

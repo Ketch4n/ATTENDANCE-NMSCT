@@ -17,8 +17,8 @@ Future<void> fetchClassmates(classmateStreamController, id) async {
         data.map((classmateData) => RoomModel.fromJson(classmateData)).toList();
 
     // Admin.id = classmates[0].creator_id;
-    Admin.name = classmates[0].creator_fname;
-    Admin.email = classmates[0].creator_email;
+    // Admin.name = classmates[0].creator_fname;
+    // Admin.email = classmates[0].creator_email;
 
     // Add the list of classmates to the stream
     classmateStreamController.add(classmates);

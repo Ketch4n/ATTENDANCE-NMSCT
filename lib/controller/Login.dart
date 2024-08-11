@@ -25,7 +25,7 @@ Future<void> login(
     try {
       // HTTP request
       final response = await http.post(
-        role == 'Intern' && !kIsWeb
+        role == 'INTERN' && !kIsWeb
             ? Uri.parse('${Server.host}auth/user_login.php')
             : role == 'Administrator' && !kIsWeb
                 ? Uri.parse('${Server.host}auth/login.php')
@@ -66,7 +66,7 @@ Future<void> login(
           Session.email = userEmail;
           Session.status = userStatus;
 
-          if (role == "Intern") {
+          if (role == "INTERN") {
             final uid = data['uid'];
             final bday = data['bday'];
             final address = data['address'];
@@ -82,14 +82,14 @@ Future<void> login(
           String content = "Welcome $message";
 
           await showAlertDialog(context, title, content);
-          userRole == 'Intern' && userStatus == "Active"
+          userRole == 'INTERN' && userStatus == "Active"
               ? Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const StudentHome(),
                   ),
                 )
-              : userRole == 'Intern' && userStatus == "Inactive"
+              : userRole == 'INTERN' && userStatus == "Inactive"
                   ? Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -11,7 +11,7 @@ class FaceDone {
 //   // static String role = 'NMSCST';
 // }
 class UserRole extends ChangeNotifier {
-  String role = kIsWeb ? "NMSCST" : "Intern";
+  String role = kIsWeb ? "NMSCST" : "INTERN";
   String get value => role;
 
   set value(String newValue) {
