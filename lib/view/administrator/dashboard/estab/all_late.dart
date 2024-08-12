@@ -7,6 +7,9 @@ import 'package:excel/excel.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AllLateStudent extends StatefulWidget {
@@ -62,34 +65,41 @@ class _AllStudentsState extends State<AllLateStudent> {
     });
   }
 
-  Future<void> exportToExcel() async {
-    var excel = Excel.createExcel();
-    var sheet = excel['Sheet1'];
+  Future<void> exportToPDF() async {
+    final pdf = pw.Document();
 
-    // Add headers
-    sheet.appendRow([
-      'Student Name',
-      'Email',
-      'Section',
-      'Birth Date',
-      'Address',
-    ]);
-
-    // Add data rows
-    for (var estabModel in interns) {
-      sheet.appendRow([
-        estabModel.lname,
-        // estabModel.fname,
-        estabModel.email,
-        // estabModel.section,
-        // estabModel.bday,
-        // estabModel.address,
-      ]);
-    }
-
-    // Save the Excel file
-    var file = 'establishment_data_${DateTime.now().toIso8601String()}.xlsx';
-    excel.save(fileName: file);
+    // Add a page to the PDF
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Table.fromTextArray(
+            headers: [
+              'Student Name',
+              'Email',
+              'Time-in AM',
+              'Time-out AM',
+              'Time-in PM',
+              'Time-out PM',
+              'Date'
+            ],
+            data: interns.map((intern) {
+              return [
+                intern.lname,
+                intern.email,
+                intern.time_in_am,
+                intern.time_out_am,
+                intern.time_in_pm,
+                intern.time_out_pm,
+                intern.date,
+              ];
+            }).toList(),
+          );
+        },
+      ),
+    );
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
   }
 
   @override
@@ -106,9 +116,7 @@ class _AllStudentsState extends State<AllLateStudent> {
         child: Column(
           children: [
             Container(
-              constraints: Session.role == "SUPER ADMIN"
-                  ? BoxConstraints(maxWidth: screenwidth / 3)
-                  : null,
+              constraints: BoxConstraints(maxWidth: screenwidth / 3),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
@@ -123,13 +131,14 @@ class _AllStudentsState extends State<AllLateStudent> {
             ),
             ElevatedButton(
               onPressed: () {
-                exportToExcel();
+                exportToPDF();
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.redAccent),
               ),
               child: const Text(
-                'Export to Excel',
+                'Export to PDF',
                 style: TextStyle(color: Colors.white),
               ),
             ),

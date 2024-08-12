@@ -8,11 +8,13 @@ import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/view/student/calculate_distance.dart';
 import 'package:attendance_nmsct/view/student/location_label.dart';
 import 'package:excel/excel.dart';
-
+import 'package:pdf/widgets.dart' as pw;
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 
 class AllOutsideRange extends StatefulWidget {
   const AllOutsideRange({
@@ -39,31 +41,41 @@ class _AllOutsideRangeState extends State<AllOutsideRange> {
   double screenHeight = 0;
   double screenWidth = 0;
 
-  Future<void> exportToExcel(List<EstabTodayModel> filteredProducts) async {
-    var excel = Excel.createExcel();
-    var sheet = excel['Sheet1'];
+  Future<void> exportToPDF(List<EstabTodayModel> filteredProducts) async {
+    final pdf = pw.Document();
 
-    // Add headers
-    sheet.appendRow(
-        ['Email', 'Last Name', 'In-AM', 'Out-AM', 'In-PM', 'Out-PM', 'Date']);
-
-    // Add data rows
-    for (var product in filteredProducts) {
-      sheet.appendRow([
-        product.email ?? '',
-        product.lname ?? '',
-        product.time_in_am ?? '',
-        product.time_out_am ?? '',
-        product.time_in_pm ?? '',
-        product.time_out_pm ?? '',
-        product.date ?? ''
-      ]);
-    }
-
-    // Save the Excel file
-    var file = 'dtr_report.xlsx';
-    excel.save(fileName: file);
-    OpenFile.open(file);
+    // Add a page with a table of the data
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Table.fromTextArray(
+            headers: [
+              'Email',
+              'Last Name',
+              'In-AM',
+              'Out-AM',
+              'In-PM',
+              'Out-PM',
+              'Date',
+            ],
+            data: filteredProducts.map((product) {
+              return [
+                product.email ?? '',
+                product.lname ?? '',
+                product.time_in_am ?? '',
+                product.time_out_am ?? '',
+                product.time_in_pm ?? '',
+                product.time_out_pm ?? '',
+                product.date ?? '',
+              ];
+            }).toList(),
+          );
+        },
+      ),
+    );
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
   }
 
   Future<void> monthly_report() async {
@@ -133,21 +145,19 @@ class _AllOutsideRangeState extends State<AllOutsideRange> {
                         return SingleChildScrollView(
                           child: Column(
                             children: [
-                              Session.role == "Administrator"
-                                  ? MaterialButton(
-                                      color: Colors.blue,
-                                      onPressed: () {
-                                        exportToExcel(snap2);
-                                      },
-                                      child: const Text(
-                                        'Export to Excel',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: "NexaBold",
-                                        ),
-                                      ),
-                                    )
-                                  : const SizedBox(),
+                              MaterialButton(
+                                color: Colors.redAccent,
+                                onPressed: () {
+                                  exportToPDF(snap2);
+                                },
+                                child: const Text(
+                                  'Export to PDF',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "NexaBold",
+                                  ),
+                                ),
+                              ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: SizedBox(

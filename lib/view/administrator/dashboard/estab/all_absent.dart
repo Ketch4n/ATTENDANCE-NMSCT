@@ -1,12 +1,18 @@
 import 'dart:convert';
 
+import 'package:attendance_nmsct/controller/Insert_Announcement.dart';
 import 'package:attendance_nmsct/data/session.dart';
+import 'package:attendance_nmsct/data/smtp.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AbsentModel.dart';
 import 'package:excel/excel.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AllAbsentStudent extends StatefulWidget {
@@ -62,34 +68,88 @@ class _AllStudentsState extends State<AllAbsentStudent> {
     });
   }
 
-  Future<void> exportToExcel() async {
-    var excel = Excel.createExcel();
-    var sheet = excel['Sheet1'];
+  Future<void> exportToPDF() async {
+    final pdf = pw.Document();
 
-    // Add headers
-    sheet.appendRow([
-      'Student Name',
-      'Email',
-      'Section',
-      'Birth Date',
-      'Address',
-    ]);
+    // Add a page to the PDF
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Table.fromTextArray(
+            headers: ['Student Name', 'Email', 'Reason', 'Status', 'Date'],
+            data: interns.map((intern) {
+              return [
+                intern.lname,
+                intern.email,
+                intern.reason,
+                intern.status,
+                intern.date,
+              ];
+            }).toList(),
+          );
+        },
+      ),
+    );
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
+  }
 
-    // Add data rows
-    for (var estabModel in interns) {
-      sheet.appendRow([
-        estabModel.lname,
-        // estabModel.fname,
-        estabModel.email,
-        // estabModel.section,
-        // estabModel.bday,
-        // estabModel.address,
-      ]);
+  void action(String absent, String email) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: const Text('Select Option'),
+          content: const Text('Approved or Declined'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                const String stats = "Declined";
+
+                Navigator.of(context).pop();
+                _actionDone(absent, stats, email);
+              },
+              child: const Text('Decline', style: TextStyle(color: Colors.red)),
+            ),
+            TextButton(
+              onPressed: () {
+                const String stats = "Approved";
+
+                _actionDone(absent, stats, email);
+
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Approve',
+                style: TextStyle(color: Colors.green),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _actionDone(String absent, String stats, String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${Server.host}users/establishment/update_absent.php'),
+        body: {'absent_id': absent, 'status': stats},
+      );
+      if (response.statusCode == 200) {
+        print("NOW OR NEVER :${absent}");
+        final announce = "Your absent request is $stats";
+
+        // If deletion is successful, refresh the list
+        fetchInterns();
+        sendToAll(context, email, announce, stats);
+      } else {
+        throw Exception('Failed to delete data');
+      }
+    } catch (e) {
+      print('Error: $e');
     }
-
-    // Save the Excel file
-    var file = 'establishment_data_${DateTime.now().toIso8601String()}.xlsx';
-    excel.save(fileName: file);
   }
 
   @override
@@ -106,9 +166,7 @@ class _AllStudentsState extends State<AllAbsentStudent> {
         child: Column(
           children: [
             Container(
-              constraints: Session.role == "SUPER ADMIN"
-                  ? BoxConstraints(maxWidth: screenwidth / 3)
-                  : null,
+              constraints: BoxConstraints(maxWidth: screenwidth / 3),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
@@ -123,13 +181,14 @@ class _AllStudentsState extends State<AllAbsentStudent> {
             ),
             ElevatedButton(
               onPressed: () {
-                exportToExcel();
+                exportToPDF();
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.redAccent),
               ),
               child: const Text(
-                'Export to Excel',
+                'Export to PDF',
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -144,6 +203,7 @@ class _AllStudentsState extends State<AllAbsentStudent> {
                           DataColumn(label: Text('Reason')),
                           DataColumn(label: Text('Status')),
                           DataColumn(label: Text('Date')),
+                          DataColumn(label: Text('Option')),
                         ],
                         rows: filteredInterns
                             .map(
@@ -208,6 +268,11 @@ class _AllStudentsState extends State<AllAbsentStudent> {
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ),
+                                  DataCell(ElevatedButton(
+                                      onPressed: () {
+                                        action(classmate.id, classmate.email!);
+                                      },
+                                      child: Icon(Icons.edit))),
                                 ],
                               ),
                             )

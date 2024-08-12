@@ -7,7 +7,7 @@ class AllStudentModel {
   final String uid;
   final String address;
   final String section;
-  final String establishment_id;
+  final String? establishment_id;
   final String status;
 
   AllStudentModel({
@@ -19,7 +19,7 @@ class AllStudentModel {
     required this.uid,
     required this.address,
     required this.section,
-    required this.establishment_id,
+    this.establishment_id,
     required this.status,
   });
 

@@ -168,24 +168,22 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                           return SingleChildScrollView(
                             child: Column(
                               children: [
-                                Session.role == "Administrator"
-                                    ? MaterialButton(
-                                        color: Colors.blue,
-                                        onPressed: () async {
-                                          final dtrData = snapshot.data ??
-                                              []; // Retrieve your data
-                                          await generatePdf(
-                                              dtrData, latestGrandTotalHours);
-                                        },
-                                        child: const Text(
-                                          'Export to PDF',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: "NexaBold",
-                                          ),
-                                        ),
-                                      )
-                                    : const SizedBox(),
+                                // MaterialButton(
+                                //   color: Colors.blue,
+                                //   onPressed: () async {
+                                //     final dtrData = snapshot.data ??
+                                //         []; // Retrieve your data
+                                //     await generatePdf(
+                                //         dtrData, latestGrandTotalHours);
+                                //   },
+                                //   child: const Text(
+                                //     'Export to PDF',
+                                //     style: TextStyle(
+                                //       color: Colors.white,
+                                //       fontFamily: "NexaBold",
+                                //     ),
+                                //   ),
+                                // ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: SizedBox(
@@ -201,26 +199,22 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                                             style:
                                                 const TextStyle(fontSize: 20),
                                           ),
-                                          trailing: Session.role ==
-                                                  "SUPER ADMIN"
-                                              ? MaterialButton(
-                                                  color: Colors.blue,
-                                                  onPressed: () async {
-                                                    final dtrData = snapshot
-                                                            .data ??
-                                                        []; // Retrieve your data
-                                                    await generatePdf(dtrData,
-                                                        latestGrandTotalHours);
-                                                  },
-                                                  child: const Text(
-                                                    'Export to PDF',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontFamily: "NexaBold",
-                                                    ),
-                                                  ),
-                                                )
-                                              : null,
+                                          trailing: MaterialButton(
+                                            color: Colors.blue,
+                                            onPressed: () async {
+                                              final dtrData = snapshot.data ??
+                                                  []; // Retrieve your data
+                                              await generatePdf(dtrData,
+                                                  latestGrandTotalHours);
+                                            },
+                                            child: const Text(
+                                              'Export to PDF',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: "NexaBold",
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                         columns: const [
                                           DataColumn(label: Text('Name')),

@@ -25,7 +25,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
   Future<void> streamAccomplishemnt(absentController) async {
     const String studentAbsent = "users/student/view_absent.php";
     const String estabAbsent = "users/establishment/view_all_absent.php";
-    final query = Session.role == "Intern" ? studentAbsent : estabAbsent;
+    final query = Session.role == "INTERN" ? studentAbsent : estabAbsent;
     try {
       final response = await http.post(
         Uri.parse('${Server.host}$query'),
@@ -176,7 +176,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
 
         // If deletion is successful, refresh the list
         streamAccomplishemnt(_absentController);
-        sendEmailNotification(purpose, stats, absent.email!, widget.name);
+        sendEmailNotification(purpose, stats, absent.email!);
       } else {
         throw Exception('Failed to delete data');
       }
@@ -275,7 +275,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
                             ),
                             endChild: GestureDetector(
                               onLongPress: () {
-                                Session.role == "Intern"
+                                Session.role == "INTERN"
                                     ? _showDeleteConfirmationDialog(absent)
                                     : action(absent);
                                 print(absent);

@@ -165,8 +165,9 @@ class _NavbarState extends State<Navbar> {
                 ),
               ),
               ListTile(
-                leading:
-                    Text(Session.role, style: const TextStyle(fontSize: 15)),
+                leading: Text(
+                    Session.role == "SUPER ADMIN" ? Session.role : "INSTRUCTOR",
+                    style: const TextStyle(fontSize: 15)),
               ),
               // ListTile(
               //   leading: Icon(Icons.notification_add),
@@ -196,18 +197,7 @@ class _NavbarState extends State<Navbar> {
                   Navigator.pop(context); // Close the drawer
                 },
               ),
-              Session.role == 'Administrator'
-                  ? ListTile(
-                      leading: const Icon(Icons.book),
-                      title: const Text('Establishment Radius'),
-                      onTap: () {
-                        Navigator.of(context).pop(false);
 
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const SliderPage()));
-                      },
-                    )
-                  : const SizedBox(),
               Session.role == 'SUPER ADMIN'
                   ? ListTile(
                       leading: const Icon(Icons.settings),
@@ -217,7 +207,7 @@ class _NavbarState extends State<Navbar> {
 
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => Signup(
-                                  purpose: 'Create',
+                                  purpose: 'NMSCST',
                                   reload: () {
                                     setState(() {});
                                   },

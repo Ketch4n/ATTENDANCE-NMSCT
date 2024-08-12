@@ -189,7 +189,8 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: ((context) => const AllAbsentStudent())));
+                              builder: ((context) =>
+                                  const AllAbsentStudent())));
                         },
                         child: BoxComponent(
                           count: absent,
@@ -200,7 +201,8 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                       GestureDetector(
                         onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (context) => const AllEstablishment())),
+                                builder: (context) =>
+                                    const AllEstablishment())),
                         child: BoxComponent(
                           count: count_estab,
                           color: Colors.green,

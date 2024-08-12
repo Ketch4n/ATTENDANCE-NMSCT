@@ -2,12 +2,15 @@ import 'package:attendance_nmsct/view/administrator/dashboard/estab/add_location
 import 'package:flutter/material.dart';
 import 'package:excel/excel.dart';
 import 'dart:convert';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/model/EstabModel.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_sched.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 
 class AllEstablishment extends StatefulWidget {
   const AllEstablishment({super.key});
@@ -46,31 +49,42 @@ class _AllEstablishmentState extends State<AllEstablishment> {
     }
   }
 
-  Future<void> exportToExcel() async {
-    var excel = Excel.createExcel();
-    var sheet = excel['Sheet1'];
+  Future<void> exportToPDF() async {
+    final pdf = pw.Document();
 
-    // Add headers
-    sheet.appendRow([
-      'Establishment Name',
-      'Creator Email',
-      'Location',
-      'Hours Required',
-    ]);
+    // Add a page to the PDF
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Column(
+            children: [
+              pw.Text('Establishment Data',
+                  style: pw.TextStyle(
+                      fontSize: 24, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 20),
+              pw.Table.fromTextArray(
+                headers: [
+                  'Establishment Name',
+                  'Location',
+                  'Hours Required',
+                ],
+                data: interns.map((estabModel) {
+                  return [
+                    estabModel.establishment_name,
+                    estabModel.location,
+                    estabModel.hours_required,
+                  ];
+                }).toList(),
+              ),
+            ],
+          );
+        },
+      ),
+    );
 
-    // Add data rows
-    for (var estabModel in interns) {
-      sheet.appendRow([
-        estabModel.establishment_name,
-        // estabModel.creator_email,
-        estabModel.location,
-        estabModel.hours_required,
-      ]);
-    }
-
-    // Save the Excel file
-    var file = 'establishment_data_${DateTime.now().toIso8601String()}.xlsx';
-    excel.save(fileName: file);
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
   }
 
   void _showAlertDialog(BuildContext context, String name, int id) {
@@ -123,14 +137,14 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        exportToExcel();
+                        exportToPDF();
                       },
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.green),
+                            MaterialStateProperty.all<Color>(Colors.redAccent),
                       ),
                       child: const Text(
-                        'Export to Excel',
+                        'Export to PDF',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

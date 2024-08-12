@@ -81,7 +81,8 @@ class _LoginState extends State<Login> {
                           ? Text("OJT Student / Intern", style: Style.text)
                           : user.role == 'Administrator'
                               ? Text("INSTRUCTOR", style: Style.text)
-                              : Text("OJT COORDINATOR", style: Style.text),
+                              : Text("OJT COORDINATOR / INSTRUCTOR",
+                                  style: Style.text),
                     ),
                     Container(
                       constraints: const BoxConstraints(maxWidth: 500),
