@@ -86,15 +86,15 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
             if (user.establishment_id == "null") {
               return Scaffold(
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () async {
-                    bottomsheetJoin(context, user.role,
-                        refreshCallback: _refreshData);
-                  },
-                  child: const Icon(Icons.add),
-                ),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.centerFloat,
+                // floatingActionButton: FloatingActionButton(
+                //   onPressed: () async {
+                //     bottomsheetJoin(context, user.role,
+                //         refreshCallback: _refreshData);
+                //   },
+                //   child: const Icon(Icons.add),
+                // ),
+                // floatingActionButtonLocation:
+                //     FloatingActionButtonLocation.centerFloat,
                 body: ListView(
                   children: [
                     SizedBox(

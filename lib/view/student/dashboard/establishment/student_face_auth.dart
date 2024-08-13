@@ -42,26 +42,26 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   double screenWidth = 0;
   final _idController = TextEditingController();
 
-  String checkInAM = "00:00:00";
+  late String checkInAM = "00:00:00";
   String inAMLat = "0.0";
   String inAMLong = "0.0";
 
-  String checkOutAM = "00:00:00";
+  late String checkOutAM = "00:00:00";
   String outAMLat = "0.0";
   String outAMLong = "0.0";
 
-  String checkInPM = "00:00:00";
+  late String checkInPM = "00:00:00";
   String inPMLat = "0.0";
   String inPMLong = "0.0";
 
-  String checkOutPM = "00:00:00";
+  late String checkOutPM = "00:00:00";
   String outPMLat = "0.0";
   String outPMLong = "0.0";
 
   String defaultValue = '00:00:00';
   String defaultT = '--/--';
 
-  DateFormat format = DateFormat("hh:mm a");
+  // DateFormat format = DateFormat("hh:mm a");
 
   // Future sharedPref() async {
   //    final prefs = await SharedPreferences.getInstance();
@@ -84,7 +84,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
       body: {
         'id': Session.id,
         'estab_id': widget.id,
-        'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
+        // 'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
       },
     );
 
@@ -160,25 +160,25 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     try {
       if (checkInAM == "00:00:00") {
         setState(() {
-          checkInAM = DateFormat('HH:mm').format(DateTime.now());
+          checkInAM = "00:00";
           inAMLat = latitude;
           inAMLong = longitude;
         });
       } else if (checkOutAM == "00:00:00") {
         setState(() {
-          checkOutAM = DateFormat('HH:mm').format(DateTime.now());
+          checkOutAM = "00:00";
           outAMLat = latitude;
           outAMLong = longitude;
         });
       } else if (checkInPM == "00:00:00") {
         setState(() {
-          checkInPM = DateFormat('HH:mm').format(DateTime.now());
+          checkInPM = "00:00";
           inPMLat = latitude;
           inPMLong = longitude;
         });
       } else {
         setState(() {
-          checkOutPM = DateFormat('HH:mm').format(DateTime.now());
+          checkOutPM = "00:00";
           outPMLat = latitude;
           outPMLong = longitude;
         });
@@ -187,7 +187,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     final estabId = widget.id;
-    String defaultDATE = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    String defaultDATE = "server";
     String apiUrl = '${Server.host}users/student/insert_estab.php';
     Map<String, String> headers = {'Content-Type': 'application/json'};
     String jsonData =

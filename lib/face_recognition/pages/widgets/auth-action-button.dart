@@ -1,3 +1,4 @@
+import 'package:attendance_nmsct/controller/Insert_Announcement.dart';
 import 'package:attendance_nmsct/controller/Login.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
@@ -60,7 +61,11 @@ class _AuthActionButtonState extends State<AuthActionButton> {
 
     final title = "Success";
     final message = "Face Data Registered Successfully";
+    const userEmails = ["nmsct.attendance.monitoring@gmail.com"];
+    final announce =
+        "Student wit an email ${Session.email} has successfully registered his/her Facial Data.\nStudent is status is now ACTIVE ";
     await updateUser();
+    sendToAll(userEmails, announce);
     await showAlertDialog(context, title, message);
     // Navigator.pop(context, user);
     // Navigator.pop(context, user);

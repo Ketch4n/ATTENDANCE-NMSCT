@@ -70,9 +70,9 @@ class DropdownSettings extends StatelessWidget {
 
   Future showProfileInfo(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    final uid = prefs.getString('INTERNID');
-    final bday = prefs.getString('INTERNBDAY');
-    final add = prefs.getString('INTERNADDRESS');
+    final uid = prefs.getString('internID');
+    final bday = prefs.getString('internBDAY');
+    final add = prefs.getString('internADDRESS');
 
     return showModalBottomSheet(
         context: context,
@@ -126,20 +126,7 @@ class DropdownSettings extends StatelessWidget {
                           //     style: TextStyle(color: Colors.blue),
                           //   ),
                           // ),
-                          Session.role == 'INTERN'
-                              ? ListTile(
-                                  leadingAndTrailingTextStyle:
-                                      TextStyle(fontSize: 20),
-                                  leading: Text(
-                                    "ID :",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  trailing: Text(
-                                    uid!,
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                )
-                              : SizedBox(),
+
                           Session.role == 'INTERN'
                               ? ListTile(
                                   leadingAndTrailingTextStyle:
@@ -167,7 +154,21 @@ class DropdownSettings extends StatelessWidget {
                                     style: TextStyle(color: Colors.blue),
                                   ),
                                 )
-                              : SizedBox()
+                              : SizedBox(),
+                          Session.role == 'INTERN'
+                              ? ListTile(
+                                  leadingAndTrailingTextStyle:
+                                      TextStyle(fontSize: 20),
+                                  leading: Text(
+                                    "School Year :",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  trailing: Text(
+                                    uid!,
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                )
+                              : SizedBox(),
                         ],
                       ),
                     ),
