@@ -62,7 +62,7 @@ Future<void> login(
           Session.email = userEmail;
 
           if (role == "INTERN") {
-            final uid = data['uid'];
+            final uid = data['course'];
             final bday = data['bday'];
             final address = data['address'];
             prefs.setString('internID', uid);

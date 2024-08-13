@@ -229,9 +229,12 @@ class _AllStudentsState extends State<AllStudents> {
                           columns: const [
                             DataColumn(label: Text('Name')),
                             DataColumn(label: Text('Email')),
-                            DataColumn(label: Text('Section')),
                             DataColumn(label: Text('Birth Date')),
                             DataColumn(label: Text('Address')),
+                            DataColumn(label: Text('Course')),
+                            DataColumn(label: Text('Section')),
+                            DataColumn(label: Text('Semester')),
+                            DataColumn(label: Text('School Year')),
                             DataColumn(label: Text('Status')),
                             DataColumn(label: Text('View Records')),
                           ],
@@ -281,12 +284,6 @@ class _AllStudentsState extends State<AllStudents> {
                                     ),
                                     DataCell(
                                       Text(
-                                        classmate.section,
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Text(
                                         classmate.bday,
                                         style: const TextStyle(fontSize: 12),
                                       ),
@@ -294,6 +291,30 @@ class _AllStudentsState extends State<AllStudents> {
                                     DataCell(
                                       Text(
                                         classmate.address,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    ),
+                                    DataCell(
+                                      Text(
+                                        classmate.course,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    ),
+                                    DataCell(
+                                      Text(
+                                        classmate.section,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    ),
+                                    DataCell(
+                                      Text(
+                                        classmate.semester,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    ),
+                                    DataCell(
+                                      Text(
+                                        classmate.school_year,
                                         style: const TextStyle(fontSize: 12),
                                       ),
                                     ),

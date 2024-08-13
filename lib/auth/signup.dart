@@ -59,11 +59,15 @@ class _SignupState extends State<Signup> {
   // final _roleController = TextEditingController();
   final _locationController = TextEditingController();
   final _bdayController = TextEditingController();
-  final _uidController = TextEditingController();
+  // final _uidController = TextEditingController();
   final _uaddressController = TextEditingController();
   final _sectionController = TextEditingController();
   final _hoursController = TextEditingController();
   final _radiusController = TextEditingController();
+
+  final _courseController = TextEditingController();
+  final _semesterController = TextEditingController();
+  final _schoolYearController = TextEditingController();
 
   Future<void> _ref() async {
     setState(() {});
@@ -92,6 +96,48 @@ class _SignupState extends State<Signup> {
       }
     });
   }
+
+  String? _selectedYearRange;
+
+  // Generate a list of year ranges
+  List<String> get _yearRanges {
+    int currentYear = DateTime.now().year;
+    return List.generate(10, (index) {
+      int startYear = currentYear - 5 + index;
+      int endYear = startYear + 1;
+      return "$startYear-$endYear";
+    });
+  }
+  // final List<String> _years =
+  //     List.generate(30, (index) => (DateTime.now().year - index).toString());
+  // Future<void> _showYearPicker() async {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const Text('Select School Year'),
+  //         content: SizedBox(
+  //           width: double.maxFinite,
+  //           child: ListView.builder(
+  //             itemCount: _years.length,
+  //             itemBuilder: (context, index) {
+  //               return ListTile(
+  //                 title: Text(_years[index]),
+  //                 onTap: () {
+  //                   setState(() {
+  //                     _schoolYearController.text =
+  //                         _years[index] + "-" + _years[index+1];
+  //                   });
+  //                   Navigator.of(context).pop();
+  //                 },
+  //               );
+  //             },
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -223,18 +269,6 @@ class _SignupState extends State<Signup> {
                                   //     )
                                   //   ],
                                   // ),
-                                  widget.purpose == 'INTERN'
-                                      ? Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10),
-                                          child: TextFormField(
-                                            controller: _uidController,
-                                            decoration: Style.textdesign
-                                                .copyWith(
-                                                    labelText: 'Intern ID'),
-                                          ),
-                                        )
-                                      : const SizedBox(),
 
                                   widget.purpose != 'ESTAB'
                                       ? TextFormField(
@@ -286,13 +320,6 @@ class _SignupState extends State<Signup> {
                                           ),
                                         )
                                       : const SizedBox(),
-                                  widget.purpose == 'INTERN'
-                                      ? TextFormField(
-                                          controller: _sectionController,
-                                          decoration: Style.textdesign
-                                              .copyWith(labelText: 'Section'),
-                                        )
-                                      : const SizedBox(),
                                 ],
                               ),
                               isActive: _currentStep >= 1,
@@ -304,6 +331,65 @@ class _SignupState extends State<Signup> {
                               title: const Text("Account"),
                               content: Column(
                                 children: [
+                                  widget.purpose == 'INTERN'
+                                      ? Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          child: TextFormField(
+                                            controller: _courseController,
+                                            decoration: Style.textdesign
+                                                .copyWith(labelText: 'Course'),
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                  widget.purpose == 'INTERN'
+                                      ? TextFormField(
+                                          controller: _sectionController,
+                                          decoration: Style.textdesign
+                                              .copyWith(labelText: 'Section'),
+                                        )
+                                      : const SizedBox(),
+                                  const SizedBox(height: 10),
+                                  widget.purpose == 'INTERN'
+                                      ? TextFormField(
+                                          controller: _semesterController,
+                                          decoration: Style.textdesign
+                                              .copyWith(labelText: 'Semester'),
+                                        )
+                                      : const SizedBox(),
+                                  const SizedBox(height: 10),
+                                  // widget.purpose == 'INTERN'
+                                  //     ? TextFormField(
+                                  //         controller: _schoolYearController,
+                                  //         decoration: Style.textdesign.copyWith(
+                                  //           labelText: 'School Year',
+                                  //           suffixIcon: IconButton(
+                                  //               onPressed: _showYearPicker,
+                                  //               icon: Icon(Icons.date_range)),
+                                  //         ),
+                                  //       )
+                                  //     : const SizedBox(),
+                                  widget.purpose == 'INTERN'
+                                      ? DropdownButtonFormField<String>(
+                                          value: _selectedYearRange,
+                                          decoration: Style.textdesign.copyWith(
+                                              labelText: 'School Year'),
+                                          items: _yearRanges
+                                              .map((String yearRange) {
+                                            return DropdownMenuItem<String>(
+                                              value: yearRange,
+                                              child: Text(yearRange),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              _selectedYearRange = newValue;
+                                              _schoolYearController.text =
+                                                  newValue ?? '';
+                                            });
+                                          },
+                                        )
+                                      : const SizedBox(),
                                   // TextFormField(
                                   //   controller: _roleController,
                                   //   readOnly: true,
@@ -448,14 +534,13 @@ class _SignupState extends State<Signup> {
                                           ),
                                         )
                                       : const SizedBox(),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(widget.purpose == "ESTAB"
-                                        ? "Click the icon to register Location"
-                                        : widget.purpose == "Intern"
-                                            ? "Click the icon to register Face Auth"
-                                            : "Click continue to confirm"),
-                                  ),
+                                  widget.purpose == "ESTAB"
+                                      ? const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Text(
+                                              "Click the icon to register Location"),
+                                        )
+                                      : const SizedBox(),
                                 ],
                               ),
                               isActive: _currentStep >= 2,
@@ -521,10 +606,13 @@ class _SignupState extends State<Signup> {
     String loc = UserSession.location.trim();
     String cont = _controllController.text.trim();
     DateTime bday = _date;
-    String uid = _uidController.text.trim();
+    String course = _courseController.text.trim();
     String address = _uaddressController.text.trim();
     String section = _sectionController.text.trim();
     String radius = _radiusController.text.trim();
+
+    String semester = _semesterController.text.trim();
+    String schoolYear = _schoolYearController.text.trim();
 
     if ((widget.purpose != "ESTAB") &&
         (email.isEmpty || password.isEmpty) &&
@@ -542,9 +630,16 @@ class _SignupState extends State<Signup> {
       String message = "Please Enter Account Details";
       String title = name.isEmpty ? "Input First Name" : "Input Last Name";
       showAlertDialog(context, title, message);
+    } else if (user == "INTERN" && (address.isEmpty) && _currentStep == 1) {
+      String message = "Please Enter Account Information";
+      String title = "Input details";
+      showAlertDialog(context, title, message);
     } else if (user == "INTERN" &&
-        (uid.isEmpty || address.isEmpty || section.isEmpty) &&
-        _currentStep == 1) {
+        (course.isEmpty ||
+            section.isEmpty ||
+            semester.isEmpty ||
+            schoolYear.isEmpty) &&
+        _currentStep == 2) {
       String message = "Please Enter Account Details";
       String title = "Input details";
       showAlertDialog(context, title, message);
@@ -567,8 +662,8 @@ class _SignupState extends State<Signup> {
     else if (_currentStep == 2) {
       // ignore: use_build_context_synchronously
       if (widget.purpose == 'INTERN') {
-        await signup(context, email, password, id, name, user, bday, uid,
-            address, section, widget.purpose);
+        await signup(context, email, password, id, name, user, bday, course,
+            address, section, semester, schoolYear, widget.purpose);
         Navigator.of(context).pop(false);
 
         // Navigator.of(context).pop(false);
@@ -581,10 +676,10 @@ class _SignupState extends State<Signup> {
         double? currentLng = UserSession.longitude;
         String radiusMeter = radius.isEmpty ? "5" : radius;
 
-        await signup(context, email, password, id, name, user, bday, uid,
-            address, section, widget.purpose);
+        await signup(context, email, password, id, name, user, bday, course,
+            address, section, semester, schoolYear, widget.purpose);
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => AdminList()));
+            MaterialPageRoute(builder: (context) => const AdminList()));
 
         // await CreateSectEstab(context, code, cont, currentCoordinate,
         //     currentLng!, currentLat!, email, hours, radiusMeter);
