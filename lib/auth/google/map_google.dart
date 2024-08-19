@@ -4,7 +4,9 @@ import 'package:attendance_nmsct/auth/google/functions/location_permission.dart'
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
+// import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
+
 import 'package:google_maps_webservice/places.dart' as places;
 import 'package:google_maps_webservice/places.dart';
 

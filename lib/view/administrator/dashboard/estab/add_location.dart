@@ -112,7 +112,7 @@ class _AddLocationState extends State<AddLocation> {
                     onPressed: () async {
                       final value = await Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => TestMap()),
+                        MaterialPageRoute(builder: (context) => MapScreen()),
                       );
                       if (value != null) {
                         setState(() {
