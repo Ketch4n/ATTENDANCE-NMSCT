@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/EstabTodayModel.dart';
-import 'package:excel/excel.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';

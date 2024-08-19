@@ -7,15 +7,12 @@ import 'package:attendance_nmsct/model/AllStudentModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_dtr.dart';
 import 'package:attendance_nmsct/view/student/dtr_details.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
-import 'package:excel/excel.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AllStudents extends StatefulWidget {
   const AllStudents({super.key});
@@ -405,7 +402,7 @@ class _AllStudentsState extends State<AllStudents> {
                       ),
                     ),
                   )
-                : Column(
+                : const Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [Duck(), Text("No Students Found")],
                   )

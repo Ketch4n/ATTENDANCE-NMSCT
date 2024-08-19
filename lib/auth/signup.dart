@@ -3,8 +3,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/auth/google/map_google.dart';
-import 'package:attendance_nmsct/auth/google/pin_map.dart';
-import 'package:attendance_nmsct/controller/Create.dart';
 import 'package:attendance_nmsct/controller/Signup.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
@@ -13,8 +11,6 @@ import 'package:attendance_nmsct/functions/generate.dart';
 import 'package:attendance_nmsct/include/admin_list.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/face_recognition/pages/home.dart';
-import 'package:attendance_nmsct/view/administrator/dashboard/admin/home.dart';
-import 'package:attendance_nmsct/view/administrator/home.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -487,7 +483,7 @@ class _SignupState extends State<Signup> {
                                                             MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
-                                                                        const MapScreen()),
+                                                                        MapScreen()),
                                                           );
                                                           if (value != null) {
                                                             setState(() {

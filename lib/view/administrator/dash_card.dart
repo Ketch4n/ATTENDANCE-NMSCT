@@ -4,7 +4,6 @@ import 'package:attendance_nmsct/view/administrator/dashboard/admin/home.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/home.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class GlobalDashCard extends StatefulWidget {
   const GlobalDashCard(
@@ -115,7 +114,7 @@ class _GlobalDashCardState extends State<GlobalDashCard> {
                         // Navigator.of(context).pop(false);
                         // Show a snackbar or any other indication that the text has been copied
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Text copied: ')),
+                          const SnackBar(content: Text('Text copied: ')),
                         );
                       }
                       // print('Selected: $path');

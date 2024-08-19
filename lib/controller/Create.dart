@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
-import 'package:attendance_nmsct/auth/login.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:flutter/foundation.dart';

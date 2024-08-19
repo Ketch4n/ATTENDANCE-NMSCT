@@ -10,7 +10,7 @@ Future<void> sendEmailNotification(
       gmail('nmsct.attendance.monitoring@gmail.com', 'krid xglq luum xmkt');
 
   final message = Message()
-    ..from = Address('nmsct.attendance.monitoring@gmail.com', 'NMSCST')
+    ..from = const Address('nmsct.attendance.monitoring@gmail.com', 'NMSCST')
     ..recipients.add(userEmail)
     ..subject = purpose == "Absent" ? 'Absent $status' : "None"
     ..text = purpose == "Absent" ? "Your absent request is $status " : 'None';

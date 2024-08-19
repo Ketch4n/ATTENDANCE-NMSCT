@@ -1,10 +1,8 @@
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/add_location.dart';
 import 'package:flutter/material.dart';
-import 'package:excel/excel.dart';
 import 'dart:convert';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:http/http.dart' as http;
-import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/model/EstabModel.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room.dart';
@@ -96,10 +94,11 @@ class _AllEstablishmentState extends State<AllEstablishment> {
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
-              height: id != 0
-                  ? MediaQuery.of(context).size.height / 2
-                  : MediaQuery.of(context).size.height - 100,
-              width: MediaQuery.of(context).size.width / 3,
+              // height: id != 0
+              //     ? MediaQuery.of(context).size.height / 2
+              //     : MediaQuery.of(context).size.height - 100,
+              // width: MediaQuery.of(context).size.width / 3,
+              constraints: const BoxConstraints(maxHeight: 700, maxWidth: 400),
               child: id == 0
                   ? AddLocation(
                       title: name,

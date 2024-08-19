@@ -23,11 +23,7 @@ Future<void> login(
     try {
       // HTTP request
       final response = await http.post(
-        role == 'INTERN' && !kIsWeb
-            ? Uri.parse('${Server.host}auth/user_login.php')
-            : role == 'Administrator' && !kIsWeb
-                ? Uri.parse('${Server.host}auth/login.php')
-                : Uri.parse('${Server.host}auth/super_login.php'),
+        Uri.parse('${Server.host}auth/super_login.php'),
         body: {
           'email': email,
           'password': password,

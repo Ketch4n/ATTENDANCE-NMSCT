@@ -2,10 +2,8 @@ import 'dart:convert';
 
 import 'package:attendance_nmsct/controller/Insert_Announcement.dart';
 import 'package:attendance_nmsct/data/session.dart';
-import 'package:attendance_nmsct/data/smtp.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AbsentModel.dart';
-import 'package:excel/excel.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -138,7 +136,7 @@ class _AllStudentsState extends State<AllAbsentStudent> {
         body: {'absent_id': absent, 'status': stats},
       );
       if (response.statusCode == 200) {
-        print("NOW OR NEVER :${absent}");
+        print("NOW OR NEVER :$absent");
         final announce = "Your absent request is $stats";
 
         // If deletion is successful, refresh the list
@@ -272,7 +270,7 @@ class _AllStudentsState extends State<AllAbsentStudent> {
                                       onPressed: () {
                                         action(classmate.id, classmate.email!);
                                       },
-                                      child: Icon(Icons.edit))),
+                                      child: const Icon(Icons.edit))),
                                 ],
                               ),
                             )

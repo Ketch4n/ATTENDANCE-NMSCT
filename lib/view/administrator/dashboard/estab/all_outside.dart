@@ -3,16 +3,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
-import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/view/student/calculate_distance.dart';
 import 'package:attendance_nmsct/view/student/location_label.dart';
-import 'package:excel/excel.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file/open_file.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 

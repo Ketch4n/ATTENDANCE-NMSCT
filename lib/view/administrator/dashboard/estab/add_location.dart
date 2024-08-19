@@ -1,11 +1,11 @@
 import 'package:attendance_nmsct/auth/google/map_google.dart';
+import 'package:attendance_nmsct/auth/google/test_map.dart';
 import 'package:attendance_nmsct/controller/Create.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 class AddLocation extends StatefulWidget {
   const AddLocation(
@@ -112,8 +112,7 @@ class _AddLocationState extends State<AddLocation> {
                     onPressed: () async {
                       final value = await Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const MapScreen()),
+                        MaterialPageRoute(builder: (context) => TestMap()),
                       );
                       if (value != null) {
                         setState(() {
@@ -136,8 +135,8 @@ class _AddLocationState extends State<AddLocation> {
                         onPressed: () async {
                           checkTextField();
                         },
-                        child: Icon(Icons.save)))
-                : SizedBox()
+                        child: const Icon(Icons.save)))
+                : const SizedBox()
           ],
         ),
       ),

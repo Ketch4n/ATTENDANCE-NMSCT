@@ -1,9 +1,15 @@
+import 'package:attendance_nmsct/auth/google/functions/fetch_info.dart';
+import 'package:attendance_nmsct/auth/google/functions/get_address.dart';
+import 'package:attendance_nmsct/auth/google/functions/location_permission.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:google_maps_webservice/places.dart' as places;
+import 'package:google_maps_webservice/places.dart';
+
+const kGoogleApiKey =
+    'AIzaSyDMi2Vr5XERmRQOMISjj8V3Mk21T7z4LjU'; // Replace with your Google API Key
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -17,77 +23,23 @@ class _MapScreenState extends State<MapScreen> {
   final Set<Marker> _markers = {};
   late LatLng _centerPosition =
       const LatLng(10.339696878741954, 123.90249833464621);
-  String _address = 'Drag the screen';
+  static String default_info = "Click the icon or Drag the screen";
+  String _address = default_info;
+
+  final _places = places.GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
   @override
   void initState() {
     super.initState();
-    _locateUser(); // Optionally fetch user's location on start
+    locateStart();
   }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
-  Future<String> _getAddress(LatLng position) async {
-    final url =
-        'https://attendance-nmscst.online/db/address.php'; // Replace with your PHP script URL
-    final params = {'latlng': '${position.latitude},${position.longitude}'};
-
-    try {
-      final response = await http.post(Uri.parse(url), body: params);
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['status'] == 'OK' && data['results'].isNotEmpty) {
-          final addressComponents = data['results'][0]['address_components'];
-          String street = '';
-          String city = '';
-          String sublocality = '';
-          String subAdministrativeArea = '';
-          for (var component in addressComponents) {
-            final types = component['types'];
-            if (types.contains('route')) {
-              street = component['long_name'];
-            } else if (types.contains('locality')) {
-              city = component['long_name'];
-            } else if (types.contains('sublocality')) {
-              sublocality = component['long_name'];
-            } else if (types.contains('administrative_area_level_2')) {
-              subAdministrativeArea = component['long_name'];
-            }
-          }
-          return '$street $sublocality $city $subAdministrativeArea';
-        }
-      }
-    } catch (e) {
-      print('Error fetching address: $e');
-    }
-    return 'Unknown Location';
-  }
-
-  Future<void> _locateUser() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied.');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    Position positions = await Geolocator.getCurrentPosition();
+  void locateStart() async {
+    LatLng positions = await locateUser();
     setState(() {
       _centerPosition = LatLng(positions.latitude, positions.longitude);
       _updateMap();
@@ -109,51 +61,51 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  Future<void> _fetchAndDisplayInfo() async {
-    if (_centerPosition == null) return;
-
-    final url =
-        'https://attendance-nmscst.online/db/map.php'; // Replace with your PHP script URL
-    final params = {
-      'location': '${_centerPosition.latitude},${_centerPosition.longitude}',
-      'radius': '50',
-      'type': 'point_of_interest',
-    };
-
-    try {
-      final response = await http.post(Uri.parse(url), body: params);
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['status'] == 'OK' && data['results'].isNotEmpty) {
-          final poi = data['results'][0];
-          final poiName = poi['name'];
-          final poiAddress = await _getAddress(LatLng(
-              poi['geometry']['location']['lat'],
-              poi['geometry']['location']['lng']));
-
-          setState(() {
-            _address = '$poiName $poiAddress';
-          });
-        } else {
-          final address = await _getAddress(_centerPosition);
-          setState(() {
-            _address = address;
-          });
-        }
-      }
-    } catch (e) {
-      print('Error fetching info: $e');
-      setState(() {
-        _address = 'Error fetching info.';
-      });
-    }
-  }
-
-  void _updateAddress() async {
-    String address = await _getAddress(_centerPosition);
+  void _getinfo() async {
+    String address = await fetchAndDisplayInfo(_centerPosition);
     setState(() {
       _address = address;
     });
+  }
+
+  void _updateAddress() async {
+    String address = await getAddress(_centerPosition);
+    setState(() {
+      _address = address;
+    });
+  }
+
+  Future<void> _searchAndNavigate() async {
+    try {
+      Prediction? prediction = await PlacesAutocomplete.show(
+        context: context,
+        apiKey: kGoogleApiKey,
+        mode: Mode.overlay,
+        language: "en",
+        components: [Component(Component.country, "ph")],
+      );
+
+      if (prediction != null && prediction.placeId != null) {
+        final placesDetails =
+            await _places.getDetailsByPlaceId(prediction.placeId!);
+
+        if (placesDetails.result.geometry?.location != null) {
+          final location = placesDetails.result.geometry!.location;
+          final latLng = LatLng(location.lat, location.lng);
+
+          setState(() {
+            _centerPosition = latLng;
+            _updateMap(); // Ensure _updateMap() is defined and handles the map update
+          });
+        } else {
+          print("Error: No location data found.");
+        }
+      } else {
+        print("Error: No prediction or place ID found.");
+      }
+    } catch (e) {
+      print("An error occurred: $e");
+    }
   }
 
   @override
@@ -162,6 +114,12 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         title: const Text('Google Map'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: _searchAndNavigate,
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -174,7 +132,7 @@ class _MapScreenState extends State<MapScreen> {
             onCameraMove: (position) {
               _centerPosition = position.target;
             },
-            onCameraIdle: _fetchAndDisplayInfo,
+            onCameraIdle: _getinfo,
             markers: _markers,
           ),
           Positioned(
@@ -182,7 +140,7 @@ class _MapScreenState extends State<MapScreen> {
             left: 150,
             right: 150,
             child: FloatingActionButton(
-              onPressed: _locateUser,
+              onPressed: locateStart,
               child: const Icon(Icons.my_location),
             ),
           ),
@@ -209,7 +167,8 @@ class _MapScreenState extends State<MapScreen> {
             child: ElevatedButton(
               onPressed: () {
                 setState(() {
-                  UserSession.location = _address;
+                  UserSession.location =
+                      _address == default_info ? "" : _address;
                   UserSession.coordinate = _centerPosition;
                   UserSession.latitude = _centerPosition.latitude;
                   UserSession.longitude = _centerPosition.longitude;

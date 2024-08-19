@@ -1,4 +1,3 @@
-import 'package:attendance_nmsct/auth/signup.dart';
 import 'package:attendance_nmsct/controller/Login.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 
@@ -77,12 +76,8 @@ class _LoginState extends State<Login> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: user.role == 'Intern'
-                          ? Text("OJT Student / Intern", style: Style.text)
-                          : user.role == 'Administrator'
-                              ? Text("INSTRUCTOR", style: Style.text)
-                              : Text("OJT COORDINATOR / INSTRUCTOR",
-                                  style: Style.text),
+                      child: Text("OJT COORDINATOR / INSTRUCTOR",
+                          style: Style.text),
                     ),
                     Container(
                       constraints: const BoxConstraints(maxWidth: 500),
