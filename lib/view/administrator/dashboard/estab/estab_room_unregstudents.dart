@@ -36,19 +36,28 @@ class _UnregUsersState extends State<UnregUsers> {
 
   Future<void> fetchUnregistered(
       StreamController<List<UnregmModel>> unregStreamController) async {
-    final response = await http.get(
-      Uri.parse('${Server.host}users/admin/unregistered_students.php'),
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('${Server.host}users/admin/unregistered_students.php'),
+      );
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      final List<UnregmModel> unreg = data
-          .map((classmateData) => UnregmModel.fromJson(classmateData))
-          .toList();
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
-      unregStreamController.add(unreg);
-    } else {
-      throw Exception('Failed to load data');
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        print('Data received: $data');
+        final List<UnregmModel> unreg = data
+            .map((classmateData) => UnregmModel.fromJson(classmateData))
+            .toList();
+
+        unregStreamController.add(unreg);
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      unregStreamController.addError(e);
     }
   }
 
@@ -115,7 +124,7 @@ class _UnregUsersState extends State<UnregUsers> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Name: $lname$fname",
+                                  "Name: $lname $fname",
                                   style: const TextStyle(
                                       color: Colors.white, fontSize: 20),
                                 ),

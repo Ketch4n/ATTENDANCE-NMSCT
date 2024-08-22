@@ -4,6 +4,7 @@ import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/data/settings.dart';
 import 'package:attendance_nmsct/include/admin_list.dart';
 import 'package:attendance_nmsct/include/style.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/Courses.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_establishment.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_students.dart';
 import 'package:flutter/material.dart';
@@ -247,7 +248,7 @@ class _NavbarState extends State<Navbar> {
                         Navigator.of(context).pop(false);
 
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const AllStudents()));
+                            builder: (context) => const CoursesPage()));
                       },
                     )
                   : const SizedBox(),

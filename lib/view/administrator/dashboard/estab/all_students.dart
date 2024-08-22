@@ -1,21 +1,24 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:convert';
-import 'package:attendance_nmsct/auth/signup.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/model/AllStudentModel.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_dtr.dart';
 import 'package:attendance_nmsct/view/student/dtr_details.dart';
+import 'package:attendance_nmsct/widgets/confirmation.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
-import 'package:http/http.dart' as http;
-import 'package:pdf/widgets.dart' as pw;
-import 'package:attendance_nmsct/data/server.dart';
-import 'package:flutter/material.dart';
-import 'package:pdf/pdf.dart';
-import 'package:printing/printing.dart';
+import 'package:attendance_nmsct/auth/signup.dart';
 
 class AllStudents extends StatefulWidget {
-  const AllStudents({super.key});
+  const AllStudents({super.key, required this.course, required this.sy});
+  final String course;
+  final String sy;
 
   @override
   State<AllStudents> createState() => _AllStudentsState();
@@ -27,6 +30,12 @@ class _AllStudentsState extends State<AllStudents> {
   TextEditingController searchController = TextEditingController();
   String error = '';
   String dropdownValue = '';
+  static const List<String> statusList = <String>[
+    '',
+    'Active',
+    'Inactive',
+    'Archived'
+  ];
 
   @override
   void initState() {
@@ -45,11 +54,11 @@ class _AllStudentsState extends State<AllStudents> {
 
   Future<void> fetchInterns() async {
     try {
+      final course = widget.course;
+      final sy = widget.sy;
       final response = await http.post(
         Uri.parse('${Server.host}users/establishment/all_students.php'),
-        body: {
-          'role': Session.role,
-        },
+        body: {'role': Session.role, 'course': course, 'school_year': sy},
       );
 
       if (response.statusCode == 200) {
@@ -84,19 +93,14 @@ class _AllStudentsState extends State<AllStudents> {
 
   void filterByStatus(String status) {
     setState(() {
-      if (status.isEmpty) {
-        filteredInterns = interns; // Show all if no status is selected
-      } else {
-        filteredInterns =
-            interns.where((intern) => intern.status == status).toList();
-      }
+      filteredInterns = status.isEmpty
+          ? interns
+          : interns.where((intern) => intern.status == status).toList();
     });
   }
 
   Future<void> exportToPDF() async {
     final pdf = pw.Document();
-
-    // Add headers
     pdf.addPage(
       pw.Page(
         build: (pw.Context context) {
@@ -109,14 +113,14 @@ class _AllStudentsState extends State<AllStudents> {
               'Birth Date',
               'Address',
             ],
-            data: interns.map((estabModel) {
+            data: interns.map((student) {
               return [
-                estabModel.lname,
-                estabModel.fname,
-                estabModel.email,
-                estabModel.section,
-                estabModel.bday,
-                estabModel.address,
+                student.lname,
+                student.fname,
+                student.email,
+                student.section,
+                student.bday,
+                student.address,
               ];
             }).toList(),
           );
@@ -127,13 +131,6 @@ class _AllStudentsState extends State<AllStudents> {
       onLayout: (PdfPageFormat format) async => pdf.save(),
     );
   }
-
-  static const List<String> list = <String>[
-    '',
-    'Active',
-    'Inactive',
-    'Archived'
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -149,38 +146,6 @@ class _AllStudentsState extends State<AllStudents> {
       body: Center(
         child: Column(
           children: [
-            Container(
-              constraints: BoxConstraints(maxWidth: screenwidth / 3),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    labelText: 'Search',
-                    border: const OutlineInputBorder(),
-                    suffixIcon: DropdownButton<String>(
-                      value: dropdownValue,
-                      icon: const Icon(Icons.arrow_drop_down),
-                      elevation: 16,
-                      iconSize: 40,
-                      onChanged: (String? value) {
-                        setState(() {
-                          dropdownValue = value!;
-                          filterByStatus(dropdownValue);
-                        });
-                      },
-                      underline: const SizedBox.shrink(),
-                      items: list.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-              ),
-            ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -196,9 +161,7 @@ class _AllStudentsState extends State<AllStudents> {
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-                const SizedBox(
-                  width: 20,
-                ),
+                const SizedBox(width: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.blue,
@@ -215,197 +178,297 @@ class _AllStudentsState extends State<AllStudents> {
                 ),
               ],
             ),
-            filteredInterns.isNotEmpty
-                ? SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: DataTable(
-                          columns: const [
-                            DataColumn(label: Text('Name')),
-                            DataColumn(label: Text('Email')),
-                            DataColumn(label: Text('Birth Date')),
-                            DataColumn(label: Text('Address')),
-                            DataColumn(label: Text('Course')),
-                            DataColumn(label: Text('Section')),
-                            DataColumn(label: Text('Semester')),
-                            DataColumn(label: Text('School Year')),
-                            DataColumn(label: Text('Status')),
-                            DataColumn(label: Text('View Records')),
+            const SizedBox(height: 20),
+            if (filteredInterns.isNotEmpty)
+              Expanded(
+                  child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columns: [
+                      const DataColumn(label: Text('Name')),
+                      const DataColumn(label: Text('Email')),
+                      const DataColumn(label: Text('Birth Date')),
+                      const DataColumn(label: Text('Address')),
+                      const DataColumn(label: Text('Course')),
+                      const DataColumn(label: Text('Section')),
+                      const DataColumn(label: Text('Semester')),
+                      const DataColumn(label: Text('School Year')),
+                      DataColumn(
+                        label: Row(
+                          children: [
+                            const Text('Status'),
+                            PopupMenuButton<String>(
+                              onSelected: (String value) {
+                                setState(() {
+                                  dropdownValue = value;
+                                  filterByStatus(value);
+                                });
+                              },
+                              itemBuilder: (BuildContext context) {
+                                return statusList.map<PopupMenuEntry<String>>(
+                                    (String value) {
+                                  return PopupMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList();
+                              },
+                              icon: const Icon(Icons.arrow_drop_down, size: 40),
+                            ),
                           ],
-                          rows: filteredInterns
-                              .map(
-                                (classmate) => DataRow(
-                                  cells: [
-                                    DataCell(
-                                      GestureDetector(
-                                        onTap: () {},
-                                        child: Row(
+                        ),
+                      ),
+                      const DataColumn(label: Text('View Records')),
+                      const DataColumn(label: Text('Option')),
+                    ],
+                    rows: filteredInterns
+                        .map(
+                          (classmate) => DataRow(
+                            cells: [
+                              DataCell(
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: Row(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: Image.asset(
+                                          "assets/images/admin.png",
+                                          height: 50,
+                                          width: 50,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Wrap(
                                           children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(50),
-                                              child: Image.asset(
-                                                "assets/images/admin.png",
-                                                height: 50,
-                                                width: 50,
-                                                fit: BoxFit.cover,
+                                            Text(
+                                              '${classmate.lname}, ${classmate.fname}',
+                                              style: const TextStyle(
+                                                fontSize: 18,
                                               ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Expanded(
-                                              child: Wrap(
-                                                children: [
-                                                  Text(
-                                                    '${classmate.lname}, ${classmate.fname}',
-                                                    style: const TextStyle(
-                                                      fontSize: 18,
-                                                    ),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                ],
-                                              ),
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ],
                                         ),
                                       ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  classmate.email,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  classmate.bday,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  classmate.address,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  classmate.course,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  classmate.section,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  classmate.semester,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  classmate.school_year,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
+                                  classmate.status.toUpperCase(),
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: classmate.status == "Active"
+                                          ? Colors.green
+                                          : classmate.status == "Inactive"
+                                              ? Colors.orange
+                                              : Colors.grey),
+                                ),
+                              ),
+                              DataCell(
+                                Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        if (classmate.establishment_id ==
+                                                null ||
+                                            classmate.establishment_id ==
+                                                "none") {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content:
+                                                  Text("No Establishment yet"),
+                                            ),
+                                          );
+                                        } else {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  StudentDTRDetails(
+                                                id: classmate.id,
+                                                estab_id:
+                                                    classmate.establishment_id!,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: const Text("DTR"),
                                     ),
-                                    DataCell(
-                                      Text(
-                                        classmate.email,
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        classmate.bday,
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        classmate.address,
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        classmate.course,
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        classmate.section,
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        classmate.semester,
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        classmate.school_year,
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        classmate.status.toUpperCase(),
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: classmate.status == "Active"
-                                                ? Colors.green
-                                                : classmate.status == "Inactive"
-                                                    ? Colors.orange
-                                                    : Colors.grey),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Row(
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              if (classmate.establishment_id ==
-                                                      null ||
-                                                  classmate.establishment_id ==
-                                                      "none") {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                        "No Establishment yet"),
-                                                  ),
-                                                );
-                                              } else {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        StudentDTRDetails(
-                                                      id: classmate.id,
-                                                      estab_id: classmate
-                                                          .establishment_id!,
-                                                    ),
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                            child: const Text("DTR"),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              if (classmate.establishment_id ==
-                                                      null ||
-                                                  classmate.establishment_id ==
-                                                      "none") {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                        "No Establishment for Report"),
-                                                  ),
-                                                );
-                                              } else {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        StudentSectionDTR(
-                                                            name: classmate
-                                                                .establishment_id!,
-                                                            ids:
-                                                                classmate.email,
-                                                            section: classmate
-                                                                .section),
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                            child: const Text("Report"),
-                                          )
-                                        ],
-                                      ),
+                                    const SizedBox(width: 5),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        if (classmate.establishment_id ==
+                                                null ||
+                                            classmate.establishment_id ==
+                                                "none") {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  "No Establishment for Report"),
+                                            ),
+                                          );
+                                        } else {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  StudentSectionDTR(
+                                                name:
+                                                    classmate.establishment_id!,
+                                                ids: classmate.email,
+                                                section: classmate.section,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: const Text("Report"),
                                     ),
                                   ],
                                 ),
-                              )
-                              .toList(),
+                              ),
+                              DataCell(
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    const status = "Archived";
+                                    await confirm(
+                                        context, classmate.id, status);
+                                    setState(() {});
+                                  },
+                                  child: const Icon(Icons.edit),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ))
+            else
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Column(
+                      children: [
+                        DataTable(
+                          columns: [
+                            const DataColumn(label: Text('Name')),
+                            const DataColumn(label: Text('Email')),
+                            const DataColumn(label: Text('Birth Date')),
+                            const DataColumn(label: Text('Address')),
+                            const DataColumn(label: Text('Course')),
+                            const DataColumn(label: Text('Section')),
+                            const DataColumn(label: Text('Semester')),
+                            const DataColumn(label: Text('School Year')),
+                            DataColumn(
+                              label: Row(
+                                children: [
+                                  const Text('Status'),
+                                  PopupMenuButton<String>(
+                                    onSelected: (String value) {
+                                      setState(() {
+                                        dropdownValue = value;
+                                        filterByStatus(value);
+                                      });
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return statusList
+                                          .map<PopupMenuEntry<String>>(
+                                              (String value) {
+                                        return PopupMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList();
+                                    },
+                                    icon: const Icon(Icons.arrow_drop_down,
+                                        size: 40),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const DataColumn(label: Text('View Records')),
+                            const DataColumn(label: Text('Option')),
+                          ],
+                          rows: const [
+                            DataRow(cells: [
+                              DataCell(Text("")),
+                              DataCell(Text("")),
+                              DataCell(Text("")),
+                              DataCell(Text("")),
+                              DataCell(Text("")),
+                              DataCell(Text("")),
+                              DataCell(Text("")),
+                              DataCell(Text("")),
+                              DataCell(Text("")),
+                              DataCell(Text("")),
+                              DataCell(Text("")),
+                            ])
+                          ],
                         ),
-                      ),
+                        Duck(),
+                        Text("No Students Found")
+                      ],
                     ),
-                  )
-                : const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Duck(), Text("No Students Found")],
-                  )
+                  ),
+                ),
+              ),
           ],
         ),
       ),

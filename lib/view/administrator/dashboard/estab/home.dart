@@ -1,3 +1,4 @@
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/Courses.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_students.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_face_auth.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/estab_room.dart';
@@ -80,7 +81,7 @@ class _EstabHomeState extends State<EstabHome> {
           //   id: widget.id,
           //   name: widget.name,
           // ),
-          const AllStudents(),
+          CoursesPage(),
           AbsentTab(name: widget.name, ids: widget.id),
           EstabRoom(ids: widget.id),
         ],

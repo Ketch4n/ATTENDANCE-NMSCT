@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:attendance_nmsct/model/CoursesModel.dart';
 import 'package:attendance_nmsct/model/EstabTodayModel.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/Courses.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_absent.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_establishment.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_late.dart';
@@ -22,8 +24,11 @@ class DashBoardEstab extends StatefulWidget {
 }
 
 class _DashBoardEstabState extends State<DashBoardEstab> {
+  final StreamController<List<CoursesModel>> _absentController =
+      StreamController<List<CoursesModel>>();
   final StreamController<List<EstabTodayModel>> _monthStream =
       StreamController<List<EstabTodayModel>>();
+
   late String count = "";
   late String count_estab = "";
   late String absent = "";
@@ -32,23 +37,68 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
   late String announcement = "";
   late List<String> outsideIds = [];
 
-  Future<void> fetchinterns() async {
-    final response = await http.get(
-      Uri.parse('${Server.host}users/establishment/count.php'),
-    );
+  @override
+  void initState() {
+    super.initState();
+    fetchinterns();
+    dtr();
+    streamAccomplishemnt();
+  }
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      setState(() {
-        count = responseData['users'];
-        count_estab = responseData['estab'];
-        absent = responseData['absent'];
-        late = responseData['late'];
-        announcement = responseData['announcement'];
-      });
-      // Extract the count of users
-    } else {
-      throw Exception('Failed to load data');
+  @override
+  void dispose() {
+    _absentController.close();
+    _monthStream.close();
+    super.dispose();
+  }
+
+  Future<void> streamAccomplishemnt() async {
+    const query = "users/establishment/view_all_courses.php";
+
+    try {
+      final response = await http.get(
+        Uri.parse('${Server.host}$query'),
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonList = json.decode(response.body);
+        final List<CoursesModel> absent = jsonList
+            .map((absentData) => CoursesModel.fromJson(absentData))
+            .toList();
+        _absentController.add(absent);
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load COURSES data: $e')),
+      );
+    }
+  }
+
+  Future<void> fetchinterns() async {
+    try {
+      final response = await http.get(
+        Uri.parse('${Server.host}users/establishment/count.php'),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        setState(() {
+          count = responseData['users'];
+          count_estab = responseData['estab'];
+          absent = responseData['absent'];
+          late = responseData['late'];
+          announcement = responseData['announcement'];
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load counts: $e')),
+      );
     }
   }
 
@@ -63,35 +113,24 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
         final totalOutside = data.where((dtrData) {
           final dtrItem = EstabTodayModel.fromJson(dtrData);
           double meterValue = double.parse(dtrItem.radius ?? '0');
-          double INAMLAT = double.parse(dtrItem.in_am_lat ?? '0');
-          double INAMLONG = double.parse(dtrItem.in_am_long ?? '0');
-          double OUTAMLAT = double.parse(dtrItem.out_am_lat ?? '0');
-          double OUTAMLONG = double.parse(dtrItem.out_am_long ?? '0');
-          double INPMLAT = double.parse(dtrItem.in_pm_lat ?? '0');
-          double INPMLONG = double.parse(dtrItem.in_pm_long ?? '0');
-          double OUTPMLAT = double.parse(dtrItem.out_pm_lat ?? '0');
-          double OUTPMLONG = double.parse(dtrItem.out_pm_long ?? '0');
           double estabLat = double.parse(dtrItem.latitude ?? '0');
           double estabLong = double.parse(dtrItem.longitude ?? '0');
 
           List<double> distances = [
-            calculateDistance(INAMLAT, INAMLONG, estabLat, estabLong),
-            calculateDistance(OUTAMLAT, OUTAMLONG, estabLat, estabLong),
-            calculateDistance(INPMLAT, INPMLONG, estabLat, estabLong),
-            calculateDistance(OUTPMLAT, OUTPMLONG, estabLat, estabLong),
+            calculateDistance(double.parse(dtrItem.in_am_lat ?? '0'),
+                double.parse(dtrItem.in_am_long ?? '0'), estabLat, estabLong),
+            calculateDistance(double.parse(dtrItem.out_am_lat ?? '0'),
+                double.parse(dtrItem.out_am_long ?? '0'), estabLat, estabLong),
+            calculateDistance(double.parse(dtrItem.in_pm_lat ?? '0'),
+                double.parse(dtrItem.in_pm_long ?? '0'), estabLat, estabLong),
+            calculateDistance(double.parse(dtrItem.out_pm_lat ?? '0'),
+                double.parse(dtrItem.out_pm_long ?? '0'), estabLat, estabLong),
           ];
 
           if (distances.any((distance) => distance > meterValue)) {
             outsideIds.add(dtrItem.id.toString());
             return true;
           }
-          // for (int i = 0; i < distances.length; i++) {
-          //   if () {
-
-          //   }
-
-          // }
-
           return false;
         }).length;
 
@@ -99,38 +138,25 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
           outside = totalOutside.toDouble();
         });
         print("Total : $outsideIds");
-        print("Total : $outsideIds");
       } else {
-        setState(() {
-          // Handle error
-        });
+        throw Exception('Failed to load data');
       }
     } catch (e) {
-      setState(() {
-        // Handle error
-      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to calculate outside distances: $e')),
+      );
     }
   }
 
-  Future refresh() async {
+  Future<void> refresh() async {
     fetchinterns();
     dtr();
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    fetchinterns();
-    dtr();
-  }
-
-  double screenHeight = 0;
-  double screenWidth = 0;
   @override
   Widget build(BuildContext context) {
-    screenHeight = MediaQuery.of(context).size.height;
-    screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: Align(
@@ -142,7 +168,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
               children: [
                 SizedBox(
                   height: 350,
-                  width: double.maxFinite,
+                  width: double.infinity,
                   child: Image.asset(
                     'assets/nmscst_bg.jpg',
                     fit: BoxFit.fill,
@@ -151,10 +177,9 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: ElevatedButton(
-                      onPressed: () {
-                        refresh();
-                      },
-                      child: const Text("Reload Data / Refresh")),
+                    onPressed: refresh,
+                    child: const Text("Reload Data / Refresh"),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -164,8 +189,10 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                     children: <Widget>[
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const AllLateStudent()));
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => const AllLateStudent()),
+                          );
                         },
                         child: BoxComponent(
                           color: Colors.red,
@@ -175,10 +202,12 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => AllOutsideRange(
-                                    ids: outsideIds,
-                                  )));
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  AllOutsideRange(ids: outsideIds),
+                            ),
+                          );
                         },
                         child: BoxComponent(
                           count: outside.toString(),
@@ -188,9 +217,10 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: ((context) =>
-                                  const AllAbsentStudent())));
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => const AllAbsentStudent()),
+                          );
                         },
                         child: BoxComponent(
                           count: absent,
@@ -199,10 +229,12 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => Navigator.of(context).push(
+                        onTap: () {
+                          Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const AllEstablishment())),
+                                builder: (context) => const AllEstablishment()),
+                          );
+                        },
                         child: BoxComponent(
                           count: count_estab,
                           color: Colors.green,
@@ -210,9 +242,10 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => const AllStudents())),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => CoursesPage()));
+                        },
                         child: BoxComponent(
                           count: count,
                           color: Colors.purple,
@@ -221,8 +254,10 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const Announcement()));
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => const Announcement()),
+                          );
                         },
                         child: BoxComponent(
                           count: announcement,
@@ -230,17 +265,6 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                           child: 'Announcement',
                         ),
                       ),
-                      // GestureDetector(
-                      //   onTap: () {
-                      //     Navigator.of(context).push(MaterialPageRoute(
-                      //         builder: (context) => Announcement()));
-                      //   },
-                      //   child: BoxComponent(
-                      //     count: announcement,
-                      //     color: Colors.amber,
-                      //     child: 'Accomplishment Report',
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
@@ -251,4 +275,77 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
       ),
     );
   }
+
+//   void _showAlertDialog(BuildContext context) {
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return Dialog(
+//           child: Container(
+//             decoration: const BoxDecoration(
+//               borderRadius: BorderRadius.all(Radius.circular(20)),
+//             ),
+//             constraints: const BoxConstraints(maxHeight: 700, maxWidth: 400),
+//             child: Column(
+//               children: [
+//                 Padding(
+//                   padding: const EdgeInsets.all(10.0),
+//                   child: Text("Courses",
+//                       style: Theme.of(context).textTheme.headline6),
+//                 ),
+//                 Expanded(
+//                   child: StreamBuilder<List<CoursesModel>>(
+//                     stream: _absentController.stream,
+//                     builder: (context, snapshot) {
+//                       if (snapshot.hasError) {
+//                         return Center(
+//                           child: Text("Error: ${snapshot.error}"),
+//                         );
+//                       } else if (snapshot.hasData) {
+//                         final List<CoursesModel> data = snapshot.data!;
+//                         if (data.isEmpty) {
+//                           return const Center(
+//                             child: Text(
+//                               'No Courses Yet',
+//                               style: TextStyle(fontSize: 18),
+//                             ),
+//                           );
+//                         }
+//                         return ListView.builder(
+//                           itemCount: data.length,
+//                           itemBuilder: (context, index) {
+//                             final CoursesModel absent = data[index];
+//                             return GestureDetector(
+//                               onTap: () => Navigator.of(context).push(
+//                                   MaterialPageRoute(
+//                                       builder: (context) =>
+//                                           AllStudents(course: absent.courses))),
+//                               child: Container(
+//                                   // padding: EdgeInsets.only(
+//                                   //   bottom: index == data.length - 1 ? 70.0 : 0,
+//                                   // ),
+//                                   child: Card(
+//                                 child: Text(absent.courses),
+//                               )),
+//                             );
+//                           },
+//                         );
+//                       } else {
+//                         return const Center(child: CircularProgressIndicator());
+//                       }
+//                     },
+//                   ),
+//                 ),
+//                 TextButton(
+//                   onPressed: () => Navigator.of(context).pop(),
+//                   child: const Text('Close'),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
 }
