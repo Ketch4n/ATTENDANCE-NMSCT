@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:attendance_nmsct/model/CoursesModel.dart';
 import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/Courses.dart';
+import 'package:attendance_nmsct/view/administrator/dashboard/estab/SchoolYear.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_absent.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_establishment.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_late.dart';
@@ -12,6 +13,9 @@ import 'package:attendance_nmsct/view/administrator/dashboard/estab/all_students
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/announcement.dart';
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/box_component.dart';
 import 'package:attendance_nmsct/view/student/calculate_distance.dart';
+import 'package:attendance_nmsct/widgets/duck.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/material.dart';
@@ -165,6 +169,8 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
           padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
                   height: 350,
@@ -184,6 +190,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     spacing: 8.0, // spacing between cards
                     runSpacing: 8.0, // spacing between rows
                     children: <Widget>[
@@ -265,6 +272,52 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                           child: 'Announcement',
                         ),
                       ),
+                      SizedBox(
+                        height: 100,
+                        width: 800,
+                        child: StreamBuilder<List<CoursesModel>>(
+                            stream: _absentController.stream,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Center(
+                                    child: Text("Error: ${snapshot.error}"));
+                              } else if (snapshot.hasData) {
+                                final courses = snapshot.data!;
+                                return ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: courses.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final course = courses[index];
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SchoolYearPage(
+                                                        course: course.course,
+                                                      )));
+                                        },
+                                        child: SizedBox(
+                                          width: 196,
+                                          child: BoxComponent(
+                                            count: course.count,
+                                            color: Colors.purple,
+                                            child: course.course,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              } else {
+                                return Center(child: Duck());
+                              }
+                            }),
+                      ),
                     ],
                   ),
                 ),
@@ -275,77 +328,4 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
       ),
     );
   }
-
-//   void _showAlertDialog(BuildContext context) {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return Dialog(
-//           child: Container(
-//             decoration: const BoxDecoration(
-//               borderRadius: BorderRadius.all(Radius.circular(20)),
-//             ),
-//             constraints: const BoxConstraints(maxHeight: 700, maxWidth: 400),
-//             child: Column(
-//               children: [
-//                 Padding(
-//                   padding: const EdgeInsets.all(10.0),
-//                   child: Text("Courses",
-//                       style: Theme.of(context).textTheme.headline6),
-//                 ),
-//                 Expanded(
-//                   child: StreamBuilder<List<CoursesModel>>(
-//                     stream: _absentController.stream,
-//                     builder: (context, snapshot) {
-//                       if (snapshot.hasError) {
-//                         return Center(
-//                           child: Text("Error: ${snapshot.error}"),
-//                         );
-//                       } else if (snapshot.hasData) {
-//                         final List<CoursesModel> data = snapshot.data!;
-//                         if (data.isEmpty) {
-//                           return const Center(
-//                             child: Text(
-//                               'No Courses Yet',
-//                               style: TextStyle(fontSize: 18),
-//                             ),
-//                           );
-//                         }
-//                         return ListView.builder(
-//                           itemCount: data.length,
-//                           itemBuilder: (context, index) {
-//                             final CoursesModel absent = data[index];
-//                             return GestureDetector(
-//                               onTap: () => Navigator.of(context).push(
-//                                   MaterialPageRoute(
-//                                       builder: (context) =>
-//                                           AllStudents(course: absent.courses))),
-//                               child: Container(
-//                                   // padding: EdgeInsets.only(
-//                                   //   bottom: index == data.length - 1 ? 70.0 : 0,
-//                                   // ),
-//                                   child: Card(
-//                                 child: Text(absent.courses),
-//                               )),
-//                             );
-//                           },
-//                         );
-//                       } else {
-//                         return const Center(child: CircularProgressIndicator());
-//                       }
-//                     },
-//                   ),
-//                 ),
-//                 TextButton(
-//                   onPressed: () => Navigator.of(context).pop(),
-//                   child: const Text('Close'),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
 }

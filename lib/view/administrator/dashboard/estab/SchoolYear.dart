@@ -63,6 +63,7 @@ class _SchoolYearPageState extends State<SchoolYearPage> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width / 2;
     return Scaffold(
+      appBar: AppBar(),
       body: Align(
         alignment: Alignment.topCenter,
         child: Container(

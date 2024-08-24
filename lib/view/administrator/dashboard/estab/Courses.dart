@@ -62,6 +62,7 @@ class _CoursesPageState extends State<CoursesPage> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width / 2;
     return Scaffold(
+      appBar: AppBar(),
       body: Align(
         alignment: Alignment.topCenter,
         child: Container(

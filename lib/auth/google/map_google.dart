@@ -116,12 +116,12 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         title: const Text('Google Map'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: _searchAndNavigate,
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.search),
+        //     onPressed: _searchAndNavigate,
+        //   ),
+        // ],
       ),
       body: Stack(
         children: [
