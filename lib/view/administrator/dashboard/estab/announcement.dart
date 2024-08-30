@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:attendance_nmsct/controller/Insert_Announcement.dart';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/widgets/accomplishment_alert.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 

@@ -10,7 +10,7 @@ import 'package:attendance_nmsct/view/administrator/dashboard/estab/Dashboard.da
 import 'package:attendance_nmsct/view/administrator/dashboard/estab/index.dart';
 import 'package:attendance_nmsct/widgets/firebase_notif.dart';
 import 'package:attendance_nmsct/widgets/offline_snackbar.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
@@ -62,13 +62,7 @@ class _AdministratorHome extends State {
   @override
   void initState() {
     super.initState();
-    AwesomeNotifications().setListeners(
-      onActionReceivedMethod: NotificationController.onNotificationRecieved,
-      onNotificationCreatedMethod: NotificationController.onNotificationCreate,
-      onDismissActionReceivedMethod:
-          NotificationController.onNotificationRecieved,
-      onNotificationDisplayedMethod: NotificationController.onNotificationClick,
-    );
+
     fetchUser(_userStreamController);
     internetconnection = Connectivity()
         .onConnectivityChanged
