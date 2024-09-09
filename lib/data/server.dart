@@ -6,8 +6,7 @@ class Server {
   static String host = "";
 
   static void fetchHostFromDatabase() {
-    DatabaseReference hostRef =
-        FirebaseDatabase.instance.reference().child('server');
+    DatabaseReference hostRef = FirebaseDatabase.instance.ref().child('server');
 
     hostRef.onValue.listen((event) {
       // Update the host value when it changes in the database

@@ -1,5 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+// import 'package:printing/printing.dart';
 
 class Meta_Data extends StatefulWidget {
   const Meta_Data({super.key, required this.image});
@@ -37,6 +45,57 @@ class _Meta_DataState extends State<Meta_Data> {
     }
   }
 
+  Future<void> exportToPDF() async {
+    final pdf = pw.Document();
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                'Date: ${_imageMetadata?.timeCreated}',
+                style: pw.TextStyle(fontSize: 18),
+              ),
+              pw.SizedBox(height: 40),
+              pw.Align(
+                alignment: pw.Alignment.topCenter,
+                child: pw.Text(
+                  'Description: ${_imageMetadata?.customMetadata?['description'] ?? 'No Description'}',
+                  style: pw.TextStyle(fontSize: 18),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+    final String pdfPath = (await getTemporaryDirectory()).path;
+    final String pdfFilePath = '$pdfPath/report.pdf';
+    final File pdfFile = File(pdfFilePath);
+    await pdfFile.writeAsBytes(await pdf.save());
+
+    // Open or share PDF file
+    _openPDF(pdfFilePath);
+  }
+
+  void _openPDF(String filePath) {
+    Future<void> _loadPdf() async {
+      try {
+        final file = File(filePath);
+        if (Platform.isIOS) {
+          await OpenFile.open(file.path);
+        } else {
+          await OpenFile.open(file.path);
+        }
+      } on PlatformException catch (e) {
+        print("Error opening PDF: ${e.toString()}");
+      }
+    }
+
+    _loadPdf();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,18 +131,10 @@ class _Meta_DataState extends State<Meta_Data> {
                         style: TextStyle(fontSize: 18),
                       ),
                     ),
-                    // ListTile(
-                    //   title: Text(
-                    //     'Date: ${_imageMetadata?.customMetadata?['Date taken'] ?? 'No Date'}',
-                    //     style: TextStyle(fontSize: 18),
-                    //   ),
-                    // ),
-                    // ListTile(
-                    //   title: Text(
-                    //     'Time: ${_imageMetadata?.customMetadata?['Time taken'] ?? 'No Time'}',
-                    //     style: TextStyle(fontSize: 18),
-                    //   ),
-                    // ),
+                    ElevatedButton(
+                      onPressed: exportToPDF,
+                      child: Text('Download to PDF'),
+                    ),
                   ],
                 ),
               ),

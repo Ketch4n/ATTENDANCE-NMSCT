@@ -1,5 +1,5 @@
 name: attendance_nmsct
-description: A new Flutter project.
+description: Flutter Mobile App that uses TensorFlow.
 publish_to: 'none' 
 version: 2.0.0
 
@@ -22,6 +22,7 @@ dependencies:
   open_file: ^3.3.2
   excel: ^2.0.7
   pdf: ^3.6.0
+  # printing: ^5.5.0
 
   # STYLING
   cupertino_icons: ^1.0.2
