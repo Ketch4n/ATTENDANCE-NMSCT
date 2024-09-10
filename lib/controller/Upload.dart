@@ -12,7 +12,7 @@ DateTime now = DateTime.now();
 final date = DateFormat('yyyy-MM-dd').format(now.toLocal());
 final time = DateFormat('hh:mm:ss').format(now.toLocal());
 
-Future uploadAccomplishment(BuildContext context, ids, comment) async {
+Future uploadAccomplishment(BuildContext context, ids, nweek, comment) async {
   Map<String, String> headers = {'Content-Type': 'application/json'};
   String apiUrl = '${Server.host}users/student/upload.php';
 
@@ -20,7 +20,7 @@ Future uploadAccomplishment(BuildContext context, ids, comment) async {
   String encodedComment = jsonEncode(comment);
 
   String jsonData =
-      '{"email": "${Session.email}", "section": "$ids", "comment": $encodedComment, "date": "$date", "time":"$time"}';
+      '{"email": "${Session.email}", "section": "$ids","week":"$nweek", "comment": $encodedComment, "date": "$date", "time":"$time"}';
 
   try {
     final response =

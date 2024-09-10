@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:attendance_nmsct/controller/Delete.dart';
 import 'package:attendance_nmsct/controller/Upload.dart';
 import 'package:attendance_nmsct/include/style.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/WEEKLY/metadata.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/insert.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/data/server.dart';
@@ -91,62 +92,57 @@ class _AccomplishmentDetailsState extends State<AccomplishmentDetails> {
                   itemCount: text.length,
                   itemBuilder: (context, index) {
                     final AccomplishmentModel record = text[index];
-                    return TimelineTile(
-                        indicatorStyle: IndicatorStyle(
-                          width: 15,
-                          color: Colors.green,
-                          padding: const EdgeInsets.only(left: 20.0, bottom: 5),
-                        ),
-                        isFirst: index == 0,
-                        isLast: index == snapshot.data!.length - 1,
-                        endChild: Stack(children: [
-                          GestureDetector(
-                            onLongPress: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Delete Accomplishment'),
-                                    content: const Text(
-                                        'Are you sure you want to delete this record?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text('Cancel'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: const Text('Delete'),
-                                        onPressed: () async {
-                                          await deleteAccomplishment(
-                                              context, record.id);
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
+                    return GestureDetector(
+                        onLongPress: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Delete Accomplishment'),
+                                content: const Text(
+                                    'Are you sure you want to delete this record?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text('Cancel'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text('Delete'),
+                                    onPressed: () async {
+                                      await deleteAccomplishment(
+                                          context, record.id);
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
                               );
                             },
-                            child: Card(
-                                elevation: 8.0,
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 20.0, vertical: 10),
-                                child: Expanded(
-                                  child: Container(
-                                    width: double.maxFinite,
-                                    decoration: Style.boxdecor
-                                        .copyWith(borderRadius: Style.radius12),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(record.comment
-                                          .replaceAll('<br />', '')),
-                                    ),
-                                  ),
-                                )),
+                          );
+                        },
+                        child: Card(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 10),
+                          child: Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListTile(
+                                leading: Text(record.week),
+                                trailing: IconButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) => Meta_Data(
+                                                week: record.week,
+                                                comment: record.comment)));
+                                  },
+                                  icon: Icon(Icons.document_scanner),
+                                ),
+                              ),
+                            ),
                           ),
-                        ]));
+                        ));
                   },
                 ),
               );

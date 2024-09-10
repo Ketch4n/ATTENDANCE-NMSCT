@@ -1,3 +1,4 @@
+import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/details.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/view.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/metadata/view.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/student_section_dtr.dart';
@@ -30,13 +31,16 @@ class _StudentDailyReportState extends State<StudentDailyReport> {
             Expanded(
               child: TabBarView(
                 children: [
-                  MetaDataIndex(ids: widget.ids, name: widget.name),
-                  // AccomplishmentView(ids: widget.ids, name: widget.name),
-                  StudentSectionDTR(
-                    name: widget.name,
-                    ids: widget.ids,
-                    section: '',
+                  // MetaDataIndex(ids: widget.ids, name: widget.name),
+                  AccomplishmentView(ids: widget.ids, name: widget.name),
+                  AccomplishmentDetails(
+                    id: widget.ids,
                   ),
+                  // StudentSectionDTR(
+                  //   name: widget.name,
+                  //   ids: widget.ids,
+                  //   section: '',
+                  // ),
                 ],
               ),
             ),

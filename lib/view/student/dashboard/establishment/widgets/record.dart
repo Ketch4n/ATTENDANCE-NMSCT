@@ -5,15 +5,13 @@ import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:attendance_nmsct/model/AccomplishmentModel.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadata.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:loader_skeleton/loader_skeleton.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timeline_tile/timeline_tile.dart';
 import 'package:http/http.dart' as http;
+
+import '../../section/WEEKLY/metadata.dart';
 
 class Record extends StatefulWidget {
   const Record(
@@ -192,13 +190,13 @@ class _RecordState extends State<Record> {
                             },
                           ),
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    Meta_Data(image: imageRef),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) =>
+                            //         Meta_Data(image: imageRef),
+                            //   ),
+                            // );
                           },
                         ),
                       ),

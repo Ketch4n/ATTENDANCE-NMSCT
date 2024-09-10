@@ -1,13 +1,12 @@
-import 'package:attendance_nmsct/view/student/dashboard/section/metadata/camera.dart';
-import 'package:attendance_nmsct/view/student/dashboard/section/metadata/metadata.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/WEEKLY/metadata.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
 import 'package:loader_skeleton/loader_skeleton.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:timeline_tile/timeline_tile.dart';
 
 class AdminViewMetaData extends StatefulWidget {
@@ -199,13 +198,13 @@ class _AdminViewMetaDataState extends State<AdminViewMetaData> {
                                         //     TextStyle(fontSize: screenWidth / 25),
                                       ),
                                       onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                Meta_Data(image: imageRef),
-                                          ),
-                                        );
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //     builder: (context) =>
+                                        //         Meta_Data(image: imageRef),
+                                        //   ),
+                                        // );
                                       },
                                     ),
                                   ),

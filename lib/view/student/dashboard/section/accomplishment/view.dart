@@ -27,6 +27,7 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   final TextEditingController _commentController = TextEditingController();
+  final TextEditingController _weekController = TextEditingController();
 
   Future<void> _getTextReferences() async {
     final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
@@ -142,8 +143,8 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            await accomplishmentReport(
-                context, widget.ids, _commentController, _getTextReferences);
+            await accomplishmentReport(context, widget.ids, _weekController,
+                _commentController, _getTextReferences);
           },
           child: const Icon(Icons.add),
         ),
@@ -215,19 +216,16 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
                                       deleteImage(record),
                                   child: Card(
                                     child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Stack(
-                                          children: [
-                                            Text(record.comment
-                                                .replaceAll('<br />', '')),
-                                            Positioned(
-                                                right: 0,
-                                                child: Text(DateFormat('hh:mm ')
-                                                    .format(
-                                                        DateFormat('HH:mm:ss')
-                                                            .parse(time))))
-                                          ],
-                                        )),
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ListTile(
+                                        title: Text(record.week),
+                                        subtitle: Text(record.comment
+                                            .replaceAll('<br />', '')),
+                                        trailing: Text(DateFormat('hh:mm ')
+                                            .format(DateFormat('HH:mm:ss')
+                                                .parse(time))),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),

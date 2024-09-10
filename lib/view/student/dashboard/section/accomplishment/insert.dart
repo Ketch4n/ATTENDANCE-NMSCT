@@ -1,12 +1,17 @@
 import 'package:attendance_nmsct/controller/Upload.dart';
+import 'package:attendance_nmsct/include/style.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 DateTime now = DateTime.now();
 final date = DateFormat('MM-dd-yyyy').format(now.toLocal());
 
-Future accomplishmentReport(BuildContext context, ids,
-    TextEditingController comment, VoidCallback refresh) async {
+Future accomplishmentReport(
+    BuildContext context,
+    ids,
+    TextEditingController week,
+    TextEditingController comment,
+    VoidCallback refresh) async {
   return showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
@@ -43,13 +48,32 @@ Future accomplishmentReport(BuildContext context, ids,
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Column(
                     children: [
+                      TextField(
+                        controller: week,
+                        decoration: InputDecoration(
+                          hintText: 'Week #',
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                20.0), // Set the border radius
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.blue), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                8.0), // Set the border radius
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
                       TextFormField(
                         controller: comment,
 
                         maxLines:
                             null, // Set maxLines to null for multiline input
                         decoration: InputDecoration(
-                          hintText: 'Write your comment...',
+                          hintText: 'Write your accomplishment...',
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
                                 color: Colors.black), // Set the color you want
@@ -85,12 +109,22 @@ Future accomplishmentReport(BuildContext context, ids,
                                 ),
                                 onPressed: () async {
                                   String userComment = comment.text;
-                                  Navigator.of(context).pop(true);
-                                  await uploadAccomplishment(
-                                      context, ids, userComment);
+                                  String nweek = week.text;
 
-                                  comment.clear();
-                                  refresh();
+                                  if (userComment.isEmpty || nweek.isEmpty) {
+                                    Navigator.of(context).pop(true);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                "Cannot add empty Accomplishment")));
+                                  } else {
+                                    Navigator.of(context).pop(true);
+                                    await uploadAccomplishment(
+                                        context, ids, nweek, userComment);
+
+                                    comment.clear();
+                                    refresh();
+                                  }
                                 },
                                 child: const Text("Save")),
                           ],
