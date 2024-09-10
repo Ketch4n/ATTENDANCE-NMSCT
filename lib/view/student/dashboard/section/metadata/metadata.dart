@@ -1,5 +1,6 @@
 import 'dart:io';
-
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +8,6 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-// import 'package:printing/printing.dart';
 
 class Meta_Data extends StatefulWidget {
   const Meta_Data({super.key, required this.image});
@@ -45,8 +45,34 @@ class _Meta_DataState extends State<Meta_Data> {
     }
   }
 
+  void _showLoadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Please Wait'),
+          content: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text('Generating PDF...'),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> exportToPDF() async {
+    _showLoadingDialog(); // Show loading dialog
+
     final pdf = pw.Document();
+    final netImage = _imageUrl!;
+    final response = await http.get(Uri.parse(netImage));
+    final Uint8List imageData = response.bodyBytes;
+
     pdf.addPage(
       pw.Page(
         build: (pw.Context context) {
@@ -57,12 +83,29 @@ class _Meta_DataState extends State<Meta_Data> {
                 'Date: ${_imageMetadata?.timeCreated}',
                 style: pw.TextStyle(fontSize: 18),
               ),
+              pw.Text(
+                'Location: ${_imageMetadata?.customMetadata?['Location'] ?? 'No Location'}',
+                style: pw.TextStyle(fontSize: 18),
+              ),
               pw.SizedBox(height: 40),
+              pw.Align(
+                  child: pw.Text("DAILY REPORT",
+                      style: pw.TextStyle(fontSize: 20))),
+              pw.SizedBox(height: 20),
               pw.Align(
                 alignment: pw.Alignment.topCenter,
                 child: pw.Text(
-                  'Description: ${_imageMetadata?.customMetadata?['description'] ?? 'No Description'}',
+                  _imageMetadata?.customMetadata?['description'] ??
+                      'No Description',
                   style: pw.TextStyle(fontSize: 18),
+                ),
+              ),
+              pw.SizedBox(height: 20),
+              pw.Center(
+                child: pw.Image(
+                  pw.MemoryImage(imageData),
+                  height: 450,
+                  width: 400,
                 ),
               ),
             ],
@@ -70,30 +113,27 @@ class _Meta_DataState extends State<Meta_Data> {
         },
       ),
     );
+
     final String pdfPath = (await getTemporaryDirectory()).path;
     final String pdfFilePath = '$pdfPath/report.pdf';
     final File pdfFile = File(pdfFilePath);
     await pdfFile.writeAsBytes(await pdf.save());
 
+    Navigator.of(context).pop(); // Dismiss the loading dialog
+
     // Open or share PDF file
     _openPDF(pdfFilePath);
   }
 
-  void _openPDF(String filePath) {
-    Future<void> _loadPdf() async {
-      try {
-        final file = File(filePath);
-        if (Platform.isIOS) {
-          await OpenFile.open(file.path);
-        } else {
-          await OpenFile.open(file.path);
-        }
-      } on PlatformException catch (e) {
-        print("Error opening PDF: ${e.toString()}");
+  void _openPDF(String filePath) async {
+    try {
+      final file = File(filePath);
+      if (Platform.isIOS || Platform.isAndroid) {
+        await OpenFile.open(file.path);
       }
+    } on PlatformException catch (e) {
+      print("Error opening PDF: ${e.toString()}");
     }
-
-    _loadPdf();
   }
 
   @override
@@ -110,20 +150,17 @@ class _Meta_DataState extends State<Meta_Data> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    ElevatedButton(
+                      onPressed: exportToPDF,
+                      child: Text('Download to PDF'),
+                    ),
                     SizedBox(
                       height: 30,
                     ),
                     Image.network(
                       _imageUrl!,
-                      height: 450,
-                      width: 400,
-                    ),
-                    // SizedBox(height: 20),
-                    ListTile(
-                      title: Text(
-                        'Description: ${_imageMetadata?.customMetadata?['description'] ?? 'No Description'}',
-                        style: TextStyle(fontSize: 18),
-                      ),
+                      height: 250,
+                      width: 200,
                     ),
                     ListTile(
                       title: Text(
@@ -131,9 +168,17 @@ class _Meta_DataState extends State<Meta_Data> {
                         style: TextStyle(fontSize: 18),
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: exportToPDF,
-                      child: Text('Download to PDF'),
+                    ListTile(
+                      title: Text(
+                        'Location: ${_imageMetadata?.customMetadata?['Location'] ?? 'No Location'}',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                    ListTile(
+                      title: Text(
+                        'Description: ${_imageMetadata?.customMetadata?['description'] ?? 'No Description'}',
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ),
                   ],
                 ),

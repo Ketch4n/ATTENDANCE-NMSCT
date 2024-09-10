@@ -13,13 +13,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class MetaDataIndex extends StatefulWidget {
-  const MetaDataIndex({Key? key, required this.name, required this.ids})
-      : super(key: key);
   final String name;
   final String ids;
 
+  const MetaDataIndex({Key? key, required this.name, required this.ids})
+      : super(key: key);
+
   @override
-  State<MetaDataIndex> createState() => _MetaDataIndexState();
+  _MetaDataIndexState createState() => _MetaDataIndexState();
 }
 
 class _MetaDataIndexState extends State<MetaDataIndex> {
@@ -27,17 +28,20 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
       GlobalKey<RefreshIndicatorState>();
   final StreamController<List<String>> _textStreamController =
       StreamController<List<String>>();
-  List<Reference> _imageReferences = [];
   final TextEditingController _commentController = TextEditingController();
-  final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  bool isLoading = false;
 
+  late final String date;
+  bool isLoading = false;
+  List<Reference> _imageReferences = [];
   List<String> _pendingUploads = [];
   List<File> _localImages = [];
+  String location = "";
 
   @override
   void initState() {
     super.initState();
+    date = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    _getLocation();
     _getImageReferences();
     _loadPendingUploads();
     _loadLocalImages();
@@ -50,8 +54,9 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
 
   @override
   void dispose() {
-    super.dispose();
     _textStreamController.close();
+    _commentController.dispose();
+    super.dispose();
   }
 
   Future<void> _getImageReferences() async {
@@ -63,92 +68,83 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
 
     try {
       final listResult = await storage.ref(folderName).list();
-      final items = listResult.items;
-
       setState(() {
-        _imageReferences = items.toList();
+        _imageReferences = listResult.items;
         isLoading = false;
       });
     } catch (e) {
       print('Error listing files: $e');
-      isLoading = false;
+      setState(() => isLoading = false);
     }
   }
 
-  Future<void> _uploadImage(File imageFile, String description) async {
+  Future<void> _uploadImage(
+      File imageFile, String description, String location) async {
     final connectivityResult = await Connectivity().checkConnectivity();
 
     if (connectivityResult == ConnectivityResult.none) {
-      // Save the image locally if offline
       final directory = await getApplicationDocumentsDirectory();
       final localPath =
           '${directory.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
       await imageFile.copy(localPath);
 
-      // Store the metadata for later upload
       _pendingUploads.add(localPath);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('${localPath}_description', description);
+      await prefs.setString('${localPath}_location', location);
       await _savePendingUploads();
 
       showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Info'),
-              content: Text('No internet connection. Image saved locally.'),
-            );
-          });
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Info'),
+            content: Text('No internet connection. Image saved locally.'),
+          );
+        },
+      );
 
       setState(() {
         _localImages.add(File(localPath));
       });
     } else {
-      // Upload the image if online
-      await _uploadImageToFirebase(imageFile, description);
+      await _uploadImageToFirebase(imageFile, description, location);
     }
   }
 
   Future<void> _uploadImageToFirebase(
-      File imageFile, String description) async {
-    setState(() {
-      isLoading = true;
-    });
+      File imageFile, String description, String location) async {
+    setState(() => isLoading = true);
+
     try {
       final storage = FirebaseStorage.instance;
       final prefs = await SharedPreferences.getInstance();
       final section = widget.name;
       final email = prefs.getString('userEmail');
-      final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
       final folderName = 'face_data/$section/$email/$date';
 
       final fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      final Reference storageRef =
-          storage.ref().child('$folderName/$fileName.jpg');
-
-      // Set metadata including description
+      final storageRef = storage.ref().child('$folderName/$fileName.jpg');
       final metadata = SettableMetadata(
-        customMetadata: {'description': description},
-      );
+          customMetadata: {'description': description, 'Location': location});
 
       await storageRef.putFile(imageFile, metadata);
 
       showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Success'),
-              content: Text('Uploaded Successfully'),
-            );
-          });
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Success'),
+            content: Text('Uploaded Successfully'),
+          );
+        },
+      );
 
       _getImageReferences();
     } catch (e) {
       print('Error uploading image: $e');
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      setState(() => isLoading = false);
     }
   }
 
@@ -158,12 +154,13 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
       if (await file.exists()) {
         final prefs = await SharedPreferences.getInstance();
         final description = prefs.getString('${localPath}_description') ?? '';
-        await _uploadImageToFirebase(file, description);
-        file.delete();
+        final location = prefs.getString('${localPath}_location') ?? '';
+
+        await _uploadImageToFirebase(file, description, location);
+        await file.delete();
       }
     }
 
-    // Clear pending uploads
     _pendingUploads.clear();
     await _savePendingUploads();
     _loadLocalImages();
@@ -188,13 +185,14 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
         .where((item) => item.path.endsWith('.jpg'))
         .map((item) => File(item.path))
         .toList();
+
     setState(() {
       _localImages = localImages;
     });
   }
 
   Future<void> _deleteImage(Reference imageRef, int index) async {
-    bool deleteConfirmed = await showDialog(
+    final deleteConfirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -202,15 +200,11 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
           content: Text('Are you sure you want to delete this image?'),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
+              onPressed: () => Navigator.of(context).pop(false),
               child: Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
+              onPressed: () => Navigator.of(context).pop(true),
               child: Text('Delete'),
             ),
           ],
@@ -236,13 +230,13 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
     await _checkPendingUploads();
   }
 
-  Future<void> _selectImageAndUpload(option) async {
+  Future<void> _selectImageAndUpload(ImageSource source) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.getImage(source: option);
+    final pickedFile = await picker.pickImage(source: source);
 
     if (pickedFile != null) {
-      File imageFile = File(pickedFile.path);
-      String? description = await showDialog<String>(
+      final imageFile = File(pickedFile.path);
+      final result = await showDialog<Map<String, String>>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -253,17 +247,15 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
             ),
             actions: [
               TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+                onPressed: () => Navigator.of(context).pop(),
                 child: Text('Cancel'),
               ),
               TextButton(
-                onPressed: () async {
-                  String? finalDescription = await _getDescription();
-                  if (finalDescription != null && finalDescription.isNotEmpty) {
-                    Navigator.of(context).pop(finalDescription);
-                  }
+                onPressed: () {
+                  Navigator.of(context).pop({
+                    'description': _commentController.text,
+                    'location': location,
+                  });
                 },
                 child: Text('Upload'),
               ),
@@ -271,13 +263,19 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
           );
         },
       );
-      if (description != null && description.isNotEmpty) {
-        await _uploadImage(imageFile, description);
+
+      if (result != null) {
+        final description = result['description'];
+        final location = result['location'];
+
+        if (description != null && description.isNotEmpty) {
+          await _uploadImage(imageFile, description, location ?? '');
+        }
       }
     }
   }
 
-  Future<String?> _getDescription() async {
+  Future<String?> _getLocation() async {
     // Determine user's current position
     Position? currentPosition = await determineUserCurrentPosition("pin");
     if (currentPosition != null) {
@@ -285,48 +283,40 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
       String? address = await _getAddress(
           LatLng(currentPosition.latitude, currentPosition.longitude));
       // Format the location as description
-      String locationDescription = "Location: $address";
+      String locationDescription = address;
 
-      // Combine the original description with the location information
-      String finalDescription =
-          "${_commentController.text}\n$locationDescription";
+      String finalLocation = locationDescription;
 
       // Store the description and location in local storage
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('imageDescription', finalDescription);
 
-      return finalDescription;
+      await prefs.setString('imageLocation', finalLocation);
+      location = finalLocation;
+
+      return finalLocation;
     } else {
       // If unable to get location, use the entered description as it is
-      return _commentController.text;
+      return "Location not Found";
     }
   }
 
   Future<String> _getAddress(LatLng position) async {
-    List<Placemark> placemarks =
+    final placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
-
-    if (placemarks != null && placemarks.isNotEmpty) {
-      Placemark address = placemarks.first;
-
-      // Construct the address string using desired fields from the first placemark
-      String addressStr = "";
-
-      // Check if the thoroughfare is an unnamed road before including it in the address
-      if (address.thoroughfare != null &&
-          !address.thoroughfare!.toLowerCase().contains('unnamed')) {
-        addressStr += "${address.thoroughfare} ";
-      }
-
-      // Include other address components
-      addressStr +=
-          "${address.subThoroughfare ?? ''} ${address.subLocality ?? ''} ${address.locality ?? ''}, ${address.subAdministrativeArea ?? ''}";
-
-      return addressStr
-          .trim(); // Trim to remove any leading or trailing whitespace
-    } else {
-      return "Address not found";
+    if (placemarks.isNotEmpty) {
+      final address = placemarks.first;
+      final addressStr = [
+        if (address.thoroughfare != null &&
+            !address.thoroughfare!.toLowerCase().contains('unnamed'))
+          address.thoroughfare,
+        address.subThoroughfare,
+        address.subLocality,
+        address.locality,
+        address.subAdministrativeArea,
+      ].where((s) => s != null).join(' ');
+      return addressStr.trim();
     }
+    return 'Address not found';
   }
 
   @override
@@ -343,27 +333,25 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: Text('Capture Accomplishment'),
-                    // content: Text(
-                    //     'Do you want to take a picture or choose from gallery?'),
                     actions: [
-                      // TextButton(
-                      //   onPressed: () {
-                      //     Navigator.of(context).pop(ImageSource.gallery);
-                      //   },
-                      //   child: Text('Gallery'),
-                      // ),
                       ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(ImageSource.camera);
-                        },
+                        onPressed: () =>
+                            Navigator.of(context).pop(ImageSource.camera),
                         child: Text('Open Camera'),
+                      ),
+                      TextButton(
+                        onPressed: () =>
+                            Navigator.of(context).pop(ImageSource.gallery),
+                        child: Text('Gallery'),
                       ),
                     ],
                   );
                 },
               );
 
-              _selectImageAndUpload(source);
+              if (source != null) {
+                _selectImageAndUpload(source);
+              }
             },
             child: Icon(Icons.add),
           ),
@@ -385,6 +373,7 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
               ..._imageReferences.asMap().entries.map((entry) {
                 final index = entry.key;
                 final imageRef = entry.value;
+
                 return ListTile(
                   title: FutureBuilder<String>(
                     future: imageRef.getDownloadURL(),
@@ -394,12 +383,13 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                           snapshot.hasData) {
                         return GestureDetector(
                           onTap: () async {
-                            // Handle tap on the image (if needed)
                             try {
                               final metadata = await imageRef.getMetadata();
                               final creationDate = metadata.timeCreated;
                               final description =
                                   metadata.customMetadata?['description'] ?? '';
+                              final location =
+                                  metadata.customMetadata?['Location'] ?? '';
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -412,8 +402,9 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                                         children: [
                                           Image.network(snapshot.data!),
                                           SizedBox(height: 10),
-                                          Text('Description: $description'),
                                           Text('Creation Date: $creationDate'),
+                                          Text('Location: $location'),
+                                          Text('Description: $description'),
                                         ],
                                       ),
                                     ),
@@ -425,24 +416,19 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                             }
                           },
                           child: AspectRatio(
-                            aspectRatio: 1, // Adjust the aspect ratio as needed
-                            child: Image.network(
-                              snapshot.data!,
-                              fit: BoxFit
-                                  .cover, // Ensure the image covers the whole
-                            ),
+                            aspectRatio: 1,
+                            child: Image.network(snapshot.data!,
+                                fit: BoxFit.cover),
                           ),
                         );
                       } else {
-                        return Text("Loading...");
+                        return Text('Loading...');
                       }
                     },
                   ),
                   trailing: IconButton(
                     icon: Icon(Icons.delete),
-                    onPressed: () {
-                      _deleteImage(imageRef, index);
-                    },
+                    onPressed: () => _deleteImage(imageRef, index),
                   ),
                 );
               }).toList(),
@@ -452,11 +438,9 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    Text(
-                      "Local Images",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+                    Text("Local Images",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
                     ..._localImages.map((file) {
                       return ListTile(
                         title: Image.file(file),
@@ -483,27 +467,23 @@ class _MetaDataIndexState extends State<MetaDataIndex> {
   }
 }
 
-Future<Position?> determineUserCurrentPosition(purpose) async {
-  LocationPermission locationPermission;
-  bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
-
-  if (!isLocationServiceEnabled) {
-    print("user don't enable location permission");
+Future<Position?> determineUserCurrentPosition(String purpose) async {
+  if (!await Geolocator.isLocationServiceEnabled()) {
+    print("Location services are not enabled.");
     return null;
   }
 
-  locationPermission = await Geolocator.checkPermission();
-
-  if (locationPermission == LocationPermission.denied) {
-    locationPermission = await Geolocator.requestPermission();
-    if (locationPermission == LocationPermission.denied) {
-      print("user denied location permission");
+  LocationPermission permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      print("Location permission denied.");
       return null;
     }
   }
 
-  if (locationPermission == LocationPermission.deniedForever) {
-    print("user denied permission forever");
+  if (permission == LocationPermission.deniedForever) {
+    print("Location permission denied forever.");
     return null;
   }
 
