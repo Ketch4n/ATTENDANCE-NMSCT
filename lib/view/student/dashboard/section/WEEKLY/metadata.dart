@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:docx_template/docx_template.dart';
 
 class Meta_Data extends StatefulWidget {
   const Meta_Data({super.key, required this.week, required this.comment});
@@ -125,6 +126,50 @@ class _Meta_DataState extends State<Meta_Data> {
     }
   }
 
+  void generateWord() async {
+    try {
+      // Load the template file from assets
+      final data = await rootBundle.load('assets/template.docx');
+      final bytes = data.buffer.asUint8List();
+
+      // Create a DocxTemplate instance from the bytes
+      final docx = await DocxTemplate.fromBytes(bytes);
+
+      // Create content to be added to the document
+      final content = Content()
+        ..add(TextContent("docname", "Simple docname"))
+        ..add(TableContent("table", [
+          RowContent()..add(TextContent("key1", "Paul")),
+          // Optionally add more rows and content
+        ]));
+
+      // Generate the document
+      final docBytes = await docx.generate(content);
+
+      // Get the application's document directory
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File('${dir.path}/generated.docx');
+
+      // Write the generated document to the file
+      if (docBytes != null) {
+        await file.writeAsBytes(docBytes);
+        print('Document generated at ${file.path}');
+        // _openDocument should handle the correct type
+        // _openDocument(docBytes);
+      } else {
+        print('No document generated');
+      }
+    } catch (e) {
+      print('Error generating document: $e');
+    }
+  }
+
+// void _openDocument(String filePath) {
+//   final result = OpenFile.open(filePath);
+//   if (result.type != ResultType.done) {
+//     print('Failed to open document: ${result.message}');
+//   }
+// }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,17 +208,18 @@ class _Meta_DataState extends State<Meta_Data> {
                   final String narea = area.text;
                   final String nsv = sv.text;
 
-                  if (nhte.isEmpty ||
-                      nweek.isEmpty ||
-                      narea.isEmpty ||
-                      nsv.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Fill up all the fields"),
-                      backgroundColor: Colors.blue,
-                    ));
-                  } else {
-                    exportToPDF();
-                  }
+                  // if (nhte.isEmpty ||
+                  //     nweek.isEmpty ||
+                  //     narea.isEmpty ||
+                  //     nsv.isEmpty) {
+                  //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  //     content: Text("Fill up all the fields"),
+                  //     backgroundColor: Colors.blue,
+                  //   ));
+                  // } else {
+                  // exportToPDF();
+                  generateWord();
+                  // }
                 },
                 child: const Text('Download to PDF'),
               ),

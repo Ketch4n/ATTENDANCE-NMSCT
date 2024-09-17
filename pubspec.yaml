@@ -22,6 +22,8 @@ dependencies:
   open_file: ^3.3.2
   excel: ^2.0.7
   pdf: ^3.6.0
+  docx_template: ^0.3.0
+  
   # printing: ^5.5.0
 
   # STYLING
@@ -102,6 +104,7 @@ flutter:
   assets:
   - assets/images/
   - assets/
+  - assets/splash.png
   - assets/mobilefacenet.tflite
   - assets/logo.png
 
