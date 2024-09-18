@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/include/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -129,7 +131,7 @@ class _Meta_DataState extends State<Meta_Data> {
   void generateWord() async {
     try {
       // Load the template file from assets
-      final data = await rootBundle.load('assets/template.docx');
+      final data = await rootBundle.load('assets/week.docx');
       final bytes = data.buffer.asUint8List();
 
       // Create a DocxTemplate instance from the bytes
@@ -137,11 +139,11 @@ class _Meta_DataState extends State<Meta_Data> {
 
       // Create content to be added to the document
       final content = Content()
-        ..add(TextContent("docname", "Simple docname"))
-        ..add(TableContent("table", [
-          RowContent()..add(TextContent("key1", "Paul")),
-          // Optionally add more rows and content
-        ]));
+        ..add(TextContent("hte", "Quack"))
+        ..add(TextContent("week", "Quack"))
+        ..add(TextContent("area", "Quack"))
+        ..add(TextContent("sv", "Quack"))
+        ..add(TextContent("description", "Quack"));
 
       // Generate the document
       final docBytes = await docx.generate(content);
@@ -161,6 +163,79 @@ class _Meta_DataState extends State<Meta_Data> {
       }
     } catch (e) {
       print('Error generating document: $e');
+    }
+  }
+
+  Future<void> documentero() async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://app.documentero.com/api'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          "document": "dPBHyEOmLlNoT2MRlXEZ",
+          "apiKey": "BDIOF2Y-MT6EBSY-XVHVUBA-KGGNNTA",
+          "format": "docx",
+          "data": {
+            "hte": "hte",
+            "week": "week",
+            "area": "area",
+            "sv": "sv",
+            "description": "description"
+          }
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+
+        final data2 = data['data'];
+        if (data2 != null) {
+          print('Download link: $data2');
+          // Optionally, download the file using the link
+          await downloadFile(data2);
+        } else {
+          print('No download link found in the response.');
+        }
+      } else {
+        // Handle HTTP error
+        print('Failed to load data. HTTP status code: ${response.statusCode}');
+        // You might want to display an error message to the user
+      }
+    } catch (e) {
+      // Handle other exceptions
+      print('Error: $e');
+      // You might want to display an error message to the user
+    }
+  }
+
+  Future<void> downloadFile(url) async {
+    try {
+      final response = await http.get(Uri.parse('$url'));
+
+      if (response.statusCode == 200) {
+        // Get the application's document directory
+        // Get the Downloads directory
+        final directory = Directory('/storage/emulated/0/Download');
+        // Ensure the directory exists
+        if (!await directory.exists()) {
+          await directory.create(recursive: true);
+        }
+
+        final filePath = '${directory.path}/downloaded_file.docx';
+
+        // Save the file
+        final file = File(filePath);
+        await file.writeAsBytes(response.bodyBytes);
+
+        print('File downloaded successfully to: $filePath');
+      } else {
+        print(
+            'Failed to download file. HTTP status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error downloading file: $e');
     }
   }
 
@@ -218,7 +293,7 @@ class _Meta_DataState extends State<Meta_Data> {
                   //   ));
                   // } else {
                   // exportToPDF();
-                  generateWord();
+                  documentero();
                   // }
                 },
                 child: const Text('Download to PDF'),
