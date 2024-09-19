@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:attendance_nmsct/data/server.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/include/style.dart';
@@ -19,7 +20,7 @@ class Meta_Data extends StatefulWidget {
 }
 
 class _Meta_DataState extends State<Meta_Data> {
-  bool _loading = true; // Track whether the data is still loading
+  bool _loading = false; // Track whether the data is still loading
   final TextEditingController hte = TextEditingController();
 
   final TextEditingController area = TextEditingController();
@@ -138,35 +139,28 @@ class _Meta_DataState extends State<Meta_Data> {
       final docx = await DocxTemplate.fromBytes(bytes);
 
       // Create content to be added to the document
-      final content = Content()
+      Content content = Content();
+      content
         ..add(TextContent("hte", "Quack"))
         ..add(TextContent("week", "Quack"))
         ..add(TextContent("area", "Quack"))
         ..add(TextContent("sv", "Quack"))
         ..add(TextContent("description", "Quack"));
 
-      // Generate the document
-      final docBytes = await docx.generate(content);
-
-      // Get the application's document directory
+      final d = await docx.generate(content);
       final dir = await getApplicationDocumentsDirectory();
       final file = File('${dir.path}/generated.docx');
-
+      if (d != null) await file.writeAsBytes(d);
       // Write the generated document to the file
-      if (docBytes != null) {
-        await file.writeAsBytes(docBytes);
-        print('Document generated at ${file.path}');
-        // _openDocument should handle the correct type
-        // _openDocument(docBytes);
-      } else {
-        print('No document generated');
-      }
     } catch (e) {
       print('Error generating document: $e');
     }
   }
 
-  Future<void> documentero() async {
+  Future<void> documentero(nhte, narea, nsv) async {
+    setState(() {
+      _loading = true; // Show loading screen
+    });
     try {
       final response = await http.post(
         Uri.parse('https://app.documentero.com/api'),
@@ -174,15 +168,15 @@ class _Meta_DataState extends State<Meta_Data> {
           'Content-Type': 'application/json',
         },
         body: json.encode({
-          "document": "dPBHyEOmLlNoT2MRlXEZ",
-          "apiKey": "BDIOF2Y-MT6EBSY-XVHVUBA-KGGNNTA",
+          "document": Server.id,
+          "apiKey": Server.api,
           "format": "docx",
           "data": {
-            "hte": "hte",
-            "week": "week",
-            "area": "area",
-            "sv": "sv",
-            "description": "description"
+            "hte": "$nhte",
+            "week": widget.week,
+            "area": "$narea",
+            "sv": "$nsv",
+            "description": widget.comment
           }
         }),
       );
@@ -197,6 +191,8 @@ class _Meta_DataState extends State<Meta_Data> {
           await downloadFile(data2);
         } else {
           print('No download link found in the response.');
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Expired")));
         }
       } else {
         // Handle HTTP error
@@ -230,12 +226,21 @@ class _Meta_DataState extends State<Meta_Data> {
         await file.writeAsBytes(response.bodyBytes);
 
         print('File downloaded successfully to: $filePath');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Save Successfully in Downloads folder"),
+          backgroundColor: Colors.green,
+        ));
       } else {
         print(
             'Failed to download file. HTTP status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error downloading file: $e');
+    } finally {
+      setState(() {
+        _loading = false; // Hide loading screen
+      });
+      Navigator.of(context).pop();
     }
   }
 
@@ -252,56 +257,62 @@ class _Meta_DataState extends State<Meta_Data> {
         title: Text(widget.week),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              TextField(
-                controller: hte,
-                decoration: Style.textdesign.copyWith(hintText: 'HTE Name'),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: TextField(
-                  controller: area,
-                  decoration:
-                      Style.textdesign.copyWith(hintText: 'Assigned Area'),
+      body: _loading
+          ? const Center(
+              child: CircularProgressIndicator()) // Show loading indicator
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: hte,
+                      decoration:
+                          Style.textdesign.copyWith(hintText: 'HTE Name'),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: TextField(
+                        controller: area,
+                        decoration: Style.textdesign
+                            .copyWith(hintText: 'Assigned Area'),
+                      ),
+                    ),
+                    TextField(
+                      controller: sv,
+                      decoration: Style.textdesign
+                          .copyWith(hintText: 'Supervisor Name'),
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final String nhte = hte.text;
+                        final String nweek = widget.week;
+                        final String narea = area.text;
+                        final String nsv = sv.text;
+
+                        if (nhte.isEmpty ||
+                            nweek.isEmpty ||
+                            narea.isEmpty ||
+                            nsv.isEmpty) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Fill up all the fields"),
+                            backgroundColor: Colors.blue,
+                          ));
+                        } else {
+                          // exportToPDF();
+                          documentero(nhte, narea, nsv);
+                          // generateWord();
+                        }
+                      },
+                      child: const Text('Download to PDF'),
+                    ),
+                  ],
                 ),
               ),
-              TextField(
-                controller: sv,
-                decoration:
-                    Style.textdesign.copyWith(hintText: 'Supervisor Name'),
-              ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  final String nhte = hte.text;
-                  final String nweek = widget.week;
-                  final String narea = area.text;
-                  final String nsv = sv.text;
-
-                  // if (nhte.isEmpty ||
-                  //     nweek.isEmpty ||
-                  //     narea.isEmpty ||
-                  //     nsv.isEmpty) {
-                  //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  //     content: Text("Fill up all the fields"),
-                  //     backgroundColor: Colors.blue,
-                  //   ));
-                  // } else {
-                  // exportToPDF();
-                  documentero();
-                  // }
-                },
-                child: const Text('Download to PDF'),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }
