@@ -121,10 +121,13 @@ class _CoursesPageState extends State<CoursesPage> {
                                       builder: (context) => SchoolYearPage(
                                           course: course.course))),
                               child: Center(
-                                child: BoxComponent(
-                                  count: course.count,
-                                  color: Colors.purple,
-                                  child: course.course,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: BoxComponent(
+                                    count: course.count,
+                                    color: Colors.purple,
+                                    child: course.course,
+                                  ),
                                 ),
                               )
 
