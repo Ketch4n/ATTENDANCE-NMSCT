@@ -10,17 +10,16 @@ import 'package:attendance_nmsct/src/model/AccomplishmentModel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class AdminViewAccomplishment extends StatefulWidget {
-  const AdminViewAccomplishment(
-      {super.key,
-      required this.email,
-      required this.section_id,
-      required this.date});
+  const AdminViewAccomplishment({
+    super.key,
+    required this.email,
+  });
   final String email;
-  final String section_id;
-  final String date;
+
   @override
   State<AdminViewAccomplishment> createState() =>
       _AdminViewAccomplishmentState();
@@ -31,19 +30,14 @@ class _AdminViewAccomplishmentState extends State<AdminViewAccomplishment> {
       StreamController<List<AccomplishmentModel>>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  final TextEditingController _commentController = TextEditingController();
 
+  String _month = DateFormat('MMMM').format(DateTime.now());
+  String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
   Future<void> _getTextReferences() async {
-    final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
     try {
       final response = await http.post(
-        Uri.parse('${Server.host}users/student/accomplishment.php'),
-        body: {
-          'email': widget.email,
-          'section_id': widget.section_id,
-          'date': date
-        },
+        Uri.parse('${Server.host}users/admin/accomplishment.php'),
+        body: {'email': widget.email, 'date': _yearMonth},
       );
 
       if (response.statusCode == 200) {
@@ -139,6 +133,33 @@ class _AdminViewAccomplishmentState extends State<AdminViewAccomplishment> {
                 kIsWeb ? BoxConstraints(maxWidth: screenWidth / 2) : null,
             child: Column(
               children: [
+                MaterialButton(
+                  color: Colors.blue,
+                  onPressed: () async {
+                    final month = await showMonthYearPicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2023),
+                      lastDate: DateTime(2099),
+                    );
+
+                    if (month != null) {
+                      setState(() {
+                        _month = DateFormat('MMMM').format(month);
+                        _yearMonth = DateFormat('yyyy-MM').format(month);
+                      });
+                    }
+                    _getTextReferences();
+                  },
+                  child: Text(
+                    _month,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: "NexaBold",
+                      // fontSize: screenWidth / 15,
+                    ),
+                  ),
+                ),
                 Expanded(
                   child: StreamBuilder<List<AccomplishmentModel>>(
                     stream: _textStreamController.stream,
@@ -203,18 +224,10 @@ class _AdminViewAccomplishmentState extends State<AdminViewAccomplishment> {
                                       child: Card(
                                         child: Padding(
                                             padding: const EdgeInsets.all(8.0),
-                                            child: Stack(
-                                              children: [
-                                                Text(record.comment
-                                                    .replaceAll('<br />', '')),
-                                                Positioned(
-                                                    right: 0,
-                                                    child: Text(
-                                                        DateFormat('hh:mm ')
-                                                            .format(DateFormat(
-                                                                    'HH:mm:ss')
-                                                                .parse(time))))
-                                              ],
+                                            child: ListTile(
+                                              title: Text(record.week),
+                                              subtitle: Text(record.comment
+                                                  .replaceAll('<br />', '')),
                                             )),
                                       ),
                                     ),

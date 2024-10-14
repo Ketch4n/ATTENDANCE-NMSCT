@@ -114,17 +114,17 @@ class _AdminAccomplishmentIndexState extends State<AdminAccomplishmentIndex> {
                           children: text.map((record) {
                             return GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        AdminViewAccomplishment(
-                                      email: record.email,
-                                      section_id: widget.id,
-                                      date: record.date,
-                                    ),
-                                  ),
-                                );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) =>
+                                //         AdminViewAccomplishment(
+                                //       email: record.email,
+                                //       section_id: widget.id,
+                                //       date: record.date,
+                                //     ),
+                                //   ),
+                                // );
                               },
                               child: Card(
                                 child: Padding(

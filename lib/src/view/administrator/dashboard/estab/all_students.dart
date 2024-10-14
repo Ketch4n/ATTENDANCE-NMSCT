@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/admin/accomplishment/index.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/admin/accomplishment/view.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/accomplishment.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -365,11 +368,8 @@ class _AllStudentsState extends State<AllStudents> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  StudentSectionDTR(
-                                                name:
-                                                    classmate.establishment_id!,
-                                                ids: classmate.email,
-                                                section: classmate.section,
+                                                  AdminViewAccomplishment(
+                                                email: classmate.email,
                                               ),
                                             ),
                                           );
