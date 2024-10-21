@@ -1,10 +1,6 @@
 import 'dart:convert';
-import 'package:attendance_nmsct/src/view/administrator/dashboard/admin/accomplishment/index.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/admin/accomplishment/view.dart';
-import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/accomplishment.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -12,7 +8,6 @@ import 'package:printing/printing.dart';
 import 'package:attendance_nmsct/src/data/firebase/server.dart';
 import 'package:attendance_nmsct/src/data/provider/session.dart';
 import 'package:attendance_nmsct/src/model/AllStudentModel.dart';
-import 'package:attendance_nmsct/src/view/student/dashboard/section/student_section_dtr.dart';
 import 'package:attendance_nmsct/src/view/student/dtr_details.dart';
 import 'package:attendance_nmsct/src/widgets/confirmation.dart';
 import 'package:attendance_nmsct/src/components/duck.dart';
@@ -231,8 +226,68 @@ class _AllStudentsState extends State<AllStudents> {
                           (classmate) => DataRow(
                             cells: [
                               DataCell(
-                                GestureDetector(
-                                  onTap: () {},
+                                PopupMenuButton<String>(
+                                  onSelected: (value) {
+                                    if (value == "1") {
+                                      if (classmate.establishment_id == null ||
+                                          classmate.establishment_id ==
+                                              "none") {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content:
+                                                Text("No Establishment yet"),
+                                          ),
+                                        );
+                                      } else {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                StudentDTRDetails(
+                                              id: classmate.id,
+                                              estab_id:
+                                                  classmate.establishment_id!,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      if (classmate.establishment_id == null ||
+                                          classmate.establishment_id ==
+                                              "none") {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                "No Establishment for Report"),
+                                          ),
+                                        );
+                                      } else {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                AdminViewAccomplishment(
+                                              email: classmate.email,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                                  itemBuilder: (BuildContext context) {
+                                    return <PopupMenuEntry<String>>[
+                                      const PopupMenuItem<String>(
+                                        value: '1',
+                                        child: Text('DTR'),
+                                      ),
+                                      const PopupMenuItem<String>(
+                                        value: '2',
+                                        child: Text('Report'),
+                                      ),
+                                    ];
+                                  },
                                   child: Row(
                                     children: [
                                       ClipRRect(
@@ -250,9 +305,8 @@ class _AllStudentsState extends State<AllStudents> {
                                           children: [
                                             Text(
                                               '${classmate.lname}, ${classmate.fname}',
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                              ),
+                                              style:
+                                                  const TextStyle(fontSize: 18),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ],
@@ -321,60 +375,12 @@ class _AllStudentsState extends State<AllStudents> {
                                 Row(
                                   children: [
                                     ElevatedButton(
-                                      onPressed: () {
-                                        if (classmate.establishment_id ==
-                                                null ||
-                                            classmate.establishment_id ==
-                                                "none") {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content:
-                                                  Text("No Establishment yet"),
-                                            ),
-                                          );
-                                        } else {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  StudentDTRDetails(
-                                                id: classmate.id,
-                                                estab_id:
-                                                    classmate.establishment_id!,
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      },
+                                      onPressed: () {},
                                       child: const Text("DTR"),
                                     ),
                                     const SizedBox(width: 5),
                                     ElevatedButton(
-                                      onPressed: () {
-                                        if (classmate.establishment_id ==
-                                                null ||
-                                            classmate.establishment_id ==
-                                                "none") {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                  "No Establishment for Report"),
-                                            ),
-                                          );
-                                        } else {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AdminViewAccomplishment(
-                                                email: classmate.email,
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      },
+                                      onPressed: () {},
                                       child: const Text("Report"),
                                     ),
                                   ],

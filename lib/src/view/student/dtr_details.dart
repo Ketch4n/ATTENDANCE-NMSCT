@@ -151,6 +151,7 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
         key: _refreshIndicatorKey,
         onRefresh: refreshData,
         child: Scaffold(
+          appBar: AppBar(),
           body: SafeArea(
             child: Column(
               children: [
