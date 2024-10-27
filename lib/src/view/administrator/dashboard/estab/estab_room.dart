@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:adaptive_action_sheet/adaptive_action_sheet.dart';
+import 'package:attendance_nmsct/src/auth/auth.dart';
 import 'package:attendance_nmsct/src/auth/signup.dart';
 import 'package:attendance_nmsct/src/data/firebase/server.dart';
 import 'package:attendance_nmsct/src/data/provider/session.dart';
 import 'package:attendance_nmsct/src/include/style.dart';
 import 'package:attendance_nmsct/src/model/EstabRoomModel.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/estab_room_unregstudents.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/estab_sched.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -96,7 +98,16 @@ class _EstabRoomState extends State<EstabRoom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => Auth()));
+              },
+              icon: Icon(Icons.home))
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
@@ -202,6 +213,47 @@ class _EstabRoomState extends State<EstabRoom> {
                                     )
                                   ],
                                 ),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Text("Arrival-AM "),
+                                        Text(classmate.in_am ?? "NOT-SET"),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(" Departure-AM "),
+                                        Text(classmate.out_am ?? "NOT-SET"),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(" Arrival-PM "),
+                                        Text(classmate.in_pm ?? "NOT-SET"),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(" Departure-PM"),
+                                        Text(classmate.out_pm ?? "NOT-SET"),
+                                      ],
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        _showAlertDialog(
+                                          context,
+                                          classmate.email,
+                                          classmate.uid,
+                                        );
+                                      },
+                                      icon: const Icon(Icons.schedule),
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           }),
@@ -213,6 +265,29 @@ class _EstabRoomState extends State<EstabRoom> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showAlertDialog(BuildContext context, String name, int id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+              constraints: const BoxConstraints(maxHeight: 700, maxWidth: 400),
+              child: ViewSched(
+                name: name,
+                id: id,
+                onDialogClose: () {
+                  // Refresh the data when the dialog is closed
+                  fetchInterns(_internsStreamController);
+                },
+              )),
+        );
+      },
     );
   }
 

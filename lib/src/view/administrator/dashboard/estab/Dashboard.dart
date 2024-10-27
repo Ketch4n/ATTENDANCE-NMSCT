@@ -147,9 +147,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
         throw Exception('Failed to load data');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to calculate outside distances: $e')),
-      );
+      print(e);
     }
   }
 
@@ -203,7 +201,6 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                           );
                         },
                         child: BoxComponent(
-                          color: Colors.red,
                           count: late,
                           child: 'List of Late',
                         ),
@@ -219,7 +216,6 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                         },
                         child: BoxComponent(
                           count: outside.toString(),
-                          color: Colors.orange,
                           child: 'Outside Range',
                         ),
                       ),
@@ -232,7 +228,6 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                         },
                         child: BoxComponent(
                           count: absent,
-                          color: Colors.blue,
                           child: 'Absent',
                         ),
                       ),
@@ -245,7 +240,6 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                         },
                         child: BoxComponent(
                           count: count_estab,
-                          color: Colors.green,
                           child: 'All Establishment',
                         ),
                       ),
@@ -256,7 +250,6 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                         },
                         child: BoxComponent(
                           count: count,
-                          color: Colors.purple,
                           child: 'All Students',
                         ),
                       ),
@@ -269,7 +262,6 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                         },
                         child: BoxComponent(
                           count: announcement,
-                          color: Colors.grey,
                           child: 'Announcement',
                         ),
                       ),

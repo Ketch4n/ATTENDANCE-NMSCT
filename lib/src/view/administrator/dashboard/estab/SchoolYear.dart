@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:attendance_nmsct/src/auth/auth.dart';
 import 'package:attendance_nmsct/src/components/duck.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/Dashboard.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/src/data/firebase/server.dart';
 import 'package:attendance_nmsct/src/model/SchoolYearModel.dart';
@@ -65,6 +67,14 @@ class _SchoolYearPageState extends State<SchoolYearPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("School Year"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => Auth()));
+              },
+              icon: Icon(Icons.home))
+        ],
         centerTitle: true,
       ),
       body: Align(

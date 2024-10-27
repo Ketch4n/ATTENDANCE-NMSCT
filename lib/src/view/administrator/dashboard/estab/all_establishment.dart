@@ -190,51 +190,6 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                             ),
                           ),
                         ),
-                        DataColumn(
-                          label: SizedBox(
-                            width: 80,
-                            child: Text(
-                              'Arrival AM',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: SizedBox(
-                            width: 80,
-                            child: Text(
-                              'Departure AM',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: SizedBox(
-                            width: 80,
-                            child: Text(
-                              'Arrival PM',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: SizedBox(
-                            width: 80,
-                            child: Text(
-                              'Departure PM',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                        DataColumn(
-                          label: SizedBox(
-                            width: 100,
-                            child: Text(
-                              'Schedule',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
                       ],
                       rows: interns
                           .map(
@@ -293,57 +248,6 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                                     classmate.hours_required,
                                     style: const TextStyle(fontSize: 12),
                                     overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                DataCell(
-                                  Text(
-                                    classmate.in_am == null ||
-                                            classmate.in_am!.isEmpty
-                                        ? 'NOT SET'
-                                        : classmate.in_am!,
-                                    style: const TextStyle(fontSize: 12),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                DataCell(
-                                  Text(
-                                    classmate.out_am == null ||
-                                            classmate.out_am!.isEmpty
-                                        ? 'NOT SET'
-                                        : classmate.out_am!,
-                                    style: const TextStyle(fontSize: 12),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                DataCell(
-                                  Text(
-                                    classmate.in_pm == null ||
-                                            classmate.in_pm!.isEmpty
-                                        ? 'NOT SET'
-                                        : classmate.in_pm!,
-                                    style: const TextStyle(fontSize: 12),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                DataCell(
-                                  Text(
-                                    classmate.out_pm == null ||
-                                            classmate.out_pm!.isEmpty
-                                        ? 'NOT SET'
-                                        : classmate.out_pm!,
-                                    style: const TextStyle(fontSize: 12),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                DataCell(
-                                  GestureDetector(
-                                    onTap: () {
-                                      _showAlertDialog(
-                                          context,
-                                          classmate.establishment_name,
-                                          classmate.id);
-                                    },
-                                    child: const Icon(Icons.remove_red_eye),
                                   ),
                                 ),
                               ],

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:attendance_nmsct/src/auth/auth.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/admin/accomplishment/view.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -138,6 +139,14 @@ class _AllStudentsState extends State<AllStudents> {
       appBar: Session.role == "SUPER ADMIN"
           ? AppBar(
               title: const Text('All Students List'),
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => Auth()));
+                    },
+                    icon: Icon(Icons.home))
+              ],
               centerTitle: true,
             )
           : null,
@@ -218,7 +227,6 @@ class _AllStudentsState extends State<AllStudents> {
                           ],
                         ),
                       ),
-                      const DataColumn(label: Text('View Records')),
                       const DataColumn(label: Text('Option')),
                     ],
                     rows: filteredInterns
@@ -369,21 +377,6 @@ class _AllStudentsState extends State<AllStudents> {
                                           : classmate.status == "Inactive"
                                               ? Colors.orange
                                               : Colors.grey),
-                                ),
-                              ),
-                              DataCell(
-                                Row(
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () {},
-                                      child: const Text("DTR"),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    ElevatedButton(
-                                      onPressed: () {},
-                                      child: const Text("Report"),
-                                    ),
-                                  ],
                                 ),
                               ),
                               DataCell(

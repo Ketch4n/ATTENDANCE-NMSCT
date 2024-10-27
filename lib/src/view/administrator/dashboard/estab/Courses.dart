@@ -125,7 +125,6 @@ class _CoursesPageState extends State<CoursesPage> {
                                   padding: const EdgeInsets.all(10.0),
                                   child: BoxComponent(
                                     count: course.count,
-                                    color: Colors.purple,
                                     child: course.course,
                                   ),
                                 ),

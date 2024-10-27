@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 class BoxComponent extends StatelessWidget {
-  BoxComponent(
-      {super.key,
-      required this.child,
-      required this.count,
-      required this.color});
+  BoxComponent({
+    super.key,
+    required this.child,
+    required this.count,
+  });
   String child;
   String count;
-  Color color;
 
   double screenHeight = 0;
 
@@ -24,7 +23,7 @@ class BoxComponent extends StatelessWidget {
           height: 100,
           width: 400,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12), color: color),
+              borderRadius: BorderRadius.circular(12), color: Colors.blue[400]),
           child: Column(
             children: [
               Padding(
