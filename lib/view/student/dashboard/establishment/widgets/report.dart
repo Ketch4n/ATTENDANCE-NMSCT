@@ -1,7 +1,10 @@
+import 'package:attendance_nmsct/data/server.dart';
+import 'package:attendance_nmsct/data/session.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-Future<void> showReport(
-    BuildContext context, String report, String InAM, String InPM) async {
+Future<void> showReport(BuildContext context, String report, String InAM,
+    String InPM, String? schedAM, String? schedPM) async {
   // Check if the time is before or at 8:00 AM
 
   return showModalBottomSheet(
@@ -48,11 +51,17 @@ Future<void> showReport(
                       style: TextStyle(color: Colors.black, fontSize: 20),
                     ),
                     trailing: Text(
-                      InAM.compareTo('08:00:00') <= 0 ? "On Time" : "Late",
+                      schedAM == null
+                          ? "NOT SET"
+                          : InAM.compareTo(schedAM) <= 0
+                              ? "On Time"
+                              : "Late",
                       style: TextStyle(
-                          color: InAM.compareTo('08:00:00') <= 0
-                              ? Colors.green
-                              : Colors.red,
+                          color: schedAM == null
+                              ? Colors.blue
+                              : InAM.compareTo(schedAM) <= 0
+                                  ? Colors.green
+                                  : Colors.red,
                           fontSize: 20),
                     ),
                   ),
@@ -62,19 +71,23 @@ Future<void> showReport(
                       style: TextStyle(color: Colors.black, fontSize: 20),
                     ),
                     trailing: Text(
-                      InPM.compareTo('13:00:00') <= 0 &&
-                              InPM.compareTo('00:00:00') != 0
-                          ? "On Time"
-                          : InPM.compareTo('00:00:00') == 0
-                              ? "Pending"
-                              : "Late",
-                      style: TextStyle(
-                          color: InPM.compareTo('13:00:00') <= 0 &&
+                      schedPM == null
+                          ? "NOT SET"
+                          : InPM.compareTo(schedPM) <= 0 &&
                                   InPM.compareTo('00:00:00') != 0
-                              ? Colors.green
+                              ? "On Time"
                               : InPM.compareTo('00:00:00') == 0
-                                  ? Colors.blue
-                                  : Colors.red,
+                                  ? "Pending"
+                                  : "Late",
+                      style: TextStyle(
+                          color: schedPM == null
+                              ? Colors.blue
+                              : InPM.compareTo(schedPM) <= 0 &&
+                                      InPM.compareTo('00:00:00') != 0
+                                  ? Colors.green
+                                  : InPM.compareTo('00:00:00') == 0
+                                      ? Colors.blue
+                                      : Colors.red,
                           fontSize: 20),
                     ),
                   )
