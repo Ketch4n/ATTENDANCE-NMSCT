@@ -101,9 +101,8 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
     pdf.addPage(
       pw.Page(
         build: (pw.Context context) {
-          return pw.Center(
-              child: pw.Column(
-            mainAxisAlignment: pw.MainAxisAlignment.center,
+          return pw.Column(
+            mainAxisAlignment: pw.MainAxisAlignment.start,
             children: [
               pw.Text('Attendance Report $_month',
                   style: const pw.TextStyle(fontSize: 40)),
@@ -117,37 +116,55 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                 pw.Text(
                     "Total Hours Rendered: ${dtr.grand_total_hours_rendered}",
                     style: const pw.TextStyle(fontSize: 20)),
-            ],
-          ));
-        },
-      ),
-    );
-
-    // Add table with data
-    pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) {
-          return pw.Table.fromTextArray(
-            headers: [
-              'Date',
-              'Time-In AM',
-              'Time-Out AM',
-              'Time-In PM',
-              'Time-Out PM'
-            ],
-            data: [
-              ...data.map((dtr) => [
-                    dtr.date,
-                    dtr.time_in_am,
-                    dtr.time_out_am,
-                    dtr.time_in_pm,
-                    dtr.time_out_pm,
-                  ]),
+              pw.Table.fromTextArray(
+                headers: [
+                  'Date',
+                  'Time-In AM',
+                  'Time-Out AM',
+                  'Time-In PM',
+                  'Time-Out PM'
+                ],
+                data: [
+                  ...data.map((dtr) => [
+                        dtr.date,
+                        dtr.time_in_am,
+                        dtr.time_out_am,
+                        dtr.time_in_pm,
+                        dtr.time_out_pm,
+                      ]),
+                ],
+              ),
             ],
           );
         },
       ),
     );
+
+    // Add table with data
+    // pdf.addPage(
+    //   pw.Page(
+    //     build: (pw.Context context) {
+    //       return pw.Table.fromTextArray(
+    //         headers: [
+    //           'Date',
+    //           'Time-In AM',
+    //           'Time-Out AM',
+    //           'Time-In PM',
+    //           'Time-Out PM'
+    //         ],
+    //         data: [
+    //           ...data.map((dtr) => [
+    //                 dtr.date,
+    //                 dtr.time_in_am,
+    //                 dtr.time_out_am,
+    //                 dtr.time_in_pm,
+    //                 dtr.time_out_pm,
+    //               ]),
+    //         ],
+    //       );
+    //     },
+    //   ),
+    // );
 
     // Save PDF file
     final String pdfPath = (await getTemporaryDirectory()).path;
@@ -176,10 +193,36 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
     _loadPdf();
   }
 
+  String? schedAMIN;
+  String? schedAMOUT;
+  String? schedPMIN;
+  String? schedPMOUT;
+  getSched() async {
+    try {
+      final response = await http.post(
+        Uri.parse('${Server.host}users/student/sched_app.php'),
+        body: {'student_id': Session.id},
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        schedAMIN = data['in_am'];
+        schedAMOUT = data['out_am'];
+        schedPMIN = data['in_pm'];
+        schedPMOUT = data['out_pm'];
+      } else {
+        print("Error Getting File Data from Database");
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     monthly_report(_monthStream);
+    getSched();
   }
 
   @override
@@ -303,14 +346,17 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                                     return GestureDetector(
                                       onTap: () {
                                         showReport(
-                                            context,
-                                            dtr.total_hours_rendered,
-                                            DateFormat('HH:mm:ss').format(
-                                                DateFormat('HH:mm:ss')
-                                                    .parse(dtr.time_in_am)),
-                                            DateFormat('HH:mm:ss').format(
-                                                DateFormat('HH:mm:ss')
-                                                    .parse(dtr.time_in_pm)));
+                                          context,
+                                          dtr.total_hours_rendered,
+                                          DateFormat('HH:mm:ss').format(
+                                              DateFormat('HH:mm:ss')
+                                                  .parse(dtr.time_in_am)),
+                                          DateFormat('HH:mm:ss').format(
+                                              DateFormat('HH:mm:ss')
+                                                  .parse(dtr.time_in_pm)),
+                                          schedAMIN,
+                                          schedPMIN,
+                                        );
                                       },
                                       child: Card(
                                         child: Row(

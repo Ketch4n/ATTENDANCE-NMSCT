@@ -31,7 +31,7 @@ class _AccomplishmentDetailsState extends State<AccomplishmentDetails> {
 
     try {
       final response = await http.post(
-        Uri.parse('${Server.host}users/student/accomplishment.php'),
+        Uri.parse('${Server.host}users/student/accomplishment_details.php'),
         body: {'email': Session.email, 'section_id': widget.id, 'date': date},
       );
 
@@ -114,6 +114,7 @@ class _AccomplishmentDetailsState extends State<AccomplishmentDetails> {
                                       await deleteAccomplishment(
                                           context, record.id);
                                       Navigator.of(context).pop();
+                                      _getTextReferences();
                                     },
                                   ),
                                 ],
