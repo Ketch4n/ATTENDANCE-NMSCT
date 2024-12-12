@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:attendance_nmsct/src/auth/google/functions/get_address.dart';
+import 'package:attendance_nmsct/src/data/firebase/server.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 Future fetchAndDisplayInfo(centerPosition) async {
-  const url =
-      'https://attendance-nmscst.online/db/map.php'; // Replace with your PHP script URL
+  var url = '${Server.host}db/map.php'; // Replace with your PHP script URL
   final params = {
     'location': '${centerPosition.latitude},${centerPosition.longitude}',
     'radius': '50',

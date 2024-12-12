@@ -1,11 +1,11 @@
 import 'dart:convert';
 
+import 'package:attendance_nmsct/src/data/firebase/server.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 Future<String> getAddress(LatLng position) async {
-  const url =
-      'https://attendance-nmscst.online/db/address.php'; // Replace with your PHP script URL
+  var url = '${Server.host}db/address.php'; // Replace with your PHP script URL
   final params = {'latlng': '${position.latitude},${position.longitude}'};
 
   try {
