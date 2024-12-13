@@ -101,9 +101,8 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
     pdf.addPage(
       pw.Page(
         build: (pw.Context context) {
-          return pw.Center(
-              child: pw.Column(
-            mainAxisAlignment: pw.MainAxisAlignment.center,
+          return pw.Column(
+            mainAxisAlignment: pw.MainAxisAlignment.start,
             children: [
               pw.Text('Attendance Report $_month',
                   style: const pw.TextStyle(fontSize: 40)),
@@ -117,39 +116,30 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                 pw.Text(
                     "Total Hours Rendered: ${dtr.grand_total_hours_rendered}",
                     style: const pw.TextStyle(fontSize: 20)),
-            ],
-          ));
-        },
-      ),
-    );
-
-    // Add table with data
-    pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) {
-          return pw.Table.fromTextArray(
-            headers: [
-              'Date',
-              'Time-In AM',
-              'Time-Out AM',
-              'Time-In PM',
-              'Time-Out PM'
-            ],
-            data: [
-              ...data.map((dtr) => [
-                    dtr.date,
-                    dtr.time_in_am,
-                    dtr.time_out_am,
-                    dtr.time_in_pm,
-                    dtr.time_out_pm,
-                  ]),
+              pw.Table.fromTextArray(
+                headers: [
+                  'Date',
+                  'Time-In AM',
+                  'Time-Out AM',
+                  'Time-In PM',
+                  'Time-Out PM'
+                ],
+                data: [
+                  ...data.map((dtr) => [
+                        dtr.date,
+                        dtr.time_in_am,
+                        dtr.time_out_am,
+                        dtr.time_in_pm,
+                        dtr.time_out_pm,
+                      ]),
+                ],
+              ),
             ],
           );
         },
       ),
     );
 
-    // Save PDF file
     final String pdfPath = (await getTemporaryDirectory()).path;
     final String pdfFilePath = '$pdfPath/report.pdf';
     final File pdfFile = File(pdfFilePath);
