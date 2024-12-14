@@ -13,168 +13,110 @@ class DropdownSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: Style.padding,
-          child: GestureDetector(
-            onTap: () {
-              showProfileInfo(context);
-            },
-            child: Container(
-                height: 60,
-                width: double.maxFinite,
-                decoration:
-                    Style.boxdecor.copyWith(borderRadius: Style.radius12),
-                child: const ListTile(
-                  // textColor: Style.themecolor,
-                  // iconColor: Style.themecolor,
-                  title: Row(
-                    children: [
-                      Icon(Icons.person),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text("Account Information"),
-                    ],
-                  ),
-                  trailing: Icon(Icons.navigate_next),
-                )),
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        // Padding(
-        //   padding: Style.padding,
-        //   child: Container(
-        //       height: 60,
-        //       width: double.maxFinite,
-        //       decoration: Style.boxdecor.copyWith(borderRadius: Style.radius12),
-        //       child: const ListTile(
-        //         // textColor: Style.themecolor,
-        //         // iconColor: Style.themecolor,
-        //         title: Row(
-        //           children: [
-        //             Icon(Icons.lock),
-        //             SizedBox(
-        //               width: 10,
-        //             ),
-        //             Text("Security and Privacy"),
-        //           ],
-        //         ),
-        //         trailing: Icon(Icons.navigate_next),
-        //       )),
-        // ),
+        _buildAccountInfoTile(context),
+        const SizedBox(height: 10),
       ],
     );
   }
 
-  Future showProfileInfo(BuildContext context) async {
+  // Account Information Tile
+  Widget _buildAccountInfoTile(BuildContext context) {
+    return Padding(
+      padding: Style.padding,
+      child: GestureDetector(
+        onTap: () => showProfileInfo(context),
+        child: Container(
+          height: 60,
+          width: double.maxFinite,
+          decoration: Style.boxdecor.copyWith(borderRadius: Style.radius12),
+          child: const ListTile(
+            title: Row(
+              children: [
+                Icon(Icons.person),
+                SizedBox(width: 10),
+                Text("Account Information"),
+              ],
+            ),
+            trailing: Icon(Icons.navigate_next),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Show Profile Info Modal
+  Future<void> showProfileInfo(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     final uid = prefs.getString('internID');
     final bday = prefs.getString('internBDAY');
     final add = prefs.getString('internADDRESS');
+    final section = prefs.getString('internSECTION');
+    final semester = prefs.getString('internSEMESTER');
+    final course = prefs.getString('internCOURSE');
+    final sy = prefs.getString('internSY');
 
     return showModalBottomSheet(
-        context: context,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-        barrierColor: Colors.black87.withOpacity(0.5),
-        isScrollControlled: true,
-        builder: (context) => DraggableScrollableSheet(
-              expand: false,
-              initialChildSize: 0.32,
-              maxChildSize: 0.5,
-              minChildSize: 0.32,
-              builder: (context, scrollController) => SingleChildScrollView(
-                controller: scrollController,
-                child: SizedBox(
-                  height: 300,
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            width: 50,
-                            child: Divider(
-                              color: Colors.black26,
-                              thickness: 4,
-                            ),
-                          ),
-                          ListTile(
-                            leadingAndTrailingTextStyle:
-                                TextStyle(fontSize: 20),
-                            leading: Text(
-                              "Name :",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            trailing: Text(
-                              "${Session.fname} " + Session.lname,
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                          ),
-                          // ListTile(
-                          //   leadingAndTrailingTextStyle:
-                          //       TextStyle(fontSize: 20),
-                          //   leading: Text(
-                          //     "Email :",
-                          //     style: TextStyle(color: Colors.black),
-                          //   ),
-                          //   trailing: Text(
-                          //     Session.email,
-                          //     overflow: TextOverflow.ellipsis,
-                          //     style: TextStyle(color: Colors.blue),
-                          //   ),
-                          // ),
-
-                          Session.role == 'INTERN'
-                              ? ListTile(
-                                  leadingAndTrailingTextStyle:
-                                      TextStyle(fontSize: 20),
-                                  leading: Text(
-                                    "Birth Date :",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  trailing: Text(
-                                    bday!,
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                )
-                              : SizedBox(),
-                          Session.role == 'INTERN'
-                              ? ListTile(
-                                  leadingAndTrailingTextStyle:
-                                      TextStyle(fontSize: 20),
-                                  leading: Text(
-                                    "Address :",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  trailing: Text(
-                                    add!,
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                )
-                              : SizedBox(),
-                          Session.role == 'INTERN'
-                              ? ListTile(
-                                  leadingAndTrailingTextStyle:
-                                      TextStyle(fontSize: 20),
-                                  leading: Text(
-                                    "School Year :",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  trailing: Text(
-                                    uid!,
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                )
-                              : SizedBox(),
-                        ],
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      barrierColor: Colors.black87.withOpacity(0.5),
+      isScrollControlled: true,
+      builder: (context) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.32,
+        maxChildSize: 0.5,
+        minChildSize: 0.32,
+        builder: (context, scrollController) => Expanded(
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: SizedBox(
+              height: 400,
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: 50,
+                        child: Divider(
+                          color: Colors.black26,
+                          thickness: 4,
+                        ),
                       ),
-                    ),
+                      _buildProfileInfoTile(
+                          "Name", "${Session.fname} ${Session.lname}"),
+                      _buildProfileInfoTile("Birth Date", bday),
+                      _buildProfileInfoTile("Address", add),
+                      _buildProfileInfoTile("Section", section),
+                      _buildProfileInfoTile("Semester", semester),
+                      _buildProfileInfoTile("Course", course),
+                      _buildProfileInfoTile("School Year", sy),
+                    ],
                   ),
                 ),
               ),
-            ));
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Helper function to create profile info ListTile
+  Widget _buildProfileInfoTile(String title, String? value) {
+    if (Session.role != 'INTERN' || value == null) return SizedBox();
+
+    return ListTile(
+      dense: true,
+      leading: Text(
+        "$title :",
+        style: TextStyle(color: Colors.black, fontSize: 20),
+      ),
+      trailing: Text(
+        value,
+        style: TextStyle(color: Colors.blue, fontSize: 20),
+      ),
+    );
   }
 }

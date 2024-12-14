@@ -120,9 +120,10 @@ Future accomplishmentReport(
                                   } else {
                                     Navigator.of(context).pop(true);
                                     await uploadAccomplishment(
-                                        context, ids, nweek, userComment);
+                                        context, ids, nweek, userComment, null);
 
                                     comment.clear();
+                                    week.clear;
                                     refresh();
                                   }
                                 },

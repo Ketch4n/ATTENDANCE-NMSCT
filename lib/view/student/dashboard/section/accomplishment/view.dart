@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/controller/Delete.dart';
+import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/edit.dart';
 import 'package:attendance_nmsct/view/student/dashboard/section/accomplishment/insert.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:flutter/cupertino.dart';
@@ -58,28 +59,28 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
     }
   }
 
-  Stream<List<AccomplishmentModel>> streamAccomplishemnt() async* {
-    while (true) {
-      final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  // Stream<List<AccomplishmentModel>> streamAccomplishemnt() async* {
+  //   while (true) {
+  //     final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-      final response = await http.post(
-        Uri.parse('${Server.host}users/student/accomplishment.php'),
-        body: {'email': Session.email, 'section_id': widget.ids, 'date': date},
-      );
-      // print('API Response: ${response.body}');
-      if (response.statusCode == 200) {
-        List<dynamic> jsonList = json.decode(response.body);
-        yield jsonList
-            .map((json) => AccomplishmentModel.fromJson(json))
-            .toList();
-      } else {
-        throw Exception('Failed to load data');
-      }
+  //     final response = await http.post(
+  //       Uri.parse('${Server.host}users/student/accomplishment.php'),
+  //       body: {'email': Session.email, 'section_id': widget.ids, 'date': date},
+  //     );
+  //     // print('API Response: ${response.body}');
+  //     if (response.statusCode == 200) {
+  //       List<dynamic> jsonList = json.decode(response.body);
+  //       yield jsonList
+  //           .map((json) => AccomplishmentModel.fromJson(json))
+  //           .toList();
+  //     } else {
+  //       throw Exception('Failed to load data');
+  //     }
 
-      await Future.delayed(
-          const Duration(seconds: 2)); // Adjust the refresh rate as needed
-    }
-  }
+  //     await Future.delayed(
+  //         const Duration(seconds: 2)); // Adjust the refresh rate as needed
+  //   }
+  // }
 
   Future<void> deleteImage(AccomplishmentModel record) async {
     // Show a confirmation dialog
@@ -87,22 +88,35 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: const Text('Confirm Deletion'),
-          content: const Text(
-              'Are you sure you want to delete this accomplishment?'),
+          title: const Text('Options'),
+          content: const Text('Edit or delete this accomplishment?'),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false); // User canceled deletion
+              onPressed: () async {
+                Navigator.of(context).pop(false); // User confirmed deletion
+                await accomplishmentReportEdit(context, record.id, record,
+                    _weekController, _commentController, _getTextReferences);
               },
-              child: const Text('Cancel'),
+              child: const Text(
+                'Edit',
+                style: TextStyle(color: Colors.green),
+              ),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true); // User confirmed deletion
               },
-              child: const Text('Delete'),
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
+            // TextButton(
+            //   onPressed: () {
+            //     Navigator.of(context).pop(false); // User canceled deletion
+            //   },
+            //   child: const Text('Cancel'),
+            // ),
           ],
         );
       },

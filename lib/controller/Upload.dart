@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:convert';
 import 'package:attendance_nmsct/data/session.dart';
 import 'package:attendance_nmsct/widgets/alert_dialog.dart';
@@ -12,7 +10,13 @@ DateTime now = DateTime.now();
 final date = DateFormat('yyyy-MM-dd').format(now.toLocal());
 final time = DateFormat('hh:mm:ss').format(now.toLocal());
 
-Future uploadAccomplishment(BuildContext context, ids, nweek, comment) async {
+Future uploadAccomplishment(
+  BuildContext context,
+  String ids,
+  String nweek,
+  String comment,
+  String? upID,
+) async {
   Map<String, String> headers = {'Content-Type': 'application/json'};
   String apiUrl = '${Server.host}users/student/upload.php';
 
@@ -20,17 +24,28 @@ Future uploadAccomplishment(BuildContext context, ids, nweek, comment) async {
   String encodedComment = jsonEncode(comment);
 
   String jsonData =
-      '{"email": "${Session.email}", "section": "$ids","week":"$nweek", "comment": $encodedComment, "date": "$date", "time":"$time"}';
+      '{"email": "${Session.email}", "section": "$ids", "week": "$nweek", "comment": $encodedComment, "date": "$date", "time": "$time"';
+
+  // If editing, include the accomplishment ID in the request
+  if (upID != null) {
+    jsonData += ', "id": "$upID"';
+  }
+
+  jsonData += '}';
 
   try {
-    final response =
-        await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
+    final response = upID != null
+        ? await http.put(Uri.parse(apiUrl),
+            headers: headers, body: jsonData) // PUT request for editing
+        : await http.post(Uri.parse(apiUrl),
+            headers: headers, body: jsonData); // POST request for creating
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       final message = jsonResponse['message'];
       final status = jsonResponse['status'];
 
+      // Show alert dialog with response message
       showAlertDialog(context, status, message);
 
       // Handle success message as needed

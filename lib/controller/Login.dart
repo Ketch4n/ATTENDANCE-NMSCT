@@ -70,9 +70,19 @@ Future<void> login(
             final uid = data['course'];
             final bday = data['bday'];
             final address = data['address'];
+            final sy = data['school_year'];
+            final semester = data['semester'];
+            final section = data['section'];
+            final course = data['course'];
+
             prefs.setString('internID', uid);
             prefs.setString('internBDAY', bday);
             prefs.setString('internADDRESS', address);
+            prefs.setString('internSY', sy);
+            prefs.setString('internSECTION', section);
+            prefs.setString('internSEMESTER', semester);
+            prefs.setString('internCOURSE', course);
+
             prefs.setString('userStatus', userStatus);
           } else {
             prefs.setString('adminEstab', adminEstab);
