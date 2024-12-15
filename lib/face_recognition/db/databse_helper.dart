@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:attendance_nmsct/data/server.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/face_recognition/pages/models/user.model.dart';
 
@@ -16,20 +17,25 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
   Future<int> insert(User user) async {
-    final response = await http.post(
-      Uri.parse(baseUrl),
-      headers: {"Content-Type": "application/x-www-form-urlencoded"},
-      body: {
-        'user': user.user,
-        'password': user.password,
-        'model_data': jsonEncode(user.modelData), // Convert List to JSON string
-      },
-    );
+    try {
+      final response = await http.post(
+        Uri.parse(baseUrl),
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: {
+          'user': user.user,
+          'password': user.password,
+          'model_data':
+              jsonEncode(user.modelData), // Convert List to JSON string
+        },
+      );
 
-    if (response.statusCode == 200) {
-      return 1; // Successful insertion
-    } else {
-      throw Exception('Failed to insert data');
+      if (response.statusCode == 200) {
+        return 1; // Successful insertion
+      } else {
+        throw Exception('Failed to insert data');
+      }
+    } catch (e) {
+      throw Exception(e);
     }
   }
 

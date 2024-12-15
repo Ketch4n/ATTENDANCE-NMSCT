@@ -196,7 +196,7 @@ class SignInState extends State<SignIn> {
     );
   }
 
-  signInSheet({@required User? user}) => user == null
+  signInSheet({@required User? user}) => user == null || user.modelData.isEmpty
       ? Container(
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.all(20),

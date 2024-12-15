@@ -74,7 +74,7 @@ class SignInSheet extends StatelessWidget {
                         isPassword: true,
                       )
                     : Text(
-                        user.user == Session.email
+                        user.user == Session.email && user.modelData.isNotEmpty
                             ? 'FACE AND EMAIL MATCHED'
                             : "UNMATCHED",
                         style: TextStyle(

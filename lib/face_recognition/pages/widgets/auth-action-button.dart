@@ -55,6 +55,15 @@ class _AuthActionButtonState extends State<AuthActionButton> {
       password: password,
       modelData: predictedData,
     );
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
     // FaceDone.status = false;
     await _databaseHelper.insert(userToSave);
     this._mlService.setPredictedData([]);
@@ -65,7 +74,9 @@ class _AuthActionButtonState extends State<AuthActionButton> {
     final announce =
         "Student wit an email ${Session.email} has successfully registered his/her Facial Data.\nStudent is status is now ACTIVE ";
     await updateUser();
+
     sendToAll(userEmails, announce);
+    Navigator.of(context).pop();
     await showAlertDialog(context, title, message);
     // Navigator.pop(context, user);
     // Navigator.pop(context, user);
