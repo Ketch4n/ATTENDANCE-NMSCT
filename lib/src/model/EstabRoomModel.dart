@@ -1,6 +1,7 @@
 class EstabRoomModel {
   final int id;
-  final int uid;
+  final int student_id;
+  final int establishment_id;
   final String fname;
   final String lname;
   final String email;
@@ -13,7 +14,8 @@ class EstabRoomModel {
 
   EstabRoomModel({
     required this.id,
-    required this.uid,
+    required this.student_id,
+    required this.establishment_id,
     required this.fname,
     required this.lname,
     required this.email,
@@ -28,7 +30,8 @@ class EstabRoomModel {
   Map<String, dynamic> toJson() => {
         // 'id': id,
         'id': id,
-        'uid': uid,
+        'student_id': student_id,
+        'establishment_id': establishment_id,
         'fname': fname,
         'lname': lname,
         'email': email,
@@ -43,7 +46,8 @@ class EstabRoomModel {
   static EstabRoomModel fromJson(Map<String, dynamic> json) => EstabRoomModel(
         // id: json['id'],
         id: json['id'],
-        uid: json['uid'],
+        student_id: json['student_id'],
+        establishment_id: json['establishment_id'],
         fname: json['fname'],
         lname: json['lname'],
         email: json['email'],

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:attendance_nmsct/src/data/provider/session.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -8,10 +9,12 @@ class ViewSched extends StatefulWidget {
   const ViewSched(
       {super.key,
       required this.name,
-      required this.id,
+      this.id,
+      this.student,
       required this.onDialogClose});
   final String name;
-  final int id;
+  final int? id;
+  final int? student;
   final VoidCallback
       onDialogClose; // Callback to notify parent when dialog is closed
 
@@ -83,7 +86,8 @@ class _ViewSchedState extends State<ViewSched> {
 
   Future<void> _saveTimes() async {
     final times = {
-      'ESTAB_ID': widget.id.toString(), // Ensure ID is sent as a string
+      'ESTAB_ID': widget.id.toString(),
+      'USER_ID': widget.student.toString(),
       'IN_AM': _formatTime(_time1),
       'OUT_AM': _formatTime(_time2),
       'IN_PM': _formatTime(_time3),
