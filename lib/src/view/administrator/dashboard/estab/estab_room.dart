@@ -40,6 +40,7 @@ class _EstabRoomState extends State<EstabRoom> {
   }
 
   String yourID = "";
+  String defaultTime = "00:00:00";
 
   Future<void> fetchInterns(
       StreamController<List<EstabRoomModel>> internstreamController) async {
@@ -221,25 +222,37 @@ class _EstabRoomState extends State<EstabRoom> {
                                     Column(
                                       children: [
                                         Text("Arrival-AM "),
-                                        Text(classmate.in_am ?? "NOT-SET"),
+                                        Text(classmate.in_am == defaultTime ||
+                                                classmate.in_am == null
+                                            ? "NOT-SET"
+                                            : classmate.in_am!)
                                       ],
                                     ),
                                     Column(
                                       children: [
                                         Text(" Departure-AM "),
-                                        Text(classmate.out_am ?? "NOT-SET"),
+                                        Text(classmate.out_am == defaultTime ||
+                                                classmate.out_am == null
+                                            ? "NOT-SET"
+                                            : classmate.out_am!),
                                       ],
                                     ),
                                     Column(
                                       children: [
                                         Text(" Arrival-PM "),
-                                        Text(classmate.in_pm ?? "NOT-SET"),
+                                        Text(classmate.in_pm == defaultTime ||
+                                                classmate.in_pm == null
+                                            ? "NOT-SET"
+                                            : classmate.in_pm!),
                                       ],
                                     ),
                                     Column(
                                       children: [
                                         Text(" Departure-PM"),
-                                        Text(classmate.out_pm ?? "NOT-SET"),
+                                        Text(classmate.out_pm == defaultTime ||
+                                                classmate.out_pm == null
+                                            ? "NOT-SET"
+                                            : classmate.out_pm!),
                                       ],
                                     ),
                                     IconButton(
@@ -247,7 +260,8 @@ class _EstabRoomState extends State<EstabRoom> {
                                         _showAlertDialog(
                                           context,
                                           classmate.email,
-                                          classmate.uid,
+                                          classmate.establishment_id,
+                                          classmate.student_id,
                                         );
                                       },
                                       icon: const Icon(Icons.schedule),
@@ -268,7 +282,8 @@ class _EstabRoomState extends State<EstabRoom> {
     );
   }
 
-  void _showAlertDialog(BuildContext context, String name, int id) {
+  void _showAlertDialog(
+      BuildContext context, String name, int estabID, int studentID) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -280,7 +295,8 @@ class _EstabRoomState extends State<EstabRoom> {
               constraints: const BoxConstraints(maxHeight: 700, maxWidth: 400),
               child: ViewSched(
                 name: name,
-                id: id,
+                id: estabID,
+                student: studentID,
                 onDialogClose: () {
                   // Refresh the data when the dialog is closed
                   fetchInterns(_internsStreamController);
