@@ -32,7 +32,8 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
       StreamController<List<CoursesModel>>();
   final StreamController<List<EstabTodayModel>> _monthStream =
       StreamController<List<EstabTodayModel>>();
-
+  final _schoolYearController = TextEditingController();
+  String? _selectedYearRange;
   late String count = "";
   late String count_estab = "";
   late String absent = "";
@@ -56,6 +57,14 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
     super.dispose();
   }
 
+  List<String> get _yearRanges {
+    int currentYear = DateTime.now().year;
+    return List.generate(10, (index) {
+      int startYear = currentYear - 5 + index;
+      int endYear = startYear + 1;
+      return "$startYear-$endYear";
+    });
+  }
   // Future<void> streamAccomplishemnt() async {
   //   const query = "users/establishment/view_all_courses.php";
 
@@ -83,27 +92,27 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
 
   Future<void> fetchinterns() async {
     try {
-      final response = await http.get(
+      final response = await http.post(
         Uri.parse('${Server.host}users/establishment/count.php'),
+        body: {"years": _schoolYearController.text},
       );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         setState(() {
-          count = responseData['users'];
-          count_estab = responseData['estab'];
-          absent = responseData['absent'];
-          late = responseData['late'];
-          announcement = responseData['announcement'];
+          count = responseData['users'] ?? '0';
+          count_estab = responseData['estab'] ?? '0';
+          absent = responseData['absent'] ?? '0';
+          late = responseData['late'] ?? '0';
+          announcement = responseData['announcement'] ?? '';
         });
       } else {
-        throw Exception('Failed to load data');
+        throw Exception('Failed to load data: ${response.reasonPhrase}');
       }
     } catch (e) {
-      print(e);
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('Failed to load counts: $e')),
-      // );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load data: $e')),
+      );
     }
   }
 
@@ -181,9 +190,36 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: ElevatedButton(
-                    onPressed: refresh,
-                    child: const Text("Reload Data / Refresh"),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 200, // Specify the desired width
+                        height: 50, // Specify the desired height if needed
+                        child: DropdownButtonFormField<String>(
+                          value: _selectedYearRange,
+                          decoration: InputDecoration(
+                            label: Text("School Year"),
+                          ),
+                          items: _yearRanges.map((String yearRange) {
+                            return DropdownMenuItem<String>(
+                              value: yearRange,
+                              child: Text(yearRange),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedYearRange = newValue;
+                              _schoolYearController.text = newValue ?? '';
+                            });
+                          },
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: refresh,
+                        child: const Text("Reload Data / Refresh"),
+                      ),
+                    ],
                   ),
                 ),
                 Padding(

@@ -69,6 +69,17 @@ class _SignupState extends State<Signup> {
     setState(() {});
   }
 
+  courseValue(String value) {
+    switch (value) {
+      case "1":
+        return "BS-TOURISM MANAGEMENT";
+      case "2":
+        return "BS- HOSPITALITY MANAGEMENT";
+      default:
+        "";
+    }
+  }
+
   DateTime _date = DateTime.now();
 
   // final TimeOfDay _time = TimeOfDay.now();
@@ -93,7 +104,12 @@ class _SignupState extends State<Signup> {
     });
   }
 
+  List<String> _semester = ["1st Semester", "2nd Semester"];
+  List<String> _course = ["1", "2"];
+
+  String? _selectedSemester;
   String? _selectedYearRange;
+  String? _selectedCourse;
 
   // Generate a list of year ranges
   List<String> get _yearRanges {
@@ -328,16 +344,26 @@ class _SignupState extends State<Signup> {
                               content: Column(
                                 children: [
                                   widget.purpose == 'INTERN'
-                                      ? Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10),
-                                          child: TextFormField(
-                                            controller: _courseController,
-                                            decoration: Style.textdesign
-                                                .copyWith(labelText: 'Course'),
-                                          ),
+                                      ? DropdownButtonFormField<String>(
+                                          value: _selectedCourse,
+                                          decoration: Style.textdesign
+                                              .copyWith(labelText: 'Course'),
+                                          items: _course.map((String crs) {
+                                            return DropdownMenuItem<String>(
+                                              value: crs,
+                                              child: Text(courseValue(crs)),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              _selectedCourse = newValue;
+                                              _courseController.text =
+                                                  newValue ?? '';
+                                            });
+                                          },
                                         )
                                       : const SizedBox(),
+                                  const SizedBox(height: 10),
                                   widget.purpose == 'INTERN'
                                       ? TextFormField(
                                           controller: _sectionController,
@@ -347,12 +373,27 @@ class _SignupState extends State<Signup> {
                                       : const SizedBox(),
                                   const SizedBox(height: 10),
                                   widget.purpose == 'INTERN'
-                                      ? TextFormField(
-                                          controller: _semesterController,
+                                      ? DropdownButtonFormField<String>(
+                                          value: _selectedSemester,
                                           decoration: Style.textdesign
                                               .copyWith(labelText: 'Semester'),
+                                          items:
+                                              _semester.map((String semester) {
+                                            return DropdownMenuItem<String>(
+                                              value: semester,
+                                              child: Text(semester),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              _selectedSemester = newValue;
+                                              _semesterController.text =
+                                                  newValue ?? '';
+                                            });
+                                          },
                                         )
                                       : const SizedBox(),
+
                                   const SizedBox(height: 10),
                                   // widget.purpose == 'INTERN'
                                   //     ? TextFormField(

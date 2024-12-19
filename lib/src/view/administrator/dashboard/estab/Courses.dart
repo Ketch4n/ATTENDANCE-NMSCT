@@ -116,16 +116,18 @@ class _CoursesPageState extends State<CoursesPage> {
                         itemBuilder: (context, index) {
                           final CoursesModel course = data[index];
                           return GestureDetector(
-                              onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) => SchoolYearPage(
-                                          course: course.course))),
+                              onTap: () =>
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => AllStudents(
+                                            course: course.id,
+                                            sy: "",
+                                          ))),
                               child: Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: BoxComponent(
                                     count: course.count,
-                                    child: course.course,
+                                    child: course.courses,
                                   ),
                                 ),
                               )

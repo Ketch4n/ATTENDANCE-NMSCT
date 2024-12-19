@@ -344,7 +344,7 @@ class _AllStudentsState extends State<AllStudents> {
                               ),
                               DataCell(
                                 Text(
-                                  classmate.course,
+                                  classmate.courses,
                                   style: const TextStyle(fontSize: 12),
                                 ),
                               ),

@@ -5,6 +5,8 @@ class AllStudentModel {
   final String email;
   final String bday;
   final String course;
+  final String courses;
+
   final String address;
   final String section;
   final String semester;
@@ -19,6 +21,7 @@ class AllStudentModel {
     required this.email,
     required this.bday,
     required this.course,
+    required this.courses,
     required this.address,
     required this.section,
     required this.semester,
@@ -34,6 +37,7 @@ class AllStudentModel {
         'email': email,
         'bday': bday,
         'course': course,
+        'courses': courses,
         'address': address,
         'section': section,
         'semester': semester,
@@ -49,6 +53,7 @@ class AllStudentModel {
         email: json['email'],
         bday: json['bday'],
         course: json['course'],
+        courses: json['courses'],
         address: json['address'],
         section: json['section'],
         semester: json['semester'],
