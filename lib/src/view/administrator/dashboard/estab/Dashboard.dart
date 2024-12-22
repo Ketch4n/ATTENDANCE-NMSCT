@@ -94,7 +94,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
     try {
       final response = await http.post(
         Uri.parse('${Server.host}users/establishment/count.php'),
-        body: {"years": _schoolYearController.text},
+        body: {"years": _schoolYearController.text ?? "2024-2025"},
       );
 
       if (response.statusCode == 200) {
@@ -104,7 +104,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
           count_estab = responseData['estab'] ?? '0';
           absent = responseData['absent'] ?? '0';
           late = responseData['late'] ?? '0';
-          announcement = responseData['announcement'] ?? '';
+          announcement = responseData['announcement'] ?? '0';
         });
       } else {
         throw Exception('Failed to load data: ${response.reasonPhrase}');
@@ -118,18 +118,27 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
 
   Future<void> dtr() async {
     try {
-      final response = await http.get(
+      // Send the POST request with the 'year' parameter from the school year controller
+      final response = await http.post(
         Uri.parse('${Server.host}users/student/outside.php'),
+        body: {
+          "year": _schoolYearController.text ??
+              "2024-2025", // Ensure the year is sent
+        },
       );
 
       if (response.statusCode == 200) {
+        // Decode the response body
         final List<dynamic> data = json.decode(response.body);
+
+        // Filter the data based on certain conditions
         final totalOutside = data.where((dtrData) {
           final dtrItem = EstabTodayModel.fromJson(dtrData);
           double meterValue = double.parse(dtrItem.radius ?? '0');
           double estabLat = double.parse(dtrItem.latitude ?? '0');
           double estabLong = double.parse(dtrItem.longitude ?? '0');
 
+          // Calculate distances for all time slots (AM and PM)
           List<double> distances = [
             calculateDistance(double.parse(dtrItem.in_am_lat ?? '0'),
                 double.parse(dtrItem.in_am_long ?? '0'), estabLat, estabLong),
@@ -141,6 +150,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                 double.parse(dtrItem.out_pm_long ?? '0'), estabLat, estabLong),
           ];
 
+          // Check if any distance exceeds the establishment radius
           if (distances.any((distance) => distance > meterValue)) {
             outsideIds.add(dtrItem.id.toString());
             return true;
@@ -148,15 +158,16 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
           return false;
         }).length;
 
+        // Update state with the filtered count
         setState(() {
           outside = totalOutside.toDouble();
         });
-        print("Total : $outsideIds");
+        print("Total Outside IDs: $outsideIds");
       } else {
         throw Exception('Failed to load data');
       }
     } catch (e) {
-      print(e);
+      print('Error: $e');
     }
   }
 
