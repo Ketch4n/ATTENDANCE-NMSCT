@@ -9,7 +9,7 @@ class AnnouncementModel {
   final String message;
   final String id;
 
-  AnnouncementModel({required this.message, required this.id});
+  AnnouncementModel({required this.message, required this.id, required});
 
   factory AnnouncementModel.fromJson(Map<String, dynamic> json) {
     return AnnouncementModel(
@@ -20,8 +20,8 @@ class AnnouncementModel {
 }
 
 class Announcement extends StatefulWidget {
-  const Announcement({super.key});
-
+  const Announcement({super.key, required this.year});
+  final String year;
   @override
   State<Announcement> createState() => _AnnouncementState();
 }
@@ -31,8 +31,11 @@ class _AnnouncementState extends State<Announcement> {
   final List<String> _userEmails = []; // List to hold user emails
 
   Future<List<AnnouncementModel>> fetchData() async {
-    final response = await http
-        .get(Uri.parse('${Server.host}users/student/all_announcement.php'));
+    final response = await http.post(
+        Uri.parse('${Server.host}users/student/all_announcement.php'),
+        body: {
+          "year": widget.year,
+        });
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => AnnouncementModel.fromJson(json)).toList();

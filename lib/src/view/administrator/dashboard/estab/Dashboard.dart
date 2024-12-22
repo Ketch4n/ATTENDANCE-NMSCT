@@ -33,7 +33,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
   final StreamController<List<EstabTodayModel>> _monthStream =
       StreamController<List<EstabTodayModel>>();
   final _schoolYearController = TextEditingController();
-  String? _selectedYearRange;
+  String? _selectedYearRange = '2024-2025';
   late String count = "";
   late String count_estab = "";
   late String absent = "";
@@ -41,6 +41,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
   late double outside = 0;
   late String announcement = "";
   late List<String> outsideIds = [];
+  final String defaultYear = "2024-2025";
 
   @override
   void initState() {
@@ -94,7 +95,11 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
     try {
       final response = await http.post(
         Uri.parse('${Server.host}users/establishment/count.php'),
-        body: {"years": _schoolYearController.text ?? "2024-2025"},
+        body: {
+          "years": _schoolYearController.text.isEmpty
+              ? defaultYear
+              : _schoolYearController.text
+        },
       );
 
       if (response.statusCode == 200) {
@@ -118,18 +123,35 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
 
   Future<void> dtr() async {
     try {
-      // Send the POST request with the 'year' parameter from the school year controller
+      // Reset previous state
+      setState(() {
+        outsideIds = [];
+        outside = 0;
+      });
+
+      // Send the POST request with the 'year' parameter
       final response = await http.post(
         Uri.parse('${Server.host}users/student/outside.php'),
         body: {
-          "year": _schoolYearController.text ??
-              "2024-2025", // Ensure the year is sent
+          "year": _schoolYearController.text.isEmpty
+              ? defaultYear
+              : _schoolYearController.text, // Ensure the year is sent
         },
       );
 
       if (response.statusCode == 200) {
         // Decode the response body
         final List<dynamic> data = json.decode(response.body);
+
+        if (data.isEmpty) {
+          // Handle empty response
+          setState(() {
+            outside = 0;
+            outsideIds = [];
+          });
+          print("No data returned for the specified year.");
+          return;
+        }
 
         // Filter the data based on certain conditions
         final totalOutside = data.where((dtrData) {
@@ -168,6 +190,11 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
       }
     } catch (e) {
       print('Error: $e');
+      // Ensure state is reset in case of an error
+      setState(() {
+        outsideIds = [];
+        outside = 0;
+      });
     }
   }
 
@@ -222,6 +249,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                             setState(() {
                               _selectedYearRange = newValue;
                               _schoolYearController.text = newValue ?? '';
+                              refresh();
                             });
                           },
                         ),
@@ -244,7 +272,9 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (context) => const AllLateStudent()),
+                                builder: (context) => AllLateStudent(
+                                      year: _selectedYearRange ?? defaultYear,
+                                    )),
                           );
                         },
                         child: BoxComponent(
@@ -270,7 +300,9 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (context) => const AllAbsentStudent()),
+                                builder: (context) => AllAbsentStudent(
+                                      year: _selectedYearRange ?? defaultYear,
+                                    )),
                           );
                         },
                         child: BoxComponent(
@@ -293,7 +325,9 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => CoursesPage()));
+                              builder: (context) => CoursesPage(
+                                    year: _selectedYearRange ?? defaultYear,
+                                  )));
                         },
                         child: BoxComponent(
                           count: count,
@@ -304,7 +338,9 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (context) => const Announcement()),
+                                builder: (context) => Announcement(
+                                      year: _selectedYearRange ?? defaultYear,
+                                    )),
                           );
                         },
                         child: BoxComponent(

@@ -11,8 +11,8 @@ import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_stud
 import 'package:flutter/material.dart';
 
 class CoursesPage extends StatefulWidget {
-  const CoursesPage({super.key});
-
+  const CoursesPage({super.key, required this.year});
+  final String year;
   @override
   State<CoursesPage> createState() => _CoursesPageState();
 }
@@ -39,9 +39,10 @@ class _CoursesPageState extends State<CoursesPage> {
     const query = "users/establishment/view_all_courses.php";
 
     try {
-      final response = await http.get(
-        Uri.parse('${Server.host}$query'),
-      );
+      final response =
+          await http.post(Uri.parse('${Server.host}$query'), body: {
+        "year": widget.year,
+      });
 
       if (response.statusCode == 200) {
         List<dynamic> jsonList = json.decode(response.body);
@@ -120,7 +121,7 @@ class _CoursesPageState extends State<CoursesPage> {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) => AllStudents(
                                             course: course.id,
-                                            sy: "",
+                                            sy: widget.year,
                                           ))),
                               child: Center(
                                 child: Padding(

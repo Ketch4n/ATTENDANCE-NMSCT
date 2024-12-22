@@ -248,7 +248,9 @@ class _NavbarState extends State<Navbar> {
                         Navigator.of(context).pop(false);
 
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const CoursesPage()));
+                            builder: (context) => const CoursesPage(
+                                  year: '',
+                                )));
                       },
                     )
                   : const SizedBox(),

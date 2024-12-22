@@ -14,8 +14,8 @@ import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AllAbsentStudent extends StatefulWidget {
-  const AllAbsentStudent({super.key});
-  // final String purpose;
+  const AllAbsentStudent({super.key, required this.year});
+  final String year;
 
   @override
   State<AllAbsentStudent> createState() => _AllStudentsState();
@@ -40,8 +40,10 @@ class _AllStudentsState extends State<AllAbsentStudent> {
     print("estab : $estabId");
     print("role : ${Session.role}");
 
-    final response =
-        await http.get(Uri.parse('${Server.host}users/student/all_absent.php'));
+    final response = await http
+        .post(Uri.parse('${Server.host}users/student/all_absent.php'), body: {
+      "year": widget.year,
+    });
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);

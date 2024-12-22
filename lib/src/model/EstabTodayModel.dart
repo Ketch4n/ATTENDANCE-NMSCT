@@ -5,15 +5,12 @@ class EstabTodayModel {
   final String time_in_am;
   final String in_am_lat;
   final String in_am_long;
-
   final String time_out_am;
   final String out_am_lat;
   final String out_am_long;
-
   final String time_in_pm;
   final String in_pm_lat;
   final String in_pm_long;
-
   final String time_out_pm;
   final String out_pm_lat;
   final String out_pm_long;
@@ -49,22 +46,18 @@ class EstabTodayModel {
   });
 
   Map<String, dynamic> toJson() => {
-        // 'id': id,
         'id': id,
         'student_id': student_id,
         'estab_id': estab_id,
         'time_in_am': time_in_am,
         'in_am_lat': in_am_lat,
         'in_am_long': in_am_long,
-
         'time_out_am': time_out_am,
         'out_am_lat': out_am_lat,
         'out_am_long': out_am_long,
-
         'time_in_pm': time_in_pm,
         'in_pm_lat': in_pm_lat,
         'in_pm_long': in_pm_long,
-
         'time_out_pm': time_out_pm,
         'out_pm_lat': out_pm_lat,
         'out_pm_long': out_pm_long,
@@ -77,30 +70,26 @@ class EstabTodayModel {
       };
 
   static EstabTodayModel fromJson(Map<String, dynamic> json) => EstabTodayModel(
-        // id: json['id'],
-        id: json['id'],
-        student_id: json['student_id'],
-        estab_id: json['estab_id'],
-        time_in_am: json['time_in_am'],
-        in_am_lat: json['in_am_lat'],
-        in_am_long: json['in_am_long'],
-
-        time_out_am: json['time_out_am'],
-        out_am_lat: json['out_am_lat'],
-        out_am_long: json['out_am_long'],
-
-        time_in_pm: json['time_in_pm'],
-        in_pm_lat: json['in_pm_lat'],
-        in_pm_long: json['in_pm_long'],
-
-        time_out_pm: json['time_out_pm'],
-        out_pm_lat: json['out_pm_lat'],
-        out_pm_long: json['out_pm_long'],
-        date: json['date'],
-        lname: json['lname'],
-        email: json['email'],
-        latitude: json['latitude'],
-        longitude: json['longitude'],
-        radius: json['radius'],
+        id: json['id']?.toString() ?? '',
+        student_id: json['student_id']?.toString() ?? '',
+        estab_id: json['estab_id']?.toString() ?? '',
+        time_in_am: json['time_in_am']?.toString() ?? '',
+        in_am_lat: json['in_am_lat']?.toString() ?? '',
+        in_am_long: json['in_am_long']?.toString() ?? '',
+        time_out_am: json['time_out_am']?.toString() ?? '',
+        out_am_lat: json['out_am_lat']?.toString() ?? '',
+        out_am_long: json['out_am_long']?.toString() ?? '',
+        time_in_pm: json['time_in_pm']?.toString() ?? '',
+        in_pm_lat: json['in_pm_lat']?.toString() ?? '',
+        in_pm_long: json['in_pm_long']?.toString() ?? '',
+        time_out_pm: json['time_out_pm']?.toString() ?? '',
+        out_pm_lat: json['out_pm_lat']?.toString() ?? '',
+        out_pm_long: json['out_pm_long']?.toString() ?? '',
+        date: json['date']?.toString() ?? '',
+        lname: json['lname']?.toString(),
+        email: json['email']?.toString(),
+        latitude: json['latitude']?.toString(),
+        longitude: json['longitude']?.toString(),
+        radius: json['radius']?.toString(),
       );
 }
