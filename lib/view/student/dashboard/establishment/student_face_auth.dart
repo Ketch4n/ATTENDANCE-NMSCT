@@ -201,7 +201,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   @override
   void initState() {
     super.initState();
-    // sharedPref();
+    _timeStream = fetchServerTime();
     today(_todayStream);
     _getLocation();
   }
@@ -212,6 +212,25 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     _todayStream.close();
   }
 
+  Stream<String> fetchServerTime() async* {
+    while (true) {
+      try {
+        final response =
+            await http.get(Uri.parse('${Server.host}server_time.php'));
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          yield data['time'];
+        } else {
+          yield 'Error fetching time';
+        }
+      } catch (e) {
+        yield 'Error: $e';
+      }
+      await Future.delayed(Duration(seconds: 1)); // Update every second
+    }
+  }
+
+  late Stream<String> _timeStream;
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
@@ -220,17 +239,28 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     return Scaffold(
       body: Column(
         children: [
-          StreamBuilder(
-            stream: Stream.periodic(const Duration(seconds: 1)),
+          StreamBuilder<String>(
+            stream: _timeStream,
             builder: (context, snapshot) {
+              String timeDisplay;
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                timeDisplay = 'Loading...';
+              } else if (snapshot.hasError) {
+                timeDisplay = 'Error: ${snapshot.error}';
+              } else if (!snapshot.hasData || snapshot.data == null) {
+                timeDisplay = 'No data';
+              } else {
+                timeDisplay = snapshot.data!;
+              }
+
               return Padding(
                 padding: const EdgeInsets.only(top: 10.0),
                 child: Container(
-                  width: double.maxFinite,
+                  width: double.infinity,
                   color: Colors.blue,
                   child: Center(
                     child: Text(
-                      DateFormat('hh:mm:ss a').format(DateTime.now()),
+                      timeDisplay,
                       style: TextStyle(
                         fontFamily: "NexaRegular",
                         fontSize: 20,
