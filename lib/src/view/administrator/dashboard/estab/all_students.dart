@@ -108,7 +108,7 @@ class _AllStudentsState extends State<AllStudents> {
               'Student Name',
               'First Name',
               'Email',
-              'Section',
+              'Block',
               'Birth Date',
               'Address',
             ],

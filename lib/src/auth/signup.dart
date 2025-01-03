@@ -368,7 +368,7 @@ class _SignupState extends State<Signup> {
                                       ? TextFormField(
                                           controller: _sectionController,
                                           decoration: Style.textdesign
-                                              .copyWith(labelText: 'Section'),
+                                              .copyWith(labelText: 'Block'),
                                         )
                                       : const SizedBox(),
                                   const SizedBox(height: 10),
