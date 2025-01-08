@@ -3,11 +3,11 @@ class AllStudentModel {
   final String fname;
   final String lname;
   final String email;
-  final String bday;
+  final String id_number;
   final String course;
   final String courses;
 
-  final String address;
+  final String contact_number;
   final String section;
   final String semester;
   final String school_year;
@@ -19,10 +19,10 @@ class AllStudentModel {
     required this.fname,
     required this.lname,
     required this.email,
-    required this.bday,
+    required this.id_number,
     required this.course,
     required this.courses,
-    required this.address,
+    required this.contact_number,
     required this.section,
     required this.semester,
     required this.school_year,
@@ -35,10 +35,10 @@ class AllStudentModel {
         'fname': fname,
         'lname': lname,
         'email': email,
-        'bday': bday,
+        'id_number': id_number,
         'course': course,
         'courses': courses,
-        'address': address,
+        'contact_number': contact_number,
         'section': section,
         'semester': semester,
         'school_year': school_year,
@@ -51,10 +51,10 @@ class AllStudentModel {
         fname: json['fname'],
         lname: json['lname'],
         email: json['email'],
-        bday: json['bday'],
+        id_number: json['id_number'],
         course: json['course'],
         courses: json['courses'],
-        address: json['address'],
+        contact_number: json['contact_number'],
         section: json['section'],
         semester: json['semester'],
         school_year: json['school_year'],

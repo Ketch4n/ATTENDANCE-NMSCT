@@ -10,7 +10,8 @@ import 'package:attendance_nmsct/src/data/provider/settings.dart';
 import 'package:attendance_nmsct/src/functions/generate.dart';
 import 'package:attendance_nmsct/src/include/admin_list.dart';
 import 'package:attendance_nmsct/src/include/style.dart';
-
+import 'package:attendance_nmsct/src/model/CoursesModel.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/courses/functions/get_courses.dart';
 import 'package:attendance_nmsct/src/widgets/alert_dialog.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,6 @@ class _SignupState extends State<Signup> {
   String emailStatus = '';
   String location = '';
   late String coordinate = '';
-  // String LatLng = '';
   late String lat = '';
   late String lng = '';
   bool done = true;
@@ -52,104 +52,34 @@ class _SignupState extends State<Signup> {
   final _fnameController = TextEditingController();
   final _lnameController = TextEditingController();
   final inputController = StreamController<String>();
-  // final _roleController = TextEditingController();
   final _locationController = TextEditingController();
-  final _bdayController = TextEditingController();
-  // final _uidController = TextEditingController();
-  final _uaddressController = TextEditingController();
+  final _idnumberController = TextEditingController();
+  final _contactController = TextEditingController();
   final _sectionController = TextEditingController();
   final _hoursController = TextEditingController();
   final _radiusController = TextEditingController();
-
   final _courseController = TextEditingController();
   final _semesterController = TextEditingController();
   final _schoolYearController = TextEditingController();
 
-  Future<void> _ref() async {
-    setState(() {});
-  }
-
-  courseValue(String value) {
-    switch (value) {
-      case "1":
-        return "BS-TOURISM MANAGEMENT";
-      case "2":
-        return "BS- HOSPITALITY MANAGEMENT";
-      default:
-        "";
-    }
-  }
-
-  DateTime _date = DateTime.now();
-
-  // final TimeOfDay _time = TimeOfDay.now();
-
-  Future _showDatePicker() async {
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1980),
-      lastDate: DateTime(2030),
-    ).then((value) {
-      if (value != null) {
-        // Save the selected date
-        setState(() {
-          _date = value;
-          _bdayController.text = "${value.month}/${value.day}/${value.year}";
-        });
-
-        // Show a custom modal with a text field
-        // _showCustomModal();
-      }
-    });
-  }
-
-  List<String> _semester = ["1st Semester", "2nd Semester"];
-  List<String> _course = ["1", "2"];
-
+  final List<String> _semester = ["1st Semester", "2nd Semester"];
   String? _selectedSemester;
-  String? _selectedYearRange;
-  String? _selectedCourse;
 
-  // Generate a list of year ranges
-  List<String> get _yearRanges {
-    int currentYear = DateTime.now().year;
-    return List.generate(10, (index) {
-      int startYear = currentYear - 5 + index;
-      int endYear = startYear + 1;
-      return "$startYear-$endYear";
+  late List<CoursesModel> _course = [];
+  String? _selectedCourseId;
+
+  @override
+  void initState() {
+    super.initState();
+    getCoursesFromAPI();
+  }
+
+  Future<void> getCoursesFromAPI() async {
+    List<CoursesModel> courses = await getCourses();
+    setState(() {
+      _course = courses;
     });
   }
-  // final List<String> _years =
-  //     List.generate(30, (index) => (DateTime.now().year - index).toString());
-  // Future<void> _showYearPicker() async {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: const Text('Select School Year'),
-  //         content: SizedBox(
-  //           width: double.maxFinite,
-  //           child: ListView.builder(
-  //             itemCount: _years.length,
-  //             itemBuilder: (context, index) {
-  //               return ListTile(
-  //                 title: Text(_years[index]),
-  //                 onTap: () {
-  //                   setState(() {
-  //                     _schoolYearController.text =
-  //                         _years[index] + "-" + _years[index+1];
-  //                   });
-  //                   Navigator.of(context).pop();
-  //                 },
-  //               );
-  //             },
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -238,50 +168,6 @@ class _SignupState extends State<Signup> {
                               title: const Text('Details'),
                               content: Column(
                                 children: <Widget>[
-                                  // Stack(
-                                  //   children: [
-                                  //     TextFormField(
-                                  //       readOnly: true,
-                                  //       enableInteractiveSelection: false,
-                                  //       // enabled: false,
-                                  //       controller: _roleController,
-                                  //       decoration: Style.textdesign
-                                  //           .copyWith(labelText: 'Role'),
-                                  //     ),
-                                  //     Positioned(
-                                  //       top: 0,
-                                  //       right: 0,
-                                  //       child: PopupMenuButton<String>(
-                                  //         icon: const Icon(
-                                  //           Icons.arrow_drop_down,
-                                  //           color: Color.fromARGB(255, 114, 123, 130),
-                                  //         ),
-                                  //         onSelected: (String newValue) {
-                                  //           setState(() {
-                                  //             _roleController.text = newValue;
-                                  //           });
-                                  //         },
-                                  //         itemBuilder: (BuildContext context) {
-                                  //           return <PopupMenuEntry<String>>[
-                                  //             const PopupMenuItem<String>(
-                                  //               value: "Student",
-                                  //               child: Text("Student"),
-                                  //             ),
-                                  //             const PopupMenuItem<String>(
-                                  //               value: "Admin",
-                                  //               child: Text("Admin"),
-                                  //             ),
-                                  //             const PopupMenuItem<String>(
-                                  //               value: "Establishment",
-                                  //               child: Text("Establishment"),
-                                  //             ),
-                                  //           ];
-                                  //         },
-                                  //       ),
-                                  //     )
-                                  //   ],
-                                  // ),
-
                                   widget.purpose != 'ESTAB'
                                       ? TextFormField(
                                           controller: _fnameController,
@@ -301,23 +187,15 @@ class _SignupState extends State<Signup> {
                                           ),
                                         )
                                       : const Text("Proceed"),
-
                                   widget.purpose == 'INTERN'
-                                      ? TextFormField(
-                                          readOnly: true,
-                                          controller: _bdayController,
-                                          decoration: Style.textdesign.copyWith(
-                                            hintText: !clicked
-                                                ? 'Birth Date'
-                                                : _bdayController.text,
-                                            suffixIcon: IconButton(
-                                              icon: const Icon(
-                                                  Icons.calendar_month),
-                                              onPressed: () {
-                                                clicked = !clicked;
-                                                _showDatePicker();
-                                              },
-                                            ),
+                                      ? Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          child: TextFormField(
+                                            controller: _idnumberController,
+                                            decoration: Style.textdesign
+                                                .copyWith(
+                                                    labelText: 'ID Number'),
                                           ),
                                         )
                                       : const SizedBox(),
@@ -326,9 +204,11 @@ class _SignupState extends State<Signup> {
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 10),
                                           child: TextFormField(
-                                            controller: _uaddressController,
+                                            controller: _contactController,
                                             decoration: Style.textdesign
-                                                .copyWith(labelText: 'Address'),
+                                                .copyWith(
+                                                    labelText:
+                                                        'Contact Number'),
                                           ),
                                         )
                                       : const SizedBox(),
@@ -345,20 +225,26 @@ class _SignupState extends State<Signup> {
                                 children: [
                                   widget.purpose == 'INTERN'
                                       ? DropdownButtonFormField<String>(
-                                          value: _selectedCourse,
-                                          decoration: Style.textdesign
-                                              .copyWith(labelText: 'Course'),
-                                          items: _course.map((String crs) {
+                                          value:
+                                              _selectedCourseId, // Use the course ID as the value
+                                          decoration: const InputDecoration(
+                                              labelText: 'Course'),
+                                          items: _course
+                                              .map((CoursesModel course) {
                                             return DropdownMenuItem<String>(
-                                              value: crs,
-                                              child: Text(courseValue(crs)),
+                                              value: course
+                                                  .id, // Use course ID as the value
+                                              child: Text(course
+                                                  .courses), // Display course name
                                             );
                                           }).toList(),
                                           onChanged: (String? newValue) {
                                             setState(() {
-                                              _selectedCourse = newValue;
-                                              _courseController.text =
-                                                  newValue ?? '';
+                                              _selectedCourseId =
+                                                  newValue; // Update selected course ID
+                                              _courseController.text = newValue ??
+                                                  ''; // Set course ID in the controller
+                                              print("ID ${newValue}");
                                             });
                                           },
                                         )
@@ -393,60 +279,18 @@ class _SignupState extends State<Signup> {
                                           },
                                         )
                                       : const SizedBox(),
-
                                   const SizedBox(height: 10),
-                                  // widget.purpose == 'INTERN'
-                                  //     ? TextFormField(
-                                  //         controller: _schoolYearController,
-                                  //         decoration: Style.textdesign.copyWith(
-                                  //           labelText: 'School Year',
-                                  //           suffixIcon: IconButton(
-                                  //               onPressed: _showYearPicker,
-                                  //               icon: Icon(Icons.date_range)),
-                                  //         ),
-                                  //       )
-                                  //     : const SizedBox(),
                                   widget.purpose == 'INTERN'
-                                      ? DropdownButtonFormField<String>(
-                                          value: _selectedYearRange,
+                                      ? TextFormField(
+                                          inputFormatters: [
+                                            LengthLimitingTextInputFormatter(9),
+                                          ],
+                                          controller: _schoolYearController,
                                           decoration: Style.textdesign.copyWith(
-                                              labelText: 'School Year'),
-                                          items: _yearRanges
-                                              .map((String yearRange) {
-                                            return DropdownMenuItem<String>(
-                                              value: yearRange,
-                                              child: Text(yearRange),
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              _selectedYearRange = newValue;
-                                              _schoolYearController.text =
-                                                  newValue ?? '';
-                                            });
-                                          },
+                                              labelText: 'School Year',
+                                              hintText: "Example 2024-2025"),
                                         )
                                       : const SizedBox(),
-                                  // TextFormField(
-                                  //   controller: _roleController,
-                                  //   readOnly: true,
-                                  //   decoration: Style.textdesign.copyWith(
-                                  //     hintText: _default ? 'Administrator' : 'Intern',
-                                  //     suffixIcon: IconButton(
-                                  //       icon: const Icon(Icons.refresh),
-                                  //       onPressed: () {
-                                  //         setState(() {
-                                  //           _default = !_default;
-                                  //           _roleController.text =
-                                  //               _default ? 'Administrator' : 'Intern';
-                                  //         });
-                                  //         // String id = generateId();
-                                  //         // _roleController.text = id;
-                                  //       },
-                                  //     ),
-                                  //   ),
-                                  // ),
-
                                   _default && !_show
                                       ? TextFormField(
                                           controller: _locationController,
@@ -458,7 +302,6 @@ class _SignupState extends State<Signup> {
                                                       : UserSession.location),
                                         )
                                       : const SizedBox(),
-
                                   _default && !_show
                                       ? Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -484,7 +327,6 @@ class _SignupState extends State<Signup> {
                                               labelText: 'Hours Required'),
                                         )
                                       : const SizedBox(),
-
                                   const SizedBox(height: 10),
                                   _default && !_show
                                       ? TextFormField(
@@ -499,9 +341,7 @@ class _SignupState extends State<Signup> {
                                                   'Radius (default 5 meters)'),
                                         )
                                       : const SizedBox(),
-
                                   const SizedBox(height: 20),
-
                                   widget.purpose == "ESTAB"
                                       ? Container(
                                           decoration: Style.boxdecor,
@@ -575,12 +415,6 @@ class _SignupState extends State<Signup> {
     });
   }
 
-  // void switchStepsType() {
-  //   setState(() => stepperType = stepperType == StepperType.vertical
-  //       ? StepperType.horizontal
-  //       : StepperType.vertical);
-  // }
-
   void tapped(int step) {
     setState(() => _currentStep = step);
   }
@@ -620,9 +454,11 @@ class _SignupState extends State<Signup> {
 
     String loc = UserSession.location.trim();
     String cont = _controllController.text.trim();
-    DateTime bday = _date;
+
     String course = _courseController.text.trim();
-    String address = _uaddressController.text.trim();
+    String contact_number = _contactController.text.trim();
+    String id_number = _idnumberController.text.trim();
+
     String section = _sectionController.text.trim();
     String radius = _radiusController.text.trim();
 
@@ -645,7 +481,9 @@ class _SignupState extends State<Signup> {
       String message = "Please Enter Account Details";
       String title = name.isEmpty ? "Input First Name" : "Input Last Name";
       showAlertDialog(context, title, message);
-    } else if (user == "INTERN" && (address.isEmpty) && _currentStep == 1) {
+    } else if (user == "INTERN" &&
+        (contact_number.isEmpty) &&
+        _currentStep == 1) {
       String message = "Please Enter Account Information";
       String title = "Input details";
       showAlertDialog(context, title, message);
@@ -668,20 +506,23 @@ class _SignupState extends State<Signup> {
               ? "Input Establishment Name"
               : "Hours required for Interns";
       showAlertDialog(context, title, message);
-    }
-    // else if ((user == 'Intern' && done) && _currentStep == 2) {
-    //   String title = "Please Register Face";
-    //   String message = "Click icon to scan";
-    //   showAlertDialog(context, title, message);
-    // }
-    else if (_currentStep == 2) {
-      // ignore: use_build_context_synchronously
+    } else if (_currentStep == 2) {
       if (widget.purpose == 'INTERN') {
-        await signup(context, email, password, id, name, user, bday, course,
-            address, section, semester, schoolYear, widget.purpose);
+        await signup(
+            context,
+            email,
+            password,
+            id,
+            name,
+            user,
+            id_number,
+            course,
+            contact_number,
+            section,
+            semester,
+            schoolYear,
+            widget.purpose);
         Navigator.of(context).pop(false);
-
-        // Navigator.of(context).pop(false);
 
         widget.reload();
       } else {
@@ -691,15 +532,22 @@ class _SignupState extends State<Signup> {
         double? currentLng = UserSession.longitude;
         String radiusMeter = radius.isEmpty ? "5" : radius;
 
-        await signup(context, email, password, id, name, user, bday, course,
-            address, section, semester, schoolYear, widget.purpose);
+        await signup(
+            context,
+            email,
+            password,
+            id,
+            name,
+            user,
+            id_number,
+            course,
+            contact_number,
+            section,
+            semester,
+            schoolYear,
+            widget.purpose);
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const AdminList()));
-
-        // await CreateSectEstab(context, code, cont, currentCoordinate,
-        //     currentLng!, currentLat!, email, hours, radiusMeter);
-        // await signup(context, email, password, id, name, user, bday, uid,
-        //     address, section, widget.purpose);
       }
     } else {
       _currentStep < 2 ? setState(() => _currentStep += 1) : null;

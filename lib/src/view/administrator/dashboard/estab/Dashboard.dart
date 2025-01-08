@@ -6,6 +6,7 @@ import 'package:attendance_nmsct/src/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/Courses.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/SchoolYear.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_absent.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/courses/all_courses.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_establishment.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_late.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_outside.dart';
@@ -36,16 +37,19 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
   String? _selectedYearRange = '2024-2025';
   late String count = "";
   late String count_estab = "";
+  late String count_courses = "";
   late String absent = "";
   late String late = "";
   late double outside = 0;
   late String announcement = "";
   late List<String> outsideIds = [];
   final String defaultYear = "2024-2025";
+  List<String> sy = [];
 
   @override
   void initState() {
     super.initState();
+    fetchSY();
     fetchinterns();
     dtr();
     // streamAccomplishemnt();
@@ -66,30 +70,28 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
       return "$startYear-$endYear";
     });
   }
-  // Future<void> streamAccomplishemnt() async {
-  //   const query = "users/establishment/view_all_courses.php";
 
-  //   try {
-  //     final response = await http.get(
-  //       Uri.parse('${Server.host}$query'),
-  //     );
+  Future fetchSY() async {
+    try {
+      final response = await http
+          .get(Uri.parse('${Server.host}users/establishment/school_year.php'));
 
-  //     if (response.statusCode == 200) {
-  //       List<dynamic> jsonList = json.decode(response.body);
-  //       final List<CoursesModel> absent = jsonList
-  //           .map((absentData) => CoursesModel.fromJson(absentData))
-  //           .toList();
-  //       _absentController.add(absent);
-  //     } else {
-  //       throw Exception('Failed to load data');
-  //     }
-  //   } catch (e) {
-  //     print('Error: $e');
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Failed to load COURSES data: $e')),
-  //     );
-  //   }
-  // }
+      if (response.statusCode == 200) {
+        // Decode the response body as a list of school years (Array)
+        List<dynamic> responseData = json.decode(response.body);
+
+        // Assuming the response is a list of school years
+        setState(() {
+          sy = List<String>.from(
+              responseData); // Convert the list to a List<String>
+        });
+      } else {
+        print('Failed to load school years: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching school years: $e');
+    }
+  }
 
   Future<void> fetchinterns() async {
     try {
@@ -107,6 +109,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
         setState(() {
           count = responseData['users'] ?? '0';
           count_estab = responseData['estab'] ?? '0';
+          count_courses = responseData['courses'] ?? '0';
           absent = responseData['absent'] ?? '0';
           late = responseData['late'] ?? '0';
           announcement = responseData['announcement'] ?? '0';
@@ -115,9 +118,9 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
         throw Exception('Failed to load data: ${response.reasonPhrase}');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load data: $e')),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Failed to load data: $e')),
+      // );
     }
   }
 
@@ -199,6 +202,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
   }
 
   Future<void> refresh() async {
+    fetchSY();
     fetchinterns();
     dtr();
   }
@@ -239,7 +243,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                           decoration: InputDecoration(
                             label: Text("School Year"),
                           ),
-                          items: _yearRanges.map((String yearRange) {
+                          items: sy.map((String yearRange) {
                             return DropdownMenuItem<String>(
                               value: yearRange,
                               child: Text(yearRange),
@@ -310,18 +314,7 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                           child: 'Absent',
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => const AllEstablishment()),
-                          );
-                        },
-                        child: BoxComponent(
-                          count: count_estab,
-                          child: 'All Establishment',
-                        ),
-                      ),
+
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -348,7 +341,30 @@ class _DashBoardEstabState extends State<DashBoardEstab> {
                           child: 'Announcement',
                         ),
                       ),
-
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => const AllEstablishment()),
+                          );
+                        },
+                        child: BoxComponent(
+                          count: count_estab,
+                          child: 'All Establishment',
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => const AllCoursesPage()),
+                          );
+                        },
+                        child: BoxComponent(
+                          count: count_courses,
+                          child: 'All Courses',
+                        ),
+                      ),
                       // SizedBox(
                       //   height: 100,
                       //   width: 800,

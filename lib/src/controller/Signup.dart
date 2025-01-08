@@ -13,9 +13,9 @@ Future<void> signup(
   String id,
   String name,
   String roleController,
-  DateTime bday,
+  String id_number,
   String course,
-  String address,
+  String contact_number,
   String section,
   String semester,
   String schoolYear,
@@ -24,9 +24,9 @@ Future<void> signup(
   String apiUrl = '${Server.host}auth/signup.php';
   Map<String, String> headers = {'Content-Type': 'application/json'};
   final recipient = email;
-  final date = DateFormat('yyyy-MM-dd').format(bday.toLocal());
+
   String jsonData =
-      '{"email": "$email", "password": "$password", "fname": "$name", "lname": "$id", "course":"$course", "bday":"$date", "address":"$address", "section":"$section", "semester":"$semester","schoolYear":"$schoolYear","role":"$roleController", "purpose":"$purpose"}';
+      '{"email": "$email", "password": "$password", "fname": "$name", "lname": "$id", "course":"$course", "id_number":"$id_number", "contact_number":"$contact_number", "section":"$section", "semester":"$semester","schoolYear":"$schoolYear","role":"$roleController", "purpose":"$purpose"}';
 
   try {
     final response =

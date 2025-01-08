@@ -109,8 +109,8 @@ class _AllStudentsState extends State<AllStudents> {
               'First Name',
               'Email',
               'Block',
-              'Birth Date',
-              'Address',
+              'ID #',
+              'Contact #',
             ],
             data: interns.map((student) {
               return [
@@ -118,8 +118,8 @@ class _AllStudentsState extends State<AllStudents> {
                 student.fname,
                 student.email,
                 student.section,
-                student.bday,
-                student.address,
+                student.id_number,
+                student.contact_number,
               ];
             }).toList(),
           );
@@ -196,8 +196,8 @@ class _AllStudentsState extends State<AllStudents> {
                     columns: [
                       const DataColumn(label: Text('Name')),
                       const DataColumn(label: Text('Email')),
-                      const DataColumn(label: Text('Birth Date')),
-                      const DataColumn(label: Text('Address')),
+                      const DataColumn(label: Text('ID #')),
+                      const DataColumn(label: Text('Contact #')),
                       const DataColumn(label: Text('Course')),
                       const DataColumn(label: Text('Section')),
                       const DataColumn(label: Text('Semester')),
@@ -332,13 +332,13 @@ class _AllStudentsState extends State<AllStudents> {
                               ),
                               DataCell(
                                 Text(
-                                  classmate.bday,
+                                  classmate.id_number,
                                   style: const TextStyle(fontSize: 12),
                                 ),
                               ),
                               DataCell(
                                 Text(
-                                  classmate.address,
+                                  classmate.contact_number,
                                   style: const TextStyle(fontSize: 12),
                                 ),
                               ),

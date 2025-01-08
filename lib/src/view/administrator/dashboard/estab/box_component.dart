@@ -4,10 +4,10 @@ class BoxComponent extends StatelessWidget {
   BoxComponent({
     super.key,
     required this.child,
-    required this.count,
+    this.count,
   });
   String child;
-  String count;
+  String? count;
 
   double screenHeight = 0;
 
@@ -24,39 +24,49 @@ class BoxComponent extends StatelessWidget {
           width: 400,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12), color: Colors.blue[400]),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  child,
-                  style: const TextStyle(fontSize: 20),
+          child: count != null
+              ? Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        child,
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        count!,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 25),
+                      ),
+                    ),
+                    // Text(
+                    //   "See more ->",
+                    //   style: TextStyle(color: Colors.white),
+                    // )
+                  ],
+                )
+              : Center(
+                  child: Text(
+                    child,
+                    style: const TextStyle(color: Colors.white, fontSize: 25),
+                  ),
                 ),
-              ),
-              Center(
-                child: Text(
-                  count,
-                  style: const TextStyle(color: Colors.white, fontSize: 25),
+        ),
+        count != null
+            ? const Positioned(
+                bottom: 0,
+                right: 0,
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    "See more ->",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-              ),
-              // Text(
-              //   "See more ->",
-              //   style: TextStyle(color: Colors.white),
-              // )
-            ],
-          ),
-        ),
-        const Positioned(
-          bottom: 0,
-          right: 0,
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              "See more ->",
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ),
+              )
+            : const SizedBox(),
       ],
     );
   }
