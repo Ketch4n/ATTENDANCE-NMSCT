@@ -227,8 +227,8 @@ class _SignupState extends State<Signup> {
                                       ? DropdownButtonFormField<String>(
                                           value:
                                               _selectedCourseId, // Use the course ID as the value
-                                          decoration: const InputDecoration(
-                                              labelText: 'Course'),
+                                          decoration: Style.textdesign
+                                              .copyWith(labelText: 'Course'),
                                           items: _course
                                               .map((CoursesModel course) {
                                             return DropdownMenuItem<String>(

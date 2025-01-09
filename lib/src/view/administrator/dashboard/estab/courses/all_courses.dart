@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:attendance_nmsct/src/components/duck.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/box_component.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/courses/components/add_course_dialog.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/courses/components/edit_course_dialog.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/courses/functions/get_courses.dart';
 import 'package:attendance_nmsct/src/model/CoursesModel.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +30,10 @@ class _AllCoursesPageState extends State<AllCoursesPage> {
     super.dispose();
   }
 
+  reload() {
+    streamAccomplishemnt(_coursesController);
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width / 2;
@@ -41,7 +47,9 @@ class _AllCoursesPageState extends State<AllCoursesPage> {
             Container(
                 decoration: const BoxDecoration(color: Colors.green),
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    showAddCourseDialog(context, reload);
+                  },
                   icon: const Icon(
                     Icons.add,
                     color: Colors.white,
@@ -76,7 +84,9 @@ class _AllCoursesPageState extends State<AllCoursesPage> {
                                   style: TextStyle(fontSize: 18)),
                               const SizedBox(height: 20),
                               ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    showAddCourseDialog(context, reload);
+                                  },
                                   child: const Text("Add New Course"))
                             ],
                           ),
@@ -89,8 +99,26 @@ class _AllCoursesPageState extends State<AllCoursesPage> {
                           return Center(
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: BoxComponent(
-                                child: course.courses,
+                              child: Stack(
+                                children: [
+                                  BoxComponent(
+                                    child: course.courses,
+                                  ),
+                                  Positioned(
+                                      top: 5,
+                                      right: 10,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          showEditCourseDialog(
+                                              context,
+                                              course.id,
+                                              course.courses,
+                                              reload);
+                                        },
+                                        icon: const Icon(Icons.edit),
+                                        color: Colors.white,
+                                      )),
+                                ],
                               ),
                             ),
                           );
