@@ -48,8 +48,8 @@ class DropdownSettings extends StatelessWidget {
   Future<void> showProfileInfo(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     final uid = prefs.getString('internID');
-    final bday = prefs.getString('internBDAY');
-    final add = prefs.getString('internADDRESS');
+    final idnumber = prefs.getString('internIDNUMBER');
+    final contactnumber = prefs.getString('internCONTACTNUMBER');
     final section = prefs.getString('internSECTION');
     final semester = prefs.getString('internSEMESTER');
     final course = prefs.getString('internCOURSE');
@@ -86,8 +86,8 @@ class DropdownSettings extends StatelessWidget {
                       ),
                       _buildProfileInfoTile(
                           "Name", "${Session.fname} ${Session.lname}"),
-                      _buildProfileInfoTile("Birth Date", bday),
-                      _buildProfileInfoTile("Address", add),
+                      _buildProfileInfoTile("ID #", idnumber),
+                      _buildProfileInfoTile("Contact #", contactnumber),
                       _buildProfileInfoTile("Section", section),
                       _buildProfileInfoTile("Semester", semester),
                       _buildProfileInfoTile("Course", course),

@@ -40,8 +40,8 @@ Future logout(BuildContext context, purpose) async {
               prefs.remove('userLName');
               prefs.remove('userEmail');
               prefs.remove('internID');
-              prefs.remove('internBDAY');
-              prefs.remove('internADDRESS');
+              prefs.remove('internIDNUMBER');
+              prefs.remove('internCONTACTNUMBER');
               prefs.remove('adminEstab');
               prefs.remove('userStatus');
               prefs.remove('internSY');

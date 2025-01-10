@@ -68,16 +68,16 @@ Future<void> login(
 
           if (role == "INTERN") {
             final uid = data['course'];
-            final bday = data['bday'];
-            final address = data['address'];
+            final idnumber = data['id_number'];
+            final contactnumber = data['contact_number'];
             final sy = data['school_year'];
             final semester = data['semester'];
             final section = data['section'];
             final course = data['course'];
 
             prefs.setString('internID', uid);
-            prefs.setString('internBDAY', bday);
-            prefs.setString('internADDRESS', address);
+            prefs.setString('internIDNUMBER', idnumber);
+            prefs.setString('internCONTACTNUMBER', contactnumber);
             prefs.setString('internSY', sy);
             prefs.setString('internSECTION', section);
             prefs.setString('internSEMESTER', semester);
