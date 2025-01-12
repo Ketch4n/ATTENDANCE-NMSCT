@@ -1,5 +1,6 @@
 // ignore_for_file: sort_child_properties_last
 import 'dart:async';
+import 'package:attendance_nmsct/src/components/offline_snackbar.dart';
 import 'package:attendance_nmsct/src/include/navbar.dart';
 import 'package:attendance_nmsct/src/include/profile.dart';
 import 'package:attendance_nmsct/src/view/student/dashboard/index.dart';
@@ -77,7 +78,7 @@ class _StudentHome extends State {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        drawer: Navbar(onMenuItemTap: _onMenuItemTap),
+        // drawer: Navbar(onMenuItemTap: _onMenuItemTap),
         appBar: AppBar(
           title: Text(_currentIndex == 0 ? "Dashboard" : "Profile"),
           centerTitle: true,
@@ -89,8 +90,7 @@ class _StudentHome extends State {
                   child: BottomAppBar(
                     elevation: 0,
                     child: Center(
-                      child: offlineSnackbar(
-                          "You are currently Offline", isoffline),
+                      child: offlineSnackbar(isoffline),
                     ),
                   ),
                 ),

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/src/auth/auth.dart';
 import 'package:attendance_nmsct/src/components/duck.dart';
-import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/Dashboard.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/dashboard/dashboard_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/src/data/firebase/server.dart';
 import 'package:attendance_nmsct/src/model/SchoolYearModel.dart';

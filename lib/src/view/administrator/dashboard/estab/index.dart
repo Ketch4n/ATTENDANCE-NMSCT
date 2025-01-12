@@ -32,7 +32,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
   List<dynamic>? classData;
   List<dynamic>? roomData;
   String uId = "";
-  String uRole = "";
+  int uRole = 0;
 
   @override
   void initState() {
@@ -47,13 +47,13 @@ class _EstabDashboardState extends State<EstabDashboard> {
   Future<void> fetchData() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
-    final userRole = prefs.getString('userRole');
+    final userRole = prefs.getInt('userRole');
     setState(() {
       uId = userId!;
       uRole = userRole!;
     });
     final response = await http.post(
-      Session.role == "Administrator"
+      Session.role == 2
           ? Uri.parse('${Server.host}users/establishment/estab.php')
           : Uri.parse('${Server.host}users/establishment/estab_nmscst.php'),
       body: {
@@ -161,7 +161,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
                       : null,
                   floatingActionButtonLocation:
                       FloatingActionButtonLocation.centerFloat,
-                  body: Session.role == "NMSCST"
+                  body: Session.role == 2
                       ? Wrap(
                           spacing: 0.0, // Adjust spacing as needed
                           runSpacing: 10.0, // Adjust run spacing as needed
@@ -200,7 +200,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
     );
   }
 
-  Future bottomsheet(String role, String adminId) async {
+  Future bottomsheet(int role, String adminId) async {
     showAdaptiveActionSheet(
         context: context,
         title: const Text('Create'),

@@ -7,8 +7,8 @@ import 'package:attendance_nmsct/src/model/UserModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<UserModel> _fetchUserFromApi(String userId, String userRole) async {
-  final Uri uri = userRole == 'INTERN'
+Future<UserModel> _fetchUserFromApi(String userId, int userRole) async {
+  final Uri uri = userRole == 4
       ? Uri.parse('${Server.host}auth/user.php')
       : Uri.parse('${Server.host}users/establishment/user.php');
 
@@ -24,7 +24,7 @@ Future<UserModel> _fetchUserFromApi(String userId, String userRole) async {
 Future<void> fetchUser(StreamController<UserModel> userStreamController) async {
   final prefs = await SharedPreferences.getInstance();
   final userId = prefs.getString('userId');
-  final userRole = prefs.getString('userRole');
+  final userRole = prefs.getInt('userRole');
 
   if (userId == null || userRole == null) {
     throw Exception('User ID or Role not found in shared preferences');

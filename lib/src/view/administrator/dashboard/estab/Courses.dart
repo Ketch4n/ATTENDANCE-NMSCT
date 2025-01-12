@@ -126,8 +126,9 @@ class _CoursesPageState extends State<CoursesPage> {
                               child: Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),
-                                  child: BoxComponent(
+                                  child: IndexCard(
                                     count: course.count,
+                                    icon: Icons.subject,
                                     child: course.courses,
                                   ),
                                 ),

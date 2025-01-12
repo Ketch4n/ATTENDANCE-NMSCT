@@ -101,8 +101,8 @@ class _AllCoursesPageState extends State<AllCoursesPage> {
                               padding: const EdgeInsets.all(10.0),
                               child: Stack(
                                 children: [
-                                  BoxComponent(
-                                    child: course.courses,
+                                  Card(
+                                    child: Text(course.courses),
                                   ),
                                   Positioned(
                                       top: 5,

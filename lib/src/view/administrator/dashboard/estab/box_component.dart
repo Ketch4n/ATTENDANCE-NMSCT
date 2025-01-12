@@ -1,72 +1,70 @@
+import 'package:attendance_nmsct/src/utils/styles/colorpallete.dart';
+import 'package:attendance_nmsct/src/utils/styles/textstyle.dart';
 import 'package:flutter/material.dart';
 
-class BoxComponent extends StatelessWidget {
-  BoxComponent({
+class IndexCard extends StatelessWidget {
+  const IndexCard({
     super.key,
     required this.child,
-    this.count,
+    required this.count,
+    required this.icon,
   });
-  String child;
-  String? count;
+  final String child;
 
-  double screenHeight = 0;
+  final String count;
 
-  double screenWidth = 0;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    screenHeight = MediaQuery.of(context).size.height;
-    screenWidth = MediaQuery.of(context).size.width;
     return Stack(
       children: [
         Container(
           height: 100,
           width: 400,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12), color: Colors.blue[400]),
-          child: count != null
-              ? Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        child,
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        count!,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 25),
-                      ),
-                    ),
-                    // Text(
-                    //   "See more ->",
-                    //   style: TextStyle(color: Colors.white),
-                    // )
-                  ],
-                )
-              : Center(
-                  child: Text(
-                    child,
-                    style: const TextStyle(color: Colors.white, fontSize: 25),
-                  ),
+            borderRadius: BorderRadius.circular(12),
+            color: UtilsColorPallete.blue,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  child,
+                  style: const TextStyle(fontSize: 20),
                 ),
+              ),
+              Center(
+                child: Text(
+                  count,
+                  style: UtilsTextStyle.h1,
+                ),
+              ),
+            ],
+          ),
         ),
-        count != null
-            ? const Positioned(
-                bottom: 0,
-                right: 0,
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    "See more ->",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              )
-            : const SizedBox(),
+        const Positioned(
+          bottom: 0,
+          right: 0,
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              "See more ->",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(icon),
+          ),
+        ),
       ],
     );
   }

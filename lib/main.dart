@@ -1,8 +1,11 @@
 import 'package:attendance_nmsct/src/auth/auth.dart';
+import 'package:attendance_nmsct/src/components/connectivity.dart';
 import 'package:attendance_nmsct/src/data/firebase/server.dart';
+import 'package:attendance_nmsct/src/data/provider/page_index_value.dart';
 import 'package:attendance_nmsct/src/data/provider/settings.dart';
 import 'package:attendance_nmsct/src/include/style.dart';
 import 'package:attendance_nmsct/src/data/firebase/initialize.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/dashboard/dashboard_provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -20,6 +23,9 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
+        ChangeNotifierProvider(create: (_) => PageIndexProvider()),
+        ChangeNotifierProvider(create: (_) => DashboardProvider()),
         ChangeNotifierProvider<UserRole>(
           create: (_) => UserRole(),
         ),

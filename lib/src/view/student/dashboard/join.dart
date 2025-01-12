@@ -13,7 +13,7 @@ class Join extends StatefulWidget {
     required this.purpose,
     required this.refreshCallback,
   });
-  final String role;
+  final int role;
   final String purpose;
 
   final VoidCallback refreshCallback;

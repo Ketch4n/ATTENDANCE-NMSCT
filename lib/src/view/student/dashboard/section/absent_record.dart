@@ -22,7 +22,7 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
   late final TextEditingController _searchController;
   Future<void> streamAccomplishemnt(absentController) async {
     try {
-      final purpose = Session.role == "Intern" ? "Intern" : "Estab";
+      final purpose = Session.role == 3 ? "Intern" : "Estab";
       final response = await http.post(
         Uri.parse('${Server.host}users/student/view_absent.php'),
         body: {
@@ -181,11 +181,11 @@ class _AbsentRecordTabState extends State<AbsentRecordTab> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      Session.role == "Intern"
+                                                      Session.role == 3
                                                           ? const SizedBox()
                                                           : Text(
                                                               "From: ${absent.lname!}"),
-                                                      Session.role == "Intern"
+                                                      Session.role == 3
                                                           ? const SizedBox()
                                                           : Text(absent.email!),
                                                       Text(

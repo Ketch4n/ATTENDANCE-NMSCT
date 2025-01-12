@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 
 class UserRole extends ChangeNotifier {
-  String role = kIsWeb ? "NMSCST" : "Intern";
-  String get value => role;
+  int role = 1;
+  int get value => role;
 
-  set value(String newValue) {
+  set value(int newValue) {
     role = newValue;
 
     notifyListeners();

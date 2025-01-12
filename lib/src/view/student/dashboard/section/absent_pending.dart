@@ -25,7 +25,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
   Future<void> streamAccomplishemnt(absentController) async {
     const String studentAbsent = "users/student/view_absent.php";
     const String estabAbsent = "users/establishment/view_all_absent.php";
-    final query = Session.role == "INTERN" ? studentAbsent : estabAbsent;
+    final query = Session.role == 3 ? studentAbsent : estabAbsent;
     try {
       final response = await http.post(
         Uri.parse('${Server.host}$query'),
@@ -222,7 +222,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Session.role == "Intern"
+      floatingActionButton: Session.role == 3
           ? FloatingActionButton(
               onPressed: () {
                 _showDatePicker();
@@ -275,7 +275,7 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
                             ),
                             endChild: GestureDetector(
                               onLongPress: () {
-                                Session.role == "INTERN"
+                                Session.role == 3
                                     ? _showDeleteConfirmationDialog(absent)
                                     : action(absent);
                                 print(absent);
@@ -307,10 +307,10 @@ class _AbsentPendingTabState extends State<AbsentPendingTab> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(Session.role == "Intern"
+                                          Text(Session.role == 3
                                               ? ""
                                               : "From : ${absent.lname!}"),
-                                          Text(Session.role == "Intern"
+                                          Text(Session.role == 3
                                               ? ""
                                               : absent.email!),
                                           Text(

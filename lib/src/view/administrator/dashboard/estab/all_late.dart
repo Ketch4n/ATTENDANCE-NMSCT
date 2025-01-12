@@ -106,7 +106,7 @@ class _AllStudentsState extends State<AllLateStudent> {
   Widget build(BuildContext context) {
     final screenwidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: Session.role == "SUPER ADMIN"
+      appBar: Session.role == 1
           ? AppBar(
               title: const Text('All Students List'),
               centerTitle: true,

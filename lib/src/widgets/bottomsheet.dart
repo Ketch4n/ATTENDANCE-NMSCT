@@ -3,7 +3,7 @@ import 'package:attendance_nmsct/src/view/student/dashboard/join.dart';
 import 'package:flutter/material.dart';
 import 'package:adaptive_action_sheet/adaptive_action_sheet.dart';
 
-Future bottomsheetJoin(BuildContext context, String role,
+Future bottomsheetJoin(BuildContext context, int role,
     {required Future<void> Function() refreshCallback}) async {
   showAdaptiveActionSheet(
       context: context,

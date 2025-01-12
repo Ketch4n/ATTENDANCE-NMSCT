@@ -172,7 +172,7 @@ class _EstabDTRState extends State<EstabDTR> {
                       ),
                     )
                   : const SizedBox(),
-              Session.role == "Administrator"
+              Session.role == 2
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextField(
@@ -199,7 +199,7 @@ class _EstabDTRState extends State<EstabDTR> {
                           return const Center(
                               child: Text("NO DATA THIS MONTH"));
                         } else {
-                          return user.role == "NMSCST"
+                          return user.role == 2
                               ? SingleChildScrollView(
                                   child: Column(
                                     children: [

@@ -125,48 +125,6 @@ class DropdownSettings extends StatelessWidget {
                           //     style: TextStyle(color: Colors.blue),
                           //   ),
                           // ),
-                          Session.role == 'Intern'
-                              ? ListTile(
-                                  leadingAndTrailingTextStyle:
-                                      const TextStyle(fontSize: 20),
-                                  leading: const Text(
-                                    "ID :",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  trailing: Text(
-                                    uid!,
-                                    style: const TextStyle(color: Colors.blue),
-                                  ),
-                                )
-                              : const SizedBox(),
-                          Session.role == 'Intern'
-                              ? ListTile(
-                                  leadingAndTrailingTextStyle:
-                                      const TextStyle(fontSize: 20),
-                                  leading: const Text(
-                                    "Birth Date :",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  trailing: Text(
-                                    bday!,
-                                    style: const TextStyle(color: Colors.blue),
-                                  ),
-                                )
-                              : const SizedBox(),
-                          Session.role == 'Intern'
-                              ? ListTile(
-                                  leadingAndTrailingTextStyle:
-                                      const TextStyle(fontSize: 20),
-                                  leading: const Text(
-                                    "Address :",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  trailing: Text(
-                                    add!,
-                                    style: const TextStyle(color: Colors.blue),
-                                  ),
-                                )
-                              : const SizedBox()
                         ],
                       ),
                     ),

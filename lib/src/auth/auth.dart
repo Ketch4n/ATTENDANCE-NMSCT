@@ -14,7 +14,7 @@ class Auth extends StatefulWidget {
 
 class _AuthState extends State<Auth> {
   bool showLoginScreen = true;
-  String role = "";
+  int? role;
 
   @override
   void initState() {
@@ -26,7 +26,7 @@ class _AuthState extends State<Auth> {
   Future<void> checkUserSession() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
-    final userRole = prefs.getString('userRole');
+    final userRole = prefs.getInt('userRole');
     final userFName = prefs.getString('userFName');
     final userLName = prefs.getString('userLName');
     final userEmail = prefs.getString('userEmail');
@@ -34,7 +34,7 @@ class _AuthState extends State<Auth> {
     // If user session exists, navigate to Home; otherwise, show Login
     setState(() {
       showLoginScreen = userId == null;
-      role = userRole!;
+      // role = userRole!;
       Session.id = userId!;
       Session.role = userRole;
       Session.fname = userFName!;
@@ -46,10 +46,7 @@ class _AuthState extends State<Auth> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: showLoginScreen
-            ? const Login()
-            : role == 'Intern'
-                ? const StudentHome()
-                : const AdministratorHome());
+      body: showLoginScreen ? const Login() : const AdministratorHome(),
+    );
   }
 }

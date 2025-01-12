@@ -3,7 +3,7 @@ class UserModel {
   final String email;
   final String fname;
   final String lname;
-  final String role;
+  final int role;
   // final String section_id;
   // final String section_name;
   // final String admin_id;

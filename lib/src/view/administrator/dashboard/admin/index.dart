@@ -31,7 +31,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   List<dynamic>? classData;
   List<dynamic>? roomData;
   String uId = "";
-  String uRole = "";
+  int uRole = 0;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Future<void> fetchData() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
-    final userRole = prefs.getString('userRole');
+    final userRole = prefs.getInt('userRole');
     setState(() {
       uId = userId!;
       uRole = userRole!;
@@ -156,7 +156,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   Future bottomsheet(
     BuildContext context,
-    String role,
+    int role,
     String adminId,
   ) async {
     showAdaptiveActionSheet(
