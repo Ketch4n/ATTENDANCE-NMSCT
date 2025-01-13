@@ -22,7 +22,6 @@ class _AuthState extends State<Auth> {
     checkUserSession();
   }
 
-  // Check if a user session exists in SharedPreferences
   Future<void> checkUserSession() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
@@ -31,15 +30,19 @@ class _AuthState extends State<Auth> {
     final userLName = prefs.getString('userLName');
     final userEmail = prefs.getString('userEmail');
 
-    // If user session exists, navigate to Home; otherwise, show Login
+    // Ensure the widget is still mounted before calling setState
+    if (!mounted) return;
+
     setState(() {
       showLoginScreen = userId == null;
-      // role = userRole!;
-      Session.id = userId!;
-      Session.role = userRole;
-      Session.fname = userFName!;
-      Session.lname = userLName!;
-      Session.email = userEmail!;
+
+      if (userId != null && userFName != null && userLName != null) {
+        Session.id = userId;
+        Session.role = userRole; // userRole can remain nullable if needed
+        Session.fname = userFName;
+        Session.lname = userLName;
+        Session.email = userEmail!; // Can remain nullable if it's optional
+      }
     });
   }
 
