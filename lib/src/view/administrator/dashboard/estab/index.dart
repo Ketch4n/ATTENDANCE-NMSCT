@@ -32,7 +32,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
   List<dynamic>? classData;
   List<dynamic>? roomData;
   String uId = "";
-  int uRole = 0;
+  String? uRole;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class _EstabDashboardState extends State<EstabDashboard> {
   Future<void> fetchData() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
-    final userRole = prefs.getInt('userRole');
+    final userRole = prefs.getString('userRole');
     setState(() {
       uId = userId!;
       uRole = userRole!;
@@ -122,12 +122,6 @@ class _EstabDashboardState extends State<EstabDashboard> {
             // final user = snapshot.data!;
             if (sect2 == 'null' || sect2.isEmpty) {
               return Scaffold(
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () async {
-                    bottomsheet(uRole, uId);
-                  },
-                  child: const Icon(Icons.add),
-                ),
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerFloat,
                 body: Column(
@@ -151,14 +145,6 @@ class _EstabDashboardState extends State<EstabDashboard> {
               // final EstabModel sec2 = sect2[0];
 
               return Scaffold(
-                  floatingActionButton: sect2.isEmpty
-                      ? FloatingActionButton(
-                          onPressed: () async {
-                            bottomsheet(uRole, uId);
-                          },
-                          child: const Icon(Icons.add),
-                        )
-                      : null,
                   floatingActionButtonLocation:
                       FloatingActionButtonLocation.centerFloat,
                   body: Session.role == 2
@@ -198,32 +184,5 @@ class _EstabDashboardState extends State<EstabDashboard> {
         },
       ),
     );
-  }
-
-  Future bottomsheet(int role, String adminId) async {
-    showAdaptiveActionSheet(
-        context: context,
-        title: const Text('Create'),
-        androidBorderRadius: 20,
-        actions: <BottomSheetAction>[
-          BottomSheetAction(
-              title: Text(
-                uRole == "Admin" ? 'Section' : 'Establishment',
-                style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                    fontFamily: "MontserratBold"),
-              ),
-              onPressed: (context) {
-                String purpose = uRole == "Admin" ? 'Section' : 'Establishment';
-                Navigator.of(context).pop(false);
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => CreateClassRoom(
-                        role: role,
-                        // admin_id: adminId,
-                        purpose: purpose,
-                        refreshCallback: _refreshData)));
-              }),
-        ]);
   }
 }

@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> saveUserDataToPreferences(Map<String, dynamic> data) async {
   final prefs = await SharedPreferences.getInstance();
   prefs.setString('userId', data['id']);
-  prefs.setInt('userRole', data['role']);
+  prefs.setString('userRole', data['role']);
   prefs.setString('userFName', data['fname']);
   prefs.setString('userLName', data['lname']);
   prefs.setString('userEmail', data['email']);

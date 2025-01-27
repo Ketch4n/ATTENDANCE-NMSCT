@@ -31,7 +31,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   List<dynamic>? classData;
   List<dynamic>? roomData;
   String uId = "";
-  int uRole = 0;
+  String? uRole;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Future<void> fetchData() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
-    final userRole = prefs.getInt('userRole');
+    final userRole = prefs.getString('userRole');
     setState(() {
       uId = userId!;
       uRole = userRole!;
@@ -94,12 +94,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
             // final user = snapshot.data!;
             if (sect2 == 'null' || sect2.isEmpty) {
               return Scaffold(
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () async {
-                    bottomsheet(context, uRole, uId);
-                  },
-                  child: const Icon(Icons.add),
-                ),
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerFloat,
                 body: ListView(
@@ -123,12 +117,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
               final SectionModel sec2 = sect2[0];
 
               return Scaffold(
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () async {
-                    bottomsheet(context, uRole, uId);
-                  },
-                  child: const Icon(Icons.add),
-                ),
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerFloat,
                 body: Wrap(
@@ -152,36 +140,5 @@ class _AdminDashboardState extends State<AdminDashboard> {
         },
       ),
     );
-  }
-
-  Future bottomsheet(
-    BuildContext context,
-    int role,
-    String adminId,
-  ) async {
-    showAdaptiveActionSheet(
-        context: context,
-        title: const Text('Create'),
-        androidBorderRadius: 20,
-        actions: <BottomSheetAction>[
-          BottomSheetAction(
-              title: Text(
-                role == "Admin" ? 'Section' : 'Establishment',
-                style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                    fontFamily: "MontserratBold"),
-              ),
-              onPressed: (context) {
-                String purpose = role == "Admin" ? 'Section' : 'Establishment';
-                Navigator.of(context).pop(false);
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => CreateClassRoom(
-                        role: role,
-                        // admin_id: adminId,
-                        purpose: purpose,
-                        refreshCallback: _refreshData)));
-              }),
-        ]);
   }
 }

@@ -50,7 +50,7 @@ class _IndexSideBarState extends State<IndexSideBar> {
             ),
             ListTile(
               leading: Text(
-                userRoleValue(Session.role!),
+                "${Session.role}",
                 style: const TextStyle(fontSize: 20),
               ),
               trailing: const Icon(

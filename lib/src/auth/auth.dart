@@ -25,7 +25,7 @@ class _AuthState extends State<Auth> {
   Future<void> checkUserSession() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
-    final userRole = prefs.getInt('userRole');
+    final userRole = prefs.getString('userRole');
     final userFName = prefs.getString('userFName');
     final userLName = prefs.getString('userLName');
     final userEmail = prefs.getString('userEmail');
