@@ -12,6 +12,7 @@ import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_esta
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_outside.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/announcement.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/dashboard/dashboard_provider.dart';
+import 'package:attendance_nmsct/src/view/program/program_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -69,23 +70,32 @@ class _IndexSideBarState extends State<IndexSideBar> {
                 widget.function(0);
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Profile'),
-              onTap: () {
-                widget.function(1);
-              },
-            ),
             const Divider(
               color: Colors.white,
               thickness: 1,
             ),
             ListTile(
-              leading: const Icon(Icons.people),
-              title: const Text('Admin Accounts'),
+              leading: const Icon(Icons.calendar_month),
+              title: const Text('School Year'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.book),
+              title: const Text('Program / Course'),
               onTap: () {
-                widget.function(2);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ProgramCoursePage()));
               },
+            ),
+            ListTile(
+              leading: const Icon(Icons.security),
+              title: const Text('Admin Accounts'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.person_pin_sharp),
+              title: const Text('Faculty Accounts'),
+              onTap: () {},
             ),
             ListTile(
               leading: const Icon(Icons.location_city),
@@ -98,6 +108,7 @@ class _IndexSideBarState extends State<IndexSideBar> {
             ListTile(
               leading: const Icon(Icons.school),
               title: const Text('Students'),
+              trailing: IconButton(onPressed: () {}, icon: Icon(Icons.add)),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const CoursesPage(
@@ -176,6 +187,9 @@ class _IndexSideBarState extends State<IndexSideBar> {
                 await logout(context, purpose);
               },
             ),
+            SizedBox(
+              height: 50,
+            )
           ],
         ),
       );
