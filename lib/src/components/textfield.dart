@@ -40,7 +40,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 LengthLimitingTextInputFormatter(4),
                 FilteringTextInputFormatter.digitsOnly,
               ]
-            : null,
+            : widget.label == "School Year"
+                ? [
+                    LengthLimitingTextInputFormatter(9),
+                  ]
+                : null,
         readOnly: widget.readOnly,
         obscureText: widget.obscure ?? false,
         controller: widget.controller,

@@ -7,12 +7,14 @@ import 'package:attendance_nmsct/src/data/index/user_role_value.dart';
 import 'package:attendance_nmsct/src/data/provider/session.dart';
 import 'package:attendance_nmsct/src/utils/styles/colorpallete.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/Courses.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/SchoolYear.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_absent.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_establishment.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_outside.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/announcement.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/dashboard/dashboard_provider.dart';
 import 'package:attendance_nmsct/src/view/program/program_page.dart';
+import 'package:attendance_nmsct/src/view/school_year/school_year_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -77,15 +79,16 @@ class _IndexSideBarState extends State<IndexSideBar> {
             ListTile(
               leading: const Icon(Icons.calendar_month),
               title: const Text('School Year'),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const SchoolYearPage()));
+              },
             ),
             ListTile(
               leading: const Icon(Icons.book),
               title: const Text('Program / Course'),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const ProgramCoursePage()));
-              },
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const ProgramCoursePage())),
             ),
             ListTile(
               leading: const Icon(Icons.security),

@@ -19,6 +19,8 @@ class InstanceTextEditing {
   TextEditingController abbr = TextEditingController();
   TextEditingController course = TextEditingController();
 
+  TextEditingController sy = TextEditingController();
+
   // Dispose method to clean up resources
   void dispose() {
     email.dispose();
@@ -29,6 +31,8 @@ class InstanceTextEditing {
 
     abbr.dispose();
     course.dispose();
+
+    sy.dispose();
   }
 
   static void clear() {
@@ -40,5 +44,7 @@ class InstanceTextEditing {
 
     controller.abbr.clear();
     controller.course.clear();
+
+    controller.sy.clear();
   }
 }
