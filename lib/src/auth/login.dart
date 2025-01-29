@@ -78,7 +78,7 @@ class _LoginState extends State<Login> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("OJT COORDINATOR / INSTRUCTOR",
+                        child: Text("OJT COORDINATOR / INSTRUCTOR / FACULTY",
                             style: Style.text),
                       ),
                       Container(
