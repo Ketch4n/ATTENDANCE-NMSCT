@@ -6,7 +6,8 @@ import 'package:attendance_nmsct/src/data/instance/controller_instance.dart';
 import 'package:attendance_nmsct/src/view/program/functions/delete.dart';
 import 'package:attendance_nmsct/src/view/program/functions/fetch_all.dart';
 import 'package:attendance_nmsct/src/view/program/model/program_model.dart';
-import 'package:attendance_nmsct/src/view/program/modules/add_new_button.dart';
+import 'package:attendance_nmsct/src/components/dialog/add_new_button.dart';
+import 'package:attendance_nmsct/src/view/program/program_add.dart';
 import 'package:attendance_nmsct/src/view/program/program_edit.dart';
 import 'package:flutter/material.dart';
 
@@ -55,7 +56,8 @@ class _ProgramCoursePageState extends State<ProgramCoursePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        addNewButton(context, _fetchprograms),
+                        addNewButton(
+                            context, ProgramPageAdd(reload: _fetchprograms)),
                         Expanded(
                           child: StreamBuilder<List<ProgramModel>>(
                             stream: _programStream.stream,

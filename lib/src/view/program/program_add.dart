@@ -2,8 +2,8 @@ import 'package:attendance_nmsct/src/components/textfield.dart';
 import 'package:attendance_nmsct/src/data/instance/controller_instance.dart';
 import 'package:attendance_nmsct/src/utils/styles/colorpallete.dart';
 import 'package:attendance_nmsct/src/view/program/functions/add_program.dart';
-import 'package:attendance_nmsct/src/view/program/modules/button_footer.dart';
-import 'package:attendance_nmsct/src/view/program/modules/title_header.dart';
+import 'package:attendance_nmsct/src/components/dialog/button_footer.dart';
+import 'package:attendance_nmsct/src/components/dialog/title_header.dart';
 import 'package:flutter/material.dart';
 
 class ProgramPageAdd extends StatefulWidget {
@@ -23,7 +23,7 @@ class _ProgramPageAddState extends State<ProgramPageAdd> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.min,
         children: [
-          programTitleHeader("Add"),
+          componentTitleHeader("Add New Program / Course"),
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: SizedBox(
@@ -58,7 +58,7 @@ class _ProgramPageAddState extends State<ProgramPageAdd> {
               ),
             ),
           ),
-          programButtonFooter(context, () {
+          componentButtonFooter(context, () {
             addProgramCourse(
               context,
               controller.abbr.text,
