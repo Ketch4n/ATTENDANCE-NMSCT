@@ -171,7 +171,7 @@ class _EstabRoomState extends State<EstabRoom> {
                 onPressed: () {
                   showAddDialog();
                 },
-                child: const Icon(Icons.add)),
+                child: Text("Add Interns")),
             StreamBuilder<List<EstabRoomModel>>(
                 stream: _internsStreamController.stream,
                 builder: (context, snapshot) {

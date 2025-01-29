@@ -38,9 +38,12 @@ class _AllStudentsState extends State<AllLateStudent> {
     print("estab : $estabId");
     print("role : ${Session.role}");
 
-    final response = await http.post(
-        Uri.parse('${Server.host}users/student/all_late.php'),
-        body: {"year": widget.year});
+    final response = await http
+        .post(Uri.parse('${Server.host}users/student/all_late.php'), body: {
+      "year": widget.year,
+      "role": Session.role,
+      "email": Session.email,
+    });
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
@@ -65,6 +68,23 @@ class _AllStudentsState extends State<AllLateStudent> {
     });
   }
 
+  String convertTo12HourFormat(String time) {
+    final parts = time.split(':');
+    final hour = int.parse(parts[0]);
+    final minute = parts[1];
+    final period = hour >= 12 ? 'PM' : 'AM';
+    final hour12 = hour % 12 == 0 ? 12 : hour % 12;
+    return '$hour12:$minute $period';
+  }
+
+  bool isLate(String time) {
+    final parts = time.split(':');
+    final hour = int.parse(parts[0]);
+    final minute = int.parse(parts[1]);
+    // Assuming 9:00 AM is the late threshold
+    return hour > 9 || (hour == 9 && minute > 0);
+  }
+
   Future<void> exportToPDF() async {
     final pdf = pw.Document();
 
@@ -86,10 +106,10 @@ class _AllStudentsState extends State<AllLateStudent> {
               return [
                 intern.lname,
                 intern.email,
-                intern.time_in_am,
-                intern.time_out_am,
-                intern.time_in_pm,
-                intern.time_out_pm,
+                convertTo12HourFormat(intern.time_in_am),
+                convertTo12HourFormat(intern.time_out_am),
+                convertTo12HourFormat(intern.time_in_pm),
+                convertTo12HourFormat(intern.time_out_pm),
                 intern.date,
               ];
             }).toList(),
@@ -203,29 +223,39 @@ class _AllStudentsState extends State<AllLateStudent> {
                                   ),
                                   DataCell(
                                     Text(
-                                      classmate.time_in_am,
-                                      style: const TextStyle(
+                                      convertTo12HourFormat(
+                                          classmate.time_in_am),
+                                      style: TextStyle(
                                         fontSize: 12,
+                                        color: isLate(classmate.time_in_am)
+                                            ? Colors.red
+                                            : Colors.black,
                                       ),
                                     ),
                                   ),
                                   DataCell(
                                     Text(
-                                      classmate.time_out_am,
+                                      convertTo12HourFormat(
+                                          classmate.time_out_am),
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ),
                                   DataCell(
                                     Text(
-                                      classmate.time_in_pm,
-                                      style: const TextStyle(
+                                      convertTo12HourFormat(
+                                          classmate.time_in_pm),
+                                      style: TextStyle(
                                         fontSize: 12,
+                                        color: isLate(classmate.time_in_pm)
+                                            ? Colors.red
+                                            : Colors.black,
                                       ),
                                     ),
                                   ),
                                   DataCell(
                                     Text(
-                                      classmate.time_out_pm,
+                                      convertTo12HourFormat(
+                                          classmate.time_out_pm),
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ),

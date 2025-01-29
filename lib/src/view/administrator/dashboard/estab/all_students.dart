@@ -112,7 +112,7 @@ class _AllStudentsState extends State<AllStudents> {
               'ID #',
               'Contact #',
             ],
-            data: interns.map((student) {
+            data: filteredInterns.map((student) {
               return [
                 student.lname,
                 student.fname,
@@ -136,23 +136,34 @@ class _AllStudentsState extends State<AllStudents> {
     final screenwidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: Session.role == 1
-          ? AppBar(
-              title: const Text('All Students List'),
-              actions: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) => Auth()));
-                    },
-                    icon: Icon(Icons.home))
-              ],
-              centerTitle: true,
-            )
-          : null,
+      appBar: AppBar(
+        title: const Text('All Students List'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => Auth()));
+              },
+              icon: Icon(Icons.home))
+        ],
+        centerTitle: true,
+      ),
       body: Center(
         child: Column(
           children: [
+            Container(
+              constraints: BoxConstraints(maxWidth: screenwidth / 3),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    labelText: 'Search',
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              ),
+            ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -169,20 +180,22 @@ class _AllStudentsState extends State<AllStudents> {
                   ),
                 ),
                 const SizedBox(width: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.blue,
-                    backgroundColor: Colors.white,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => Signup(
-                              purpose: 'INTERN',
-                              reload: fetchInterns,
-                            )));
-                  },
-                  child: const Icon(Icons.add),
-                ),
+                Session.role == "FACULTY"
+                    ? SizedBox()
+                    : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.blue,
+                          backgroundColor: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Signup(
+                                    purpose: 'INTERN',
+                                    reload: fetchInterns,
+                                  )));
+                        },
+                        child: const Icon(Icons.add),
+                      ),
               ],
             ),
             const SizedBox(height: 20),
@@ -227,7 +240,10 @@ class _AllStudentsState extends State<AllStudents> {
                           ],
                         ),
                       ),
-                      const DataColumn(label: Text('Option')),
+                      DataColumn(
+                          label: Session.role == "FACULTY"
+                              ? SizedBox()
+                              : Text('Option')),
                     ],
                     rows: filteredInterns
                         .map(
@@ -380,15 +396,17 @@ class _AllStudentsState extends State<AllStudents> {
                                 ),
                               ),
                               DataCell(
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    const status = "Archived";
-                                    await confirm(
-                                        context, classmate.id, status);
-                                    setState(() {});
-                                  },
-                                  child: const Icon(Icons.edit),
-                                ),
+                                Session.role == "FACULTY"
+                                    ? SizedBox()
+                                    : ElevatedButton(
+                                        onPressed: () async {
+                                          const status = "Archived";
+                                          await confirm(
+                                              context, classmate.id, status);
+                                          setState(() {});
+                                        },
+                                        child: const Icon(Icons.edit),
+                                      ),
                               ),
                             ],
                           ),

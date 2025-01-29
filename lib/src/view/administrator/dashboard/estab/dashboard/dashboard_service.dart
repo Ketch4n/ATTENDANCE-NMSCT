@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:attendance_nmsct/src/data/provider/session.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/src/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/src/data/firebase/server.dart';
@@ -25,7 +26,7 @@ class DashboardService {
     try {
       final response = await http.post(
         Uri.parse('${Server.host}users/establishment/count.php'),
-        body: {"years": year},
+        body: {"years": year, "email": Session.email, "role": Session.role},
       );
 
       if (response.statusCode == 200) {
@@ -42,7 +43,7 @@ class DashboardService {
     try {
       final response = await http.post(
         Uri.parse('${Server.host}users/student/outside.php'),
-        body: {"year": year},
+        body: {"year": year, "email": Session.email, "role": Session.role},
       );
 
       if (response.statusCode == 200) {

@@ -43,6 +43,8 @@ class _AllStudentsState extends State<AllAbsentStudent> {
     final response = await http
         .post(Uri.parse('${Server.host}users/student/all_absent.php'), body: {
       "year": widget.year,
+      "role": Session.role,
+      "email": Session.email,
     });
 
     if (response.statusCode == 200) {

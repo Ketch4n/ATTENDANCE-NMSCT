@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:attendance_nmsct/src/controller/Delete.dart';
 import 'package:attendance_nmsct/src/components/duck.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:loader_skeleton/loader_skeleton.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:timeline_tile/timeline_tile.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AdminViewAccomplishment extends StatefulWidget {
   const AdminViewAccomplishment({
@@ -30,7 +32,7 @@ class _AdminViewAccomplishmentState extends State<AdminViewAccomplishment> {
       StreamController<List<AccomplishmentModel>>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-
+  bool _loading = false;
   String _month = DateFormat('MMMM').format(DateTime.now());
   String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
   Future<void> _getTextReferences() async {
@@ -96,6 +98,62 @@ class _AdminViewAccomplishmentState extends State<AdminViewAccomplishment> {
       } catch (e) {
         print('Error deleting file: $e');
       }
+    }
+  }
+
+  Future<void> documentero(AccomplishmentModel data) async {
+    setState(() {
+      _loading = true; // Show loading screen
+    });
+    try {
+      final response = await http.post(
+        Uri.parse('https://app.documentero.com/api'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          "document": Server.id,
+          "apiKey": Server.api,
+          "format": "docx",
+          "data": {
+            "hte": data.hte_name,
+            "week": data.week,
+            "area": data.assigned_area,
+            "sv": data.supervisor,
+            "description": data.comment
+          }
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+
+        final downloadLink = responseData['data'];
+        if (downloadLink != null) {
+          print('Download link: $downloadLink');
+          if (await canLaunch(downloadLink)) {
+            await launch(downloadLink);
+          } else {
+            throw 'Could not launch $downloadLink';
+          }
+        } else {
+          print('No download link found in the response.');
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Expired")));
+        }
+      } else {
+        // Handle HTTP error
+        print('Failed to load data. HTTP status code: ${response.statusCode}');
+        // You might want to display an error message to the user
+      }
+    } catch (e) {
+      // Handle other exceptions
+      print('Error: $e');
+      // You might want to display an error message to the user
+    } finally {
+      setState(() {
+        _loading = false; // Hide loading screen
+      });
     }
   }
 
@@ -228,6 +286,12 @@ class _AdminViewAccomplishmentState extends State<AdminViewAccomplishment> {
                                               title: Text(record.week),
                                               subtitle: Text(record.comment
                                                   .replaceAll('<br />', '')),
+                                              trailing: IconButton(
+                                                  icon: Icon(
+                                                      Icons.document_scanner),
+                                                  onPressed: () {
+                                                    documentero(record);
+                                                  }),
                                             )),
                                       ),
                                     ),

@@ -160,100 +160,104 @@ class _AllEstablishmentState extends State<AllEstablishment> {
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: DataTable(
-                      columns: const [
-                        DataColumn(
-                          label: SizedBox(
-                            width: 200,
-                            child: Text(
-                              'Establishment Name',
-                              overflow: TextOverflow.ellipsis,
+                    scrollDirection: Axis.vertical,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: DataTable(
+                        columns: const [
+                          DataColumn(
+                            label: SizedBox(
+                              width: 200,
+                              child: Text(
+                                'Establishment Name',
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
-                        ),
-                        DataColumn(
-                          label: SizedBox(
-                            width: 150,
-                            child: Text(
-                              'Coordinates',
-                              overflow: TextOverflow.ellipsis,
+                          DataColumn(
+                            label: SizedBox(
+                              width: 150,
+                              child: Text(
+                                'Coordinates',
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
-                        ),
-                        DataColumn(
-                          label: SizedBox(
-                            width: 100,
-                            child: Text(
-                              'Hours Required',
-                              overflow: TextOverflow.ellipsis,
+                          DataColumn(
+                            label: SizedBox(
+                              width: 100,
+                              child: Text(
+                                'Hours Required',
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                      rows: interns
-                          .map(
-                            (classmate) => DataRow(
-                              cells: [
-                                DataCell(
-                                  GestureDetector(
-                                    onTap: () {
-                                      String parseID = classmate.id.toString();
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) => EstabRoom(
-                                            ids: parseID,
+                        ],
+                        rows: interns
+                            .map(
+                              (classmate) => DataRow(
+                                cells: [
+                                  DataCell(
+                                    GestureDetector(
+                                      onTap: () {
+                                        String parseID =
+                                            classmate.id.toString();
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => EstabRoom(
+                                              ids: parseID,
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                      print("ID ${classmate.id}");
-                                    },
-                                    child: Row(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          child: Image.asset(
-                                            "assets/images/estab.png",
-                                            height: 30,
-                                            width: 30,
-                                            fit: BoxFit.cover,
+                                        );
+                                        print("ID ${classmate.id}");
+                                      },
+                                      child: Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            child: Image.asset(
+                                              "assets/images/estab.png",
+                                              height: 30,
+                                              width: 30,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Flexible(
-                                          child: Text(
-                                            classmate.establishment_name,
-                                            style:
-                                                const TextStyle(fontSize: 18),
-                                            overflow: TextOverflow.ellipsis,
+                                          const SizedBox(width: 10),
+                                          Flexible(
+                                            child: Text(
+                                              classmate.establishment_name,
+                                              style:
+                                                  const TextStyle(fontSize: 18),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                DataCell(
-                                  SizedBox(
-                                    width: 200,
-                                    child: Text(
-                                      classmate.location,
+                                  DataCell(
+                                    SizedBox(
+                                      width: 200,
+                                      child: Text(
+                                        classmate.location,
+                                        style: const TextStyle(fontSize: 12),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Text(
+                                      classmate.hours_required,
                                       style: const TextStyle(fontSize: 12),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                ),
-                                DataCell(
-                                  Text(
-                                    classmate.hours_required,
-                                    style: const TextStyle(fontSize: 12),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                          .toList(),
+                                ],
+                              ),
+                            )
+                            .toList(),
+                      ),
                     ),
                   ),
                 ),

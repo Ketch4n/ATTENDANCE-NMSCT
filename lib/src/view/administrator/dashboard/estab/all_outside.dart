@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/src/data/firebase/server.dart';
+import 'package:attendance_nmsct/src/data/provider/session.dart';
 import 'package:attendance_nmsct/src/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/src/view/student/calculate_distance.dart';
 import 'package:attendance_nmsct/src/view/student/location_label.dart';
@@ -81,6 +82,8 @@ class _AllOutsideRangeState extends State<AllOutsideRange> {
         Uri.parse('${Server.host}users/establishment/all_outside.php'),
         body: {
           'ids': jsonEncode(widget.ids),
+          'role': Session.role,
+          'email': Session.email,
         },
       );
       print("TESTESTS${jsonEncode(widget.ids)}");

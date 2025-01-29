@@ -1,4 +1,5 @@
 import 'package:attendance_nmsct/src/model/EstabTodayModel.dart';
+import 'package:attendance_nmsct/src/model/TodayModel.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -16,8 +17,8 @@ pw.Widget centeredCell(String text, {pw.TextStyle? style}) {
   );
 }
 
-Future<void> generatePdf(
-    List<EstabTodayModel> dtrData, String latestGrandTotalHours) async {
+Future<void> generatePdf(List<EstabTodayModel> dtrData, List<TodayModel> data,
+    String latestGrandTotalHours) async {
   if (dtrData.isEmpty) return;
   // INITIALIZE PDF
   final pdf = pw.Document();
@@ -39,7 +40,8 @@ Future<void> generatePdf(
             pw.SizedBox(height: 10),
             pw.Padding(
               padding: const pw.EdgeInsets.all(15),
-              child: pw.ListView(
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   pw.Text(
                     dtrData[0].lname!,
@@ -52,113 +54,129 @@ Future<void> generatePdf(
                 ],
               ),
             ),
-            pw.ListView(
-              children: [
-                pw.Text(
-                  monthFormatted,
-                  style: const pw.TextStyle(
-                    fontSize: 12,
-                    decoration: pw.TextDecoration.underline,
-                  ),
-                ),
-                pw.SizedBox(height: 20)
-              ],
+            pw.Text(
+              monthFormatted,
+              style: const pw.TextStyle(
+                fontSize: 12,
+                decoration: pw.TextDecoration.underline,
+              ),
             ),
+            pw.SizedBox(height: 20),
             pw.Expanded(
-              child: pw.Container(
-                child: pw.Column(
-                  children: [
-                    // HEADER
-                    pw.Table(
-                      border:
-                          pw.TableBorder.all(width: 1, color: PdfColors.black),
-                      columnWidths: {
-                        0: const pw.FixedColumnWidth(30),
-                        1: const pw.FlexColumnWidth(),
-                        2: const pw.FlexColumnWidth(),
-                        3: const pw.FlexColumnWidth(),
-                      },
-                      children: [
+              child: pw.Column(
+                children: [
+                  // HEADER
+                  pw.Table(
+                    border:
+                        pw.TableBorder.all(width: 1, color: PdfColors.black),
+                    columnWidths: {
+                      0: const pw.FixedColumnWidth(30),
+                      1: const pw.FlexColumnWidth(),
+                      2: const pw.FlexColumnWidth(),
+                      3: const pw.FlexColumnWidth(),
+                      4: const pw.FlexColumnWidth(),
+                    },
+                    children: [
+                      pw.TableRow(
+                        children: [
+                          centeredCell('Day',
+                              style: const pw.TextStyle(fontSize: 10)),
+                          centeredCell('AM',
+                              style: const pw.TextStyle(fontSize: 10)),
+                          centeredCell('PM',
+                              style: const pw.TextStyle(fontSize: 10)),
+                          centeredCell('UNDERTIME',
+                              style: const pw.TextStyle(fontSize: 10)),
+                          centeredCell('OVERTIME',
+                              style: const pw.TextStyle(fontSize: 10)),
+                        ],
+                      ),
+                    ],
+                  ),
+                  // SUB-HEADER
+                  pw.Table(
+                    border:
+                        pw.TableBorder.all(width: 1, color: PdfColors.black),
+                    columnWidths: {
+                      0: const pw.FixedColumnWidth(30),
+                      1: const pw.FlexColumnWidth(),
+                      2: const pw.FlexColumnWidth(),
+                      3: const pw.FlexColumnWidth(),
+                      4: const pw.FlexColumnWidth(),
+                      5: const pw.FlexColumnWidth(),
+                      6: const pw.FlexColumnWidth(),
+                      7: const pw.FlexColumnWidth(),
+                      8: const pw.FlexColumnWidth(),
+                    },
+                    children: [
+                      pw.TableRow(
+                        children: [
+                          centeredCell('Date',
+                              style: const pw.TextStyle(fontSize: 10)),
+                          centeredCell('Arrival',
+                              style: const pw.TextStyle(fontSize: 10)),
+                          centeredCell('Departure',
+                              style: const pw.TextStyle(fontSize: 10)),
+                          centeredCell('Arrival',
+                              style: const pw.TextStyle(fontSize: 10)),
+                          centeredCell('Departure',
+                              style: const pw.TextStyle(fontSize: 10)),
+                          centeredCell('Hours',
+                              style: const pw.TextStyle(fontSize: 10)),
+                          centeredCell('Minutes',
+                              style: const pw.TextStyle(fontSize: 10)),
+                          centeredCell('Hours',
+                              style: const pw.TextStyle(fontSize: 10)),
+                          centeredCell('Minutes',
+                              style: const pw.TextStyle(fontSize: 10)),
+                        ],
+                      ),
+                      // BODY
+                      for (var i = 0; i < data.length; i++)
                         pw.TableRow(
                           children: [
-                            centeredCell('Day',
-                                style: const pw.TextStyle(fontSize: 10)),
-                            centeredCell('AM',
-                                style: const pw.TextStyle(fontSize: 10)),
-                            centeredCell('PM',
-                                style: const pw.TextStyle(fontSize: 10)),
-                            centeredCell('UNDERTIME',
-                                style: const pw.TextStyle(fontSize: 10)),
+                            centeredCell(
+                                DateFormat('d').format(
+                                  DateFormat('yyyy-MM-dd')
+                                      .parse(data[i].date ?? ''),
+                                ),
+                                style: const pw.TextStyle(fontSize: 8)),
+                            centeredCell(
+                                DateFormat('hh:mm a').format(DateFormat('HH:mm')
+                                    .parse(data[i].time_in_am ?? '')),
+                                style: const pw.TextStyle(fontSize: 8)),
+                            centeredCell(
+                                DateFormat('hh:mm a').format(DateFormat('HH:mm')
+                                    .parse(data[i].time_out_am ?? '')),
+                                style: const pw.TextStyle(fontSize: 8)),
+                            centeredCell(
+                                DateFormat('hh:mm a').format(DateFormat('HH:mm')
+                                    .parse(data[i].time_in_pm ?? '')),
+                                style: const pw.TextStyle(fontSize: 8)),
+                            centeredCell(
+                                DateFormat('hh:mm a').format(DateFormat('HH:mm')
+                                    .parse(data[i].time_out_pm ?? '')),
+                                style: const pw.TextStyle(fontSize: 8)),
+                            centeredCell(
+                                data[i].total_undertime.split(":")[0] ?? '',
+                                style: const pw.TextStyle(fontSize: 8)),
+                            centeredCell(data[i].total_undertime.split(":")[1],
+                                style: const pw.TextStyle(fontSize: 8)),
+                            centeredCell(
+                                data[i].total_overtime.split(":")[0] ?? '',
+                                style: const pw.TextStyle(fontSize: 8)),
+                            centeredCell(data[i].total_overtime.split(":")[1],
+                                style: const pw.TextStyle(fontSize: 8)),
                           ],
                         ),
-                      ],
-                    ),
-                    // SUB-HEADER
-                    pw.Table(
-                      border:
-                          pw.TableBorder.all(width: 1, color: PdfColors.black),
-                      columnWidths: {
-                        0: const pw.FixedColumnWidth(30),
-                        1: const pw.FlexColumnWidth(),
-                        2: const pw.FlexColumnWidth(),
-                        3: const pw.FlexColumnWidth(),
-                        4: const pw.FlexColumnWidth(),
-                        5: const pw.FlexColumnWidth(),
-                        6: const pw.FlexColumnWidth(),
-                      },
-                      children: [
-                        pw.TableRow(
-                          children: [
-                            centeredCell('Date',
-                                style: const pw.TextStyle(fontSize: 10)),
-                            centeredCell('Arrival',
-                                style: const pw.TextStyle(fontSize: 10)),
-                            centeredCell('Departure',
-                                style: const pw.TextStyle(fontSize: 10)),
-                            centeredCell('Arrival',
-                                style: const pw.TextStyle(fontSize: 10)),
-                            centeredCell('Departure',
-                                style: const pw.TextStyle(fontSize: 10)),
-                            centeredCell('Hours',
-                                style: const pw.TextStyle(fontSize: 10)),
-                            centeredCell('Minutes',
-                                style: const pw.TextStyle(fontSize: 10)),
-                          ],
-                        ),
-                        // BODY
-                        for (var i = 0; i < dtrData.length; i++)
-                          pw.TableRow(
-                            children: [
-                              centeredCell(
-                                  DateFormat('d').format(
-                                    DateFormat('yyyy-MM-dd')
-                                        .parse(dtrData[i].date ?? ''),
-                                  ),
-                                  style: const pw.TextStyle(fontSize: 8)),
-                              centeredCell(dtrData[i].time_in_am ?? '',
-                                  style: const pw.TextStyle(fontSize: 8)),
-                              centeredCell(dtrData[i].time_out_am ?? '',
-                                  style: const pw.TextStyle(fontSize: 8)),
-                              centeredCell(dtrData[i].time_in_pm ?? '',
-                                  style: const pw.TextStyle(fontSize: 8)),
-                              centeredCell(dtrData[i].time_out_pm ?? '',
-                                  style: const pw.TextStyle(fontSize: 8)),
-                              centeredCell('Calculated Hours', // Placeholder
-                                  style: const pw.TextStyle(fontSize: 8)),
-                              centeredCell('Calculated Minutes', // Placeholder
-                                  style: const pw.TextStyle(fontSize: 8)),
-                            ],
-                          ),
-                      ],
-                    ),
-                    pw.SizedBox(height: 20),
-
-                    pw.Row(children: [
-                      pw.Text("Total Hours rendered:"),
-                      pw.Text(latestGrandTotalHours)
-                    ])
-                  ],
-                ),
+                    ],
+                  ),
+                  pw.SizedBox(height: 20),
+                  pw.Row(children: [
+                    pw.Text("Total Hours rendered: "),
+                    pw.Text(latestGrandTotalHours),
+                  ])
+                ],
               ),
             ),
           ],

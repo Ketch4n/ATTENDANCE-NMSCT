@@ -1,3 +1,4 @@
+import 'package:attendance_nmsct/src/data/provider/session.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/Courses.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/dashboard/dashboard_provider.dart';
 import 'package:flutter/material.dart';
@@ -135,29 +136,33 @@ class DashBoardEstab extends StatelessWidget {
           _buildDashboardCard(
             context,
             provider,
-            'All Establishment',
-            provider.count_estab,
-            Icons.location_city,
-            () => const AllEstablishment(),
-          ),
-          _buildDashboardCard(
-            context,
-            provider,
             'All Students',
             provider.count,
             Icons.school,
             () => CoursesPage(
                 year: provider.selectedYearRange ?? provider.defaultYear),
           ),
-          _buildDashboardCard(
-            context,
-            provider,
-            'Announcement',
-            provider.announcement,
-            Icons.mail,
-            () => Announcement(
-                year: provider.selectedYearRange ?? provider.defaultYear),
-          ),
+          Session.role == "FACULTY"
+              ? SizedBox()
+              : _buildDashboardCard(
+                  context,
+                  provider,
+                  'All Establishment',
+                  provider.count_estab,
+                  Icons.location_city,
+                  () => const AllEstablishment(),
+                ),
+          Session.role == "FACULTY"
+              ? SizedBox()
+              : _buildDashboardCard(
+                  context,
+                  provider,
+                  'Announcement',
+                  provider.announcement,
+                  Icons.mail,
+                  () => Announcement(
+                      year: provider.selectedYearRange ?? provider.defaultYear),
+                ),
         ],
       ),
     );
