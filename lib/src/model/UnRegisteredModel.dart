@@ -4,8 +4,8 @@ class UnregmModel {
   final String fname;
   final String lname;
   // final String uid;
-  final String bday;
-  final String address;
+  final String id_number;
+  final String contact_number;
   final String section;
   final String course;
   final String semester;
@@ -19,8 +19,8 @@ class UnregmModel {
     required this.fname,
     required this.lname,
     // required this.uid,
-    required this.bday,
-    required this.address,
+    required this.id_number,
+    required this.contact_number,
     required this.section,
     required this.course,
     required this.semester,
@@ -36,8 +36,8 @@ class UnregmModel {
       fname: json['fname'],
       lname: json['lname'],
       // uid: json['uid'],
-      bday: json['bday'],
-      address: json['address'],
+      id_number: json['id_number'],
+      contact_number: json['contact_number'],
       section: json['section'],
       role: json['role'],
       password: json['password'],

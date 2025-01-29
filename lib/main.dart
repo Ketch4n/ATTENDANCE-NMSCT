@@ -17,6 +17,8 @@ Future<void> main() async {
   await initializeFirebase();
   Server.fetchHostFromDatabase();
   Server.fetchLinkFromDatabase();
+  Server.fetchIdFromDatabase();
+  Server.fetchApiFromDatabase();
   await Hive.initFlutter();
   await Hive.openBox('cacheBox');
 
