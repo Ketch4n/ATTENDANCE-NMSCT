@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:attendance_nmsct/src/data/firebase/server.dart';
 
-Future deleteAccomplishment(context, String id) async {
+Future deleteAccomplishment(context, int id) async {
   String apiUrl = '${Server.host}users/student/accomplishment_delete.php';
   Map<String, String> headers = {'Content-Type': 'application/json'};
   String jsonData = '{"id": "$id"}';
