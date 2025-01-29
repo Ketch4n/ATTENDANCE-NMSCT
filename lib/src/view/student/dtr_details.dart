@@ -41,33 +41,34 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
   String error = '';
   double screenHeight = 0;
   double screenWidth = 0;
+  List<TodayModel> dtrData = [];
 
-  Future<void> exportToExcel(List<EstabTodayModel> filteredProducts) async {
-    var excel = Excel.createExcel();
-    var sheet = excel['Sheet1'];
+  // Future<void> exportToExcel(List<EstabTodayModel> filteredProducts) async {
+  //   var excel = Excel.createExcel();
+  //   var sheet = excel['Sheet1'];
 
-    // Add headers
-    sheet.appendRow(
-        ['Email', 'Last Name', 'In-AM', 'Out-AM', 'In-PM', 'Out-PM', 'Date']);
+  //   // Add headers
+  //   sheet.appendRow(
+  //       ['Email', 'Last Name', 'In-AM', 'Out-AM', 'In-PM', 'Out-PM', 'Date']);
 
-    // Add data rows
-    for (var product in filteredProducts) {
-      sheet.appendRow([
-        product.email ?? '',
-        product.lname ?? '',
-        product.time_in_am ?? '',
-        product.time_out_am ?? '',
-        product.time_in_pm ?? '',
-        product.time_out_pm ?? '',
-        product.date ?? ''
-      ]);
-    }
+  //   // Add data rows
+  //   for (var product in filteredProducts) {
+  //     sheet.appendRow([
+  //       product.email ?? '',
+  //       product.lname ?? '',
+  //       product.time_in_am ?? '',
+  //       product.time_out_am ?? '',
+  //       product.time_in_pm ?? '',
+  //       product.time_out_pm ?? '',
+  //       product.date ?? ''
+  //     ]);
+  //   }
 
-    // Save the Excel file
-    var file = 'dtr_report.xlsx';
-    excel.save(fileName: file);
-    OpenFile.open(file);
-  }
+  //   // Save the Excel file
+  //   var file = 'dtr_report.xlsx';
+  //   excel.save(fileName: file);
+  //   OpenFile.open(file);
+  // }
 
   Future<void> monthly_report() async {
     print(widget.id);
@@ -114,6 +115,7 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
       setState(() {
         latestGrandTotalHours =
             dtr.isNotEmpty ? dtr.last.grand_total_hours_rendered ?? '' : '';
+        dtrData = dtr;
       });
 
       _reportStream.add(dtr);
@@ -122,6 +124,33 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
         error = 'Failed to load data';
       });
     }
+  }
+
+  Future<void> exportToExcel(List<EstabTodayModel> filteredProducts) async {
+    var excel = Excel.createExcel();
+    var sheet = excel['Sheet1'];
+
+    // Add headers
+    sheet.appendRow(
+        ['Email', 'Last Name', 'In-AM', 'Out-AM', 'In-PM', 'Out-PM', 'Date']);
+
+    // Add data rows
+    for (var product in filteredProducts) {
+      sheet.appendRow([
+        product.email ?? '',
+        product.lname ?? '',
+        product.time_in_am ?? '',
+        product.time_out_am ?? '',
+        product.time_in_pm ?? '',
+        product.time_out_pm ?? '',
+        product.date ?? ''
+      ]);
+    }
+
+    // Save the Excel file
+    var file = 'dtr_report.xlsx';
+    excel.save(fileName: file);
+    OpenFile.open(file);
   }
 
   Future<void> refreshData() async {
@@ -202,9 +231,11 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                                           trailing: MaterialButton(
                                             color: Colors.blue,
                                             onPressed: () async {
-                                              final dtrData = snapshot.data ??
+                                              final dtrSnap = snapshot.data ??
                                                   []; // Retrieve your data
-                                              await generatePdf(dtrData,
+                                              await generatePdf(
+                                                  dtrSnap,
+                                                  dtrData,
                                                   latestGrandTotalHours);
                                             },
                                             child: const Text(
