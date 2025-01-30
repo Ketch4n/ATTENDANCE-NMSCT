@@ -14,6 +14,9 @@ Future uploadAccomplishment(
   BuildContext context,
   String ids,
   String nweek,
+  String hte,
+  String area,
+  String sv,
   String comment,
   String? upID,
 ) async {
@@ -24,7 +27,7 @@ Future uploadAccomplishment(
   String encodedComment = jsonEncode(comment);
 
   String jsonData =
-      '{"email": "${Session.email}", "section": "$ids", "week": "$nweek", "comment": $encodedComment, "date": "$date", "time": "$time"';
+      '{"email": "${Session.email}", "section": "$ids", "week": "$nweek","hte":"$hte","area":"$area" ,"sv":"$sv","comment": $encodedComment, "date": "$date", "time": "$time"';
 
   // If editing, include the accomplishment ID in the request
   if (upID != null) {

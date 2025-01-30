@@ -58,6 +58,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   String defaultValue = '00:00:00';
   String defaultT = '--/--';
 
+  String? serverTime;
   void today(todayStream) async {
     final response = await http.post(
       Uri.parse('${Server.host}users/student/today.php'),
@@ -190,13 +191,18 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     return difference < 5;
   }
 
-  void _handleInsertToday(BuildContext context) {
-    if (_isIntervalLessThanFiveMinutes(checkInAM, checkOutAM) ||
-        _isIntervalLessThanFiveMinutes(checkOutAM, checkInPM) ||
-        _isIntervalLessThanFiveMinutes(checkInPM, checkOutPM)) {
+  _handleInsertToday(BuildContext context) {
+    if ((_isIntervalLessThanFiveMinutes(checkInAM, checkOutAM) ||
+            _isIntervalLessThanFiveMinutes(checkInAM, serverTime!)) ||
+        (_isIntervalLessThanFiveMinutes(checkOutAM, checkInPM) ||
+            _isIntervalLessThanFiveMinutes(checkOutAM, serverTime!)) ||
+        (_isIntervalLessThanFiveMinutes(checkInPM, checkOutPM) ||
+            _isIntervalLessThanFiveMinutes(checkInPM, serverTime!)) ||
+        _isIntervalLessThanFiveMinutes(checkOutPM, serverTime!)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('Interval between actions is less than 5 minutes')),
+          content: Text('Interval between actions is less than 5 minutes'),
+        ),
       );
     } else {
       insertToday();
@@ -225,6 +231,9 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
           yield data['time'];
+          setState(() {
+            serverTime = data['time'];
+          });
         } else {
           yield 'Error fetching time';
         }

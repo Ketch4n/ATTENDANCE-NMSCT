@@ -29,6 +29,9 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
       GlobalKey<RefreshIndicatorState>();
   final TextEditingController _commentController = TextEditingController();
   final TextEditingController _weekController = TextEditingController();
+  final TextEditingController hte = TextEditingController();
+  final TextEditingController area = TextEditingController();
+  final TextEditingController sv = TextEditingController();
 
   Future<void> _getTextReferences() async {
     final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
@@ -94,8 +97,16 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop(false); // User confirmed deletion
-                await accomplishmentReportEdit(context, record.id, record,
-                    _weekController, _commentController, _getTextReferences);
+                await accomplishmentReportEdit(
+                    context,
+                    record.id,
+                    record,
+                    _weekController,
+                    _commentController,
+                    hte,
+                    area,
+                    sv,
+                    _getTextReferences);
               },
               child: const Text(
                 'Edit',
@@ -158,7 +169,7 @@ class _AccomplishmentViewState extends State<AccomplishmentView> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             await accomplishmentReport(context, widget.ids, _weekController,
-                _commentController, _getTextReferences);
+                hte, area, sv, _commentController, _getTextReferences);
           },
           child: const Icon(Icons.add),
         ),

@@ -9,6 +9,9 @@ Future accomplishmentReportEdit(
     AccomplishmentModel record,
     TextEditingController week,
     TextEditingController comment,
+    TextEditingController hte,
+    TextEditingController area,
+    TextEditingController sv,
     VoidCallback refresh) async {
   // Set initial values for the controllers
   final TextEditingController weekController =
@@ -61,6 +64,63 @@ Future accomplishmentReportEdit(
                         ),
                       ),
                       SizedBox(height: 10),
+                      TextField(
+                        controller: hte,
+                        decoration: InputDecoration(
+                          hintText: 'HTE name',
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                20.0), // Set the border radius
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.blue), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                8.0), // Set the border radius
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: area,
+                        decoration: InputDecoration(
+                          hintText: 'Assigned Area',
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                20.0), // Set the border radius
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.blue), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                8.0), // Set the border radius
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: sv,
+                        decoration: InputDecoration(
+                          hintText: 'Super Visor',
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                20.0), // Set the border radius
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.blue), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                8.0), // Set the border radius
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
                       TextFormField(
                         controller: commentController,
                         maxLines: null, // For multiline input
@@ -97,6 +157,9 @@ Future accomplishmentReportEdit(
                               onPressed: () async {
                                 String userComment = commentController.text;
                                 String nweek = weekController.text;
+                                String nhte = hte.text;
+                                String narea = area.text;
+                                String nsv = sv.text;
 
                                 if (userComment.isEmpty || nweek.isEmpty) {
                                   Navigator.of(context).pop(true);
@@ -110,6 +173,9 @@ Future accomplishmentReportEdit(
                                       context,
                                       record.section_id,
                                       nweek,
+                                      nhte,
+                                      narea,
+                                      nsv,
                                       userComment,
                                       record.id);
                                   commentController.clear();

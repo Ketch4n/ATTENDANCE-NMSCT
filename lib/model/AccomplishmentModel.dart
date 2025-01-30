@@ -3,6 +3,9 @@ class AccomplishmentModel {
   final String email;
   final String section_id;
   final String week;
+  final String hte;
+  final String area;
+  final String sv;
   final String comment;
   final String date;
   final String time;
@@ -12,6 +15,9 @@ class AccomplishmentModel {
       required this.email,
       required this.section_id,
       required this.week,
+      required this.hte,
+      required this.area,
+      required this.sv,
       required this.comment,
       required this.date,
       required this.time});
@@ -33,6 +39,9 @@ class AccomplishmentModel {
         email: json['email'],
         section_id: json['section_id'],
         week: json['week'],
+        hte: json['hte_name'],
+        area: json['assigned_area'],
+        sv: json['supervisor'],
         comment: json['comment'],
         date: json['date'],
         time: json['time'],

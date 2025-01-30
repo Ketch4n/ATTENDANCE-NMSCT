@@ -135,6 +135,9 @@ class _AccomplishmentDetailsState extends State<AccomplishmentDetails> {
                                         MaterialPageRoute(
                                             builder: (context) => Meta_Data(
                                                 week: record.week,
+                                                hte: record.hte,
+                                                area: record.area,
+                                                sv: record.sv,
                                                 comment: record.comment)));
                                   },
                                   icon: Icon(Icons.document_scanner),

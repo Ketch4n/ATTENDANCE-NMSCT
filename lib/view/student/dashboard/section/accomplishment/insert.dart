@@ -10,6 +10,9 @@ Future accomplishmentReport(
     BuildContext context,
     ids,
     TextEditingController week,
+    TextEditingController hte,
+    TextEditingController area,
+    TextEditingController sv,
     TextEditingController comment,
     VoidCallback refresh) async {
   return showModalBottomSheet(
@@ -67,6 +70,64 @@ Future accomplishmentReport(
                         ),
                       ),
                       SizedBox(height: 10),
+                      TextField(
+                        controller: hte,
+                        decoration: InputDecoration(
+                          hintText: 'HTE name',
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                20.0), // Set the border radius
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.blue), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                8.0), // Set the border radius
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: area,
+                        decoration: InputDecoration(
+                          hintText: 'Assigned Area',
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                20.0), // Set the border radius
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.blue), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                8.0), // Set the border radius
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: sv,
+                        decoration: InputDecoration(
+                          hintText: 'Supervisor',
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                20.0), // Set the border radius
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.blue), // Set the color you want
+                            borderRadius: BorderRadius.circular(
+                                8.0), // Set the border radius
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 10),
                       TextFormField(
                         controller: comment,
 
@@ -110,6 +171,9 @@ Future accomplishmentReport(
                                 onPressed: () async {
                                   String userComment = comment.text;
                                   String nweek = week.text;
+                                  String nhte = hte.text;
+                                  String narea = area.text;
+                                  String nsv = sv.text;
 
                                   if (userComment.isEmpty || nweek.isEmpty) {
                                     Navigator.of(context).pop(true);
@@ -120,7 +184,14 @@ Future accomplishmentReport(
                                   } else {
                                     Navigator.of(context).pop(true);
                                     await uploadAccomplishment(
-                                        context, ids, nweek, userComment, null);
+                                        context,
+                                        ids,
+                                        nweek,
+                                        nhte,
+                                        narea,
+                                        nsv,
+                                        userComment,
+                                        null);
 
                                     comment.clear();
                                     week.clear;
