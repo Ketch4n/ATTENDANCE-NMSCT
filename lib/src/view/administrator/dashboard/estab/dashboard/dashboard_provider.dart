@@ -5,7 +5,7 @@ import 'package:attendance_nmsct/src/view/student/calculate_distance.dart';
 
 class DashboardProvider with ChangeNotifier {
   final TextEditingController _schoolYearController = TextEditingController();
-  String? _selectedYearRange = '2024-2025';
+  static String? _selectedYearRange = '2024-2025';
   String count = "";
   String count_estab = "";
   String count_courses = "";

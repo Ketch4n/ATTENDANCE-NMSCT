@@ -51,7 +51,11 @@ class _EstabRoomState extends State<EstabRoom> {
     });
     final response = await http.post(
       Uri.parse('${Server.host}users/establishment/estab_room.php'),
-      body: {'establishment_id': widget.ids},
+      body: {
+        'establishment_id': widget.ids,
+        'email': Session.email,
+        'role': Session.role
+      },
     );
 
     if (response.statusCode == 200) {
@@ -113,9 +117,9 @@ class _EstabRoomState extends State<EstabRoom> {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            const ListTile(
+            ListTile(
               title: Text(
-                "Administrator",
+                Session.role!,
                 style: TextStyle(
                     color: Colors.blue,
                     fontSize: 20,
@@ -167,11 +171,13 @@ class _EstabRoomState extends State<EstabRoom> {
                 thickness: 2,
               ),
             ),
-            ElevatedButton(
-                onPressed: () {
-                  showAddDialog();
-                },
-                child: Text("Add Interns")),
+            Session.role == "FACULTY"
+                ? SizedBox()
+                : ElevatedButton(
+                    onPressed: () {
+                      showAddDialog();
+                    },
+                    child: Text("Add Interns")),
             StreamBuilder<List<EstabRoomModel>>(
                 stream: _internsStreamController.stream,
                 builder: (context, snapshot) {

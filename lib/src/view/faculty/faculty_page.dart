@@ -3,8 +3,11 @@ import 'package:attendance_nmsct/src/auth/signup.dart';
 import 'package:attendance_nmsct/src/data/firebase/server.dart';
 import 'package:attendance_nmsct/src/include/style.dart';
 import 'package:attendance_nmsct/src/model/AdminModel.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/Courses.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/dashboard/dashboard_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class FacultyPage extends StatefulWidget {
   const FacultyPage({super.key});
@@ -43,64 +46,70 @@ class _FacultyPageState extends State<FacultyPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Faculty List'),
-        centerTitle: true,
-      ),
-      body: FutureBuilder<List<AdminModel>>(
-        future: _futureAdmins,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('Error fetching data'));
-          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            final admins = snapshot.data!;
-            return Column(
-              children: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => Signup(
-                                purpose: 'FACULTY',
-                                reload: () {
-                                  setState(() {
-                                    _futureAdmins = fetchAdmins();
-                                  });
-                                },
-                              )));
-                    },
-                    icon: const Icon(Icons.add)),
-                _buildAdminTable(admins),
-              ],
-            );
-          } else {
-            return Column(
-              children: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => Signup(
-                                purpose: 'FACULTY',
-                                reload: () {
-                                  setState(() {
-                                    _futureAdmins = fetchAdmins();
-                                  });
-                                },
-                              )));
-                    },
-                    icon: const Icon(Icons.add)),
-                const Center(child: Text('No data available')),
-              ],
-            );
-          }
-        },
+    return ChangeNotifierProvider(
+      create: (_) => DashboardProvider(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Faculty List'),
+          centerTitle: true,
+        ),
+        body: FutureBuilder<List<AdminModel>>(
+          future: _futureAdmins,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return const Center(child: Text('Error fetching data'));
+            } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+              final admins = snapshot.data!;
+              return Consumer<DashboardProvider>(
+                  builder: (context, provider, child) {
+                return Column(
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Signup(
+                                    purpose: 'FACULTY',
+                                    reload: () {
+                                      setState(() {
+                                        _futureAdmins = fetchAdmins();
+                                      });
+                                    },
+                                  )));
+                        },
+                        icon: const Icon(Icons.add)),
+                    _buildAdminTable(admins, provider),
+                  ],
+                );
+              });
+            } else {
+              return Column(
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => Signup(
+                                  purpose: 'FACULTY',
+                                  reload: () {
+                                    setState(() {
+                                      _futureAdmins = fetchAdmins();
+                                    });
+                                  },
+                                )));
+                      },
+                      icon: const Icon(Icons.add)),
+                  const Center(child: Text('No data available')),
+                ],
+              );
+            }
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildAdminTable(List<AdminModel> admins) {
+  Widget _buildAdminTable(List<AdminModel> admins, DashboardProvider provider) {
     return Center(
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -109,6 +118,7 @@ class _FacultyPageState extends State<FacultyPage> {
             DataColumn(label: Text('Email')),
             DataColumn(label: Text('Full Name')),
             DataColumn(label: Text('Role')),
+            DataColumn(label: Text('Student List')),
           ],
           rows: admins.map((admin) {
             return DataRow(
@@ -144,6 +154,17 @@ class _FacultyPageState extends State<FacultyPage> {
                     admin.role,
                     style: const TextStyle(fontSize: 12),
                   ),
+                ),
+                DataCell(
+                  IconButton(
+                      icon: Icon(Icons.remove_red_eye),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => CoursesPage(
+                                  year: provider.selectedYearRange ??
+                                      provider.defaultYear,
+                                )));
+                      }),
                 ),
               ],
             );

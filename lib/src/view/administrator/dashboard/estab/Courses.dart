@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:attendance_nmsct/src/auth/signup.dart';
+import 'package:attendance_nmsct/src/data/provider/session.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/SchoolYear.dart';
 import 'package:attendance_nmsct/src/components/duck.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/box_component.dart';
@@ -39,10 +40,12 @@ class _CoursesPageState extends State<CoursesPage> {
     const query = "users/establishment/view_all_courses.php";
 
     try {
-      final response =
-          await http.post(Uri.parse('${Server.host}$query'), body: {
-        "year": widget.year,
-      });
+      final response = await http.post(Uri.parse('${Server.host}$query'),
+          body: {
+            "year": widget.year,
+            "email": Session.email,
+            "role": Session.role
+          });
 
       if (response.statusCode == 200) {
         List<dynamic> jsonList = json.decode(response.body);

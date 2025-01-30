@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:attendance_nmsct/src/auth/auth.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/admin/accomplishment/view.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/estab_room.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
@@ -180,22 +181,20 @@ class _AllStudentsState extends State<AllStudents> {
                   ),
                 ),
                 const SizedBox(width: 20),
-                Session.role == "FACULTY"
-                    ? SizedBox()
-                    : ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.blue,
-                          backgroundColor: Colors.white,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => Signup(
-                                    purpose: 'INTERN',
-                                    reload: fetchInterns,
-                                  )));
-                        },
-                        child: const Icon(Icons.add),
-                      ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.blue,
+                    backgroundColor: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Signup(
+                              purpose: 'INTERN',
+                              reload: fetchInterns,
+                            )));
+                  },
+                  child: const Icon(Icons.add),
+                ),
               ],
             ),
             const SizedBox(height: 20),
@@ -242,7 +241,7 @@ class _AllStudentsState extends State<AllStudents> {
                       ),
                       DataColumn(
                           label: Session.role == "FACULTY"
-                              ? SizedBox()
+                              ? Text("Establishment")
                               : Text('Option')),
                     ],
                     rows: filteredInterns
@@ -397,7 +396,20 @@ class _AllStudentsState extends State<AllStudents> {
                               ),
                               DataCell(
                                 Session.role == "FACULTY"
-                                    ? SizedBox()
+                                    ? IconButton(
+                                        onPressed: () {
+                                          String parseID = classmate
+                                              .establishment_id
+                                              .toString();
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => EstabRoom(
+                                                ids: parseID,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        icon: Icon(Icons.remove_red_eye))
                                     : ElevatedButton(
                                         onPressed: () async {
                                           const status = "Archived";
