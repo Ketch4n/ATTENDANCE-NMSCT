@@ -40,6 +40,11 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
   String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
   Duration totalDuration = Duration.zero;
   String latestGrandTotalHours = "";
+  String schedINAM = "";
+  String schedOUTAM = "";
+  String schedINPM = "";
+  String schedOUTPM = "";
+
   Future<void> monthly_report(monthStream) async {
     final response = await http.post(
       Uri.parse('${Server.host}users/student/monthly_report.php'),
@@ -55,6 +60,22 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
       setState(() {
         latestGrandTotalHours =
             dtr.isNotEmpty ? dtr.last.grand_total_hours_rendered : '';
+        schedINAM = dtr.isNotEmpty
+            ? DateFormat('hh:mm')
+                .format(DateFormat('HH:mm:ss').parse(dtr.first.time_in_am))
+            : '';
+        schedOUTAM = dtr.isNotEmpty
+            ? DateFormat('hh:mm')
+                .format(DateFormat('HH:mm:ss').parse(dtr.first.time_out_am))
+            : '';
+        schedINPM = dtr.isNotEmpty
+            ? DateFormat('hh:mm')
+                .format(DateFormat('HH:mm:ss').parse(dtr.first.time_in_pm))
+            : '';
+        schedOUTPM = dtr.isNotEmpty
+            ? DateFormat('hh:mm')
+                .format(DateFormat('HH:mm:ss').parse(dtr.first.time_out_pm))
+            : '';
       });
 
       // Add the list of classmates to the stream
@@ -215,35 +236,6 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                 ),
               ),
             ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    latestGrandTotalHours == "" ? "" : "total rendered :",
-                    style: TextStyle(
-                      fontWeight:
-                          FontWeight.bold, // Add bold font weight for emphasis
-                      fontSize: 16, // Adjust font size as needed
-                      // Add any other text styles for emphasis (e.g., color)
-                    ),
-                  ),
-                  Text(
-                    latestGrandTotalHours == ""
-                        ? ""
-                        : latestGrandTotalHours + " hours",
-                    style: TextStyle(
-                      fontWeight:
-                          FontWeight.bold, // Add bold font weight for emphasis
-                      fontSize: 16, // Adjust font size as needed
-                      // Add any other text styles for emphasis (e.g., color)
-                    ),
-                  ),
-                ],
-              ),
-            ),
             Expanded(
               child: StreamBuilder<List<TodayModel>>(
                   stream: _monthStream.stream,
@@ -266,22 +258,40 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
                       } else {
                         return Column(
                           children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: TextButton.icon(
-                                  onPressed: () {
-                                    generate(_monthStream);
-                                  },
-                                  icon: Icon(
-                                    Icons.picture_as_pdf,
-                                    color: Colors
-                                        .redAccent, // Customize icon color here
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 25.0, vertical: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    latestGrandTotalHours == ""
+                                        ? ""
+                                        : "total rendered : $latestGrandTotalHours",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
                                   ),
-                                  label: const Text(
-                                    "Print Report",
-                                    style: TextStyle(color: Colors.redAccent),
-                                  )),
+                                  TextButton.icon(
+                                      onPressed: () {
+                                        generate(_monthStream);
+                                      },
+                                      icon: const Icon(
+                                        Icons.picture_as_pdf,
+                                        color: Colors.redAccent,
+                                      ),
+                                      label: const Text(
+                                        "Print Report",
+                                        style:
+                                            TextStyle(color: Colors.redAccent),
+                                      )),
+                                ],
+                              ),
                             ),
+                            Text("Schedule AM: ${schedINAM} - ${schedOUTAM}"),
+                            Text("Schedule PM: ${schedINPM} - ${schedOUTPM}"),
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -292,15 +302,15 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
 
                                     return GestureDetector(
                                       onTap: () {
-                                        showReport(
-                                            context,
-                                            dtr.total_hours_rendered,
-                                            DateFormat('HH:mm:ss').format(
-                                                DateFormat('HH:mm:ss')
-                                                    .parse(dtr.time_in_am)),
-                                            DateFormat('HH:mm:ss').format(
-                                                DateFormat('HH:mm:ss')
-                                                    .parse(dtr.time_in_pm)));
+                                        // showReport(
+                                        //     context,
+                                        //     dtr,
+                                        //     DateFormat('HH:mm:ss').format(
+                                        //         DateFormat('HH:mm:ss')
+                                        //             .parse(dtr.time_in_am)),
+                                        //     DateFormat('HH:mm:ss').format(
+                                        //         DateFormat('HH:mm:ss')
+                                        //             .parse(dtr.time_in_pm)));
                                       },
                                       child: Card(
                                         child: Row(

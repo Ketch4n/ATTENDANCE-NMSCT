@@ -30,11 +30,8 @@ class StudentFaceAuth extends StatefulWidget {
 class _StudentFaceAuthState extends State<StudentFaceAuth> {
   final StreamController<TodayModel> _todayStream =
       StreamController<TodayModel>();
-  // Location _location = Location();
-  // LocationData? currentLocation;
   late String latitude;
   late String longitude;
-  late String coordinate;
 
   bool isLoading = true; // Track if data is loading
   int userId = 0;
@@ -61,30 +58,12 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
   String defaultValue = '00:00:00';
   String defaultT = '--/--';
 
-  // DateFormat format = DateFormat("hh:mm a");
-
-  // Future sharedPref() async {
-  //    final prefs = await SharedPreferences.getInstance();
-  //    final timeINAM = prefs.getString('timeINAM');
-  //    final timeOUTAM = prefs.getString('timeOUTAM');
-  //    final timeINPM = prefs.getString('timeINPM');
-  //    final timeOUTPM = prefs.getString('timeOUTPM');
-
-  //    setState(() {
-  //       checkInAM = timeINAM!;
-  //       checkOutAM = timeOUTAM!;
-  //       checkInPM = timeINPM!;
-  //       checkOutPM = timeOUTPM!;
-  //    });
-
-  // }
   void today(todayStream) async {
     final response = await http.post(
       Uri.parse('${Server.host}users/student/today.php'),
       body: {
         'id': Session.id,
         'estab_id': widget.id,
-        // 'date': DateFormat('yyyy-MM-dd').format(DateTime.now())
       },
     );
 
@@ -109,9 +88,14 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
         checkOutPM = today.time_out_pm;
         outPMLat = today.out_pm_lat;
         outPMLong = today.out_pm_long;
-      });
 
-      // todayStream.add(today);
+        print("CheckInAM: $checkInAM, InAMLat: $inAMLat, InAMLong: $inAMLong");
+        print(
+            "CheckOutAM: $checkOutAM, OutAMLat: $outAMLat, OutAMLong: $outAMLong");
+        print("CheckInPM: $checkInPM, InPMLat: $inPMLat, InPMLong: $inPMLong");
+        print(
+            "CheckOutPM: $checkOutPM, OutPMLat: $outPMLat, OutPMLong: $outPMLong");
+      });
     } else {
       print("Failed to load data. Status Code: ${response.statusCode}");
       throw Exception('Failed to load data');
@@ -155,7 +139,6 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
     }
   }
 
-  // String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
   void insertToday() async {
     try {
       if (checkInAM == "00:00:00") {
@@ -196,6 +179,28 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
         await http.post(Uri.parse(apiUrl), headers: headers, body: jsonData);
     today(_todayStream);
     _todayStream.close();
+  }
+
+  bool _isIntervalLessThanFiveMinutes(String time1, String time2) {
+    if (time1 == defaultValue || time2 == defaultValue) return false;
+    final format = DateFormat('HH:mm:ss');
+    final dateTime1 = format.parse(time1);
+    final dateTime2 = format.parse(time2);
+    final difference = dateTime2.difference(dateTime1).inMinutes;
+    return difference < 5;
+  }
+
+  void _handleInsertToday(BuildContext context) {
+    if (_isIntervalLessThanFiveMinutes(checkInAM, checkOutAM) ||
+        _isIntervalLessThanFiveMinutes(checkOutAM, checkInPM) ||
+        _isIntervalLessThanFiveMinutes(checkInPM, checkOutPM)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Interval between actions is less than 5 minutes')),
+      );
+    } else {
+      insertToday();
+    }
   }
 
   @override
@@ -286,7 +291,8 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => FaceLauncherPage(
                                   purpose: 'auth',
-                                  refreshCallback: insertToday)));
+                                  refreshCallback: () =>
+                                      _handleInsertToday(context))));
                         },
                         child: Container(
                           decoration: Style.boxdecor,
@@ -344,10 +350,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         checkInAM == defaultValue
                             ? defaultT
                             : DateFormat('hh:mm a')
-                                .format(DateFormat('hh:mm').parse(checkInAM))
-                        //     +
-                        // inAM
-                        ,
+                                .format(DateFormat('hh:mm').parse(checkInAM)),
                         style: TextStyle(
                           fontFamily: "NexaBold",
                           fontSize: 20,
@@ -366,10 +369,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         checkInPM == defaultValue
                             ? defaultT
                             : DateFormat('hh:mm a')
-                                .format(DateFormat('hh:mm').parse(checkInPM))
-                        //     +
-                        // inPM
-                        ,
+                                .format(DateFormat('hh:mm').parse(checkInPM)),
                         style: TextStyle(
                           fontFamily: "NexaBold",
                           fontSize: 20,
@@ -396,10 +396,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         checkOutAM == defaultValue
                             ? defaultT
                             : DateFormat('hh:mm a')
-                                .format(DateFormat('hh:mm').parse(checkOutAM))
-                        //     +
-                        // outAM
-                        ,
+                                .format(DateFormat('hh:mm').parse(checkOutAM)),
                         style: TextStyle(fontFamily: "NexaBold", fontSize: 20),
                       ),
                       const SizedBox(height: 40),
@@ -415,10 +412,7 @@ class _StudentFaceAuthState extends State<StudentFaceAuth> {
                         checkOutPM == defaultValue
                             ? defaultT
                             : DateFormat('hh:mm a')
-                                .format(DateFormat('hh:mm').parse(checkOutPM))
-                        //     +
-                        // outPM
-                        ,
+                                .format(DateFormat('hh:mm').parse(checkOutPM)),
                         style: TextStyle(
                           fontFamily: "NexaBold",
                           fontSize: 20,

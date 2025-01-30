@@ -5,6 +5,7 @@ double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
 
   if (lat1 == 0.0 && lon1 == 0.0) {
     double distance = -1.0;
+    print('Invalid coordinates: ($lat1, $lon1)');
     return distance;
   } else {
     // Convert latitude and longitude from degrees to radians
@@ -13,9 +14,14 @@ double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     double lat2Rad = radians(lat2);
     double lon2Rad = radians(lon2);
 
+    print('lat1Rad: $lat1Rad, lon1Rad: $lon1Rad');
+    print('lat2Rad: $lat2Rad, lon2Rad: $lon2Rad');
+
     // Compute differences between latitudes and longitudes
     double dLat = lat2Rad - lat1Rad;
     double dLon = lon2Rad - lon1Rad;
+
+    print('dLat: $dLat, dLon: $dLon');
 
     // Haversine formula
     double a = sin(dLat / 2) * sin(dLat / 2) +
@@ -23,7 +29,12 @@ double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
     double distance = earthRadius * c;
 
-    return distance; // Distance in kilometers
+    print('a: $a, c: $c, distance: $distance');
+
+    // Round off to 6 decimal places
+    double roundedDistance = double.parse(distance.toStringAsFixed(4));
+    print('Rounded distance: $roundedDistance');
+    return roundedDistance; // Distance in kilometers
   }
 }
 
