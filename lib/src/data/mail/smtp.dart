@@ -7,7 +7,7 @@ Future<void> sendEmailNotification(
   String userEmail,
 ) async {
   final smtpServer =
-      gmail('nmsct.attendance.monitoring@gmail.com', 'krid xglq luum xmkt');
+      gmail('nmscst.attendance@gmail.com', 'zixq rezk uasj ewsv');
 
   final message = Message()
     ..from = const Address('nmsct.attendance.monitoring@gmail.com', 'NMSCST')
