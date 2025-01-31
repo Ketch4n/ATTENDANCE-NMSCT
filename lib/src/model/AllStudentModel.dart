@@ -12,6 +12,7 @@ class AllStudentModel {
   final String semester;
   final String school_year;
   final String? establishment_id;
+  final String? establishment_name;
   final String status;
 
   AllStudentModel({
@@ -27,6 +28,7 @@ class AllStudentModel {
     required this.semester,
     required this.school_year,
     this.establishment_id,
+    this.establishment_name,
     required this.status,
   });
 
@@ -43,6 +45,7 @@ class AllStudentModel {
         'semester': semester,
         'school_year': school_year,
         'establishment_id': establishment_id,
+        'establishment_name': establishment_name,
         'status': status,
       };
 
@@ -59,6 +62,7 @@ class AllStudentModel {
         semester: json['semester'],
         school_year: json['school_year'],
         establishment_id: json['establishment_id'],
+        establishment_name: json['establishment_name'],
         status: json['status'],
       );
 }

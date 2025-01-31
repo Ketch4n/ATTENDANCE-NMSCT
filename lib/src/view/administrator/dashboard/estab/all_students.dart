@@ -58,7 +58,12 @@ class _AllStudentsState extends State<AllStudents> {
       final sy = widget.sy;
       final response = await http.post(
         Uri.parse('${Server.host}users/establishment/all_students.php'),
-        body: {'role': Session.role, 'course': course, 'school_year': sy},
+        body: {
+          'role': Session.role,
+          'course': course,
+          'school_year': sy,
+          'email': Session.email
+        },
       );
 
       if (response.statusCode == 200) {
@@ -214,6 +219,7 @@ class _AllStudentsState extends State<AllStudents> {
                       const DataColumn(label: Text('Section')),
                       const DataColumn(label: Text('Semester')),
                       const DataColumn(label: Text('School Year')),
+                      const DataColumn(label: Text('Establishment Name')),
                       DataColumn(
                         label: Row(
                           children: [
@@ -383,6 +389,18 @@ class _AllStudentsState extends State<AllStudents> {
                               ),
                               DataCell(
                                 Text(
+                                  classmate.establishment_name ??
+                                      "No Establishment",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontStyle:
+                                          classmate.establishment_name == null
+                                              ? FontStyle.italic
+                                              : null),
+                                ),
+                              ),
+                              DataCell(
+                                Text(
                                   classmate.status.toUpperCase(),
                                   style: TextStyle(
                                       fontSize: 12,
@@ -396,20 +414,7 @@ class _AllStudentsState extends State<AllStudents> {
                               ),
                               DataCell(
                                 Session.role == "FACULTY"
-                                    ? IconButton(
-                                        onPressed: () {
-                                          String parseID = classmate
-                                              .establishment_id
-                                              .toString();
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) => EstabRoom(
-                                                ids: parseID,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(Icons.remove_red_eye))
+                                    ? SizedBox()
                                     : ElevatedButton(
                                         onPressed: () async {
                                           const status = "Archived";
