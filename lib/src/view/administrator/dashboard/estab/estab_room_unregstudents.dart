@@ -20,6 +20,7 @@ class _UnregUsersState extends State<UnregUsers> {
   final List<UnregmModel> _selectedUsers = [];
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  bool _selectAll = false;
 
   @override
   void initState() {
@@ -104,6 +105,17 @@ class _UnregUsersState extends State<UnregUsers> {
     }
   }
 
+  void _toggleSelectAll(List<UnregmModel> students) {
+    setState(() {
+      _selectAll = !_selectAll;
+      if (_selectAll) {
+        _selectedUsers.addAll(students);
+      } else {
+        _selectedUsers.clear();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,23 +182,45 @@ class _UnregUsersState extends State<UnregUsers> {
                     return const Text("No unregistered students");
                   } else {
                     return Expanded(
-                      child: ListView(
-                        children: unregStudents.map((UnregmModel student) {
-                          return CheckboxListTile(
-                            title: Text(
-                                '${student.fname} ${student.lname} (${student.email})'),
-                            value: _selectedUsers.contains(student),
-                            onChanged: (bool? value) {
-                              setState(() {
-                                if (value == true) {
-                                  _selectedUsers.add(student);
-                                } else {
-                                  _selectedUsers.remove(student);
-                                }
-                              });
-                            },
-                          );
-                        }).toList(),
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: SizedBox(
+                              width: 200,
+                              child: CheckboxListTile(
+                                title: Text(_selectAll
+                                    ? 'Un-Select All'
+                                    : 'Select All'),
+                                value: _selectAll,
+                                onChanged: (bool? value) {
+                                  _toggleSelectAll(unregStudents);
+                                },
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView(
+                              children:
+                                  unregStudents.map((UnregmModel student) {
+                                return CheckboxListTile(
+                                  title: Text(
+                                      '${student.fname} ${student.lname} (${student.email})'),
+                                  value: _selectedUsers.contains(student),
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      if (value == true) {
+                                        _selectedUsers.add(student);
+                                      } else {
+                                        _selectedUsers.remove(student);
+                                      }
+                                    });
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   }
