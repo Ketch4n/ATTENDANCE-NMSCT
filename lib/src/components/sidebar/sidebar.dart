@@ -137,7 +137,7 @@ class _IndexSideBarState extends State<IndexSideBar> {
                             builder: (context) => const AllEstablishment()));
                       },
                     ),
-              ListTile(
+              ExpansionTile(
                 leading: const Icon(Icons.school),
                 title: const Text('Students'),
                 trailing: IconButton(
@@ -149,71 +149,89 @@ class _IndexSideBarState extends State<IndexSideBar> {
                               )));
                     },
                     icon: Icon(Icons.add)),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CoursesPage(
-                            year: provider.selectedYearRange ??
-                                provider.defaultYear,
-                          )));
-                },
-              ),
-              const Divider(
-                color: Colors.white,
-                thickness: 1,
-              ),
-              Session.role == "FACULTY"
-                  ? SizedBox()
-                  : ListTile(
-                      leading: const Icon(Icons.mail),
-                      title: const Text('Announcement'),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25.0),
+                    child: ListTile(
+                      title: const Text('Student List'),
+                      leading: const Icon(Icons.school),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => CoursesPage(
+                                  year: provider.selectedYearRange ??
+                                      provider.defaultYear,
+                                )));
+                      },
+                    ),
+                  ),
+                  Session.role == "FACULTY"
+                      ? SizedBox()
+                      : Padding(
+                          padding: const EdgeInsets.only(left: 25.0),
+                          child: ListTile(
+                            leading: const Icon(Icons.mail),
+                            title: const Text('Announcement'),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => Announcement(
+                                          year: provider.selectedYearRange ??
+                                              provider.defaultYear,
+                                        )),
+                              );
+                            },
+                          ),
+                        ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25.0),
+                    child: ListTile(
+                      leading: const Icon(Icons.location_off_sharp),
+                      title: const Text('Outside Range'),
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                              builder: (context) => Announcement(
+                            builder: (context) =>
+                                AllOutsideRange(ids: provider.outsideIds),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25.0),
+                    child: ListTile(
+                      leading: const Icon(Icons.person_off_outlined),
+                      title: const Text('Absent'),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => AllAbsentStudent(
                                     year: provider.selectedYearRange ??
                                         provider.defaultYear,
                                   )),
                         );
                       },
                     ),
-              ListTile(
-                leading: const Icon(Icons.location_off_sharp),
-                title: const Text('Outside Range'),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          AllOutsideRange(ids: provider.outsideIds),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25.0),
+                    child: ListTile(
+                      leading: const Icon(Icons.timelapse_sharp),
+                      title: const Text('late'),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => AllLateStudent(
+                                year: provider.selectedYearRange ??
+                                    provider.defaultYear),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                ],
               ),
-              ListTile(
-                leading: const Icon(Icons.person_off_outlined),
-                title: const Text('Absent'),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => AllAbsentStudent(
-                              year: provider.selectedYearRange ??
-                                  provider.defaultYear,
-                            )),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.timelapse_sharp),
-                title: const Text('late'),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => AllLateStudent(
-                          year: provider.selectedYearRange ??
-                              provider.defaultYear),
-                    ),
-                  );
-                },
-              ),
+
               const Divider(
                 color: Colors.white,
                 thickness: 1,
