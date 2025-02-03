@@ -45,7 +45,7 @@ class _AdminPageState extends State<AdminPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Admin Instructor List'),
+        title: const Text('Administrator List'),
         centerTitle: true,
       ),
       body: FutureBuilder<List<AdminModel>>(

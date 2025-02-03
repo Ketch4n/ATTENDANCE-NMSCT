@@ -389,7 +389,7 @@ class _AllStudentsState extends State<AllStudents> {
                               ),
                               DataCell(
                                 Text(
-                                  classmate.establishment_name ??
+                                  classmate.establishment_id ??
                                       "No Establishment",
                                   style: TextStyle(
                                       fontSize: 12,
