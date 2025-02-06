@@ -265,6 +265,7 @@ class _EstabRoomState extends State<EstabRoom> {
                                       onPressed: () {
                                         _showAlertDialog(
                                           context,
+                                          classmate,
                                           classmate.email,
                                           classmate.establishment_id,
                                           classmate.student_id,
@@ -288,8 +289,8 @@ class _EstabRoomState extends State<EstabRoom> {
     );
   }
 
-  void _showAlertDialog(
-      BuildContext context, String name, int estabID, int studentID) {
+  void _showAlertDialog(BuildContext context, classmate, String name,
+      int estabID, int studentID) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -300,6 +301,7 @@ class _EstabRoomState extends State<EstabRoom> {
               ),
               constraints: const BoxConstraints(maxHeight: 700, maxWidth: 400),
               child: ViewSched(
+                estab: classmate,
                 name: name,
                 id: estabID,
                 student: studentID,

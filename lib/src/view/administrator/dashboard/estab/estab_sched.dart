@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:attendance_nmsct/src/data/provider/session.dart';
+import 'package:attendance_nmsct/src/model/EstabRoomModel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -8,10 +9,12 @@ import 'package:attendance_nmsct/src/data/firebase/server.dart';
 class ViewSched extends StatefulWidget {
   const ViewSched(
       {super.key,
+      required this.estab,
       required this.name,
       this.id,
       this.student,
       required this.onDialogClose});
+  final EstabRoomModel estab;
   final String name;
   final int? id;
   final int? student;
@@ -31,6 +34,10 @@ class _ViewSchedState extends State<ViewSched> {
   @override
   void initState() {
     super.initState();
+    _time1 = _parseTime(widget.estab.in_am);
+    _time2 = _parseTime(widget.estab.out_am);
+    _time3 = _parseTime(widget.estab.in_pm);
+    _time4 = _parseTime(widget.estab.out_pm);
   }
 
   TimeOfDay? _parseTime(String? timeString) {
@@ -151,25 +158,28 @@ class _ViewSchedState extends State<ViewSched> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            widget.name,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          _buildTimePickerButton('IN - AM', _time1, 1),
-          _buildTimePickerButton('OUT - AM', _time2, 2),
-          _buildTimePickerButton('IN - PM', _time3, 3),
-          _buildTimePickerButton('OUT - PM', _time4, 4),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _saveTimes,
-            child: const Text('Save'),
-          ),
-        ],
+      child: Container(
+        height: 500,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              widget.name,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            _buildTimePickerButton('IN - AM', _time1, 1),
+            _buildTimePickerButton('OUT - AM', _time2, 2),
+            _buildTimePickerButton('IN - PM', _time3, 3),
+            _buildTimePickerButton('OUT - PM', _time4, 4),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _saveTimes,
+              child: const Text('Save'),
+            ),
+          ],
+        ),
       ),
     );
   }

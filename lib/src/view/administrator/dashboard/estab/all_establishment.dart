@@ -99,22 +99,13 @@ class _AllEstablishmentState extends State<AllEstablishment> {
               //     : MediaQuery.of(context).size.height - 100,
               // width: MediaQuery.of(context).size.width / 3,
               constraints: const BoxConstraints(maxHeight: 700, maxWidth: 400),
-              child: id == 0
-                  ? AddLocation(
-                      title: name,
-                      onDialogClose: () {
-                        // Refresh the data when the dialog is closed
-                        fetchInterns();
-                      },
-                    )
-                  : ViewSched(
-                      name: name,
-                      id: id,
-                      onDialogClose: () {
-                        // Refresh the data when the dialog is closed
-                        fetchInterns();
-                      },
-                    )),
+              child: AddLocation(
+                title: name,
+                onDialogClose: () {
+                  // Refresh the data when the dialog is closed
+                  fetchInterns();
+                },
+              )),
         );
       },
     );
