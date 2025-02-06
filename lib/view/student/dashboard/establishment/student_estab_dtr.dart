@@ -60,22 +60,22 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
       setState(() {
         latestGrandTotalHours =
             dtr.isNotEmpty ? dtr.last.grand_total_hours_rendered : '';
-        schedINAM = dtr.isNotEmpty
+        schedINAM = dtr.isNotEmpty && dtr.first.sched_in_am != defaultValue
             ? DateFormat('hh:mm')
-                .format(DateFormat('HH:mm:ss').parse(dtr.first.time_in_am))
-            : '';
-        schedOUTAM = dtr.isNotEmpty
+                .format(DateFormat('HH:mm:ss').parse(dtr.first.sched_in_am))
+            : 'Not Set';
+        schedOUTAM = dtr.isNotEmpty && dtr.first.sched_out_am != defaultValue
             ? DateFormat('hh:mm')
-                .format(DateFormat('HH:mm:ss').parse(dtr.first.time_out_am))
-            : '';
-        schedINPM = dtr.isNotEmpty
+                .format(DateFormat('HH:mm:ss').parse(dtr.first.sched_out_am))
+            : 'Not Set';
+        schedINPM = dtr.isNotEmpty && dtr.first.sched_in_pm != defaultValue
             ? DateFormat('hh:mm')
-                .format(DateFormat('HH:mm:ss').parse(dtr.first.time_in_pm))
-            : '';
-        schedOUTPM = dtr.isNotEmpty
+                .format(DateFormat('HH:mm:ss').parse(dtr.first.sched_in_pm))
+            : 'Not Set';
+        schedOUTPM = dtr.isNotEmpty && dtr.first.sched_out_pm != defaultValue
             ? DateFormat('hh:mm')
-                .format(DateFormat('HH:mm:ss').parse(dtr.first.time_out_pm))
-            : '';
+                .format(DateFormat('HH:mm:ss').parse(dtr.first.sched_out_pm))
+            : 'Not Set';
       });
 
       // Add the list of classmates to the stream
@@ -302,15 +302,15 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
 
                                     return GestureDetector(
                                       onTap: () {
-                                        // showReport(
-                                        //     context,
-                                        //     dtr,
-                                        //     DateFormat('HH:mm:ss').format(
-                                        //         DateFormat('HH:mm:ss')
-                                        //             .parse(dtr.time_in_am)),
-                                        //     DateFormat('HH:mm:ss').format(
-                                        //         DateFormat('HH:mm:ss')
-                                        //             .parse(dtr.time_in_pm)));
+                                        showReport(
+                                            context,
+                                            dtr,
+                                            DateFormat('HH:mm:ss').format(
+                                                DateFormat('HH:mm:ss')
+                                                    .parse(dtr.time_in_am)),
+                                            DateFormat('HH:mm:ss').format(
+                                                DateFormat('HH:mm:ss')
+                                                    .parse(dtr.time_in_pm)));
                                       },
                                       child: Card(
                                         child: Row(

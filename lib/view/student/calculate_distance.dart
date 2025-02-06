@@ -32,7 +32,7 @@ double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     print('a: $a, c: $c, distance: $distance');
 
     // Round off to 6 decimal places
-    double roundedDistance = double.parse(distance.toStringAsFixed(4));
+    double roundedDistance = double.parse(distance.toStringAsFixed(6));
     print('Rounded distance: $roundedDistance');
     return roundedDistance; // Distance in kilometers
   }
