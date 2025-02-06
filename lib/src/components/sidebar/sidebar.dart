@@ -3,12 +3,10 @@
 import 'package:attendance_nmsct/src/auth/logout.dart';
 import 'package:attendance_nmsct/src/components/sidebar/modules/sidebar_header.dart';
 import 'package:attendance_nmsct/src/components/sidebar/modules/sidebar_user_account.dart';
-import 'package:attendance_nmsct/src/data/index/user_role_value.dart';
 import 'package:attendance_nmsct/src/data/provider/session.dart';
 import 'package:attendance_nmsct/src/utils/styles/colorpallete.dart';
 import 'package:attendance_nmsct/src/view/administrator/admin_page.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/Courses.dart';
-import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/SchoolYear.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_absent.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_establishment.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/all_late.dart';
@@ -83,7 +81,7 @@ class _IndexSideBarState extends State<IndexSideBar> {
                 thickness: 1,
               ),
               Session.role == "FACULTY"
-                  ? SizedBox()
+                  ? const SizedBox()
                   : ListTile(
                       leading: const Icon(Icons.calendar_month),
                       title: const Text('School Year'),
@@ -92,8 +90,9 @@ class _IndexSideBarState extends State<IndexSideBar> {
                             builder: (context) => const SchoolYearPage()));
                       },
                     ),
+
               Session.role == "FACULTY"
-                  ? SizedBox()
+                  ? const SizedBox()
                   : ListTile(
                       leading: const Icon(Icons.book),
                       title: const Text('Program / Course'),
@@ -101,7 +100,7 @@ class _IndexSideBarState extends State<IndexSideBar> {
                           builder: (context) => const ProgramCoursePage())),
                     ),
               Session.role == "FACULTY"
-                  ? SizedBox()
+                  ? const SizedBox()
                   : ListTile(
                       leading: const Icon(Icons.person_pin_sharp),
                       title: const Text('Faculty Accounts'),
@@ -111,13 +110,13 @@ class _IndexSideBarState extends State<IndexSideBar> {
                       },
                     ),
               Session.role == "FACULTY"
-                  ? SizedBox()
+                  ? const SizedBox()
                   : const Divider(
                       color: Colors.white,
                       thickness: 1,
                     ),
               Session.role == "FACULTY"
-                  ? SizedBox()
+                  ? const SizedBox()
                   : ListTile(
                       leading: const Icon(Icons.security),
                       title: const Text('Admin Accounts'),
@@ -128,7 +127,7 @@ class _IndexSideBarState extends State<IndexSideBar> {
                     ),
 
               Session.role == "FACULTY"
-                  ? SizedBox()
+                  ? const SizedBox()
                   : ListTile(
                       leading: const Icon(Icons.location_city),
                       title: const Text('Establishment'),
@@ -148,7 +147,7 @@ class _IndexSideBarState extends State<IndexSideBar> {
                                 reload: () {},
                               )));
                     },
-                    icon: Icon(Icons.add)),
+                    icon: const Icon(Icons.add)),
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 25.0),
@@ -165,7 +164,7 @@ class _IndexSideBarState extends State<IndexSideBar> {
                     ),
                   ),
                   Session.role == "FACULTY"
-                      ? SizedBox()
+                      ? const SizedBox()
                       : Padding(
                           padding: const EdgeInsets.only(left: 25.0),
                           child: ListTile(
@@ -249,7 +248,7 @@ class _IndexSideBarState extends State<IndexSideBar> {
                   await logout(context, purpose);
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 50,
               )
             ],

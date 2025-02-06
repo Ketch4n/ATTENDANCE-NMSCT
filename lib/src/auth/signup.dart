@@ -48,6 +48,7 @@ class _SignupState extends State<Signup> {
   bool _isObscure = true;
   bool _show = true;
   String emailStatus = '';
+  String idStatus = '';
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   final _controllController = TextEditingController();
@@ -64,7 +65,7 @@ class _SignupState extends State<Signup> {
   final _schoolYearController = TextEditingController();
   final _facultyController = TextEditingController();
 
-  final List<String> _semester = ["1st Semester", "2nd Semester"];
+  final List<String> _semester = ["1st Semester", "2nd Semester", "Mid-year"];
   String? _selectedSemester;
 
   late List<CoursesModel> _course = [];
@@ -202,6 +203,17 @@ class _SignupState extends State<Signup> {
                           children: [
                             TextFormField(
                               controller: _idnumberController,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (idNumber) =>
+                                  idNumber != null && idNumber.isEmpty
+                                      ? 'Enter a valid ID number'
+                                      : idStatus == ""
+                                          ? null
+                                          : idStatus,
+                              onChanged: (idNumber) {
+                                checkIDAvailability(idNumber);
+                              },
                               decoration: Style.textdesign
                                   .copyWith(labelText: 'ID Number'),
                             ),
@@ -398,6 +410,22 @@ class _SignupState extends State<Signup> {
 
       setState(() {
         emailStatus = message;
+      });
+    }
+  }
+
+  Future<void> checkIDAvailability(String id) async {
+    final response = await http.post(
+      Uri.parse('${Server.host}auth/check_uid.php'),
+      body: {'id': id},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      final message = jsonResponse['message'];
+
+      setState(() {
+        idStatus = message;
       });
     }
   }
