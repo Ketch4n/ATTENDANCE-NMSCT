@@ -1,5 +1,6 @@
 import 'package:attendance_nmsct/src/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/src/model/TodayModel.dart';
+import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -34,8 +35,8 @@ Future<void> generatePdf(List<EstabTodayModel> dtrData, List<TodayModel> data,
         return pw.Column(
           children: [
             pw.Text(
-              'Daily Time Record',
-              style: const pw.TextStyle(fontSize: 16),
+              'DAILY TIME RECORD',
+              style: const pw.TextStyle(fontSize: 18),
             ),
             pw.SizedBox(height: 10),
             pw.Padding(
@@ -46,21 +47,70 @@ Future<void> generatePdf(List<EstabTodayModel> dtrData, List<TodayModel> data,
                   pw.Text(
                     dtrData[0].lname!,
                     style: const pw.TextStyle(
+                      fontSize: 18,
+                      decoration: pw.TextDecoration.underline,
+                    ),
+                  ),
+                  pw.Text("(NAME)", style: const pw.TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+            pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text(
+                    "For the Month of",
+                    style: const pw.TextStyle(
                       fontSize: 12,
                       decoration: pw.TextDecoration.underline,
                     ),
                   ),
-                  pw.Text("(NAME)", style: const pw.TextStyle(fontSize: 10)),
-                ],
-              ),
-            ),
-            pw.Text(
-              monthFormatted,
-              style: const pw.TextStyle(
-                fontSize: 12,
-                decoration: pw.TextDecoration.underline,
-              ),
-            ),
+                  pw.Text(
+                    monthFormatted,
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                      decoration: pw.TextDecoration.underline,
+                    ),
+                  ),
+                ]),
+            pw.SizedBox(height: 20),
+            pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text(
+                    "Official Hours for\narrival and\ndeparture",
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                  pw.Column(mainAxisSize: pw.MainAxisSize.min, children: [
+                    for (var day in [
+                      'Monday',
+                      'Tuesday',
+                      'Wednesday',
+                      'Thursday',
+                      'Friday'
+                    ])
+                      pw.Text(
+                        switch (day) {
+                          'Monday' =>
+                            'MO ${data.first.sched_in_am}-${data.first.sched_out_am}- ${data.first.sched_in_pm}-${data.first.sched_out_pm}',
+                          'Tuesday' =>
+                            'TU ${data.first.sched_in_am}-${data.first.sched_out_am}- ${data.first.sched_in_pm}-${data.first.sched_out_pm}',
+                          'Wednesday' =>
+                            'WE ${data.first.sched_in_am}-${data.first.sched_out_am}- ${data.first.sched_in_pm}-${data.first.sched_out_pm}',
+                          'Thursday' =>
+                            'TH ${data.first.sched_in_am}-${data.first.sched_out_am}- ${data.first.sched_in_pm}-${data.first.sched_out_pm}',
+                          'Friday' =>
+                            'FR ${data.first.sched_in_am}-${data.first.sched_out_am}- ${data.first.sched_in_pm}-${data.first.sched_out_pm}',
+                          _ => '',
+                        },
+                        style: const pw.TextStyle(
+                          fontSize: 12,
+                        ),
+                      ),
+                  ]),
+                ]),
             pw.SizedBox(height: 20),
             pw.Expanded(
               child: pw.Column(
