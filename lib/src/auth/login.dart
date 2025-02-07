@@ -1,6 +1,9 @@
-import 'package:attendance_nmsct/src/controller/Login.dart';
-import 'package:attendance_nmsct/src/data/provider/settings.dart';
+import 'dart:convert';
 
+import 'package:attendance_nmsct/src/controller/Login.dart';
+import 'package:attendance_nmsct/src/data/firebase/server.dart';
+import 'package:attendance_nmsct/src/data/provider/settings.dart';
+import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/src/include/style.dart';
 
 import 'package:flutter/foundation.dart';
@@ -25,6 +28,30 @@ class _LoginState extends State<Login> {
     _emailController.dispose();
     _passController.dispose();
     super.dispose();
+  }
+
+  forgotPass() async {
+    if (_emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Provide the email above")));
+    } else {
+      try {
+        final response = await http.post(
+          Uri.parse("${Server.host}auth/forgot_pass.php"),
+          body: jsonEncode({"email": _emailController.text}),
+        );
+
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Check Email")));
+        } else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Error: ${response.body}")));
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
   }
 
   @override
@@ -143,7 +170,9 @@ class _LoginState extends State<Login> {
                                 height: 20,
                               ),
                               TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    forgotPass();
+                                  },
                                   child: Text('Forgot Password ?'))
                             ],
                           ),
