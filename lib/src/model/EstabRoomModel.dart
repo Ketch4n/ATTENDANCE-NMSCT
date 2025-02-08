@@ -11,6 +11,8 @@ class EstabRoomModel {
   final String? out_am;
   final String? in_pm;
   final String? out_pm;
+  final String? dateFrom;
+  final String? dateTo;
 
   EstabRoomModel({
     required this.id,
@@ -25,6 +27,8 @@ class EstabRoomModel {
     this.out_am,
     this.out_pm,
     this.sched_id,
+    this.dateFrom,
+    this.dateTo,
   });
 
   Map<String, dynamic> toJson() => {
@@ -41,6 +45,8 @@ class EstabRoomModel {
         'out_am': out_am,
         'in_pm': in_pm,
         'out_pm': out_pm,
+        'date_from': dateFrom,
+        'date_to': dateTo,
       };
 
   static EstabRoomModel fromJson(Map<String, dynamic> json) => EstabRoomModel(
@@ -57,5 +63,7 @@ class EstabRoomModel {
         out_am: json['out_am'],
         in_pm: json['in_pm'],
         out_pm: json['out_pm'],
+        dateFrom: json['date_from'],
+        dateTo: json['date_to'],
       );
 }

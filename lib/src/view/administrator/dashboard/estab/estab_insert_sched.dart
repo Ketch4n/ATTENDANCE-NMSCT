@@ -6,49 +6,29 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:attendance_nmsct/src/data/firebase/server.dart';
 
-class ViewSched extends StatefulWidget {
-  const ViewSched({
+class InsertSched extends StatefulWidget {
+  const InsertSched({
     super.key,
-    required this.estab,
-    required this.name,
     this.id,
     this.student,
     required this.onDialogClose,
   });
-  final EstabRoomModel estab;
-  final String name;
   final int? id;
   final int? student;
-
   final VoidCallback
       onDialogClose; // Callback to notify parent when dialog is closed
 
   @override
-  State<ViewSched> createState() => _ViewSchedState();
+  State<InsertSched> createState() => _InsertSchedState();
 }
 
-class _ViewSchedState extends State<ViewSched> {
+class _InsertSchedState extends State<InsertSched> {
   TimeOfDay? _time1;
   TimeOfDay? _time2;
   TimeOfDay? _time3;
   TimeOfDay? _time4;
   DateTime? _selectedDateFrom;
   DateTime? _selectedDateTo;
-
-  @override
-  void initState() {
-    super.initState();
-    _time1 = _parseTime(widget.estab.in_am);
-    _time2 = _parseTime(widget.estab.out_am);
-    _time3 = _parseTime(widget.estab.in_pm);
-    _time4 = _parseTime(widget.estab.out_pm);
-    _selectedDateFrom = widget.estab.dateFrom != null
-        ? DateFormat('yyyy-MM-dd').parse(widget.estab.dateFrom!)
-        : null;
-    _selectedDateTo = widget.estab.dateTo != null
-        ? DateFormat('yyyy-MM-dd').parse(widget.estab.dateTo!)
-        : null;
-  }
 
   TimeOfDay? _parseTime(String? timeString) {
     if (timeString == null || timeString.isEmpty) return null;
@@ -170,7 +150,7 @@ class _ViewSchedState extends State<ViewSched> {
 
   Future<bool> saveTimesToServer(String jsonData) async {
     String apiUrl =
-        '${Server.host}users/admin/create_schedule.php'; // Replace with your actual API URL
+        '${Server.host}users/admin/create_shift.php'; // Replace with your actual API URL
     Map<String, String> headers = {'Content-Type': 'application/json'};
 
     try {
@@ -201,7 +181,7 @@ class _ViewSchedState extends State<ViewSched> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              widget.name,
+              "INSERT NEW SCHED",
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),

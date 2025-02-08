@@ -8,6 +8,7 @@ import 'package:attendance_nmsct/src/data/firebase/server.dart';
 import 'package:attendance_nmsct/src/data/provider/session.dart';
 import 'package:attendance_nmsct/src/include/style.dart';
 import 'package:attendance_nmsct/src/model/EstabRoomModel.dart';
+import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/estab_insert_sched.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/estab_room_unregstudents.dart';
 import 'package:attendance_nmsct/src/view/administrator/dashboard/estab/estab_sched.dart';
 import 'package:flutter/material.dart';
@@ -183,98 +184,34 @@ class _EstabRoomState extends State<EstabRoom> {
                 builder: (context, snapshot) {
                   final List<EstabRoomModel>? interns = snapshot.data;
                   if (snapshot.hasData && interns != null) {
+                    final Map<String, List<EstabRoomModel>> groupedInterns =
+                        groupInternsByEmail(interns);
                     return Expanded(
                       child: ListView.builder(
-                          itemCount: interns.length,
+                          itemCount: groupedInterns.length,
                           itemBuilder: (context, index) {
-                            final EstabRoomModel classmate = interns[index];
+                            final String email =
+                                groupedInterns.keys.elementAt(index);
+                            final List<EstabRoomModel> internGroup =
+                                groupedInterns[email]!;
                             return Padding(
                               padding: const EdgeInsets.all(4.0),
-                              child: ListTile(
-                                title: Row(
-                                  children: [
-                                    ClipRRect(
-                                        borderRadius: Style.radius50,
-                                        child: Image.asset(
-                                          "assets/images/admin.png",
-                                          height: 50,
-                                          width: 50,
-                                          fit: BoxFit.cover,
-                                        )),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                            '${classmate.lname}, ${classmate.fname}',
-                                            style:
-                                                const TextStyle(fontSize: 18)),
-                                        Text(
-                                          classmate.email,
-                                          style: const TextStyle(fontSize: 12),
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Text("Arrival-AM "),
-                                        Text(classmate.in_am == defaultTime ||
-                                                classmate.in_am == null
-                                            ? "NOT-SET"
-                                            : classmate.in_am!)
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Text(" Departure-AM "),
-                                        Text(classmate.out_am == defaultTime ||
-                                                classmate.out_am == null
-                                            ? "NOT-SET"
-                                            : classmate.out_am!),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Text(" Arrival-PM "),
-                                        Text(classmate.in_pm == defaultTime ||
-                                                classmate.in_pm == null
-                                            ? "NOT-SET"
-                                            : classmate.in_pm!),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Text(" Departure-PM"),
-                                        Text(classmate.out_pm == defaultTime ||
-                                                classmate.out_pm == null
-                                            ? "NOT-SET"
-                                            : classmate.out_pm!),
-                                      ],
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        _showAlertDialog(
-                                          context,
-                                          classmate,
-                                          classmate.email,
-                                          classmate.establishment_id,
-                                          classmate.student_id,
-                                        );
-                                      },
-                                      icon: const Icon(Icons.schedule),
-                                    ),
-                                  ],
-                                ),
+                              child: InternListItem(
+                                email: email,
+                                internGroup: internGroup,
+                                defaultTime: defaultTime,
+                                onSchedulePressed: (classmate) {
+                                  _showAlertDialog(
+                                    context,
+                                    classmate,
+                                    classmate.email,
+                                    classmate.establishment_id,
+                                    classmate.student_id,
+                                  );
+                                },
+                                onAddSchedulePressed: (classmate) {
+                                  // Add your logic to add a new schedule here
+                                },
                               ),
                             );
                           }),
@@ -287,6 +224,18 @@ class _EstabRoomState extends State<EstabRoom> {
         ),
       ),
     );
+  }
+
+  Map<String, List<EstabRoomModel>> groupInternsByEmail(
+      List<EstabRoomModel> interns) {
+    final Map<String, List<EstabRoomModel>> groupedInterns = {};
+    for (final intern in interns) {
+      if (!groupedInterns.containsKey(intern.email)) {
+        groupedInterns[intern.email] = [];
+      }
+      groupedInterns[intern.email]!.add(intern);
+    }
+    return groupedInterns;
   }
 
   void _showAlertDialog(BuildContext context, classmate, String name,
@@ -341,5 +290,124 @@ class _EstabRoomState extends State<EstabRoom> {
                         )));
               }),
         ]);
+  }
+}
+
+class InternListItem extends StatelessWidget {
+  final String email;
+  final List<EstabRoomModel> internGroup;
+  final String defaultTime;
+  final Function(EstabRoomModel) onSchedulePressed;
+  final Function(EstabRoomModel) onAddSchedulePressed;
+
+  const InternListItem({
+    Key? key,
+    required this.email,
+    required this.internGroup,
+    required this.defaultTime,
+    required this.onSchedulePressed,
+    required this.onAddSchedulePressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(email, style: const TextStyle(fontSize: 18)),
+      subtitle: Column(
+        children: internGroup.map((classmate) {
+          return Row(
+            children: [
+              ClipRRect(
+                  borderRadius: Style.radius50,
+                  child: Image.asset(
+                    "assets/images/admin.png",
+                    height: 50,
+                    width: 50,
+                    fit: BoxFit.cover,
+                  )),
+              const SizedBox(
+                width: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${classmate.lname}, ${classmate.fname}',
+                      style: const TextStyle(fontSize: 18)),
+                  Text(
+                    classmate.email,
+                    style: const TextStyle(fontSize: 12),
+                  )
+                ],
+              ),
+              Spacer(),
+              Column(
+                children: [
+                  Text("Arrival-AM "),
+                  Text(classmate.in_am == defaultTime || classmate.in_am == null
+                      ? "NOT-SET"
+                      : classmate.in_am!)
+                ],
+              ),
+              Column(
+                children: [
+                  Text(" Departure-AM "),
+                  Text(classmate.out_am == defaultTime ||
+                          classmate.out_am == null
+                      ? "NOT-SET"
+                      : classmate.out_am!),
+                ],
+              ),
+              Column(
+                children: [
+                  Text(" Arrival-PM "),
+                  Text(classmate.in_pm == defaultTime || classmate.in_pm == null
+                      ? "NOT-SET"
+                      : classmate.in_pm!),
+                ],
+              ),
+              Column(
+                children: [
+                  Text(" Departure-PM"),
+                  Text(classmate.out_pm == defaultTime ||
+                          classmate.out_pm == null
+                      ? "NOT-SET"
+                      : classmate.out_pm!),
+                ],
+              ),
+              IconButton(
+                onPressed: () {
+                  onSchedulePressed(classmate);
+                },
+                icon: const Icon(Icons.schedule),
+              ),
+              IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                        child: Container(
+                            decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                            ),
+                            constraints: const BoxConstraints(
+                                maxHeight: 700, maxWidth: 400),
+                            child: InsertSched(
+                              id: classmate.establishment_id,
+                              student: classmate.student_id,
+                              onDialogClose: () {},
+                            )),
+                      );
+                    },
+                  );
+                },
+                icon: const Icon(Icons.add),
+              ),
+            ],
+          );
+        }).toList(),
+      ),
+    );
   }
 }
