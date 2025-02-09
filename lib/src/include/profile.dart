@@ -19,16 +19,17 @@ class GlobalProfile extends StatelessWidget {
             children: [
               Stack(
                 children: [
-                  if (!kIsWeb) Image.asset("assets/images/laptop.jpg"),
+                  Image.asset(
+                    "assets/images/laptop.jpg",
+                    fit: BoxFit.fill,
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(left: 30.0),
                     child: Column(
-                      crossAxisAlignment: kIsWeb
-                          ? CrossAxisAlignment.center
-                          : CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 50.0, bottom: 10),
+                          padding: const EdgeInsets.only(top: 90.0, bottom: 10),
                           child: ClipRRect(
                             borderRadius: Style.radius50,
                             child: Image.asset(
@@ -40,9 +41,7 @@ class GlobalProfile extends StatelessWidget {
                           ),
                         ),
                         Column(
-                          crossAxisAlignment: kIsWeb
-                              ? CrossAxisAlignment.center
-                              : CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               Session.fname,

@@ -39,6 +39,7 @@ class _AdministratorHome extends State<AdministratorHome> {
               index: currentIndex,
               children: const [
                 DashBoardEstab(),
+                GlobalProfile(),
               ],
             ),
           ),

@@ -1,5 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:attendance_nmsct/src/components/textfield.dart';
+import 'package:attendance_nmsct/src/data/firebase/server.dart';
+import 'package:attendance_nmsct/src/data/instance/controller_instance.dart';
 import 'package:attendance_nmsct/src/data/provider/session.dart';
 import 'package:attendance_nmsct/src/include/style.dart';
 import 'package:flutter/material.dart';
@@ -28,11 +33,11 @@ class DropdownSettings extends StatelessWidget {
                   // iconColor: Style.themecolor,
                   title: Row(
                     children: [
-                      Icon(Icons.person),
+                      Icon(Icons.security),
                       SizedBox(
                         width: 10,
                       ),
-                      Text("Account Information"),
+                      Text("Security"),
                     ],
                   ),
                   trailing: Icon(Icons.navigate_next),
@@ -67,6 +72,38 @@ class DropdownSettings extends StatelessWidget {
     );
   }
 
+  changePass(context) async {
+    if (controller.pass.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+        "Provide new password above",
+        style: TextStyle(color: Colors.blue),
+      )));
+    } else {
+      try {
+        final response = await http.post(
+          Uri.parse("${Server.host}auth/change_pass.php"),
+          body: jsonEncode(
+              {"password": controller.pass.text, "email": Session.email}),
+        );
+
+        if (response.statusCode == 200) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Password Updated"),
+            backgroundColor: Colors.green,
+          ));
+          controller.pass.clear();
+        } else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Error: ${response.body}")));
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
   Future showProfileInfo(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     final uid = prefs.getString('internID');
@@ -81,7 +118,7 @@ class DropdownSettings extends StatelessWidget {
         isScrollControlled: true,
         builder: (context) => DraggableScrollableSheet(
               expand: false,
-              initialChildSize: 0.32,
+              initialChildSize: 0.5,
               maxChildSize: 0.5,
               minChildSize: 0.32,
               builder: (context, scrollController) => SingleChildScrollView(
@@ -90,10 +127,10 @@ class DropdownSettings extends StatelessWidget {
                   height: 300,
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
                       child: Column(
                         children: [
-                          const SizedBox(
+                          SizedBox(
                             width: 50,
                             child: Divider(
                               color: Colors.black26,
@@ -102,16 +139,33 @@ class DropdownSettings extends StatelessWidget {
                           ),
                           ListTile(
                             leadingAndTrailingTextStyle:
-                                const TextStyle(fontSize: 20),
-                            leading: const Text(
-                              "Name :",
+                                TextStyle(fontSize: 20),
+                            leading: Text(
+                              "CHANGE PASSWORD",
                               style: TextStyle(color: Colors.black),
                             ),
-                            trailing: Text(
-                              "${Session.fname} ${Session.lname}",
-                              style: const TextStyle(color: Colors.blue),
-                            ),
                           ),
+                          CustomTextField(
+                              controller: controller.pass,
+                              readOnly: false,
+                              label: "New Password",
+                              fillcolor: Colors.grey),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: MaterialButton(
+                              onPressed: () {
+                                changePass(context);
+                              },
+                              color: Colors.blue,
+                              child: Text(
+                                "Save",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          )
                           // ListTile(
                           //   leadingAndTrailingTextStyle:
                           //       TextStyle(fontSize: 20),

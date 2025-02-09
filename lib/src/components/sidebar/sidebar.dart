@@ -76,6 +76,13 @@ class _IndexSideBarState extends State<IndexSideBar> {
                   widget.function(0);
                 },
               ),
+              ListTile(
+                leading: const Icon(Icons.person),
+                title: const Text('Profile'),
+                onTap: () {
+                  widget.function(1);
+                },
+              ),
               const Divider(
                 color: Colors.white,
                 thickness: 1,
