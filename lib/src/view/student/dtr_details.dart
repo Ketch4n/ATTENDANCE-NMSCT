@@ -14,6 +14,7 @@ import 'package:excel/excel.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +36,8 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
       StreamController<List<TodayModel>>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-
+  String _month = DateFormat('MMMM').format(DateTime.now());
+  String _yearMonth = DateFormat('yyyy-MM').format(DateTime.now());
   String defaultValue = '00:00:00';
   String defaultT = '--/--';
   String error = '';
@@ -70,7 +72,7 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
   //   OpenFile.open(file);
   // }
 
-  Future<void> monthly_report() async {
+  Future<void> monthly_report(stream) async {
     print(widget.id);
     print(widget.estab_id);
 
@@ -80,7 +82,7 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
         body: {
           'id': widget.id,
           'estab_id': widget.estab_id,
-          'month': "none", // Pass selected month here
+          'month': _yearMonth, // Pass selected month here
         },
       );
 
@@ -105,7 +107,7 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
   Future<void> report() async {
     final response = await http.post(
       Uri.parse('${Server.host}users/student/monthly_report.php'),
-      body: {'id': widget.id, 'estab_id': widget.estab_id, 'month': "all"},
+      body: {'id': widget.id, 'estab_id': widget.estab_id, 'month': _yearMonth},
     );
 
     if (response.statusCode == 200) {
@@ -154,13 +156,13 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
   }
 
   Future<void> refreshData() async {
-    monthly_report();
+    monthly_report(_monthStream);
   }
 
   @override
   void initState() {
     super.initState();
-    monthly_report();
+    monthly_report(_monthStream);
     report();
   }
 
@@ -191,28 +193,72 @@ class _StudentDTRDetailsState extends State<StudentDTRDetails> {
                       final snap2 = snapshot.data ?? [];
                       if (snapshot.hasData) {
                         if (snap2.isEmpty) {
-                          return const Center(
-                              child: Text("NO DATA THIS MONTH"));
+                          return Column(
+                            children: [
+                              MaterialButton(
+                                color: Colors.blue,
+                                onPressed: () async {
+                                  final month = await showMonthYearPicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2023),
+                                    lastDate: DateTime(2099),
+                                  );
+
+                                  if (month != null) {
+                                    setState(() {
+                                      _month = DateFormat('MMMM').format(month);
+                                      _yearMonth =
+                                          DateFormat('yyyy-MM').format(month);
+                                    });
+                                  }
+                                  monthly_report(_monthStream);
+                                },
+                                child: Text(
+                                  _month,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "NexaBold",
+                                    // fontSize: screenWidth / 15,
+                                  ),
+                                ),
+                              ),
+                              const Center(child: Text("NO DATA THIS MONTH")),
+                            ],
+                          );
                         } else {
                           return SingleChildScrollView(
                             child: Column(
                               children: [
-                                // MaterialButton(
-                                //   color: Colors.blue,
-                                //   onPressed: () async {
-                                //     final dtrData = snapshot.data ??
-                                //         []; // Retrieve your data
-                                //     await generatePdf(
-                                //         dtrData, latestGrandTotalHours);
-                                //   },
-                                //   child: const Text(
-                                //     'Export to PDF',
-                                //     style: TextStyle(
-                                //       color: Colors.white,
-                                //       fontFamily: "NexaBold",
-                                //     ),
-                                //   ),
-                                // ),
+                                MaterialButton(
+                                  color: Colors.blue,
+                                  onPressed: () async {
+                                    final month = await showMonthYearPicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2023),
+                                      lastDate: DateTime(2099),
+                                    );
+
+                                    if (month != null) {
+                                      setState(() {
+                                        _month =
+                                            DateFormat('MMMM').format(month);
+                                        _yearMonth =
+                                            DateFormat('yyyy-MM').format(month);
+                                      });
+                                    }
+                                    monthly_report(_monthStream);
+                                  },
+                                  child: Text(
+                                    _month,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: "NexaBold",
+                                      // fontSize: screenWidth / 15,
+                                    ),
+                                  ),
+                                ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: SizedBox(

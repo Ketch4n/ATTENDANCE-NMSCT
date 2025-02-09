@@ -204,6 +204,7 @@ class _EstabRoomState extends State<EstabRoom> {
                                   _showAlertDialog(
                                     context,
                                     classmate,
+                                    classmate.sched_id!,
                                     classmate.email,
                                     classmate.establishment_id,
                                     classmate.student_id,
@@ -238,8 +239,8 @@ class _EstabRoomState extends State<EstabRoom> {
     return groupedInterns;
   }
 
-  void _showAlertDialog(BuildContext context, classmate, String name,
-      int estabID, int studentID) {
+  void _showAlertDialog(BuildContext context, EstabRoomModel classmate,
+      int dataid, String name, int estabID, int studentID) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -252,6 +253,7 @@ class _EstabRoomState extends State<EstabRoom> {
               child: ViewSched(
                 estab: classmate,
                 name: name,
+                dataID: dataid,
                 id: estabID,
                 student: studentID,
                 onDialogClose: () {
@@ -312,7 +314,34 @@ class InternListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(email, style: const TextStyle(fontSize: 18)),
+      title: Row(
+        children: [
+          Text(email, style: const TextStyle(fontSize: 18)),
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Dialog(
+                    child: Container(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        constraints:
+                            const BoxConstraints(maxHeight: 700, maxWidth: 400),
+                        child: InsertSched(
+                          id: internGroup.first.establishment_id,
+                          student: internGroup.first.student_id,
+                          onDialogClose: () {},
+                        )),
+                  );
+                },
+              );
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      ),
       subtitle: Column(
         children: internGroup.map((classmate) {
           return Row(
@@ -379,30 +408,6 @@ class InternListItem extends StatelessWidget {
                   onSchedulePressed(classmate);
                 },
                 icon: const Icon(Icons.schedule),
-              ),
-              IconButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Dialog(
-                        child: Container(
-                            decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                            ),
-                            constraints: const BoxConstraints(
-                                maxHeight: 700, maxWidth: 400),
-                            child: InsertSched(
-                              id: classmate.establishment_id,
-                              student: classmate.student_id,
-                              onDialogClose: () {},
-                            )),
-                      );
-                    },
-                  );
-                },
-                icon: const Icon(Icons.add),
               ),
             ],
           );

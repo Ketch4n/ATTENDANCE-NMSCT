@@ -11,12 +11,15 @@ class ViewSched extends StatefulWidget {
     super.key,
     required this.estab,
     required this.name,
+    this.dataID,
     this.id,
     this.student,
     required this.onDialogClose,
   });
+
   final EstabRoomModel estab;
   final String name;
+  final int? dataID;
   final int? id;
   final int? student;
 
@@ -127,6 +130,7 @@ class _ViewSchedState extends State<ViewSched> {
 
   Future<void> _saveTimes() async {
     final times = {
+      'id': widget.dataID.toString(),
       'ESTAB_ID': widget.id.toString(),
       'USER_ID': widget.student.toString(),
       'IN_AM': _formatTime(_time1),
@@ -201,7 +205,7 @@ class _ViewSchedState extends State<ViewSched> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              widget.name,
+              widget.name + widget.dataID!.toString(),
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
