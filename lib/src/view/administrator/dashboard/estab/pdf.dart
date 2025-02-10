@@ -192,20 +192,32 @@ Future<void> generatePdf(List<EstabTodayModel> dtrData, List<TodayModel> data,
                                 ),
                                 style: const pw.TextStyle(fontSize: 8)),
                             centeredCell(
-                                DateFormat('hh:mm a').format(DateFormat('HH:mm')
-                                    .parse(data[i].time_in_am ?? '')),
+                                data[i].time_in_am == '00:00:00'
+                                    ? '00:00'
+                                    : DateFormat('hh:mm a').format(
+                                        DateFormat('HH:mm')
+                                            .parse(data[i].time_in_am ?? '')),
                                 style: const pw.TextStyle(fontSize: 8)),
                             centeredCell(
-                                DateFormat('hh:mm a').format(DateFormat('HH:mm')
-                                    .parse(data[i].time_out_am ?? '')),
+                                data[i].time_out_am == '00:00:00'
+                                    ? '00:00'
+                                    : DateFormat('hh:mm a').format(
+                                        DateFormat('HH:mm')
+                                            .parse(data[i].time_out_am ?? '')),
                                 style: const pw.TextStyle(fontSize: 8)),
                             centeredCell(
-                                DateFormat('hh:mm a').format(DateFormat('HH:mm')
-                                    .parse(data[i].time_in_pm ?? '')),
+                                data[i].time_in_pm == '00:00:00'
+                                    ? '00:00'
+                                    : DateFormat('hh:mm a').format(
+                                        DateFormat('HH:mm')
+                                            .parse(data[i].time_in_pm ?? '')),
                                 style: const pw.TextStyle(fontSize: 8)),
                             centeredCell(
-                                DateFormat('hh:mm a').format(DateFormat('HH:mm')
-                                    .parse(data[i].time_out_pm ?? '')),
+                                data[i].time_out_pm == '00:00:00'
+                                    ? '00:00'
+                                    : DateFormat('hh:mm a').format(
+                                        DateFormat('HH:mm')
+                                            .parse(data[i].time_out_pm ?? '')),
                                 style: const pw.TextStyle(fontSize: 8)),
                             centeredCell(
                                 data[i].total_undertime.split(":")[0] ?? '',
