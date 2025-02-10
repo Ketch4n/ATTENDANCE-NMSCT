@@ -4,7 +4,9 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:attendance_nmsct/data/server.dart';
 import 'package:attendance_nmsct/data/session.dart';
+import 'package:attendance_nmsct/model/EstabTodayModel.dart';
 import 'package:attendance_nmsct/model/TodayModel.dart';
+import 'package:attendance_nmsct/view/student/dashboard/establishment/pdf/generate.dart';
 import 'package:attendance_nmsct/view/student/dashboard/establishment/widgets/report.dart';
 import 'package:attendance_nmsct/widgets/duck.dart';
 import 'package:flutter/rendering.dart';
@@ -105,8 +107,9 @@ class _StudentEstabDTRState extends State<StudentEstabDTR> {
           data.map((dtrData) => TodayModel.fromJson(dtrData)).toList();
 
       // Add the list of classmates to the stream
-      ;
-      generatePDFReport(dtr);
+
+      // generatePDFReport(dtr);
+      generatePdf(dtr, latestGrandTotalHours);
     } else {
       print("Failed to load data. Status Code: ${response.statusCode}");
       setState(() {
